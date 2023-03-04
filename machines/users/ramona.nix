@@ -1,8 +1,6 @@
 { lib, modulesPath, pkgs, ... }:
   {
     config = {
-      
-
       home-manager.users.ramona = {
         home.username = "ramona";
         home.homeDirectory = "/home/ramona";

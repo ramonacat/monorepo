@@ -25,6 +25,18 @@
           ./machines/dev-vm.nix
         ];
       };
+      desktop = nixpkgs.lib.nixosSystem {
+        system = "x86_64-linux";
+        modules = [
+          ./machines/modules/base.nix
+          ./machines/modules/installed_base.nix
+          ./machines/modules/workstation.nix
+          ./machines/users/ramona.nix
+          vscode-server.nixosModule
+          home-manager.nixosModules.home-manager
+          ./machines/desktop.nix
+        ];
+      };
       iso = nixpkgs.lib.nixosSystem {
         system = "x86_64-linux";
         modules = [
