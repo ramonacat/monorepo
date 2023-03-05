@@ -30,6 +30,8 @@
       git
       htop
       zsh
+      sysstat
+      iotop
     ];
 
     console.keyMap = "pl";

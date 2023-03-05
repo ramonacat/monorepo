@@ -2,6 +2,7 @@
 {
   config = {
     home-manager.users.ramona = {
+      nixpkgs.config.allowUnfree = true;
       home.username = "ramona";
       home.homeDirectory = "/home/ramona";
       home.stateVersion = "22.11";
