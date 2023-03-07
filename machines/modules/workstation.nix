@@ -1,7 +1,6 @@
-{ config, pkgs, lib, modulesPath, vscode-server, ... }:
+{ config, pkgs, lib, modulesPath, ... }:
 {
   config = {
-    services.vscode-server.enable = true;
     virtualisation.docker.enable = true;
 
     security.rtkit.enable = true;

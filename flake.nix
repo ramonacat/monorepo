@@ -7,25 +7,12 @@
       url = "github:nix-community/home-manager";
       inputs.nixpkgs.follows = "nixpkgs";
     };
-    vscode-server.url = "github:msteen/nixos-vscode-server";
   };
 
-  outputs = { self, nixpkgs, home-manager, vscode-server }:
+  outputs = { self, nixpkgs, home-manager }:
     {
       formatter.x86_64-linux = nixpkgs.legacyPackages.x86_64-linux.nixpkgs-fmt;
       nixosConfigurations = {
-        dev-vm = nixpkgs.lib.nixosSystem {
-          system = "x86_64-linux";
-          modules = [
-            ./machines/modules/base.nix
-            ./machines/modules/installed_base.nix
-            ./machines/modules/workstation.nix
-            ./machines/users/ramona.nix
-            vscode-server.nixosModule
-            home-manager.nixosModules.home-manager
-            ./machines/dev-vm.nix
-          ];
-        };
         desktop = nixpkgs.lib.nixosSystem {
           system = "x86_64-linux";
           modules = [
@@ -34,7 +21,6 @@
             ./machines/modules/workstation.nix
             ./machines/users/ramona.nix
             ./machines/users/ramona_gui.nix
-            vscode-server.nixosModule
             home-manager.nixosModules.home-manager
             ./machines/desktop.nix
           ];
