@@ -6,7 +6,7 @@
       home.username = "ramona";
       home.homeDirectory = "/home/ramona";
       home.stateVersion = "22.11";
-      home.packages = with pkgs; [ minikube kubectl nix-index nil ];
+      home.packages = with pkgs; [ minikube kubectl nix-index nil pulseaudio ];
 
       programs.gpg.enable = true;
       services.gpg-agent = {
