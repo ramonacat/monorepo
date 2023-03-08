@@ -1,5 +1,6 @@
 { lib, modulesPath, pkgs, ... }:
 {
+  # colors: https://coolors.co/ff1885-19323c-9da2ab-f3de8a-988f2a
   config = {
     home-manager.users.ramona = {
       programs.firefox.enable = true;
@@ -37,13 +38,34 @@
                 names = [ "Noto Sans" "Iosevka" ];
                 size = 11.0;
               };
+              colors = {
+                activeWorkspace = {
+                  background = "#19323C";
+                  border = "#988F2A";
+                  text = "#9DA2AB";
+                };
+                focusedWorkspace = {
+                  background = "#19323C";
+                  border = "#988F2A";
+                  text = "#FF1885";
+                };
+              };
             }
           ];
+          colors = {
+            focused = {
+              background = "#19323C";
+              border = "#00000000";
+              text = "#9DA2AB";
+              indicator = "#988F2A";
+              childBorder = "#00000000";
+            };
+          };
         };
         extraConfig = ''
           input * xkb_layout pl
-          bindsym XF86AudioRaiseVolume exec 'pactl set-sink-volume @DEFAULT_SINK@ +1%'
-          bindsym XF86AudioLowerVolume exec 'pactl set-sink-volume @DEFAULT_SINK@ -1%'
+          bindsym XF86AudioRaiseVolume exec 'pactl set-sink-volume @DEFAULT_SINK@ +5%'
+          bindsym XF86AudioLowerVolume exec 'pactl set-sink-volume @DEFAULT_SINK@ -5%'
           bindsym XF86AudioMute exec 'pactl set-sink-mute @DEFAULT_SINK@ toggle'
         '';
       };
