@@ -15,6 +15,8 @@
       };
     };
 
+    programs.dconf.enable = true;
+
     fonts = {
       enableDefaultFonts = true;
       fonts = with pkgs; [

@@ -6,7 +6,8 @@
       programs.firefox.enable = true;
       programs.alacritty.enable = true;
 
-      home.packages = with pkgs; [ keepassxc discord virt-manager pavucontrol looking-glass-client pamixer playerctl xdg-utils ];
+      home.packages = with pkgs; [ keepassxc discord virt-manager pavucontrol looking-glass-client pamixer playerctl xdg-utils joplin-desktop dconf ];
+
       programs.vscode = {
         enable = true;
         package = pkgs.vscode.fhsWithPackages (ps: with ps; [ pkg-config ]);
@@ -14,6 +15,19 @@
           timonwong.shellcheck
           tamasfe.even-better-toml
         ];
+      };
+
+      gtk = {
+        enable = true;
+        theme = {
+          package = pkgs.dracula-theme;
+          name = "Dracula";
+        };
+      };
+
+      qt = {
+        enable = true;
+        style.name = "Dracula";
       };
 
       wayland.windowManager.sway = {
