@@ -19,8 +19,8 @@
             ./machines/modules/base.nix
             ./machines/modules/installed_base.nix
             ./machines/modules/workstation.nix
-            ./machines/users/ramona.nix
-            ./machines/users/ramona_gui.nix
+            ./users/ramona.nix
+            ./users/ramona_gui.nix
             home-manager.nixosModules.home-manager
             ./machines/desktop.nix
           ];
