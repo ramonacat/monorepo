@@ -69,6 +69,32 @@
     systemd.tmpfiles.rules = [
       "f /dev/shm/looking-glass 0660 ramona qemu-libvirtd -"
     ];
+
+    # users.extraUsers.hass = {
+    #   extraGroups = [ "dialout" "tty" ];
+    # };
+
+    # services.udev.extraRules = ''
+    #   KERNEL=="ttyACM0", TAG+="udev-acl", TAG+="uaccess", OWNER="hass"
+    # '';
+
+
+    services.home-assistant = {
+      enable = true;
+      extraComponents = [
+        # Components required to complete the onboarding
+        "met"
+        "radio_browser"
+        "deconz"
+        "zha"
+        "backup"
+      ];
+      config = {
+        # Includes dependencies for a basic setup
+        # https://www.home-assistant.io/integrations/default_config/
+        default_config = { };
+      };
+    };
   };
 }
 
