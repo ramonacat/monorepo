@@ -14,5 +14,23 @@
         enable = true;
       };
     };
+
+    fonts = {
+      enableDefaultFonts = true;
+      fonts = with pkgs; [
+        iosevka
+        noto-fonts
+        noto-fonts-emoji
+        lato
+      ];
+
+      fontconfig = {
+        defaultFonts = {
+          serif = [ "Noto Serif" "Noto Color Emoji" ];
+          sansSerif = [ "Lato" "Noto Sans" "Noto Color Emoji" ];
+          monospace = [ "Iosevka" "Noto Color Emoji" ];
+        };
+      };
+    };
   };
 }

@@ -6,7 +6,7 @@
       programs.firefox.enable = true;
       programs.alacritty.enable = true;
 
-      home.packages = with pkgs; [ iosevka keepassxc discord virt-manager pavucontrol looking-glass-client pamixer playerctl noto-fonts noto-fonts-emoji xdg-utils ];
+      home.packages = with pkgs; [ keepassxc discord virt-manager pavucontrol looking-glass-client pamixer playerctl xdg-utils ];
       programs.vscode = {
         enable = true;
         package = pkgs.vscode.fhsWithPackages (ps: with ps; [ pkg-config ]);
