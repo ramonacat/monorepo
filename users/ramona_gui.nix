@@ -6,7 +6,7 @@
       programs.firefox.enable = true;
       programs.alacritty.enable = true;
 
-      home.packages = with pkgs; [ keepassxc discord virt-manager pavucontrol looking-glass-client pamixer playerctl xdg-utils joplin-desktop dconf ];
+      home.packages = with pkgs; [ keepassxc discord virt-manager pavucontrol looking-glass-client pamixer playerctl xdg-utils joplin-desktop dconf moc ];
 
       programs.vscode = {
         enable = true;

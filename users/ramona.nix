@@ -47,7 +47,7 @@
       isNormalUser = true;
       extraGroups = [ "wheel" "networkmanager" "docker" ];
       openssh.authorizedKeys.keys = [
-        "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDeaj+jUyPJVfT3UE7uYZo85AMLeeegBk+1Q/a4gwTq8NUxxIe/hzE6Zjlu2rwT4iJvwtO+/lD8p+7jIpjZuj9ki0plFHG7aCXD7I6gNLvxyWj+wH0Qedt+sxLWDndpjrjT3hvQXczUN3sPIWQO3ezvDqvgOT78YqQXmhis0aUcGiCoH50nTvjzh9qQCEBRXFYJYKPmyJIFqN6J0T7yPfyWigrbt1bSTXxqeQ8+HFueCoFVeZ3h5Wb0O0bdIrAM5mH3TtIcBc3tX2q0zkJwoYZT47mduvlyzIcWczX3B/kltD8Av3UvPLKwzU6OYSsGf5xUBqEHUK0QU7DBwnC7CD1F josey666@DESKTOP-V5VIUJD"
+        "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIPG2s9Ym8R4qfO5QG74hADHZXuUEIlAYtcLtT38Opw1l ramona@hallewell"
       ];
       shell = pkgs.zsh;
     };
