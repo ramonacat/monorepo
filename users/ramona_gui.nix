@@ -77,7 +77,10 @@
           };
         };
         extraConfig = ''
-          input * xkb_layout pl
+          input * {
+            xkb_layout "pl,de"
+            xkb_options "grp:win_space_toggle"
+          }
           bindsym XF86AudioRaiseVolume exec 'pactl set-sink-volume @DEFAULT_SINK@ +5%'
           bindsym XF86AudioLowerVolume exec 'pactl set-sink-volume @DEFAULT_SINK@ -5%'
           bindsym XF86AudioMute exec 'pactl set-sink-mute @DEFAULT_SINK@ toggle'
