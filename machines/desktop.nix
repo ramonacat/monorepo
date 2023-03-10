@@ -3,9 +3,9 @@
   config = {
     networking.hostName = "hallewell";
 
-    boot.initrd.availableKernelModules = [ "xhci_pci" "ahci" "nvme" "usbhid" "usb_storage" "sd_mod" "sr_mod" "bcache" ];
+    boot.initrd.availableKernelModules = [ "xhci_pci" "ahci" "nvme" "usbhid" "usb_storage" "sd_mod" "sr_mod" "bcache" "amdgpu" ];
     boot.initrd.kernelModules = [ ];
-    boot.kernelModules = [ "kvm-intel" "vfio" "vfio_pci" "vfio_iommu_type1" "vfio_virqfd" ];
+    boot.kernelModules = [ "kvm-intel" "vfio" "vfio_pci" "vfio_iommu_type1" "vfio_virqfd" "amdgpu" ];
     boot.extraModulePackages = [ ];
     boot.kernelParams = [ "intel_iommu=on" "vfio-pci.ids=10de:1c82,10de:0fb9" ];
 
