@@ -23,6 +23,16 @@
         spotify
       ];
 
+      home.pointerCursor = {
+        name = "Adwaita";
+        package = pkgs.gnome.adwaita-icon-theme;
+        size = 36;
+        x11 = {
+          enable = true;
+          defaultCursor = "Adwaita";
+        };
+      };
+
       programs.vscode = {
         enable = true;
         package = pkgs.vscode.fhsWithPackages (ps: with ps; [ pkg-config ]);
