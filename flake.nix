@@ -22,7 +22,11 @@
             ./users/ramona.nix
             ./users/ramona_gui.nix
             home-manager.nixosModules.home-manager
-            ./machines/desktop.nix
+            ./machines/modules/hallewell/hardware.nix
+            ./machines/modules/hallewell/virtualisation.nix
+            ./machines/modules/hallewell/networking.nix
+            ./machines/modules/hallewell/home-assistant.nix
+            ./machines/hallewell.nix
           ];
         };
         iso = nixpkgs.lib.nixosSystem {
