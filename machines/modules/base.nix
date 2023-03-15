@@ -8,7 +8,7 @@
     boot.supportedFilesystems = [ "bcachefs" ];
     boot.initrd.supportedFilesystems = [ "bcachefs" ];
 
-    networking.useDHCP = lib.mkDefault true;
+    networking.useDHCP = false;
     time.timeZone = "Europe/Berlin";
     i18n.defaultLocale = "en_GB.UTF-8";
 

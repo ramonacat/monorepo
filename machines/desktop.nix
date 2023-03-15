@@ -29,23 +29,15 @@
 
     swapDevices = [ ];
 
-    # Enables DHCP on each ethernet and wireless interface. In case of scripted networking
-    # (the default) this is the recommended approach. When using systemd-networkd it's
-    # still possible to use this option, but it's recommended to use it in conjunction
-    # with explicit per-interface declarations with `networking.interfaces.<interface>.useDHCP`.
-    # networking.useDHCP = lib.mkDefault true;
-    networking.interfaces.eno1.useDHCP = lib.mkForce false;
+    networking.useDHCP = lib.mkForce false;
+    networking.interfaces.eno1.useDHCP = false;
+    networking.interfaces.br0.useDHCP = true;
 
     networking.bridges = {
       "br0" = {
         interfaces = [ "eno1" ];
       };
     };
-    networking.interfaces.br0.ipv4.addresses = [
-      { address = "10.69.10.5"; prefixLength = 24; }
-    ];
-    networking.defaultGateway = "10.69.10.1";
-    networking.nameservers = [ "8.8.8.8" ];
 
     nixpkgs.hostPlatform = lib.mkDefault "x86_64-linux";
     powerManagement.cpuFreqGovernor = lib.mkDefault "powersave";
@@ -69,15 +61,6 @@
     systemd.tmpfiles.rules = [
       "f /dev/shm/looking-glass 0660 ramona qemu-libvirtd -"
     ];
-
-    # users.extraUsers.hass = {
-    #   extraGroups = [ "dialout" "tty" ];
-    # };
-
-    # services.udev.extraRules = ''
-    #   KERNEL=="ttyACM0", TAG+="udev-acl", TAG+="uaccess", OWNER="hass"
-    # '';
-
 
     services.home-assistant = {
       enable = true;
