@@ -55,6 +55,10 @@
         style.name = "Dracula";
       };
 
+      home.file.".moc/config".text = ''
+        Theme = nightly_theme
+      '';
+
       wayland.windowManager.sway = {
         enable = true;
         config = {
