@@ -26,6 +26,7 @@
             ./machines/modules/hallewell/virtualisation.nix
             ./machines/modules/hallewell/networking.nix
             ./machines/modules/hallewell/home-assistant.nix
+            ./machines/modules/hallewell/users/ramona_gui.nix
             ./machines/hallewell.nix
           ];
         };
