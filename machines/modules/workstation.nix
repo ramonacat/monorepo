@@ -27,6 +27,9 @@
       ];
 
       fontconfig = {
+        hinting.autohint = true;
+        antialias = true;
+
         defaultFonts = {
           serif = [ "Noto Serif" "Noto Color Emoji" ];
           sansSerif = [ "Lato" "Noto Sans" "Noto Color Emoji" ];
