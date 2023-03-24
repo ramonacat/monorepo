@@ -21,6 +21,7 @@
         grip
         flac
         spotify
+        parsec-bin
       ];
 
       home.pointerCursor = {

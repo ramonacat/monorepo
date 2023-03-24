@@ -2,7 +2,13 @@
 {
   config = {
     boot.initrd.availableKernelModules = [ "amdgpu" ];
-    boot.kernelParams = [ "intel_iommu=on" "vfio-pci.ids=10de:1c82,10de:0fb9" "pcie_acs_override=downstream,multifunction" ];
+    boot.kernelParams = [
+      "intel_iommu=on"
+      "vfio-pci.ids=10de:1c82,10de:0fb9"
+      "pcie_acs_override=downstream,multifunction"
+      # This prevents USB devices sleeping which can make them reset when passed through
+      "usbcore.autosuspend=-1"
+    ];
     security.polkit.enable = true;
     virtualisation.spiceUSBRedirection.enable = true;
     virtualisation.libvirtd = {
