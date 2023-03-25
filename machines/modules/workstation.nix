@@ -18,8 +18,6 @@
     programs.dconf.enable = true;
 
     fonts = {
-      # TODO: should this be on or of?
-      optimizeForVeryHighDPI = false;
       enableDefaultFonts = true;
       fonts = with pkgs; [
         iosevka
