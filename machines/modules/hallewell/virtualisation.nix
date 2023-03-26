@@ -2,12 +2,12 @@
 
 let
   windowsify = pkgs.writeShellScript "windowsify" ''
-    ${pkgs.ddcutil}/bin/ddcutil --sn 7MT0186418CU setvcp x60 x10
-    ${pkgs.ddcutil}/bin/ddcutil --sn XKV0P9C334FS setvcp x60 x12
+    ${pkgs.ddcutil}/bin/ddcutil --sn 7MT0186418CU setvcp x60 x10 || true
+    ${pkgs.ddcutil}/bin/ddcutil --sn XKV0P9C334FS setvcp x60 x12 || true
   '';
   dewindowsify = pkgs.writeShellScript "dewindowsify" ''
-    ${pkgs.ddcutil}/bin/ddcutil --sn 7MT0186418CU setvcp x60 x0f
-    ${pkgs.ddcutil}/bin/ddcutil --sn XKV0P9C334FS setvcp x60 x11
+    ${pkgs.ddcutil}/bin/ddcutil --sn 7MT0186418CU setvcp x60 x0f || true
+    ${pkgs.ddcutil}/bin/ddcutil --sn XKV0P9C334FS setvcp x60 x11 || true
   '';
 in
 {
