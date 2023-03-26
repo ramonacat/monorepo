@@ -1,13 +1,24 @@
 { config, pkgs, lib, ... }:
+
+let
+  windowsify = pkgs.writeShellScript "windowsify" ''
+    ${pkgs.ddcutil}/bin/ddcutil --sn 7MT0186418CU setvcp x60 x10
+    ${pkgs.ddcutil}/bin/ddcutil --sn XKV0P9C334FS setvcp x60 x12
+  '';
+  dewindowsify = pkgs.writeShellScript "dewindowsify" ''
+    ${pkgs.ddcutil}/bin/ddcutil --sn 7MT0186418CU setvcp x60 x0f
+    ${pkgs.ddcutil}/bin/ddcutil --sn XKV0P9C334FS setvcp x60 x11
+  '';
+in
 {
   config = {
     boot.initrd.availableKernelModules = [ "amdgpu" ];
     boot.kernelParams = [
       "intel_iommu=on"
-      "vfio-pci.ids=10de:1c82,10de:0fb9"
+      # first two are GPU, the third is USB card
+      "vfio-pci.ids=10de:1c82,10de:0fb9,1912:0014"
+      # This is an evil dangerous hack, but I accept the risk
       "pcie_acs_override=downstream,multifunction"
-      # This prevents USB devices sleeping which can make them reset when passed through
-      "usbcore.autosuspend=-1"
     ];
     security.polkit.enable = true;
     virtualisation.spiceUSBRedirection.enable = true;
@@ -29,5 +40,10 @@
         };
       }
     ];
+
+    services.udev.extraRules = ''
+      ACTION=="add", ENV{PRODUCT}=="1235/8210/645", RUN+="${dewindowsify}"
+      ACTION=="remove", ENV{PRODUCT}=="1235/8210/645", RUN+="${windowsify}"
+    '';
   };
 }

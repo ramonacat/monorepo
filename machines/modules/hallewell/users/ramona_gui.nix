@@ -13,8 +13,8 @@
               scale = "1.5";
               pos = "1920 0";
             };
-            "Dell Inc. DELL U2415 7MT0186418CU" = { pos = "4480 0"; };
-            "Dell Inc. DELL U2415 XKV0P9C334FS" = { pos = "0 0"; };
+            "Dell Inc. DELL U2415 7MT0186418CU" = { pos = "0 0"; };
+            "Dell Inc. DELL U2415 XKV0P9C334FS" = { pos = "4480 0"; };
           };
         };
       };

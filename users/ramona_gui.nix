@@ -21,7 +21,7 @@
         grip
         flac
         spotify
-        parsec-bin
+        synergy
       ];
 
       home.pointerCursor = {
