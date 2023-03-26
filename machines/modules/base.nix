@@ -38,10 +38,11 @@
       gnupg
       git
       htop
-      zsh
       sysstat
       iotop
     ];
+
+    programs.zsh.enable = true;
 
     console.keyMap = "pl";
     nixpkgs.config.allowUnfree = true;
