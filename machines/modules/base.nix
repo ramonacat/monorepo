@@ -8,14 +8,26 @@
     boot.supportedFilesystems = [ "bcachefs" ];
     boot.initrd.supportedFilesystems = [ "bcachefs" ];
 
-    boot.kernelPatches = [{
-      # iotop requires this option to be set
-      name = "task-delay-acct";
-      patch = null;
-      extraConfig = ''
-        		TASK_DELAY_ACCT y
-        	'';
-    }];
+    boot.kernelPatches = [
+      {
+        # iotop requires this option to be set
+        name = "task-delay-acct";
+        patch = null;
+        extraConfig = ''
+          TASK_DELAY_ACCT y
+        '';
+      }
+      {
+        # this is to hopefully make windows audio happier
+        name = "scheduler-fast";
+        patch = null;
+        extraConfig = ''
+          HZ 1000
+          PREEMPT_VOLUNTARY n
+          PREEMPT y
+        '';
+      }
+    ];
 
     networking.useDHCP = false;
     time.timeZone = "Europe/Berlin";
