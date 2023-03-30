@@ -21,6 +21,14 @@ in
       "pcie_acs_override=downstream,multifunction"
     ];
     security.polkit.enable = true;
+    security.pam.loginLimits = [
+      { domain = "*"; item = "memlock"; type = "-"; value = "unlimited"; }
+    ];
+    boot.kernel.sysctl = {
+      "vm.nr_hugepages" = 8192;
+      #    "vm.hugetlb_shm_group" = 36;
+    };
+
     virtualisation.spiceUSBRedirection.enable = true;
     virtualisation.libvirtd = {
       enable = true;
