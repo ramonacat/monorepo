@@ -68,7 +68,7 @@
           bars = [
             {
               position = "top";
-              statusCommand = "while ${./scripts/swaybar.sh}; do sleep 1; done";
+              statusCommand = "while ${./scripts/swaybar.sh}; do sleep 5; done";
               fonts = {
                 names = [ "Noto Sans" "Iosevka" ];
                 size = 11.0;
