@@ -4,10 +4,14 @@ let
   windowsify = pkgs.writeShellScript "windowsify" ''
     ${pkgs.ddcutil}/bin/ddcutil --sn 7MT0186418CU setvcp x60 x10 || true
     ${pkgs.ddcutil}/bin/ddcutil --sn XKV0P9C334FS setvcp x60 x12 || true
+    systemctl set-property system.slice AllowedCPUs=0,1
+    systemctl set-property user.slice AllowedCPUs=0,1
   '';
   dewindowsify = pkgs.writeShellScript "dewindowsify" ''
     ${pkgs.ddcutil}/bin/ddcutil --sn 7MT0186418CU setvcp x60 x0f || true
     ${pkgs.ddcutil}/bin/ddcutil --sn XKV0P9C334FS setvcp x60 x11 || true
+    systemctl set-property system.slice AllowedCPUs=0-5
+    systemctl set-property user.slice AllowedCPUs=0-5
   '';
 in
 {
