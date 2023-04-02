@@ -16,7 +16,6 @@ let
 in
 {
   config = {
-    boot.initrd.availableKernelModules = [ "amdgpu" ];
     boot.kernelParams = [
       "intel_iommu=on"
       # first two are GPU, the third is USB card
