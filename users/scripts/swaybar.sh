@@ -12,7 +12,7 @@ audio_volume=$(pamixer --sink $(pactl list sinks short | grep RUNNING | awk '{pr
 audio_is_muted=$(pamixer --sink $(pactl list sinks short | grep RUNNING | awk '{print $1}') --get-mute)
 
 # Others
-loadavg_5min=$(cat /proc/loadavg | awk -F ' ' '{print $2}')
+loadavg_5min=$(cat /proc/loadavg | awk -F ' ' '{print $1}')
 
 if [ "$audio_is_muted" = "true" ]
 then
