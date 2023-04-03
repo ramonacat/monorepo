@@ -8,6 +8,11 @@
     boot.supportedFilesystems = [ "bcachefs" ];
     boot.initrd.supportedFilesystems = [ "bcachefs" ];
 
+    boot.kernelParams = [
+      # this is needed for iotop
+      "delayacct"
+    ];
+
     boot.kernelPatches = [
       {
         # iotop requires this option to be set
@@ -15,16 +20,6 @@
         patch = null;
         extraConfig = ''
           TASK_DELAY_ACCT y
-        '';
-      }
-      {
-        # this is to hopefully make windows audio happier
-        name = "scheduler-fast";
-        patch = null;
-        extraConfig = ''
-          HZ 1000
-          PREEMPT_VOLUNTARY n
-          PREEMPT y
         '';
       }
     ];

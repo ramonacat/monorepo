@@ -11,7 +11,6 @@
         discord
         virt-manager
         pavucontrol
-        looking-glass-client
         pamixer
         playerctl
         xdg-utils
@@ -21,7 +20,7 @@
         grip
         flac
         spotify
-        synergy
+        vlc
       ];
 
       home.pointerCursor = {

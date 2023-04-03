@@ -4,8 +4,8 @@ let
   windowsify = pkgs.writeShellScript "windowsify" ''
     ${pkgs.ddcutil}/bin/ddcutil --sn 7MT0186418CU setvcp x60 x10 || true
     ${pkgs.ddcutil}/bin/ddcutil --sn XKV0P9C334FS setvcp x60 x12 || true
-    systemctl set-property system.slice AllowedCPUs=0,1
-    systemctl set-property user.slice AllowedCPUs=0,1
+    systemctl set-property system.slice AllowedCPUs=0
+    systemctl set-property user.slice AllowedCPUs=0
   '';
   dewindowsify = pkgs.writeShellScript "dewindowsify" ''
     ${pkgs.ddcutil}/bin/ddcutil --sn 7MT0186418CU setvcp x60 x0f || true
@@ -29,16 +29,11 @@ in
     ];
     boot.kernel.sysctl = {
       "vm.nr_hugepages" = 8192;
-      #    "vm.hugetlb_shm_group" = 36;
     };
 
-    virtualisation.spiceUSBRedirection.enable = true;
     virtualisation.libvirtd = {
       enable = true;
     };
-    systemd.tmpfiles.rules = [
-      "f /dev/shm/looking-glass 0660 ramona qemu-libvirtd -"
-    ];
 
     boot.kernelPatches = [
       {
@@ -49,6 +44,16 @@ in
             "https://aur.archlinux.org/cgit/aur.git/plain/0001-add-acs-overrides.patch?h=linux-vfio&id=33a6d59a36b9cee927c0a648a65b34139c2b3ba1";
           sha256 = "uPl3qpI6pgdnA7iCYuOVxWzp3ylDpSRI2KDjLMkLGnA=";
         };
+      }
+      {
+        # this is to hopefully make windows audio happier
+        name = "scheduler-fast";
+        patch = null;
+        extraConfig = ''
+          HZ 1000
+          PREEMPT_VOLUNTARY n
+          PREEMPT y
+        '';
       }
     ];
 
