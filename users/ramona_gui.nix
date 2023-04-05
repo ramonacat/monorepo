@@ -21,6 +21,11 @@
         flac
         spotify
         vlc
+        libreoffice
+        hunspell
+        hunspellDicts.de_DE
+        hunspellDicts.en_US
+        hunspellDicts.pl_PL
       ];
 
       home.pointerCursor = {
