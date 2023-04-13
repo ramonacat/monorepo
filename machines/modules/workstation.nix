@@ -17,6 +17,8 @@
 
     programs.dconf.enable = true;
 
+    programs.nix-ld.enable = true;
+
     fonts = {
       enableDefaultFonts = true;
       fonts = with pkgs; [

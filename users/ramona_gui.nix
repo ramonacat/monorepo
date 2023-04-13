@@ -40,7 +40,6 @@
 
       programs.vscode = {
         enable = true;
-        package = pkgs.vscode.fhsWithPackages (ps: with ps; [ pkg-config ]);
         extensions = with pkgs.vscode-extensions; [
           timonwong.shellcheck
           tamasfe.even-better-toml
