@@ -45,16 +45,16 @@ in
           sha256 = "uPl3qpI6pgdnA7iCYuOVxWzp3ylDpSRI2KDjLMkLGnA=";
         };
       }
-      {
-        # this is to hopefully make windows audio happier
-        name = "scheduler-fast";
-        patch = null;
-        extraConfig = ''
-          HZ 1000
-          PREEMPT_VOLUNTARY n
-          PREEMPT y
-        '';
-      }
+      # {
+      #   # this is to hopefully make windows audio happier
+      #   name = "scheduler-fast";
+      #   patch = null;
+      #   extraConfig = ''
+      #     HZ 1000
+      #     PREEMPT_VOLUNTARY n
+      #     PREEMPT y
+      #   '';
+      # }
     ];
 
     services.udev.extraRules = ''
