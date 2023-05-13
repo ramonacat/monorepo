@@ -30,6 +30,21 @@
             ./machines/hallewell.nix
           ];
         };
+        moonfall = nixpkgs.lib.nixosSystem {
+          system = "x86_64-linux";
+          modules = [
+            ./machines/modules/base.nix
+            ./machines/modules/installed_base.nix
+            ./machines/modules/workstation.nix
+            ./users/ramona.nix
+            ./users/ramona_gui.nix
+            home-manager.nixosModules.home-manager
+            ./machines/modules/moonfall/hardware.nix
+            ./machines/modules/moonfall/networking.nix
+            ./machines/modules/hallewell/users/ramona_gui.nix
+            ./machines/moonfall.nix
+          ];
+        };
         iso = nixpkgs.lib.nixosSystem {
           system = "x86_64-linux";
           modules = [
