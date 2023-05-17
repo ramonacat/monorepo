@@ -41,6 +41,7 @@
             home-manager.nixosModules.home-manager
             ./machines/modules/moonfall/hardware.nix
             ./machines/modules/moonfall/networking.nix
+            ./machines/modules/moonfall/virtualisation.nix
             ./machines/modules/hallewell/users/ramona_gui.nix
             ./machines/moonfall.nix
           ];
