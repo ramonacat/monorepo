@@ -12,19 +12,19 @@
       overrideDevices = true;
       overrideFolders = true;
 
-      settings = {
-        devices = {
-          "phone" = { "id" = "VZK66I4-WTFCOWJ-B7LH6QV-FDQFTSH-FTBWTIH-UUDRUOR-SNIZBPS-AMRDBAU"; };
-          "hallewell" = { "id" = "BKZEEQS-2VYH2DZ-FRANPJH-I4WOFMZ-DO3N7AJ-XSK7J3D-P57XCTW-S66ZEQY"; };
-        };
+      # settings = {
+      devices = {
+        "phone" = { "id" = "VZK66I4-WTFCOWJ-B7LH6QV-FDQFTSH-FTBWTIH-UUDRUOR-SNIZBPS-AMRDBAU"; };
+        "hallewell" = { "id" = "BKZEEQS-2VYH2DZ-FRANPJH-I4WOFMZ-DO3N7AJ-XSK7J3D-P57XCTW-S66ZEQY"; };
+      };
 
-        folders = {
-          "shared" = {
-            path = "/mnt/nas/shared/";
-            devices = [ "phone" "hallewell" ];
-          };
+      folders = {
+        "shared" = {
+          path = "/mnt/nas/shared/";
+          devices = [ "phone" "hallewell" ];
         };
       };
+      # };
     };
 
     # For syncthing
