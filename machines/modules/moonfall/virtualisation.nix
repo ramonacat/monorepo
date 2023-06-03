@@ -32,13 +32,15 @@ in
       # USB card & main GPU
       "vfio-pci.ids=1912:0014,1002:744c,1002:ab30"
       "video=efifb:off,vesafb:off"
+      "hugepagesz=1G"
+      "hugepages=16"
     ];
     security.polkit.enable = true;
     security.pam.loginLimits = [
       { domain = "*"; item = "memlock"; type = "-"; value = "unlimited"; }
     ];
     boot.kernel.sysctl = {
-      "vm.nr_hugepages" = 8192;
+      "vm.nr_hugepages" = 9000;
     };
     boot.extraModprobeConfig = ''
       install vfio-pci ${bindVfio}
