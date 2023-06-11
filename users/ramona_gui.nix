@@ -63,6 +63,14 @@
         Theme = nightly_theme
       '';
 
+      services.swayidle = {
+        enable = true;
+        timeouts = [
+          { timeout = 60; command = "${pkgs.sway}/bin/swaymsg \"output * dpms off\""; resumeCommand = "${pkgs.sway}/bin/swaymsg \"output * dpms on\""; }
+          { timeout = 600; command = "systemctl suspend"; }
+        ];
+      };
+
       wayland.windowManager.sway = {
         enable = true;
         config = {
