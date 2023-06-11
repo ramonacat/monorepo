@@ -5,8 +5,8 @@
   ];
 
   config = {
-    boot.supportedFilesystems = [ "bcachefs" ];
-    boot.initrd.supportedFilesystems = [ "bcachefs" ];
+#    boot.supportedFilesystems = [ "bcachefs" ];
+#    boot.initrd.supportedFilesystems = [ "bcachefs" ];
 
     boot.kernelParams = [
       # this is needed for iotop
