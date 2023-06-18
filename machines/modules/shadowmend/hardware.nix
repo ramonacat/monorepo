@@ -13,7 +13,7 @@
 
     fileSystems."/boot" =
       {
-        device = "/dev/disk/by-uuid/D1119-17DB";
+        device = "/dev/disk/by-uuid/D119-17DB";
         fsType = "vfat";
       };
 
