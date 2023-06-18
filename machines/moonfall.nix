@@ -34,13 +34,13 @@
 
     services.tailscale.enable = true;
 
-    services.zoneminder = {
-      enable = true;
-      hostname = "localhost";
-      openFirewall = true;
-      database.createLocally = true;
-      database.username = "zoneminder";
-      cameras = 3;
-    };
+    # services.zoneminder = {
+    #   enable = true;
+    #   hostname = "localhost";
+    #   openFirewall = true;
+    #   database.createLocally = true;
+    #   database.username = "zoneminder";
+    #   cameras = 3;
+    # };
   };
 }

@@ -26,6 +26,7 @@
         hunspellDicts.de_DE
         hunspellDicts.en_US
         hunspellDicts.pl_PL
+	factorio
       ];
 
       home.pointerCursor = {
@@ -67,7 +68,7 @@
         enable = true;
         timeouts = [
           { timeout = 60; command = "${pkgs.sway}/bin/swaymsg \"output * dpms off\""; resumeCommand = "${pkgs.sway}/bin/swaymsg \"output * dpms on\""; }
-          { timeout = 600; command = "systemctl suspend"; }
+          { timeout = 600; command = "${pkgs.systemd}/bin/systemctl suspend"; }
         ];
       };
 
