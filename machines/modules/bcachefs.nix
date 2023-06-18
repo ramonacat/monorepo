@@ -7,4 +7,5 @@
   config = {
     boot.supportedFilesystems = [ "bcachefs" ];
     boot.initrd.supportedFilesystems = [ "bcachefs" ];
-  }
+  };
+}
