@@ -56,6 +56,7 @@
             ./users/ramona.nix
             home-manager.nixosModules.home-manager
             ./machines/modules/shadowmend/hardware.nix
+            ./machines/modules/shadowmend/networking.nix
             ./machines/shadowmend.nix
           ];
         };
@@ -64,6 +65,7 @@
           modules = [
             "${nixpkgs}/nixos/modules/installer/cd-dvd/installation-cd-minimal.nix"
             ./machines/modules/base.nix
+            ./machines/modules/bcachefs.nix
             ./machines/modules/iso.nix
           ];
         };
