@@ -26,7 +26,7 @@
         hunspellDicts.de_DE
         hunspellDicts.en_US
         hunspellDicts.pl_PL
-	factorio
+        factorio
       ];
 
       home.pointerCursor = {

@@ -7,8 +7,8 @@
 
     home-manager.users.ramona = {
       wayland.windowManager.sway = {
-	extraConfigEarly = ''
-	'';
+        extraConfigEarly = ''
+          	'';
         config = {
           output = {
             "Dell Inc. DELL U2415 7MT0186418CU" = {

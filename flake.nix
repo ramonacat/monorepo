@@ -17,6 +17,7 @@
           system = "x86_64-linux";
           modules = [
             ./machines/modules/base.nix
+            ./machines/modules/bcachefs.nix
             ./machines/modules/installed_base.nix
             ./machines/modules/workstation.nix
             ./users/ramona.nix
@@ -44,6 +45,18 @@
             ./machines/modules/moonfall/virtualisation.nix
             ./machines/modules/hallewell/users/ramona_gui.nix
             ./machines/moonfall.nix
+          ];
+        };
+        shadowmend = nixpkgs.lib.nixosSystem {
+          system = "x86_64-linux";
+          modules = [
+            ./machines/modules/base.nix
+            ./machines/modules/bcachefs.nix
+            ./machines/modules/installed_base.nix
+            ./users/ramona.nix
+            home-manager.nixosModules.home-manager
+            ./machines/modules/shadowmend/hardware.nix
+            ./machines/shadowmend.nix
           ];
         };
         iso = nixpkgs.lib.nixosSystem {
