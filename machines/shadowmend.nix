@@ -15,5 +15,7 @@
       database.username = "zoneminder";
       cameras = 3;
     };
+    
+    services.tailscale.enable = true;
   };
 }
