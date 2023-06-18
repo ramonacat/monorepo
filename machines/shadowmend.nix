@@ -18,5 +18,6 @@
 
     services.tailscale.enable = true;
     services.logind.lidSwitch = "ignore";
+    services.mysql.settings.max_threads = 64;
   };
 }
