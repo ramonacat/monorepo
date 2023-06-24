@@ -7,17 +7,7 @@
         fsType = "nfs";
       };
 
-    services.zoneminder = {
-      enable = true;
-      hostname = "localhost";
-      openFirewall = true;
-      database.createLocally = true;
-      database.username = "zoneminder";
-      cameras = 3;
-    };
-
     services.tailscale.enable = true;
     services.logind.lidSwitch = "ignore";
-    services.mysql.settings.mysqld.max_threads = 64;
   };
 }
