@@ -27,6 +27,7 @@
         hunspellDicts.en_US
         hunspellDicts.pl_PL
         factorio
+        obsidian
       ];
 
       home.pointerCursor = {
