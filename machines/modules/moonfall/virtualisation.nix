@@ -35,7 +35,6 @@ in
       "hugepagesz=1G"
       "hugepages=16"
       "amdgpu.sg_display=0"
-      "drm.vblankoffdelay=0"
     ];
     security.polkit.enable = true;
     security.pam.loginLimits = [

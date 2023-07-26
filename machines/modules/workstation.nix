@@ -20,8 +20,8 @@
     programs.nix-ld.enable = true;
 
     fonts = {
-      enableDefaultFonts = true;
-      fonts = with pkgs; [
+      enableDefaultPackages = true;
+      packages = with pkgs; [
         iosevka
         noto-fonts
         noto-fonts-emoji

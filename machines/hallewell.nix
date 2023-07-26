@@ -12,14 +12,16 @@
       overrideDevices = true;
       overrideFolders = true;
 
-      devices = {
-        "phone" = { "id" = "VZK66I4-WTFCOWJ-B7LH6QV-FDQFTSH-FTBWTIH-UUDRUOR-SNIZBPS-AMRDBAU"; };
-      };
+      settings = {
+        devices = {
+          "phone" = { "id" = "VZK66I4-WTFCOWJ-B7LH6QV-FDQFTSH-FTBWTIH-UUDRUOR-SNIZBPS-AMRDBAU"; };
+        };
 
-      folders = {
-        "shared" = {
-          path = "/mnt/nas/shared/";
-          devices = [ "phone" ];
+        folders = {
+          "shared" = {
+            path = "/mnt/nas/shared/";
+            devices = [ "phone" ];
+          };
         };
       };
     };
