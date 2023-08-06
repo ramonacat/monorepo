@@ -47,6 +47,7 @@
       htop
       sysstat
       iotop
+      tmux
     ];
 
     programs.zsh.enable = true;
