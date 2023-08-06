@@ -23,6 +23,7 @@
             home-manager.nixosModules.home-manager
             ./machines/modules/hallewell/hardware.nix
             ./machines/modules/hallewell/networking.nix
+            ./machines/modules/hallewell/users/ramona.nix
             ./machines/hallewell.nix
           ];
         };
