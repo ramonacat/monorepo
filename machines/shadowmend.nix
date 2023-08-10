@@ -9,5 +9,14 @@
 
     services.tailscale.enable = true;
     services.logind.lidSwitch = "ignore";
+
+    services.zoneminder = {
+      enable = true;
+      hostname = "localhost";
+      openFirewall = true;
+      database.createLocally = true;
+      database.username = "zoneminder";
+      cameras = 3;
+    };
   };
 }
