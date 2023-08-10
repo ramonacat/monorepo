@@ -1,6 +1,6 @@
 { config, pkgs, lib, ... }:
 {
   config = {
-    users.user.ramona.extraGroups = [ "docker" ];
+    users.users.ramona.extraGroups = [ "docker" ];
   };
 }
