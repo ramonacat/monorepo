@@ -35,7 +35,7 @@
             ./machines/modules/workstation.nix
             ./users/ramona.nix
             ./users/ramona_gui.nix
-            home-manager.nixosModules.home-manager
+            home-manager.nixosModules.home-managerw
             ./machines/modules/moonfall/hardware.nix
             ./machines/modules/moonfall/networking.nix
             ./machines/modules/moonfall/virtualisation.nix
@@ -54,6 +54,7 @@
             ./machines/modules/shadowmend/hardware.nix
             ./machines/modules/shadowmend/networking.nix
             ./machines/modules/shadowmend/home-assistant.nix
+            ./machines/modules/shadowmend/users/ramona.nix
             ./machines/shadowmend.nix
           ];
         };
