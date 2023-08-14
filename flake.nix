@@ -35,7 +35,7 @@
             ./machines/modules/workstation.nix
             ./users/ramona.nix
             ./users/ramona_gui.nix
-            home-manager.nixosModules.home-managerw
+            home-manager.nixosModules.home-manager
             ./machines/modules/moonfall/hardware.nix
             ./machines/modules/moonfall/networking.nix
             ./machines/modules/moonfall/virtualisation.nix
