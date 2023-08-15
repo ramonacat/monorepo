@@ -4,6 +4,7 @@
     virtualisation.docker.enable = true;
 
     security.rtkit.enable = true;
+    security.sudo.wheelNeedsPassword = false;
     services.pipewire = {
       enable = true;
       alsa = {
