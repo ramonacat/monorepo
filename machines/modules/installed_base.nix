@@ -6,5 +6,6 @@
     networking.firewall.allowedTCPPorts = [ 22 ];
     services.fwupd.enable = true;
     environment.systemPackages = with pkgs; [ pciutils tailscale ];
+    services.tailscale.enable = true;
   };
 }

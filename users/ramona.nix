@@ -57,7 +57,7 @@
 
     users.users.ramona = {
       isNormalUser = true;
-      extraGroups = [ "wheel" "networkmanager" "docker" ];
+      extraGroups = [ "wheel" "networkmanager" "docker" "cdrom" ];
       openssh.authorizedKeys.keys = [
         "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIGPN1VghQeeAzfrvz5NxBAElN5pQplEoH52A5RNa9UDX ramona@TABLET-JRO0KCP2" # tablet
         "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIPG2s9Ym8R4qfO5QG74hADHZXuUEIlAYtcLtT38Opw1l ramona@hallewell" # hallewell

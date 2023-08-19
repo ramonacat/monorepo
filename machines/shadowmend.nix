@@ -7,7 +7,6 @@
         fsType = "nfs";
       };
 
-    services.tailscale.enable = true;
     services.logind.lidSwitch = "ignore";
 
     virtualisation.docker.enable = true;
