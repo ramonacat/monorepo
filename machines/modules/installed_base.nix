@@ -6,6 +6,10 @@
     networking.firewall.allowedTCPPorts = [ 22 ];
     services.fwupd.enable = true;
     environment.systemPackages = with pkgs; [ pciutils tailscale cachix ];
-    services.tailscale.enable = true;
+    services.tailscale = {
+      enable = true;
+      useRoutingFeatures = "both";
+      extraUpFlags = ["--advertise-exit-node"];
+    };
   };
 }
