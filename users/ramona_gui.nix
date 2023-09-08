@@ -14,20 +14,19 @@
         pamixer
         playerctl
         xdg-utils
-        joplin-desktop
         dconf
         moc
         grip
         flac
         spotify
         vlc
-        libreoffice
         hunspell
         hunspellDicts.de_DE
         hunspellDicts.en_US
         hunspellDicts.pl_PL
         factorio
         obsidian
+        freecad
       ];
 
       home.pointerCursor = {
