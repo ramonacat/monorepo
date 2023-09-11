@@ -24,6 +24,11 @@
             path = "/mnt/nas/shared/";
             devices = [ "phone" "hallewell" "tablet" ];
           };
+
+          "Music" = {
+            path = "/mnt/nas/Music/";
+            devices = [ "tablet" ];
+          };
         };
       };
     };
