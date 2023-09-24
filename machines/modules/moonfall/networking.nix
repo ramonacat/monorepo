@@ -6,6 +6,9 @@
     networking.useDHCP = lib.mkForce false;
     networking.interfaces.br0.useDHCP = lib.mkForce false;
     networking.interfaces.eno1.useDHCP = lib.mkForce false;
+    networking.interfaces.eno1.wakeOnLan = {
+      enable = true;
+    };
 
     networking.interfaces.br0.ipv4.addresses = [
       { address = "10.69.10.7"; prefixLength = 24; }
