@@ -1,6 +1,8 @@
 { config, pkgs, lib, ... }:
 {
   config = {
+    services.tlp.enable = true;
+
     services.syncthing = {
       enable = true;
       overrideDevices = true;
