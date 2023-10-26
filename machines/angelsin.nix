@@ -7,6 +7,9 @@
       overrideFolders = true;
       user = "ramona";
 
+      dataDir = "/home/ramona/.syncthing-data";
+      configDir = "/home/ramona/.config/syncthing";
+
       settings = {
         devices = {
           "phone" = { "id" = "VZK66I4-WTFCOWJ-B7LH6QV-FDQFTSH-FTBWTIH-UUDRUOR-SNIZBPS-AMRDBAU"; };
