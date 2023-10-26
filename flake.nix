@@ -64,6 +64,7 @@
             ./machines/modules/base.nix
             ./machines/modules/installed_base.nix
             ./users/ramona.nix
+            ./users/ramona_gui.nix
             home-manager.nixosModules.home-manager
             ./machines/modules/angelsin/hardware.nix
             ./machines/angelsin.nix
