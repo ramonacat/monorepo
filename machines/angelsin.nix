@@ -5,6 +5,7 @@
       enable = true;
       overrideDevices = true;
       overrideFolders = true;
+      user = "ramona";
 
       settings = {
         devices = {
