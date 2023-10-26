@@ -26,7 +26,6 @@
         hunspellDicts.pl_PL
         factorio
         obsidian
-        freecad
       ];
 
       home.pointerCursor = {
