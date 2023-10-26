@@ -63,6 +63,7 @@
           modules = [
             ./machines/modules/base.nix
             ./machines/modules/installed_base.nix
+            ./machines/modules/workstation.nix
             ./users/ramona.nix
             ./users/ramona_gui.nix
             home-manager.nixosModules.home-manager
