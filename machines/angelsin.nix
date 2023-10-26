@@ -16,7 +16,7 @@
 
         folders = {
           "shared" = {
-            path = "/home/ramon/shared/";
+            path = "/home/ramona/shared/";
             devices = [ "phone" "hallewell" "tablet" "moonfall" ];
           };
         };
