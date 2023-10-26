@@ -50,6 +50,9 @@
       tmux
     ];
 
+    networking.networkmanager.enable = true;
+    networking.wireless.enable = false;
+
     programs.zsh.enable = true;
 
     console.keyMap = "pl";

@@ -58,6 +58,17 @@
             ./machines/shadowmend.nix
           ];
         };
+        angelsin = nixpkgs.lib.nixosSystem {
+          system = "x86_64-linux";
+          modules = [
+            ./machines/modules/base.nix
+            ./machines/modules/installed_base.nix
+            ./users/ramona.nix
+            home-manager.nixosModules.home-manager
+            ./machines/modules/angelsin/hardware.nix
+            ./machines/angelsin.nix
+          ];
+        };
         iso = nixpkgs.lib.nixosSystem {
           system = "x86_64-linux";
           modules = [
