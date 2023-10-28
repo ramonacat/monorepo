@@ -2,6 +2,7 @@
 {
   config = {
     services.tlp.enable = true;
+    services.upower.enable = true;
 
     services.syncthing = {
       enable = true;

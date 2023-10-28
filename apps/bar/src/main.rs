@@ -6,6 +6,7 @@ use std::{
 
 use regex::Regex;
 use serde::Serialize;
+use upower_dbus::UPowerProxy;
 
 // https://i3wm.org/docs/i3bar-protocol.html
 #[derive(Debug, Serialize)]
@@ -55,11 +56,20 @@ fn get_pa_mute() -> bool {
     false
 }
 
-fn main() {
+#[tokio::main]
+async fn main() {
+    let connection = zbus::Connection::system().await.unwrap();
+    let upower = UPowerProxy::new(&connection).await.unwrap();
+
     println!("{}", "{\"version\": 1, \"click_events\": false}");
     println!("[");
 
     loop {
+        let is_on_battery = upower.on_battery().await.unwrap();
+        let battery = upower.get_display_device().await.unwrap();
+        let battery_percent = battery.percentage().await.unwrap();
+        let battery_emoji = if is_on_battery { "🔋" } else { "🔌" };
+
         let volume = get_pa_volume();
         let mute_emoji = if get_pa_mute() { "🔇" } else { "🔊" };
         let now = chrono::Local::now();
@@ -73,6 +83,9 @@ fn main() {
             "{},",
             serde_json::to_string(&[
                 Block {
+                    full_text: format!("{} {:.0}%", battery_emoji, battery_percent)
+                },
+                Block {
                     full_text: format!("{} {:.0}%", mute_emoji, volume * 100.0f64)
                 },
                 Block {
@@ -84,6 +97,7 @@ fn main() {
             ])
             .unwrap()
         );
-        std::thread::sleep(Duration::from_millis(500));
+
+        tokio::time::sleep(Duration::from_millis(500)).await;
     }
 }
