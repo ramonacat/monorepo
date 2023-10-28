@@ -1,5 +1,4 @@
 use std::{
-    fmt::format,
     process::{Command, Stdio},
     time::Duration,
 };
@@ -16,7 +15,7 @@ struct Block {
 
 fn get_pa_volume() -> f64 {
     let cmd = Command::new("pactl")
-        .args(&["get-sink-volume", "@DEFAULT_SINK@"])
+        .args(["get-sink-volume", "@DEFAULT_SINK@"])
         .stdout(Stdio::piped())
         .spawn()
         .unwrap()
@@ -26,7 +25,7 @@ fn get_pa_volume() -> f64 {
     let regex = Regex::new(r"(\d+)%").unwrap();
     let output = String::from_utf8_lossy(&cmd.stdout);
 
-    for x in regex.captures_iter(&output) {
+    if let Some(x) = regex.captures_iter(&output).next() {
         let (_, [val]) = x.extract();
 
         return val.parse::<f64>().unwrap() / 100.0f64;
@@ -37,7 +36,7 @@ fn get_pa_volume() -> f64 {
 
 fn get_pa_mute() -> bool {
     let cmd = Command::new("pactl")
-        .args(&["get-sink-mute", "@DEFAULT_SINK@"])
+        .args(["get-sink-mute", "@DEFAULT_SINK@"])
         .stdout(Stdio::piped())
         .spawn()
         .unwrap()
@@ -47,7 +46,7 @@ fn get_pa_mute() -> bool {
     let regex = Regex::new(r"Mute: (yes|no)").unwrap();
     let output = String::from_utf8_lossy(&cmd.stdout);
 
-    for x in regex.captures_iter(&output) {
+    if let Some(x) = regex.captures_iter(&output).next() {
         let (_, [val]) = x.extract();
 
         return val == "yes";
