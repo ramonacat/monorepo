@@ -1,1 +1,4 @@
 result
+.vscode/
+.direnv/
+target/

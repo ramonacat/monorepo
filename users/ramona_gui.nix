@@ -1,3 +1,4 @@
+{ barPackage }:
 { lib, modulesPath, pkgs, ... }:
 {
   # colors: https://coolors.co/ff1885-19323c-9da2ab-f3de8a-988f2a
@@ -79,7 +80,7 @@
           bars = [
             {
               position = "top";
-              statusCommand = "while ${./scripts/swaybar.sh}; do sleep 5; done";
+              statusCommand = "${barPackage}/bin/bar";
               fonts = {
                 names = [ "Noto Sans" "Iosevka" ];
                 size = 11.0;
