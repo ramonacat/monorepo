@@ -107,6 +107,7 @@
             (import ./users/ramona_gui.nix { inherit barPackage; })
             home-manager.nixosModules.home-manager
             ./machines/modules/angelsin/hardware.nix
+            ./machines/modules/angelsin/networking.nix
             ./machines/angelsin.nix
           ];
         };
