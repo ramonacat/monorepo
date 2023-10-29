@@ -2,5 +2,6 @@
 {
   config = {
     networking.hostName = "angelsin";
+    networking.enableIPv6 = false;
   };
 }

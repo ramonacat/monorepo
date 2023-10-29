@@ -23,6 +23,17 @@
     hardware.opengl = {
       enable = true;
     };
+    hardware.bluetooth.enable = true;
+
+    hardware.bluetooth.settings = {
+      General = {
+        Enable = "Source,Sink,Media,Socket";
+      };
+    };
+    services.blueman.enable = true;
+
+    services.fprintd.enable = true;
+
     boot.loader.systemd-boot.enable = true;
     boot.loader.efi.canTouchEfiVariables = true;
   };
