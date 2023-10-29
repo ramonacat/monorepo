@@ -108,6 +108,7 @@
             home-manager.nixosModules.home-manager
             ./machines/modules/angelsin/hardware.nix
             ./machines/modules/angelsin/networking.nix
+            ./machines/modules/angelsin/users/ramona_gui.nix
             ./machines/angelsin.nix
           ];
         };

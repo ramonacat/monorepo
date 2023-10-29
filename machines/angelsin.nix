@@ -4,6 +4,8 @@
     services.tlp.enable = true;
     services.upower.enable = true;
 
+    security.polkit.enable = true;
+
     services.syncthing = {
       enable = true;
       overrideDevices = true;
