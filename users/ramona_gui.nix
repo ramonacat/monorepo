@@ -25,8 +25,10 @@
         hunspellDicts.de_DE
         hunspellDicts.en_US
         hunspellDicts.pl_PL
-        factorio
         obsidian
+
+        factorio
+        minecraft
       ];
 
       home.pointerCursor = {
