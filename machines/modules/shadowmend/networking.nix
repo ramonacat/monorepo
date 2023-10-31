@@ -2,6 +2,7 @@
 {
   config = {
     networking.hostName = "shadowmend";
+    networking.enableIPv6 = false;
 
     networking.useDHCP = lib.mkForce false;
     networking.interfaces.enp0s20u1.useDHCP = lib.mkForce true;
