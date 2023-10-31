@@ -1,6 +1,17 @@
 { config, pkgs, lib, ... }:
 {
   config = {
+    fileSystems."/mnt/nas" =
+      {
+        device = "nas:/mnt/data0/data";
+        fsType = "nfs";
+      };
+
+    systemd.services.nfs-client = {
+      after = [ "tailscaled.service" ];
+    };
+
+
     services.tlp.enable = true;
     services.upower.enable = true;
 
