@@ -20,6 +20,7 @@
     nixpkgs.hostPlatform = lib.mkDefault "x86_64-linux";
     powerManagement.cpuFreqGovernor = lib.mkDefault "performance";
     hardware.cpu.amd.updateMicrocode = true;
+    hardware.sensor.iio.enable = true;
     hardware.opengl = {
       enable = true;
     };
