@@ -26,9 +26,10 @@
         hunspellDicts.en_US
         hunspellDicts.pl_PL
         obsidian
+        light
 
         factorio
-        minecraft
+        prismlauncher
       ];
 
       home.pointerCursor = {
@@ -119,6 +120,8 @@
           bindsym XF86AudioRaiseVolume exec 'pactl set-sink-volume @DEFAULT_SINK@ +5%'
           bindsym XF86AudioLowerVolume exec 'pactl set-sink-volume @DEFAULT_SINK@ -5%'
           bindsym XF86AudioMute exec 'pactl set-sink-mute @DEFAULT_SINK@ toggle'
+          bindsym XF86MonBrightnessUp exec sudo light -A 10
+          bindsym XF86MonBrightnessDown exec sudo light -U 10
         '';
       };
     };

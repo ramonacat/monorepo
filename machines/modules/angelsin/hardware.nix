@@ -5,6 +5,7 @@
     boot.initrd.kernelModules = [ ];
     boot.kernelModules = [ "kvm-amd" ];
     boot.extraModulePackages = [ ];
+    boot.kernelPackages = pkgs.linuxPackages_latest;
     fileSystems."/" =
       {
         device = "/dev/disk/by-uuid/08243e9b-e1e5-494d-8c9b-0b1675541061";
@@ -18,9 +19,11 @@
       };
 
     nixpkgs.hostPlatform = lib.mkDefault "x86_64-linux";
-    powerManagement.cpuFreqGovernor = lib.mkDefault "performance";
     hardware.cpu.amd.updateMicrocode = true;
+    powerManagement.cpuFreqGovernor = lib.mkDefault "powersave";
     hardware.sensor.iio.enable = true;
+
+    boot.kernelParams = [ "amd_pstate=active" ];
     hardware.opengl = {
       enable = true;
     };
@@ -32,7 +35,6 @@
       };
     };
     services.blueman.enable = true;
-
     services.fprintd.enable = true;
 
     boot.loader.systemd-boot.enable = true;
