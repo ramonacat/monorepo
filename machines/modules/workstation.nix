@@ -5,6 +5,8 @@
 
     security.rtkit.enable = true;
     security.sudo.wheelNeedsPassword = false;
+
+    services.udisks2.enable = true;
     services.pipewire = {
       enable = true;
       alsa = {

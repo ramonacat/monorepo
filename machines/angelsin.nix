@@ -4,7 +4,7 @@
     fileSystems."/mnt/nas" = {
       device = "nas:/mnt/data0/data";
       fsType = "nfs";
-      options = "x-systemd.after=tailscaled.service";
+      options = [ "x-systemd.after=tailscaled.service" ];
     };
 
     programs.steam = {

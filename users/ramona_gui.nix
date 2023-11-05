@@ -75,6 +75,8 @@
         ];
       };
 
+      services.udiskie.enable = true;
+
       wayland.windowManager.sway = {
         enable = true;
         config = {
