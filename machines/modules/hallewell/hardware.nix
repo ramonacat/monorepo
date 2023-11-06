@@ -7,13 +7,13 @@
     boot.extraModulePackages = [ ];
     fileSystems."/" =
       {
-        device = "/dev/nvme0n1p1:/dev/nvme1n1p1:/dev/sda1:/dev/sdb1";
-        fsType = "bcachefs";
+        device = "/dev/disk/by-uuid/e98a10e4-385b-4c46-a77a-78c1f2a0abdb";
+        fsType = "ext4";
       };
 
     fileSystems."/boot" =
       {
-        device = "/dev/disk/by-uuid/7B58-56F4";
+        device = "/dev/disk/by-uuid/2620-63CC";
         fsType = "vfat";
       };
 

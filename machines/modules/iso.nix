@@ -1,10 +1,16 @@
 { lib, modulesPath, pkgs, config, ... }:
 {
-  nixpkgs.overlays = [
-    (final: super: {
-      zfs = super.zfs.overrideAttrs (_: {
-        meta.platforms = [ ];
-      });
-    })
-  ];
+  config = {
+    boot.supportedFilesystems = lib.mkForce [
+      "btrfs"
+      "cifs"
+      "f2fs"
+      "jfs"
+      "ntfs"
+      "reiserfs"
+      "vfat"
+      "xfs"
+      "bcachefs"
+    ];
+  };
 }

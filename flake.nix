@@ -119,6 +119,8 @@
             ./machines/modules/base.nix
             ./machines/modules/bcachefs.nix
             ./machines/modules/iso.nix
+            ./users/ramona.nix
+            home-manager.nixosModules.home-manager
           ];
         };
       };
