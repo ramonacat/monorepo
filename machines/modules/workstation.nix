@@ -19,8 +19,13 @@
     };
 
     programs.dconf.enable = true;
-
     programs.nix-ld.enable = true;
+
+    fileSystems."/mnt/nas" = {
+      device = "hallewell:/mnt/nas/data";
+      fsType = "nfs";
+      options = [ "x-systemd.after=tailscaled.service" ];
+    };
 
     fonts = {
       enableDefaultPackages = true;

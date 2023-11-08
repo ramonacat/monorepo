@@ -1,12 +1,6 @@
 { config, pkgs, lib, ... }:
 {
   config = {
-    fileSystems."/mnt/nas" = {
-      device = "nas:/mnt/data0/data";
-      fsType = "nfs";
-      options = [ "x-systemd.after=tailscaled.service" ];
-    };
-
     programs.steam = {
       enable = true;
       remotePlay.openFirewall = true; # Open ports in the firewall for Steam Remote Play

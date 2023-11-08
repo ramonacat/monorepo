@@ -3,7 +3,7 @@
   config = {
     fileSystems."/mnt/nas" =
       {
-        device = "10.69.10.139:/mnt/data0/data";
+        device = "10.69.10.5:/mnt/nas/data";
         fsType = "nfs";
       };
 
