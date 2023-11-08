@@ -22,7 +22,7 @@
     programs.nix-ld.enable = true;
 
     fileSystems."/mnt/nas" = {
-      device = "hallewell:/mnt/nas/data";
+      device = "hallewell:/mnt/nas3/data";
       fsType = "nfs";
       options = [ "x-systemd.after=tailscaled.service" ];
     };
