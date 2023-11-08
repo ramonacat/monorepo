@@ -5,7 +5,7 @@
     boot.initrd.kernelModules = [ "vfio_pci " ];
     boot.kernelModules = [ "kvm-amd" "vfio" "vfio_pci" "vfio_iommu_type1" "vfio_virqfd" "amdgpu" "i2c-dev" ];
     boot.extraModulePackages = [ ];
-
+    boot.kernelPackages = pkgs.linuxPackages_latest;
     fileSystems."/" =
       {
         device = "/dev/disk/by-uuid/aed4868d-65c0-446e-8d2b-22929c9ee46b";
