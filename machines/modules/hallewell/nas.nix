@@ -51,7 +51,7 @@
       serviceConfig = {
         Type = "oneshot";
         User = "ramona"; # This user must have the b2 credentials configured for rclone
-        ExecStart = "${pkgs.rclone} --verbose --transfers 32 sync /mnt/nas3/data/ b2:ramona-fun-nas-backup/";
+        ExecStart = "${pkgs.rclone}/bin/rclone --verbose --transfers 32 sync /mnt/nas3/data/ b2:ramona-fun-nas-backup/";
       };
     };
 
