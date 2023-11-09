@@ -44,19 +44,39 @@
       };
     };
 
-    # Dark magic for transcoding acceleration
-    nixpkgs.config.packageOverrides = pkgs: {
-      vaapiIntel = pkgs.vaapiIntel.override { enableHybridCodec = true; };
-    };
-    hardware.opengl = {
-      enable = true;
-      extraPackages = with pkgs; [
-        intel-media-driver
-        vaapiIntel
-        vaapiVdpau
-        libvdpau-va-gl
-        intel-compute-runtime # OpenCL filter support (hardware tonemapping and subtitle burn-in)
-      ];
-    };
-  };
-}
+    # Backups
+    systemd.services.backup = {
+      after = [ "network.target" ];
+      description = "Backup the NAS";
+      serviceConfig = {
+        Type = "oneshot";
+        User = "ramona"; # This user must have the b2 credentials configured for rclone
+        ExecStart = "${pkgs.rclone} --verbose --transfers 32 sync /mnt/nas3/data/ b2:ramona-fun-nas-backup"/;
+      }
+        };
+
+      systemd.timers.backup = {
+        wantedBy = [ "timers.target" ];
+        timerConfig = {
+          OnBootSec = "1h";
+          OnUnitActiveSec = "1h";
+          Unit = "backup.service";
+        }
+          };
+
+        # Dark magic for transcoding acceleration
+        nixpkgs.config.packageOverrides = pkgs: {
+          vaapiIntel = pkgs.vaapiIntel.override { enableHybridCodec = true; };
+        };
+        hardware.opengl = {
+          enable = true;
+          extraPackages = with pkgs; [
+            intel-media-driver
+            vaapiIntel
+            vaapiVdpau
+            libvdpau-va-gl
+            intel-compute-runtime # OpenCL filter support (hardware tonemapping and subtitle burn-in)
+          ];
+        };
+      };
+    }
