@@ -29,11 +29,13 @@
         hosts deny = 0.0.0.0/0
         guest account = nobody
         map to guest = bad user
+        acl allow execute always = True
       '';
       shares = {
         public = {
           path = "/mnt/nas3/data";
           browseable = "yes";
+          writeable = "yes";
           "read only" = "no";
           "guest ok" = "yes";
           "create mask" = "0644";
