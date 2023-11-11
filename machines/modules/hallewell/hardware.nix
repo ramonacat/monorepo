@@ -17,6 +17,11 @@
         fsType = "vfat";
       };
 
+    fileSystems."/mnt/nas3" = {
+      device = "/dev/disk/by-id/wwn-0x5002538e40c8526c:/dev/disk/by-id/wwn-0x5002538e40c8552a:/dev/disk/by-id/wwn-0x50014ee2bea74c42:/dev/disk/by-id/wwn-0x50014ee213fbb2bb:/dev/disk/by-id/wwn-0x5002538043584d30:/dev/disk/by-id/nvme-Samsung_SSD_970_EVO_250GB_S465NX0KA04299B:/dev/disk/by-id/nvme-Samsung_SSD_970_EVO_250GB_S465NX0M104145D";
+      fsType = "bcachefs";
+    };
+
     nixpkgs.hostPlatform = lib.mkDefault "x86_64-linux";
     hardware.cpu.intel.updateMicrocode = true;
     hardware.opengl = {
