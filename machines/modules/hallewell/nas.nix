@@ -9,7 +9,7 @@
     services.nfs.server.exports = ''
       /mnt/nas3/data 10.69.10.0/24(rw,sync,all_squash,anonuid=65534,no_subtree_check,insecure) 100.0.0.0/8(rw,sync,all_squash,anonuid=65534,no_subtree_check,insecure)
     '';
-    networking.firewall.allowedTCPPorts = [ 2049 111 ];
+    networking.firewall.allowedTCPPorts = [ 20048 2049 111 ];
 
     services.samba-wsdd.enable = true;
 
