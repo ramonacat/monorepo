@@ -6,7 +6,7 @@
       openFirewall = true;
     };
     users.users.nas = {
-      isSystemUser  = false;
+      isSystemUser  = true;
       uid = 16969;
       group = "nas";
     };
