@@ -6,9 +6,11 @@
       openFirewall = true;
     };
     users.users.nas = {
-      isNormalUser  = false;
+      isSystemUser  = false;
       uid = 16969;
+      group = "nas";
     };
+    users.groups.nas = {};
     services.nfs.server.enable = true;
     services.nfs.server.exports = ''
       /mnt/nas3/data 10.69.10.0/24(rw,sync,all_squash,anonuid=16969,no_subtree_check,insecure) 100.0.0.0/8(rw,sync,all_squash,anonuid=16969,no_subtree_check,insecure)
@@ -45,7 +47,7 @@
           "create mask" = "0644";
           "directory mask" = "0755";
           "force user" = "nas";
-          "force group" = "nogroup";
+          "force group" = "nas";
         };
       };
     };
