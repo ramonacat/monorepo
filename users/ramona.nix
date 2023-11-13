@@ -73,6 +73,9 @@
           push = {
             autoSetupRemote = true;
           };
+          init = {
+            defaultBranch = "main";
+          };
         };
       };
     };
