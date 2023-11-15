@@ -93,6 +93,7 @@
             home-manager.nixosModules.home-manager
             ./machines/modules/shadowmend/hardware.nix
             ./machines/modules/shadowmend/networking.nix
+            ./machines/modules/shadowmend/rabbitmq.nix
             ./machines/modules/shadowmend/home-assistant.nix
             ./machines/modules/shadowmend/users/ramona.nix
             ./machines/shadowmend.nix
