@@ -35,6 +35,16 @@
       barPackage = craneLib.buildPackage (packageArguments // {
         inherit cargoArtifacts;
       });
+      homeAutomationPackageArguments = {
+        src = pkgs.lib.cleanSourceWith {
+          src = craneLib.path ./apps/home-automation;
+          filter = sourceFilter;
+        };
+      };
+      homeAutomationPackageCargoArtifacts = craneLib.buildDepsOnly homeAutomationPackageArguments;
+      homeAutomationPackage = craneLib.buildPackage (homeAutomationPackageArguments // { 
+        cargoArtifacts = homeAutomationPackageCargoArtifacts;
+      });
     in
     {
       formatter.x86_64-linux = nixpkgs.legacyPackages.x86_64-linux.nixpkgs-fmt;
@@ -95,7 +105,7 @@
             ./machines/modules/shadowmend/networking.nix
             ./machines/modules/shadowmend/rabbitmq.nix
             ./machines/modules/shadowmend/zigbee2mqtt.nix
-            ./machines/modules/shadowmend/home-assistant.nix
+            (import ./machines/modules/shadowmend/home-automation.nix { inherit homeAutomationPackage; })
             ./machines/modules/shadowmend/users/ramona.nix
             ./machines/shadowmend.nix
           ];
