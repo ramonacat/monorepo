@@ -2,6 +2,7 @@
 { config, pkgs, lib, ... }:
 {
       systemd.services.home-automation = {
+      wantedBy = [ "multi-user.target" ];
       after = [ "network.target" "rabbitmq.target" ];
       description = "Home automation";
       serviceConfig = {
