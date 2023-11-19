@@ -46,6 +46,16 @@
       homeAutomationPackage = craneLib.buildPackage (homeAutomationPackageArguments // {
         cargoArtifacts = homeAutomationPackageCargoArtifacts;
       });
+      ananasMusicControlPackageArguments = {
+        src = pkgs.lib.cleanSourceWith {
+          src = craneLib.path ./apps/ananas-music-control;
+          filter = sourceFilter;
+        };
+      };
+      ananasMusicControlPackageCargoArtifacts = craneLib.buildDepsOnly ananasMusicControlPackageArguments;
+      ananasMusicControlPackage = craneLib.buildPackage (ananasMusicControlPackageArguments // {
+        cargoArtifacts = ananasMusicControlPackageCargoArtifacts;
+      });
     in
     {
       formatter.x86_64-linux = nixpkgs.legacyPackages.x86_64-linux.nixpkgs-fmt;
@@ -136,6 +146,7 @@
             ./users/ramona.nix
             ./machines/modules/ananas/hardware.nix
             ./machines/modules/ananas/networking.nix
+            (import ./machines/modules/ananas/music-control.nix { inherit ananasMusicControlPackage; })
           ];
         };
         iso = nixpkgs.lib.nixosSystem {
