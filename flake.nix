@@ -18,7 +18,9 @@
       overlays = [ (import rust-overlay) ];
       pkgs = import nixpkgs { inherit overlays; system = "x86_64-linux"; };
       craneLib = (crane.mkLib pkgs).overrideToolchain rustVersion;
-      rustVersion = pkgs.rust-bin.stable.latest.default;
+      rustVersion = pkgs.rust-bin.stable.latest.default.override {
+        targets = ["x86_64-unknown-linux-gnu" "aarch64-unknown-linux-gnu"];
+      };
       sourceFilter = path: type: craneLib.filterCargoSources path type;
       packageArguments = {
         src = pkgs.lib.cleanSourceWith {
