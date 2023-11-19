@@ -12,18 +12,7 @@
       # this is needed for iotop
       "delayacct"
     ];
-
-    boot.kernelPatches = [
-      {
-        # iotop requires this option to be set
-        name = "task-delay-acct";
-        patch = null;
-        extraConfig = ''
-          TASK_DELAY_ACCT y
-        '';
-      }
-    ];
-
+    
     networking.useDHCP = false;
     time.timeZone = "Europe/Berlin";
     i18n.defaultLocale = "en_GB.UTF-8";
