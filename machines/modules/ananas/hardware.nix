@@ -5,7 +5,7 @@
     boot.initrd.kernelModules = [ ];
     boot.kernelModules = [ ];
     boot.extraModulePackages = [ ];
-    boot.kernelPackages = pkgs.linuxPackages_rpi4;
+    boot.kernelPackages = pkgs.linuxPackages_latest;
     fileSystems."/" =
       {
         device = "/dev/disk/by-label/NIXOS_SD";

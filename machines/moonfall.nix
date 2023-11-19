@@ -1,6 +1,8 @@
 { config, pkgs, lib, ... }:
 {
   config = {
+    boot.binfmt.emulatedSystems = [ "aarch64-linux" ];
+
     services.syncthing = {
       enable = true;
       overrideDevices = true;
