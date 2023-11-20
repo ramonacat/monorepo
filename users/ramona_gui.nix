@@ -61,6 +61,7 @@
       qt = {
         enable = true;
         style.name = "Dracula";
+        platformTheme = "gtk3";
       };
 
       home.file.".moc/config".text = ''
