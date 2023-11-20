@@ -36,7 +36,7 @@
       overlays = [
         {
           name = "spi";
-          dtboFile = ./spi0-0cd.dtbo;
+          dtboFile = ./spi0-0cs.dtbo;
         }
       ];
     };
