@@ -17,10 +17,11 @@
     let
       overlays = [ (import rust-overlay) ];
       pkgs = import nixpkgs { inherit overlays; system = "x86_64-linux"; };
+      pkgsAarch64  = import nixpkgs { inherit overlays; system = "aarch64-unknown-linux-gnu"; };
       craneLib = (crane.mkLib pkgs).overrideToolchain rustVersion;
-      rustVersion = pkgs.rust-bin.stable.latest.default.override {
-        targets = ["x86_64-unknown-linux-gnu" "aarch64-unknown-linux-gnu"];
-      };
+      rustVersion = pkgs.rust-bin.stable.latest.default;
+      rustVersionAarch64 = pkgsAarch64.rust-bin.stable.latest.default;
+      craneLibAarch64 = (crane.mkLib pkgsAarch64).overrideToolchain rustVersionAarch64;
       sourceFilter = path: type: craneLib.filterCargoSources path type;
       packageArguments = {
         src = pkgs.lib.cleanSourceWith {
@@ -54,8 +55,8 @@
           filter = sourceFilter;
         };
       };
-      ananasMusicControlPackageCargoArtifacts = craneLib.buildDepsOnly ananasMusicControlPackageArguments;
-      ananasMusicControlPackage = craneLib.buildPackage (ananasMusicControlPackageArguments // {
+      ananasMusicControlPackageCargoArtifacts = craneLibAarch64.buildDepsOnly ananasMusicControlPackageArguments;
+      ananasMusicControlPackage = craneLibAarch64.buildPackage (ananasMusicControlPackageArguments // {
         cargoArtifacts = ananasMusicControlPackageCargoArtifacts;
       });
     in
