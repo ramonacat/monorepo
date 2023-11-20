@@ -29,6 +29,24 @@
     hardware.bluetooth.enable = true;
 
     hardware.enableRedistributableFirmware = true;
+    hardware.raspberry-pi."4".apply-overlays-dtmerge.enable = true;
+    hardware.deviceTree = {
+      enable = true;
+      filter = "*-rpi-*.dtb";
+      overlays = [
+        {
+          name = "spi";
+          dtboFile = ./spi0-0cd.dtbo;
+        }
+      ];
+    };
+
+    users.groups.spi = {};
+
+    services.udev.extraRules = ''
+      SUBSYSTEM=="spidev", KERNEL=="spidev0.0", GROUP="spi", MODE="0660"
+    '';
+
 
     boot.loader = {
       grub.enable = false;
