@@ -32,7 +32,7 @@
     hardware.raspberry-pi."4".apply-overlays-dtmerge.enable = true;
     hardware.deviceTree = {
       enable = true;
-      filter = "*-rpi-*.dtb";
+      filter = "*-rpi-4-*.dtb";
       overlays = [
         { name = "spi0-0cs.dtbo"; dtboFile = "${pkgs.device-tree_rpi.overlays}/spi0-0cs.dtbo"; }
       ];
