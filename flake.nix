@@ -17,7 +17,7 @@
     let
       overlays = [ (import rust-overlay) ];
       pkgs = import nixpkgs { inherit overlays; system = "x86_64-linux"; };
-      pkgsAarch64  = import nixpkgs { inherit overlays; system = "aarch64-unknown-linux-gnu"; };
+      pkgsAarch64  = import nixpkgs { inherit overlays; system = "aarch64-linux"; };
       craneLib = (crane.mkLib pkgs).overrideToolchain rustVersion;
       rustVersion = pkgs.rust-bin.stable.latest.default;
       rustVersionAarch64 = pkgsAarch64.rust-bin.stable.latest.default;
