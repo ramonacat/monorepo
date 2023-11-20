@@ -34,10 +34,7 @@
       enable = true;
       filter = "*-rpi-*.dtb";
       overlays = [
-        {
-          name = "spi";
-          dtboFile = ./spi0-0cs.dtbo;
-        }
+        { name = "spi0-0cs.dtbo"; dtboFile = "${pkgs.device-tree_rpi.overlays}/spi0-0cs.dtbo"; }
       ];
     };
 
