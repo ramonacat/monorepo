@@ -42,7 +42,7 @@
             /plugin/;
 
             / {
-              compatible = \"brcm\";
+              compatible = \"brcm,bcm2711\";
 
               fragment@0 {
                 target = <&spi0_cs_pins>;
