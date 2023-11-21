@@ -36,24 +36,23 @@
       overlays = [
         {
           name = "spi0-0cs.dtbo";
-          # this is from https://github.com/raspberrypi/firmware/blob/master/boot/overlays/spi0-0cs.dtbo, but with patched "compatible"
+          # this is from https://github.com/raspberrypi/linux/blob/5a0aa24b8ff58ceaf98c62670156bef7f48ed32b/arch/arm/boot/dts/overlays/spi0-0cs-overlay.dts, but with patched "compatible"
           dtsText = "
             /dts-v1/;
+            /plugin/;
+
             / {
               compatible = \"brcm\";
 
               fragment@0 {
-                target = <0xffffffff>;
-
-                __overlay__ {
+                target = <&spi0_cs_pins>;
+                frag0: __overlay__ {
                   brcm,pins;
-                  phandle = <0x01>;
                 };
               };
 
               fragment@1 {
-                target = <0xffffffff>;
-
+                target = <&spi0>;
                 __overlay__ {
                   cs-gpios;
                   status = \"okay\";
@@ -61,36 +60,24 @@
               };
 
               fragment@2 {
-                target = <0xffffffff>;
-
+                target = <&spidev1>;
                 __overlay__ {
                   status = \"disabled\";
                 };
               };
 
               fragment@3 {
-                target = <0xffffffff>;
-
+                target = <&spi0_pins>;
                 __dormant__ {
-                  brcm,pins = <0x0a 0x0b>;
+                  brcm,pins = <10 11>;
                 };
               };
 
               __overrides__ {
-                no_miso = [00 00 00 00 3d 33 00];
+                no_miso = <0>,\"=3\";
               };
-
-              __symbols__ {
-                frag0 = \"/fragment@0/__overlay__\";
-              };
-
-              __fixups__ {
-                spi0_cs_pins = \"/fragment@0:target:0\";
-                spi0 = \"/fragment@1:target:0\";
-                spidev1 = \"/fragment@2:target:0\";
-                spi0_pins = \"/fragment@3:target:0\";
-              };
-            };";
+            };
+            ";
         }
       ];
     };
