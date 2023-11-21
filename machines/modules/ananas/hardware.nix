@@ -34,11 +34,68 @@
       enable = true;
       filter = "*-rpi-4-*.dtb";
       overlays = [
-        { name = "spi0-0cs.dtbo"; dtboFile = "${pkgs.device-tree_rpi.overlays}/spi0-0cs.dtbo"; }
+        {
+          name = "spi0-0cs.dtbo";
+          # this is from https://github.com/raspberrypi/firmware/blob/master/boot/overlays/spi0-0cs.dtbo, but with patched "compatible"
+          dtsText = "
+            /dts-v1/;
+            / {
+              compatible = \"brcm\";
+
+              fragment@0 {
+                target = <0xffffffff>;
+
+                __overlay__ {
+                  brcm,pins;
+                  phandle = <0x01>;
+                };
+              };
+
+              fragment@1 {
+                target = <0xffffffff>;
+
+                __overlay__ {
+                  cs-gpios;
+                  status = \"okay\";
+                };
+              };
+
+              fragment@2 {
+                target = <0xffffffff>;
+
+                __overlay__ {
+                  status = \"disabled\";
+                };
+              };
+
+              fragment@3 {
+                target = <0xffffffff>;
+
+                __dormant__ {
+                  brcm,pins = <0x0a 0x0b>;
+                };
+              };
+
+              __overrides__ {
+                no_miso = [00 00 00 00 3d 33 00];
+              };
+
+              __symbols__ {
+                frag0 = \"/fragment@0/__overlay__\";
+              };
+
+              __fixups__ {
+                spi0_cs_pins = \"/fragment@0:target:0\";
+                spi0 = \"/fragment@1:target:0\";
+                spidev1 = \"/fragment@2:target:0\";
+                spi0_pins = \"/fragment@3:target:0\";
+              };
+            };";
+        }
       ];
     };
 
-    users.groups.spi = {};
+    users.groups.spi = { };
 
     services.udev.extraRules = ''
       SUBSYSTEM=="spidev", KERNEL=="spidev0.0", GROUP="spi", MODE="0660"

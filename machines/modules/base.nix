@@ -12,7 +12,7 @@
       # this is needed for iotop
       "delayacct"
     ];
-    
+
     networking.useDHCP = false;
     time.timeZone = "Europe/Berlin";
     i18n.defaultLocale = "en_GB.UTF-8";
