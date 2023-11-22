@@ -34,14 +34,18 @@ impl EPaper {
     fn send_command(&mut self, data:&[u8]) {
         self.data_command_pin.set_low();
         self.chip_select_pin.set_low();
-        self.spi.write(data).unwrap();
+        for b in data {
+            self.spi.write(&[*b]).unwrap();
+        }
         self.chip_select_pin.set_high();
     }
 
     fn send_data(&mut self, data: &[u8]) {
         self.data_command_pin.set_high();
         self.chip_select_pin.set_low();
-        self.spi.write(data).unwrap();
+        for b in data {
+            self.spi.write(&[*b]).unwrap();
+        }
         self.chip_select_pin.set_high();
     }
 
@@ -66,7 +70,7 @@ impl EPaper {
     fn set_display_window(&mut self, (x_start, y_start):(usize, usize), (x_end, y_end):(usize, usize)) {
         self.send_command(&[0x44]); // SET_RAM_X_ADDRESS_START_END_POSITION
         self.send_data(&[(x_start>>3 & 0xFF) as u8]);
-        self.send_data(&[(x_end>3 & 0xFF) as u8]);
+        self.send_data(&[(x_end>>3 & 0xFF) as u8]);
 
         self.send_command(&[0x45]);
         
@@ -99,6 +103,7 @@ impl EPaper {
         self.send_data(&[0x00]);
 
         self.send_command(&[0x11]); // Data entry mode
+        self.send_data(&[0x03]);
 
         self.set_display_window((0, 0), (EPAPER_WIDTH-1, EPAPER_HEIGHT-1));
         self.set_cursor((0, 0));
@@ -112,6 +117,8 @@ impl EPaper {
 
         self.send_command(&[0x18]); // display update control
         self.send_data(&[0x80]);
+
+        self.wait_while_busy();
     }
 
     // FIXME validate dimensions
@@ -159,7 +166,7 @@ fn main() {
     let mut image:Vec<u8> = vec![];
     for _row in 0..EPAPER_HEIGHT {
         for _column_byte in 0..(EPAPER_HEIGHT/8)+1 {
-            image.push(0x0);
+            image.push(0xFF);
         }
     }
 
