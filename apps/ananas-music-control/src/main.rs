@@ -117,8 +117,17 @@ impl EPaper {
 
         self.send_command(&[0x18]); // display update control
         self.send_data(&[0x80]);
+    }
 
-        self.wait_while_busy();
+    fn turn_off(&mut self) {
+        self.send_command(&[0x10]); // enter deep sleep
+        self.send_data(&[0x01]);
+
+        sleep(Duration::from_millis(2000));
+
+        self.reset_pin.set_low();
+        self.data_command_pin.set_low();
+        self.chip_select_pin.set_low();
     }
 
     // FIXME validate dimensions
@@ -129,6 +138,8 @@ impl EPaper {
         self.send_data(image);
 
         self.turn_on_for_full_update();
+        self.wait_while_busy();
+        self.turn_off();
     }
 }
 
