@@ -38,45 +38,53 @@
           name = "spi0-0cs.dtbo";
           # this is from https://github.com/raspberrypi/linux/blob/5a0aa24b8ff58ceaf98c62670156bef7f48ed32b/arch/arm/boot/dts/overlays/spi0-0cs-overlay.dts, but with patched "compatible"
           dtsText = "
-            /dts-v1/;
-            /plugin/;
+/dts-v1/;
+/plugin/;
 
-            / {
-              compatible = \"brcm,bcm2711\";
-
-              fragment@0 {
-                target = <&spi0_cs_pins>;
-                frag0: __overlay__ {
-                  brcm,pins;
-                };
-              };
-
-              fragment@1 {
-                target = <&spi0>;
+/{
+        compatible = \"brcm,bcm2711\";
+        fragment@0 {
+                target-path = \"/soc/gpio@7e200000\";
                 __overlay__ {
-                  cs-gpios;
-                  status = \"okay\";
-                };
-              };
+                        spi0_pins: spi0_pins {
+                                brcm,pins = <0x09 0x0a 0x0b>;
+                                brcm,function = <0x04>;
+                                phandle = <0x0d>;
+                        };
 
-              fragment@2 {
-                target = <&spidev1>;
+                        spi0_cs_pins: spi0_cs_pins {
+                                brcm,pins = <0x08 0x07>;
+                                brcm,function = <0x01>;
+                                phandle = <0x0e>;
+                        };
+        };
+    };
+        fragment@1 {
+                target-path = \"/soc/spi@7e204000\";
                 __overlay__ {
-                  status = \"disabled\";
-                };
-              };
+             pinctrl-names = \"default\";
+             pinctrl-0 = <&spi0_pins &spi0_cs_pins>;
+             cs-gpios = <&gpio 8 1>, <&gpio 7 1>;
+             status = \"okay\";
 
-              fragment@3 {
-                target = <&spi0_pins>;
-                __dormant__ {
-                  brcm,pins = <10 11>;
-                };
-              };
+             spidev0: spidev@0{
+                 compatible = \"lwn,bk4\";
+                 reg = <0>;      /* CE0 */
+                 #address-cells = <1>;
+                 #size-cells = <0>;
+                 spi-max-frequency = <125000000>;
+             };
 
-              __overrides__ {
-                no_miso = <0>,\"=3\";
-              };
-            };
+             spidev1: spidev@1{
+                 compatible = \"lwn,bk4\";
+                 reg = <1>;      /* CE1 */
+                 #address-cells = <1>;
+                 #size-cells = <0>;
+                 spi-max-frequency = <125000000>;
+             };
+                };
+        };
+};
             ";
         }
       ];
