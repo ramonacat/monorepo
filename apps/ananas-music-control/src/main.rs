@@ -126,7 +126,7 @@ impl EPaper {
 }
 
 fn main() {
-    let spi = rppal::spi::Spi::new(rppal::spi::Bus::Spi1, rppal::spi::SlaveSelect::Ss0, 10000000, Mode::Mode0).unwrap();
+    let spi = rppal::spi::Spi::new(rppal::spi::Bus::Spi0, rppal::spi::SlaveSelect::Ss0, 10000000, Mode::Mode0).unwrap();
     let gpio = rppal::gpio::Gpio::new().unwrap();
 
     let epaper_reset_pin = gpio.get(EPAPER_RESET_PIN).unwrap().into_output();
