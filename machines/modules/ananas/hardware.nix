@@ -36,7 +36,7 @@
       overlays = [
         {
           name = "spi0-0cs.dtbo";
-          # this is from https://github.com/raspberrypi/linux/blob/5a0aa24b8ff58ceaf98c62670156bef7f48ed32b/arch/arm/boot/dts/overlays/spi0-0cs-overlay.dts, but with patched "compatible"
+          # this is from https://www.evolware.org/2021/02/21/using-spidev-with-mainline-linux-kernel-on-the-raspberry-pi-4/, but with patched "compatible"
           dtsText = "
 /dts-v1/;
 /plugin/;
