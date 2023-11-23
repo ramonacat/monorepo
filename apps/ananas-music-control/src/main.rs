@@ -1,5 +1,12 @@
-use std::{thread::sleep, time::Duration};
+use std::{convert::Infallible, thread::sleep, time::Duration};
 
+use embedded_graphics::{
+    draw_target::DrawTarget,
+    geometry::{OriginDimensions, Point, Size},
+    pixelcolor::BinaryColor,
+    primitives::{Primitive, PrimitiveStyle, Rectangle},
+    Drawable,
+};
 use rppal::{
     gpio::{InputPin, Level, OutputPin},
     spi::{Mode, Spi},
@@ -150,6 +157,55 @@ impl EPaper {
     }
 }
 
+impl DrawTarget for EPaper {
+    type Color = BinaryColor;
+
+    // fixme: make this a real error type, instead of panicking
+    type Error = Infallible;
+
+    fn draw_iter<I>(&mut self, pixels: I) -> Result<(), Self::Error>
+    where
+        I: IntoIterator<Item = embedded_graphics::prelude::Pixel<Self::Color>>,
+    {
+        let row_width_bytes = EPAPER_WIDTH / 8 + if EPAPER_WIDTH % 8 == 0 { 0 } else { 1 };
+
+        let mut current_column = 0usize;
+        let mut current_row = 0usize;
+        let mut byte = 0u8;
+        let mut bit_index = 0usize;
+
+        let mut data = Vec::with_capacity(row_width_bytes * EPAPER_HEIGHT);
+
+        for pixel in pixels.into_iter() {
+            byte |= 1 << bit_index;
+            bit_index += 1;
+
+            if (bit_index == 8) {
+                data.push(byte);
+
+                byte = 0;
+                bit_index = 0;
+                current_column += 1;
+            }
+
+            if current_column == row_width_bytes {
+                current_column = 0;
+                current_row += 1;
+            }
+        }
+
+        self.write_image(&data);
+
+        Ok(())
+    }
+}
+
+impl OriginDimensions for EPaper {
+    fn size(&self) -> embedded_graphics::prelude::Size {
+        Size::new(EPAPER_WIDTH as u32, EPAPER_HEIGHT as u32)
+    }
+}
+
 fn main() {
     let spi = rppal::spi::Spi::new(
         rppal::spi::Bus::Spi0,
@@ -176,35 +232,10 @@ fn main() {
         spi,
     };
 
-    const ROW_WIDTH_BYTES: usize = (EPAPER_WIDTH / 8) + 1;
-
-    let mut image: Vec<u8> = vec![];
-    for _row in 0..EPAPER_HEIGHT {
-        for _column_byte in 0..ROW_WIDTH_BYTES {
-            image.push(0xFF);
-        }
-    }
-
-    for column_byte in 3..ROW_WIDTH_BYTES - 3 {
-        image[24 * ROW_WIDTH_BYTES + column_byte] = 0x00;
-        image[(EPAPER_HEIGHT - 24) * ROW_WIDTH_BYTES + column_byte] = 0x00;
-    }
-
-    for row in 24..EPAPER_HEIGHT - 24 {
-        image[row * ROW_WIDTH_BYTES + 3] = !0x80;
-        image[row * ROW_WIDTH_BYTES + (ROW_WIDTH_BYTES - 3)] = !0x01;
-    }
-
-    epaper.write_image(&image);
-
-    sleep(Duration::from_secs(5));
-
-    let mut image: Vec<u8> = vec![];
-    for _row in 0..EPAPER_HEIGHT {
-        for _column_byte in 0..(EPAPER_WIDTH / 8) + 1 {
-            image.push(0xFF);
-        }
-    }
-
-    epaper.write_image(&image);
+    Rectangle::new(
+        Point::new(24, 24),
+        Size::new((EPAPER_WIDTH - 48) as u32, (EPAPER_HEIGHT - 48) as u32),
+    )
+    .into_styled(PrimitiveStyle::with_stroke(BinaryColor::On, 1))
+    .draw(&mut epaper);
 }
