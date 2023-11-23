@@ -123,7 +123,7 @@ impl EPaper {
         self.send_command(&[0x10]); // enter deep sleep
         self.send_data(&[0x01]);
 
-        sleep(Duration::from_millis(2000));
+        sleep(Duration::from_millis(2000)); 
 
         self.reset_pin.set_low();
         self.data_command_pin.set_low();
@@ -165,7 +165,7 @@ fn main() {
 
     let mut image:Vec<u8> = vec![];
     for _row in 0..EPAPER_HEIGHT {
-        for _column_byte in 0..(EPAPER_HEIGHT/8)+1 {
+        for _column_byte in 0..(EPAPER_WIDTH/8)+1 {
             image.push(0xa5);
         }
     }
@@ -176,7 +176,7 @@ fn main() {
 
     let mut image:Vec<u8> = vec![];
     for _row in 0..EPAPER_HEIGHT {
-        for _column_byte in 0..(EPAPER_HEIGHT/8)+1 {
+        for _column_byte in 0..(EPAPER_WIDTH/8)+1 {
             image.push(0xFF);
         }
     }
