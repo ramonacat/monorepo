@@ -179,7 +179,7 @@ impl DrawTarget for EPaper {
             if pixel.1 == BinaryColor::On {
                 byte |= 1 << bit_index;
             }
-            
+
             bit_index += 1;
 
             if bit_index == 8 {
@@ -194,6 +194,9 @@ impl DrawTarget for EPaper {
                 current_column = 0;
             }
         }
+
+        println!("{:?}", &data);
+        assert!(data.len() == row_width_bytes * EPAPER_HEIGHT);
 
         self.write_image(&data);
 
