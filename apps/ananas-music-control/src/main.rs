@@ -190,9 +190,9 @@ fn main() {
         image[(EPAPER_HEIGHT - 24) * ROW_WIDTH_BYTES + column_byte] = 0x00;
     }
 
-    for row in 24..EPAPER_HEIGHT {
-        image[row * ROW_WIDTH_BYTES + 3] = 0x00;
-        image[row * ROW_WIDTH_BYTES + (ROW_WIDTH_BYTES - 3)] = 0x00;
+    for row in 24..EPAPER_HEIGHT - 24 {
+        image[row * ROW_WIDTH_BYTES + 3] = !0x80;
+        image[row * ROW_WIDTH_BYTES + (ROW_WIDTH_BYTES - 3)] = !0x01;
     }
 
     epaper.write_image(&image);
