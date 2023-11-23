@@ -170,17 +170,19 @@ impl DrawTarget for EPaper {
         let row_width_bytes = EPAPER_WIDTH / 8 + if EPAPER_WIDTH % 8 == 0 { 0 } else { 1 };
 
         let mut current_column = 0usize;
-        let mut current_row = 0usize;
         let mut byte = 0u8;
         let mut bit_index = 0usize;
 
         let mut data = Vec::with_capacity(row_width_bytes * EPAPER_HEIGHT);
 
         for pixel in pixels.into_iter() {
-            byte |= 1 << bit_index;
+            if pixel.1 == BinaryColor::On {
+                byte |= 1 << bit_index;
+            }
+            
             bit_index += 1;
 
-            if (bit_index == 8) {
+            if bit_index == 8 {
                 data.push(byte);
 
                 byte = 0;
@@ -190,7 +192,6 @@ impl DrawTarget for EPaper {
 
             if current_column == row_width_bytes {
                 current_column = 0;
-                current_row += 1;
             }
         }
 
@@ -221,8 +222,8 @@ fn main() {
     let epaper_cs_pin = gpio.get(EPAPER_CS_PIN).unwrap().into_output();
     let epaper_busy_pin = gpio.get(EPAPER_BUSY_PIN).unwrap().into_input();
 
-    let touchscreen_reset_pin = gpio.get(TOUCHSCREEN_TRST_PIN).unwrap().into_output();
-    let touchscreen_int_pin = gpio.get(TOUCHSCREEN_INT_PIN).unwrap().into_input();
+    let _touchscreen_reset_pin = gpio.get(TOUCHSCREEN_TRST_PIN).unwrap().into_output();
+    let _touchscreen_int_pin = gpio.get(TOUCHSCREEN_INT_PIN).unwrap().into_input();
 
     let mut epaper = EPaper {
         reset_pin: epaper_reset_pin,
