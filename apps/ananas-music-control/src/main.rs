@@ -185,8 +185,6 @@ fn main() {
         }
     }
 
-    epaper.write_image(&image);
-
     for column_byte in 3..ROW_WIDTH_BYTES - 3 {
         image[24 * ROW_WIDTH_BYTES + column_byte] = 0x00;
         image[(EPAPER_HEIGHT - 24) * ROW_WIDTH_BYTES + column_byte] = 0x00;
@@ -196,6 +194,8 @@ fn main() {
         image[row * ROW_WIDTH_BYTES + 3] = 0x00;
         image[row * ROW_WIDTH_BYTES + (ROW_WIDTH_BYTES - 3)] = 0x00;
     }
+
+    epaper.write_image(&image);
 
     sleep(Duration::from_secs(5));
 
