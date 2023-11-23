@@ -169,29 +169,15 @@ impl DrawTarget for EPaper {
     {
         let row_width_bytes = EPAPER_WIDTH / 8 + if EPAPER_WIDTH % 8 == 0 { 0 } else { 1 };
 
-        let mut current_column = 0usize;
-        let mut byte = 0u8;
-        let mut bit_index = 0usize;
-
-        let mut data = Vec::with_capacity(row_width_bytes * EPAPER_HEIGHT);
+        let mut data = vec![0; row_width_bytes * EPAPER_HEIGHT];
 
         for pixel in pixels.into_iter() {
+            let pixel_x_byte_index = pixel.0.x / 8;
+            let pixel_x_bit_index = pixel.0.x % 8;
+
             if pixel.1 == BinaryColor::On {
-                byte |= 1 << bit_index;
-            }
-
-            bit_index += 1;
-
-            if bit_index == 8 {
-                data.push(byte);
-
-                byte = 0;
-                bit_index = 0;
-                current_column += 1;
-            }
-
-            if current_column == row_width_bytes {
-                current_column = 0;
+                data[(pixel_x_byte_index + pixel.0.y * row_width_bytes as i32) as usize] |=
+                    1 << pixel_x_bit_index;
             }
         }
 
@@ -241,5 +227,6 @@ fn main() {
         Size::new((EPAPER_WIDTH - 48) as u32, (EPAPER_HEIGHT - 48) as u32),
     )
     .into_styled(PrimitiveStyle::with_stroke(BinaryColor::On, 1))
-    .draw(&mut epaper);
+    .draw(&mut epaper)
+    .unwrap();
 }
