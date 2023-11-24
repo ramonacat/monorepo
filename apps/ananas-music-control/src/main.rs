@@ -196,6 +196,9 @@ impl DrawTarget for BufferedDrawTarget {
             if pixel.1 == BinaryColor::On {
                 self.buffer[(pixel_x_byte_index + pixel.0.y * row_width_bytes as i32) as usize] |=
                     1 << pixel_x_bit_index;
+            } else {
+                self.buffer[(pixel_x_byte_index + pixel.0.y * row_width_bytes as i32) as usize] ^=
+                    !(1 << pixel_x_bit_index);
             }
         }
 
