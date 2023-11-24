@@ -157,7 +157,27 @@ impl EPaper {
     }
 }
 
-impl DrawTarget for EPaper {
+struct BufferedDrawTarget {
+    epaper: EPaper,
+    buffer: Vec<u8>,
+}
+
+impl BufferedDrawTarget {
+    fn new(epaper: EPaper) -> Self {
+        let row_width_bytes = EPAPER_WIDTH / 8 + if EPAPER_WIDTH % 8 == 0 { 0 } else { 1 };
+
+        Self {
+            epaper,
+            buffer: vec![0; row_width_bytes * EPAPER_HEIGHT],
+        }
+    }
+
+    fn flush(&mut self) {
+        self.epaper.write_image(&self.buffer);
+    }
+}
+
+impl DrawTarget for BufferedDrawTarget {
     type Color = BinaryColor;
 
     // fixme: make this a real error type, instead of panicking
@@ -169,28 +189,21 @@ impl DrawTarget for EPaper {
     {
         let row_width_bytes = EPAPER_WIDTH / 8 + if EPAPER_WIDTH % 8 == 0 { 0 } else { 1 };
 
-        let mut data = vec![0; row_width_bytes * EPAPER_HEIGHT];
-
         for pixel in pixels.into_iter() {
             let pixel_x_byte_index = pixel.0.x / 8;
             let pixel_x_bit_index = pixel.0.x % 8;
 
             if pixel.1 == BinaryColor::On {
-                data[(pixel_x_byte_index + pixel.0.y * row_width_bytes as i32) as usize] |=
+                self.buffer[(pixel_x_byte_index + pixel.0.y * row_width_bytes as i32) as usize] |=
                     1 << pixel_x_bit_index;
             }
         }
-
-        println!("{:?}", &data);
-        assert!(data.len() == row_width_bytes * EPAPER_HEIGHT);
-
-        self.write_image(&data);
 
         Ok(())
     }
 }
 
-impl OriginDimensions for EPaper {
+impl OriginDimensions for BufferedDrawTarget {
     fn size(&self) -> embedded_graphics::prelude::Size {
         Size::new(EPAPER_WIDTH as u32, EPAPER_HEIGHT as u32)
     }
@@ -214,7 +227,7 @@ fn main() {
     let _touchscreen_reset_pin = gpio.get(TOUCHSCREEN_TRST_PIN).unwrap().into_output();
     let _touchscreen_int_pin = gpio.get(TOUCHSCREEN_INT_PIN).unwrap().into_input();
 
-    let mut epaper = EPaper {
+    let epaper = EPaper {
         reset_pin: epaper_reset_pin,
         data_command_pin: epaper_dc_pin,
         chip_select_pin: epaper_cs_pin,
@@ -222,11 +235,15 @@ fn main() {
         spi,
     };
 
+    let mut draw_target = BufferedDrawTarget::new(epaper);
+
     Rectangle::new(
         Point::new(24, 24),
         Size::new((EPAPER_WIDTH - 48) as u32, (EPAPER_HEIGHT - 48) as u32),
     )
     .into_styled(PrimitiveStyle::with_stroke(BinaryColor::On, 1))
-    .draw(&mut epaper)
+    .draw(&mut draw_target)
     .unwrap();
+
+    draw_target.flush();
 }
