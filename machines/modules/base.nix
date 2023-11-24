@@ -10,7 +10,7 @@
       "delayacct"
     ];
     security.sudo.wheelNeedsPassword = false;
-    nix.trustedUsers = [ "@wheel" ];
+    nix.settings.trusted-users = [ "@wheel" ];
 
     networking.useDHCP = false;
     time.timeZone = "Europe/Berlin";
