@@ -5,13 +5,11 @@
   ];
 
   config = {
-    #    boot.supportedFilesystems = [ "bcachefs" ];
-    #    boot.initrd.supportedFilesystems = [ "bcachefs" ];
-
     boot.kernelParams = [
       # this is needed for iotop
       "delayacct"
     ];
+    security.sudo.wheelNeedsPassword = false;
 
     networking.useDHCP = false;
     time.timeZone = "Europe/Berlin";

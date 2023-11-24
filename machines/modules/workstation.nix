@@ -4,7 +4,6 @@
     virtualisation.docker.enable = true;
 
     security.rtkit.enable = true;
-    security.sudo.wheelNeedsPassword = lib.mkForce false;
     services.udisks2.enable = true;
     services.pipewire = {
       enable = true;
