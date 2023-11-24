@@ -168,7 +168,7 @@ impl BufferedDrawTarget {
 
         Self {
             epaper,
-            buffer: vec![0; row_width_bytes * EPAPER_HEIGHT],
+            buffer: vec![0xFF; row_width_bytes * EPAPER_HEIGHT],
         }
     }
 
@@ -193,7 +193,7 @@ impl DrawTarget for BufferedDrawTarget {
             let pixel_x_byte_index = pixel.0.x / 8;
             let pixel_x_bit_index = 7 - (pixel.0.x % 8);
 
-            if pixel.1 == BinaryColor::On {
+            if pixel.1 == BinaryColor::Off {
                 self.buffer[(pixel_x_byte_index + pixel.0.y * row_width_bytes as i32) as usize] |=
                     1 << pixel_x_bit_index;
             } else {
