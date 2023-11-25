@@ -6,9 +6,10 @@
     description = "Music control";
     serviceConfig = {
       Type = "simple";
-      DynamicUser = true;
+      # DynamicUser = true;
+      # User = "root";
       ExecStart = "${ananasMusicControlPackage}/bin/ananas-music-control";
-      SupplementaryGroups = "spi gpio";
+      # SupplementaryGroups = "spi gpio kmem";
     };
   };
 }

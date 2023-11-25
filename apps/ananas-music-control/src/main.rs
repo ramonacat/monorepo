@@ -9,6 +9,7 @@ use embedded_graphics::{
 };
 use rppal::{
     gpio::{InputPin, Level, OutputPin},
+    i2c::I2c,
     spi::{Mode, Spi},
 };
 
@@ -212,6 +213,89 @@ impl OriginDimensions for BufferedDrawTarget {
     }
 }
 
+struct TouchPanel {
+    reset_pin: OutputPin,
+    interrupt_pin: InputPin,
+    i2c: I2c,
+}
+
+#[derive(Debug)]
+struct Touch {
+    x: usize,
+    y: usize,
+    strength: usize,
+    track_id: u8,
+}
+
+impl TouchPanel {
+    fn reset(&mut self) {
+        self.reset_pin.set_high();
+        sleep(Duration::from_millis(100));
+        self.reset_pin.set_low();
+        sleep(Duration::from_millis(100));
+        self.reset_pin.set_high();
+        sleep(Duration::from_millis(1000));
+    }
+
+    fn read_version(&mut self) -> u32 {
+        let mut buffer = [0u8; 4];
+        self.i2c.smbus_write_byte(0x81, 0x40).unwrap();
+        self.i2c.read(&mut buffer).unwrap();
+
+        u32::from_le_bytes(buffer)
+    }
+
+    fn wait_for_touch(&mut self) -> Vec<Touch> {
+        while !self.interrupt_pin.is_high() {
+            // FIXME use like interrupts or something instead of spinning
+        }
+
+        self.i2c.smbus_write_byte(0x81, 0x4E).unwrap();
+        let mut buffer = [0u8; 1];
+        self.i2c.read(&mut buffer).unwrap();
+
+        if buffer[0] & 0x80 == 0 {
+            // TODO WTF does this do?
+            self.i2c.smbus_write_word(0x81, 0x004E).unwrap();
+            sleep(Duration::from_millis(10));
+
+            vec![]
+        } else {
+            let touchpoint_flag = buffer[0] & 0x80;
+            let touch_count = buffer[0] & 0x0f;
+
+            if touch_count > 5 || touch_count < 1 {
+                self.i2c.smbus_write_word(0x81, 0x004E).unwrap();
+                return vec![];
+            }
+
+            let mut buffer_touches = vec![0u8; touch_count as usize * 8];
+            self.i2c.smbus_write_byte(0x81, 0x4F).unwrap();
+            self.i2c.read(&mut buffer_touches).unwrap();
+            self.i2c.smbus_write_word(0x81, 0x004E).unwrap();
+
+            println!("Touchpoint: {}, count: {}", touchpoint_flag, touch_count);
+            println!("Raw touch data: {:?}", buffer_touches);
+
+            let mut touches = vec![];
+
+            for i in 0..touch_count as usize {
+                touches.push(Touch {
+                    x: ((buffer_touches[2 + 8 * i] as usize) << 8)
+                        + buffer_touches[1 + 8 * i] as usize,
+                    y: ((buffer_touches[4 + 8 * i] as usize) << 8)
+                        + buffer_touches[3 + 8 * i] as usize,
+                    strength: ((buffer_touches[6 + 8 * i] as usize) << 8)
+                        + buffer_touches[5 + 8 * i] as usize,
+                    track_id: (buffer_touches[8 * i]),
+                });
+            }
+
+            touches
+        }
+    }
+}
+
 fn main() {
     let spi = rppal::spi::Spi::new(
         rppal::spi::Bus::Spi0,
@@ -220,6 +304,7 @@ fn main() {
         Mode::Mode0,
     )
     .unwrap();
+
     let gpio = rppal::gpio::Gpio::new().unwrap();
 
     let epaper_reset_pin = gpio.get(EPAPER_RESET_PIN).unwrap().into_output();
@@ -227,8 +312,19 @@ fn main() {
     let epaper_cs_pin = gpio.get(EPAPER_CS_PIN).unwrap().into_output();
     let epaper_busy_pin = gpio.get(EPAPER_BUSY_PIN).unwrap().into_input();
 
-    let _touchscreen_reset_pin = gpio.get(TOUCHSCREEN_TRST_PIN).unwrap().into_output();
-    let _touchscreen_int_pin = gpio.get(TOUCHSCREEN_INT_PIN).unwrap().into_input();
+    let touchscreen_reset_pin = gpio.get(TOUCHSCREEN_TRST_PIN).unwrap().into_output();
+    let touchscreen_int_pin = gpio.get(TOUCHSCREEN_INT_PIN).unwrap().into_input();
+    let mut i2c = I2c::with_bus(3).unwrap();
+    i2c.set_slave_address(0x14).unwrap();
+
+    let mut touchpanel = TouchPanel {
+        reset_pin: touchscreen_reset_pin,
+        interrupt_pin: touchscreen_int_pin,
+        i2c,
+    };
+
+    touchpanel.reset();
+    println!("Touchpanel version: {}", touchpanel.read_version());
 
     let epaper = EPaper {
         reset_pin: epaper_reset_pin,
@@ -249,4 +345,12 @@ fn main() {
     .unwrap();
 
     draw_target.flush();
+
+    loop {
+        let touches = touchpanel.wait_for_touch();
+
+        if touches.len() > 0 {
+            println!("{:?}", touches);
+        }
+    }
 }

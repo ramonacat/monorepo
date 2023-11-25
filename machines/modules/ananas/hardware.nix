@@ -5,7 +5,14 @@
     boot.initrd.kernelModules = [ ];
     boot.kernelModules = [ ];
     boot.extraModulePackages = [ ];
-    boot.kernelPackages = pkgs.linuxPackages_rpi4;
+    boot.kernelPackages = pkgs.linuxPackages_latest;
+    boot.kernelPatches = [{
+      name = "allow-devmem";
+      patch = null;
+      extraConfig = ''
+        STRICT_DEVMEM n
+      '';
+    }];
     fileSystems."/" =
       {
         device = "/dev/disk/by-label/NIXOS_SD";
@@ -29,10 +36,9 @@
     hardware.bluetooth.enable = true;
 
     hardware.enableRedistributableFirmware = true;
-    hardware.raspberry-pi."4".apply-overlays-dtmerge.enable = true;
+    # hardware.raspberry-pi."4".apply-overlays-dtmerge.enable = true;
     hardware.deviceTree = {
       enable = true;
-      filter = "*-rpi-4-*.dtb";
       overlays = [
         {
           name = "spi0-0cs.dtbo";
@@ -91,15 +97,15 @@
     };
 
     users.groups.spi = { };
-  users.groups.gpio = {};
+    users.groups.gpio = { };
 
-  services.udev.extraRules = ''
-      SUBSYSTEM=="spidev", KERNEL=="spidev0.0", GROUP="spi", MODE="0660"
+    services.udev.extraRules = ''
+        SUBSYSTEM=="spidev", KERNEL=="spidev0.0", GROUP="spi", MODE="0660"
 
-    SUBSYSTEM=="bcm2835-gpiomem", KERNEL=="gpiomem", GROUP="gpio",MODE="0660"
-    SUBSYSTEM=="gpio", KERNEL=="gpiochip*", GROUP="gpio",MODE="0660", ACTION=="add", RUN+="${pkgs.bash}/bin/bash -c 'chown root:gpio  /sys/class/gpio/export /sys/class/gpio/unexport ; chmod 220 /sys/class/gpio/export /sys/class/gpio/unexport'"
-    SUBSYSTEM=="gpio", KERNEL=="gpio*", ACTION=="add",RUN+="${pkgs.bash}/bin/bash -c 'chown root:gpio /sys%p/active_low /sys%p/direction /sys%p/edge /sys%p/value ; chmod 660 /sys%p/active_low /sys%p/direction /sys%p/edge /sys%p/value'"
-  '';
+      SUBSYSTEM=="bcm2835-gpiomem", KERNEL=="gpiomem", GROUP="gpio",MODE="0660"
+      SUBSYSTEM=="gpio", KERNEL=="gpiochip*", GROUP="gpio",MODE="0660", ACTION=="add", RUN+="${pkgs.bash}/bin/bash -c 'chown root:gpio  /sys/class/gpio/export /sys/class/gpio/unexport ; chmod 220 /sys/class/gpio/export /sys/class/gpio/unexport'"
+      SUBSYSTEM=="gpio", KERNEL=="gpio*", ACTION=="add",RUN+="${pkgs.bash}/bin/bash -c 'chown root:gpio /sys%p/active_low /sys%p/direction /sys%p/edge /sys%p/value ; chmod 660 /sys%p/active_low /sys%p/direction /sys%p/edge /sys%p/value'"
+    '';
 
 
     boot.loader = {
