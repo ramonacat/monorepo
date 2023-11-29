@@ -1,16 +1,13 @@
-use std::{
-    convert::Infallible,
-    thread::sleep,
-    time::Duration,
-};
+use std::{convert::Infallible, thread::sleep, time::Duration};
 
 use bitvec::{bitvec, order::Msb0, vec::BitVec};
 use embedded_graphics::{
     draw_target::DrawTarget,
     geometry::{OriginDimensions, Point, Size},
     image::{Image, ImageRaw, ImageRawLE},
+    iterator::pixel,
     pixelcolor::BinaryColor,
-    Drawable, Pixel, iterator::pixel,
+    Drawable, Pixel,
 };
 use fontdue::{
     layout::{Layout, TextStyle},
@@ -396,22 +393,28 @@ fn main() {
     let draw_target = BufferedDrawTarget::new(epaper);
     let mut draw_target = RotatedDrawTarget { inner: draw_target };
 
-    let font = Font::from_bytes(
+    let font_lato = Font::from_bytes(
         include_bytes!("../resources/Lato-Regular.ttf") as &[u8],
         FontSettings::default(),
     )
     .unwrap();
-    let fonts = &[font];
+    let font_noto_emoji = Font::from_bytes(
+        include_bytes!("../resources/NotoEmoji-Regular.ttf") as &[u8],
+        FontSettings::default(),
+    )
+    .unwrap();
+    let fonts = &[font_lato, font_noto_emoji];
     let mut layout = Layout::new(fontdue::layout::CoordinateSystem::PositiveYDown);
 
-    layout.append(fonts, &TextStyle::new("gżegżółką 🙀🥺", 30.0, 0));
+    layout.append(fonts, &TextStyle::new("gżegżółką ", 10.0, 0));
+    layout.append(fonts, &TextStyle::new("🙀🥺", 50.0, 1));
 
     let mut pixels = vec![];
     for glyph in layout.glyphs() {
         let (metrics, data) = fonts[glyph.font_index].rasterize_config(glyph.key);
 
         dbg!(metrics, glyph);
-   
+
         for (i, c) in data.iter().enumerate() {
             let pixel_x = (i % metrics.width) + glyph.x as usize;
             let pixel_y = (i / metrics.width) + glyph.y as usize;
@@ -427,14 +430,14 @@ fn main() {
 
     let rounded_width_in_bytes = (max_x + 7) / 8;
 
-    let mut bytes = vec![0u8; ((1 + rounded_width_in_bytes)) * ((max_y))];
+    let mut bytes = vec![0u8; (1 + rounded_width_in_bytes) * (max_y)];
 
     for (x, y) in pixels {
-        let pixel_index = (y*rounded_width_in_bytes*8) + x;
-        bytes[pixel_index/8] |= 1 << (7 - (pixel_index%8));
+        let pixel_index = (y * rounded_width_in_bytes * 8) + x;
+        bytes[pixel_index / 8] |= 1 << (7 - (pixel_index % 8));
     }
 
-    let image_raw = ImageRaw::<BinaryColor>::new(&bytes, 8*rounded_width_in_bytes as u32);
+    let image_raw = ImageRaw::<BinaryColor>::new(&bytes, 8 * rounded_width_in_bytes as u32);
     let image = Image::new(&image_raw, Point { x: 20, y: 20 });
 
     image.draw(&mut draw_target).unwrap();
