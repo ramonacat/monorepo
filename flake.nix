@@ -22,7 +22,7 @@
       rustVersion = pkgs.rust-bin.stable.latest.default;
       rustVersionAarch64 = pkgsAarch64.rust-bin.stable.latest.default;
       craneLibAarch64 = (crane.mkLib pkgsAarch64).overrideToolchain rustVersionAarch64;
-      sourceFilter = path: type: craneLib.filterCargoSources path type;
+      sourceFilter = path: type: craneLib.filterCargoSources path type || (builtins.match ".*/resources/.*" path != null);
       packageArguments = {
         src = pkgs.lib.cleanSourceWith {
           src = craneLib.path ./apps/bar;
@@ -54,6 +54,8 @@
           src = craneLib.path ./apps/ananas-music-control;
           filter = sourceFilter;
         };
+        buildInputs = with pkgs; [
+        ];
       };
       ananasMusicControlPackageCargoArtifacts = craneLibAarch64.buildDepsOnly ananasMusicControlPackageArguments;
       ananasMusicControlPackage = craneLibAarch64.buildPackage (ananasMusicControlPackageArguments // {

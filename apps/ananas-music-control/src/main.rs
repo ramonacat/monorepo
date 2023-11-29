@@ -1,11 +1,20 @@
-use std::{convert::Infallible, thread::sleep, time::Duration};
+use std::{
+    convert::Infallible,
+    thread::sleep,
+    time::Duration,
+};
 
+use bitvec::{bitvec, order::Msb0, vec::BitVec};
 use embedded_graphics::{
     draw_target::DrawTarget,
     geometry::{OriginDimensions, Point, Size},
+    image::{Image, ImageRaw, ImageRawLE},
     pixelcolor::BinaryColor,
-    primitives::{Primitive, PrimitiveStyle, Rectangle},
-    Drawable,
+    Drawable, Pixel, iterator::pixel,
+};
+use fontdue::{
+    layout::{Layout, TextStyle},
+    Font, FontSettings,
 };
 use rppal::{
     gpio::{InputPin, Level, OutputPin},
@@ -158,6 +167,10 @@ impl EPaper {
     }
 }
 
+trait FlushableDrawTarget {
+    fn flush(&mut self);
+}
+
 struct BufferedDrawTarget {
     epaper: EPaper,
     buffer: Vec<u8>,
@@ -172,7 +185,9 @@ impl BufferedDrawTarget {
             buffer: vec![0xFF; row_width_bytes * EPAPER_HEIGHT],
         }
     }
+}
 
+impl FlushableDrawTarget for BufferedDrawTarget {
     fn flush(&mut self) {
         self.epaper.write_image(&self.buffer);
     }
@@ -296,6 +311,50 @@ impl TouchPanel {
     }
 }
 
+struct RotatedDrawTarget<T: DrawTarget> {
+    inner: T,
+}
+
+impl<T: DrawTarget + OriginDimensions> DrawTarget for RotatedDrawTarget<T> {
+    type Color = T::Color;
+
+    type Error = T::Error;
+
+    fn draw_iter<I>(&mut self, pixels: I) -> Result<(), Self::Error>
+    where
+        I: IntoIterator<Item = embedded_graphics::prelude::Pixel<Self::Color>>,
+    {
+        let inner_size = self.inner.size();
+
+        self.inner.draw_iter(pixels.into_iter().map(|x| {
+            Pixel(
+                Point {
+                    x: (inner_size.width - x.0.y as u32) as i32,
+                    y: x.0.x as i32,
+                },
+                x.1,
+            )
+        }))
+    }
+}
+
+impl<T: DrawTarget + OriginDimensions> OriginDimensions for RotatedDrawTarget<T> {
+    fn size(&self) -> Size {
+        let original_size = self.inner.size();
+
+        Size {
+            width: original_size.height,
+            height: original_size.width,
+        }
+    }
+}
+
+impl<T: DrawTarget + FlushableDrawTarget> FlushableDrawTarget for RotatedDrawTarget<T> {
+    fn flush(&mut self) {
+        self.inner.flush()
+    }
+}
+
 fn main() {
     let spi = rppal::spi::Spi::new(
         rppal::spi::Bus::Spi0,
@@ -334,15 +393,51 @@ fn main() {
         spi,
     };
 
-    let mut draw_target = BufferedDrawTarget::new(epaper);
+    let draw_target = BufferedDrawTarget::new(epaper);
+    let mut draw_target = RotatedDrawTarget { inner: draw_target };
 
-    Rectangle::new(
-        Point::new(24, 24),
-        Size::new((EPAPER_WIDTH - 48) as u32, (EPAPER_HEIGHT - 48) as u32),
+    let font = Font::from_bytes(
+        include_bytes!("../resources/Lato-Regular.ttf") as &[u8],
+        FontSettings::default(),
     )
-    .into_styled(PrimitiveStyle::with_stroke(BinaryColor::On, 1))
-    .draw(&mut draw_target)
     .unwrap();
+    let fonts = &[font];
+    let mut layout = Layout::new(fontdue::layout::CoordinateSystem::PositiveYDown);
+
+    layout.append(fonts, &TextStyle::new("gżegżółką 🙀🥺", 30.0, 0));
+
+    let mut pixels = vec![];
+    for glyph in layout.glyphs() {
+        let (metrics, data) = fonts[glyph.font_index].rasterize_config(glyph.key);
+
+        dbg!(metrics, glyph);
+   
+        for (i, c) in data.iter().enumerate() {
+            let pixel_x = (i % metrics.width) + glyph.x as usize;
+            let pixel_y = (i / metrics.width) + glyph.y as usize;
+
+            if *c > 63 {
+                pixels.push((pixel_x, pixel_y));
+            }
+        }
+    }
+
+    let max_x = pixels.iter().map(|x| x.0).max().unwrap();
+    let max_y = pixels.iter().map(|x| x.1).max().unwrap();
+
+    let rounded_width_in_bytes = (max_x + 7) / 8;
+
+    let mut bytes = vec![0u8; ((1 + rounded_width_in_bytes)) * ((max_y))];
+
+    for (x, y) in pixels {
+        let pixel_index = (y*rounded_width_in_bytes*8) + x;
+        bytes[pixel_index/8] |= 1 << (7 - (pixel_index%8));
+    }
+
+    let image_raw = ImageRaw::<BinaryColor>::new(&bytes, 8*rounded_width_in_bytes as u32);
+    let image = Image::new(&image_raw, Point { x: 20, y: 20 });
+
+    image.draw(&mut draw_target).unwrap();
 
     draw_target.flush();
 

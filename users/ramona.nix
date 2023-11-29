@@ -6,7 +6,7 @@
       home.username = "ramona";
       home.homeDirectory = "/home/ramona";
       home.stateVersion = "22.11";
-      home.packages = with pkgs; [ minikube kubectl pulseaudio ];
+      home.packages = with pkgs; [ minikube kubectl pulseaudio unzip yt-dlp ];
 
       programs.gpg = {
         enable = true;
