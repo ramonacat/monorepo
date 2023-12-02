@@ -21,9 +21,6 @@
     systemd.services.tempo.serviceConfig.EnvironmentFile = config.age.secrets.minio-tempo.path;
     systemd.services.tempo.serviceConfig.BindPaths = "/var/tempo";
     systemd.services.tempo.serviceConfig.User = "tempo";
-    # systemd.services.tempo.serviceConfig.TemporaryFileSystem = "/var/tempo/";
-    # systemd.services.tempo.serviceConfig.SupplementaryGroups = "tempo-secrets";
-    # systemd.services.tempo.serviceConfig.StateDirectory = lib.mkForce "";
 
     services.tempo = {
       enable = true;

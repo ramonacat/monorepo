@@ -89,6 +89,7 @@
             ./machines/modules/base.nix
             ./machines/modules/bcachefs.nix
             ./machines/modules/installed_base.nix
+            ./machines/modules/telegraf.nix
             (import ./users/ramona.nix { inherit agenix; })
             ./machines/modules/hallewell/hardware.nix
             ./machines/modules/hallewell/networking.nix
@@ -96,6 +97,7 @@
             ./machines/modules/hallewell/minio.nix
             ./machines/modules/hallewell/tempo.nix
             ./machines/modules/hallewell/grafana.nix
+            ./machines/modules/hallewell/postgresql.nix
             ./machines/modules/hallewell/users/ramona.nix
             ./machines/hallewell.nix
           ];
@@ -109,6 +111,7 @@
             ./machines/modules/base.nix
             ./machines/modules/installed_base.nix
             ./machines/modules/workstation.nix
+            ./machines/modules/telegraf.nix
             (import ./users/ramona.nix { inherit agenix; })
             (import ./users/ramona_gui.nix { inherit barPackage; })
             ./machines/modules/moonfall/hardware.nix
@@ -127,6 +130,7 @@
             ./machines/modules/base.nix
             ./machines/modules/bcachefs.nix
             ./machines/modules/installed_base.nix
+            ./machines/modules/telegraf.nix
             (import ./users/ramona.nix { inherit agenix; })
             ./machines/modules/shadowmend/hardware.nix
             ./machines/modules/shadowmend/networking.nix
@@ -146,6 +150,7 @@
             ./machines/modules/base.nix
             ./machines/modules/installed_base.nix
             ./machines/modules/workstation.nix
+            ./machines/modules/telegraf.nix
             (import ./users/ramona.nix { inherit agenix; })
             (import ./users/ramona_gui.nix { inherit barPackage; })
             ./machines/modules/angelsin/hardware.nix
@@ -163,6 +168,7 @@
             
             ./machines/modules/base.nix
             ./machines/modules/installed_base.nix
+            ./machines/modules/telegraf.nix
             (import ./users/ramona.nix { inherit agenix; })
             ./machines/modules/ananas/hardware.nix
             ./machines/modules/ananas/networking.nix
