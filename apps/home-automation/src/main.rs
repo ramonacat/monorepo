@@ -147,11 +147,13 @@ impl AsyncConsumer for MyConsumer {
 async fn main() {
     tracing_subscriber::fmt().init();
 
+    let rabbit_password = std::fs::read_to_string("/run/agenix/rabbitmq-ha").unwrap();
+
     let connection = Connection::open(&OpenConnectionArguments::new(
         "shadowmend",
         5672,
         "ha",
-        "hahaha",
+        rabbit_password.trim(),
     ))
     .await
     .unwrap();

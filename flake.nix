@@ -2,6 +2,7 @@
   description = "Root flake for my machines";
 
   inputs = {
+    agenix.url = "github:ryantm/agenix";
     nixpkgs.url = "nixpkgs/nixos-unstable-small";
     rust-overlay.url = "github:oxalica/rust-overlay";
     crane.url = "github:ipetkov/crane";
@@ -13,7 +14,7 @@
     };
   };
 
-  outputs = { self, nixpkgs, home-manager, rust-overlay, crane, nixos-hardware }:
+  outputs = { self, nixpkgs, home-manager, rust-overlay, crane, nixos-hardware, agenix }:
     let
       overlays = [ (import rust-overlay) ];
       pkgs = import nixpkgs { inherit overlays; system = "x86_64-linux"; };
@@ -79,14 +80,16 @@
         LIBCLANG_PATH = "${pkgs.libclang.lib}/lib";
       };
       nixosConfigurations = {
-        desktop = nixpkgs.lib.nixosSystem {
+        hallewell = nixpkgs.lib.nixosSystem {
           system = "x86_64-linux";
           modules = [
+            home-manager.nixosModules.home-manager
+            agenix.nixosModules.default
+
             ./machines/modules/base.nix
             ./machines/modules/bcachefs.nix
             ./machines/modules/installed_base.nix
-            ./users/ramona.nix
-            home-manager.nixosModules.home-manager
+            (import ./users/ramona.nix { inherit agenix; })
             ./machines/modules/hallewell/hardware.nix
             ./machines/modules/hallewell/networking.nix
             ./machines/modules/hallewell/nas.nix
@@ -97,12 +100,14 @@
         moonfall = nixpkgs.lib.nixosSystem {
           system = "x86_64-linux";
           modules = [
+            home-manager.nixosModules.home-manager
+            agenix.nixosModules.default
+
             ./machines/modules/base.nix
             ./machines/modules/installed_base.nix
             ./machines/modules/workstation.nix
-            ./users/ramona.nix
+            (import ./users/ramona.nix { inherit agenix; })
             (import ./users/ramona_gui.nix { inherit barPackage; })
-            home-manager.nixosModules.home-manager
             ./machines/modules/moonfall/hardware.nix
             ./machines/modules/moonfall/networking.nix
             ./machines/modules/moonfall/virtualisation.nix
@@ -113,11 +118,13 @@
         shadowmend = nixpkgs.lib.nixosSystem {
           system = "x86_64-linux";
           modules = [
+            home-manager.nixosModules.home-manager
+            agenix.nixosModules.default
+
             ./machines/modules/base.nix
             ./machines/modules/bcachefs.nix
             ./machines/modules/installed_base.nix
-            ./users/ramona.nix
-            home-manager.nixosModules.home-manager
+            (import ./users/ramona.nix { inherit agenix; })
             ./machines/modules/shadowmend/hardware.nix
             ./machines/modules/shadowmend/networking.nix
             ./machines/modules/shadowmend/rabbitmq.nix
@@ -130,12 +137,14 @@
         angelsin = nixpkgs.lib.nixosSystem {
           system = "x86_64-linux";
           modules = [
+            home-manager.nixosModules.home-manager
+            agenix.nixosModules.default
+
             ./machines/modules/base.nix
             ./machines/modules/installed_base.nix
             ./machines/modules/workstation.nix
-            ./users/ramona.nix
+            (import ./users/ramona.nix { inherit agenix; })
             (import ./users/ramona_gui.nix { inherit barPackage; })
-            home-manager.nixosModules.home-manager
             ./machines/modules/angelsin/hardware.nix
             ./machines/modules/angelsin/networking.nix
             ./machines/modules/angelsin/users/ramona_gui.nix
@@ -145,11 +154,13 @@
         ananas = nixpkgs.lib.nixosSystem {
           system = "aarch64-linux";
           modules = [
-            nixos-hardware.nixosModules.raspberry-pi-4
             home-manager.nixosModules.home-manager
+            agenix.nixosModules.default
+            nixos-hardware.nixosModules.raspberry-pi-4
+            
             ./machines/modules/base.nix
             ./machines/modules/installed_base.nix
-            ./users/ramona.nix
+            (import ./users/ramona.nix { inherit agenix; })
             ./machines/modules/ananas/hardware.nix
             ./machines/modules/ananas/networking.nix
             (import ./machines/modules/ananas/music-control.nix { inherit ananasMusicControlPackage; })
@@ -158,12 +169,14 @@
         iso = nixpkgs.lib.nixosSystem {
           system = "x86_64-linux";
           modules = [
+            home-manager.nixosModules.home-manager
+            agenix.nixosModules.default
+
             "${nixpkgs}/nixos/modules/installer/cd-dvd/installation-cd-minimal.nix"
             ./machines/modules/base.nix
             ./machines/modules/bcachefs.nix
             ./machines/modules/iso.nix
-            ./users/ramona.nix
-            home-manager.nixosModules.home-manager
+            (import ./users/ramona.nix { inherit agenix; })
           ];
         };
       };
