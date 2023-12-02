@@ -1,7 +1,15 @@
-use std::{time::Duration, thread::sleep, convert::Infallible};
+use std::{convert::Infallible, thread::sleep, time::Duration};
 
-use embedded_graphics::{draw_target::DrawTarget, pixelcolor::BinaryColor, geometry::{OriginDimensions, Size, Point}, Pixel};
-use rppal::{gpio::{OutputPin, InputPin, Level}, spi::Spi};
+use embedded_graphics::{
+    draw_target::DrawTarget,
+    geometry::{OriginDimensions, Point, Size},
+    pixelcolor::BinaryColor,
+    Pixel,
+};
+use rppal::{
+    gpio::{InputPin, Level, OutputPin},
+    spi::Spi,
+};
 
 const EPAPER_WIDTH: usize = 122;
 const EPAPER_HEIGHT: usize = 250;
@@ -15,12 +23,20 @@ pub struct EPaper {
 }
 
 impl EPaper {
-    pub fn new(reset_pin: OutputPin,
+    pub fn new(
+        reset_pin: OutputPin,
         data_command_pin: OutputPin,
         chip_select_pin: OutputPin,
         busy_pin: InputPin,
-        spi: Spi) -> Self {
-        Self { reset_pin, data_command_pin, chip_select_pin, busy_pin, spi }
+        spi: Spi,
+    ) -> Self {
+        Self {
+            reset_pin,
+            data_command_pin,
+            chip_select_pin,
+            busy_pin,
+            spi,
+        }
     }
 
     fn hardware_reset(&mut self) {
@@ -213,7 +229,7 @@ pub struct RotatedDrawTarget<T: DrawTarget + OriginDimensions + FlushableDrawTar
     inner: T,
 }
 
-impl<T:DrawTarget + OriginDimensions + FlushableDrawTarget> RotatedDrawTarget<T> {
+impl<T: DrawTarget + OriginDimensions + FlushableDrawTarget> RotatedDrawTarget<T> {
     pub fn new(inner: T) -> Self {
         Self { inner }
     }
@@ -242,7 +258,9 @@ impl<T: DrawTarget + OriginDimensions + FlushableDrawTarget> DrawTarget for Rota
     }
 }
 
-impl<T: DrawTarget + OriginDimensions + FlushableDrawTarget> OriginDimensions for RotatedDrawTarget<T> {
+impl<T: DrawTarget + OriginDimensions + FlushableDrawTarget> OriginDimensions
+    for RotatedDrawTarget<T>
+{
     fn size(&self) -> Size {
         let original_size = self.inner.size();
 
@@ -253,7 +271,9 @@ impl<T: DrawTarget + OriginDimensions + FlushableDrawTarget> OriginDimensions fo
     }
 }
 
-impl<T: DrawTarget + OriginDimensions + FlushableDrawTarget> FlushableDrawTarget for RotatedDrawTarget<T> {
+impl<T: DrawTarget + OriginDimensions + FlushableDrawTarget> FlushableDrawTarget
+    for RotatedDrawTarget<T>
+{
     fn flush(&mut self) {
         self.inner.flush()
     }

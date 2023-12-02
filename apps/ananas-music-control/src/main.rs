@@ -2,21 +2,29 @@ use embedded_graphics::{
     geometry::Point,
     image::{Image, ImageRaw},
     pixelcolor::BinaryColor,
-    Drawable, 
+    Drawable,
 };
 use fontdue::{
     layout::{Layout, TextStyle},
     Font, FontSettings,
 };
-use rppal::{
-    i2c::I2c,
-    spi::Mode,
+use opentelemetry::{
+    trace::{self, Tracer, TracerProvider},
+    KeyValue,
+};
+use opentelemetry_otlp::WithExportConfig;
+use opentelemetry_sdk::Resource;
+use rppal::{i2c::I2c, spi::Mode};
+use tracing::{level_filters::LevelFilter, info};
+use tracing_subscriber::{layer::SubscriberExt, util::SubscriberInitExt, Registry, Layer};
+
+use crate::{
+    epaper::{BufferedDrawTarget, EPaper, FlushableDrawTarget, RotatedDrawTarget},
+    touchpanel::TouchPanel,
 };
 
-use crate::{touchpanel::TouchPanel, epaper::{EPaper, BufferedDrawTarget, RotatedDrawTarget, FlushableDrawTarget}};
-
-mod touchpanel;
 mod epaper;
+mod touchpanel;
 
 const EPAPER_RESET_PIN: u8 = 17;
 const EPAPER_DC_PIN: u8 = 25;
@@ -26,8 +34,34 @@ const EPAPER_BUSY_PIN: u8 = 24;
 const TOUCHSCREEN_TRST_PIN: u8 = 22;
 const TOUCHSCREEN_INT_PIN: u8 = 27;
 
+#[tokio::main]
+async fn main() {
+    let tracer = opentelemetry_otlp::new_pipeline()
+        .tracing()
+        .with_exporter(
+            opentelemetry_otlp::new_exporter()
+                .tonic()
+                .with_endpoint("http://hallewell:4317/"),
+        )
+        .with_trace_config(
+            opentelemetry_sdk::trace::config().with_resource(Resource::new(vec![KeyValue::new(
+                "service.name",
+                "music-control",
+            )])),
+        )
+        .install_simple()
+        .unwrap();
 
-fn main() {
+    let tracing_layer = tracing_opentelemetry::layer().with_tracer(tracer);
+    Registry::default()
+        .with(tracing_layer.with_filter(LevelFilter::INFO))
+        .init();
+
+    let span = tracing::info_span!("HELLO");
+    span.in_scope(|| {
+        info!("I am in span!");
+    });
+
     let spi = rppal::spi::Spi::new(
         rppal::spi::Bus::Spi0,
         rppal::spi::SlaveSelect::Ss0,
@@ -45,7 +79,7 @@ fn main() {
 
     let touchscreen_reset_pin = gpio.get(TOUCHSCREEN_TRST_PIN).unwrap().into_output();
     let touchscreen_int_pin = gpio.get(TOUCHSCREEN_INT_PIN).unwrap().into_input();
-    
+
     let mut i2c = I2c::with_bus(3).unwrap();
     i2c.set_slave_address(0x14).unwrap();
 
@@ -54,10 +88,16 @@ fn main() {
     touchpanel.reset();
     println!("Touchpanel version: {}", touchpanel.read_version());
 
-    let epaper = EPaper::new(epaper_reset_pin, epaper_dc_pin, epaper_cs_pin, epaper_busy_pin, spi);
+    let epaper = EPaper::new(
+        epaper_reset_pin,
+        epaper_dc_pin,
+        epaper_cs_pin,
+        epaper_busy_pin,
+        spi,
+    );
 
     let draw_target = BufferedDrawTarget::new(epaper);
-    let mut draw_target = RotatedDrawTarget::new(draw_target);;
+    let mut draw_target = RotatedDrawTarget::new(draw_target);
 
     let font_lato = Font::from_bytes(
         include_bytes!("../resources/Lato-Regular.ttf") as &[u8],
@@ -78,8 +118,6 @@ fn main() {
     let mut pixels = vec![];
     for glyph in layout.glyphs() {
         let (metrics, data) = fonts[glyph.font_index].rasterize_config(glyph.key);
-
-        dbg!(metrics, glyph);
 
         for (i, c) in data.iter().enumerate() {
             let pixel_x = (i % metrics.width) + glyph.x as usize;

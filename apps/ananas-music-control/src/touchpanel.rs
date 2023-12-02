@@ -1,7 +1,9 @@
 use std::{thread::sleep, time::Duration};
 
-use rppal::{gpio::{OutputPin, InputPin}, i2c::I2c};
-
+use rppal::{
+    gpio::{InputPin, OutputPin},
+    i2c::I2c,
+};
 
 pub struct TouchPanel {
     reset_pin: OutputPin,
@@ -19,7 +21,11 @@ pub struct Touch {
 
 impl TouchPanel {
     pub fn new(reset_pin: OutputPin, interrupt_pin: InputPin, i2c: I2c) -> Self {
-        Self { reset_pin, interrupt_pin, i2c }
+        Self {
+            reset_pin,
+            interrupt_pin,
+            i2c,
+        }
     }
 
     pub fn reset(&mut self) {
