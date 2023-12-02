@@ -94,6 +94,8 @@
             ./machines/modules/hallewell/networking.nix
             ./machines/modules/hallewell/nas.nix
             ./machines/modules/hallewell/minio.nix
+            ./machines/modules/hallewell/tempo.nix
+            ./machines/modules/hallewell/grafana.nix
             ./machines/modules/hallewell/users/ramona.nix
             ./machines/hallewell.nix
           ];
