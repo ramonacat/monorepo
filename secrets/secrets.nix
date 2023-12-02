@@ -11,4 +11,5 @@ let
 in 
 {
   "rabbitmq-ha.age".publicKeys = users ++ [shadowmend];
+  "minio-root.age".publicKeys = users ++ [hallewell];
 }

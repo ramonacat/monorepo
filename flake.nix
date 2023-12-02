@@ -93,6 +93,7 @@
             ./machines/modules/hallewell/hardware.nix
             ./machines/modules/hallewell/networking.nix
             ./machines/modules/hallewell/nas.nix
+            ./machines/modules/hallewell/minio.nix
             ./machines/modules/hallewell/users/ramona.nix
             ./machines/hallewell.nix
           ];
