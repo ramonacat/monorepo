@@ -14,7 +14,6 @@
         agent.omit_hostname = false;
         outputs.postgresql = {
           connection = "postgres://telegraf:$DB_PASSWORD@hallewell/telegraf";
-          tags_as_foreign_keys = true;
           timestamp_column_type = "timestamp with time zone";
           tag_cache_size = 100000;
         };
