@@ -2,7 +2,7 @@
 {
   config = {
     age.secrets.minio-root = {
-      file = ../../../secrets/minio-root.age;
+      file = ../../secrets/minio-root.age;
       group = "minio";
       mode = "440";
     };

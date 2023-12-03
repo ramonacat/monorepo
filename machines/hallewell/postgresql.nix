@@ -2,7 +2,7 @@
 {
   config = {
     age.secrets."wal-g-config.env" = {
-      file = ../../../secrets/wal-g-config.env.age;
+      file = ../../secrets/wal-g-config.env.age;
       group = "postgres";
       mode = "440";
     };

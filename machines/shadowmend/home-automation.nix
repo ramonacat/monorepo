@@ -2,7 +2,7 @@
 { config, pkgs, lib, ... }:
 {
   age.secrets.rabbitmq-ha = {
-    file = ../../../secrets/rabbitmq-ha.age;
+    file = ../../secrets/rabbitmq-ha.age;
     group = "home-automation-secrets";
     mode = "440";
   };

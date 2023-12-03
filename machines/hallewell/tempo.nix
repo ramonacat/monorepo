@@ -2,7 +2,7 @@
 {
   config = {
     age.secrets.minio-tempo = {
-      file = ../../../secrets/minio-tempo.age;
+      file = ../../secrets/minio-tempo.age;
       group = "tempo-secrets";
       mode = "440";
     };  

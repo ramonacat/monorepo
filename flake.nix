@@ -86,19 +86,19 @@
             home-manager.nixosModules.home-manager
             agenix.nixosModules.default
 
-            ./machines/modules/base.nix
-            ./machines/modules/bcachefs.nix
-            ./machines/modules/installed_base.nix
-            ./machines/modules/telegraf.nix
+            ./modules/base.nix
+            ./modules/bcachefs.nix
+            ./modules/installed_base.nix
+            ./modules/telegraf.nix
             (import ./users/ramona.nix { inherit agenix; })
-            ./machines/modules/hallewell/hardware.nix
-            ./machines/modules/hallewell/networking.nix
-            ./machines/modules/hallewell/nas.nix
-            ./machines/modules/hallewell/minio.nix
-            ./machines/modules/hallewell/tempo.nix
-            ./machines/modules/hallewell/grafana.nix
-            ./machines/modules/hallewell/postgresql.nix
-            ./machines/modules/hallewell/users/ramona.nix
+            ./machines/hallewell/hardware.nix
+            ./machines/hallewell/networking.nix
+            ./machines/hallewell/nas.nix
+            ./machines/hallewell/minio.nix
+            ./machines/hallewell/tempo.nix
+            ./machines/hallewell/grafana.nix
+            ./machines/hallewell/postgresql.nix
+            ./machines/hallewell/users/ramona.nix
             ./machines/hallewell.nix
           ];
         };
@@ -108,16 +108,16 @@
             home-manager.nixosModules.home-manager
             agenix.nixosModules.default
 
-            ./machines/modules/base.nix
-            ./machines/modules/installed_base.nix
-            ./machines/modules/workstation.nix
-            ./machines/modules/telegraf.nix
+            ./modules/base.nix
+            ./modules/installed_base.nix
+            ./modules/workstation.nix
+            ./modules/telegraf.nix
             (import ./users/ramona.nix { inherit agenix; })
             (import ./users/ramona_gui.nix { inherit barPackage; })
-            ./machines/modules/moonfall/hardware.nix
-            ./machines/modules/moonfall/networking.nix
-            ./machines/modules/moonfall/virtualisation.nix
-            ./machines/modules/moonfall/users/ramona_gui.nix
+            ./machines/moonfall/hardware.nix
+            ./machines/moonfall/networking.nix
+            ./machines/moonfall/virtualisation.nix
+            ./machines/moonfall/users/ramona_gui.nix
             ./machines/moonfall.nix
           ];
         };
@@ -127,17 +127,17 @@
             home-manager.nixosModules.home-manager
             agenix.nixosModules.default
 
-            ./machines/modules/base.nix
-            ./machines/modules/bcachefs.nix
-            ./machines/modules/installed_base.nix
-            ./machines/modules/telegraf.nix
+            ./modules/base.nix
+            ./modules/bcachefs.nix
+            ./modules/installed_base.nix
+            ./modules/telegraf.nix
             (import ./users/ramona.nix { inherit agenix; })
-            ./machines/modules/shadowmend/hardware.nix
-            ./machines/modules/shadowmend/networking.nix
-            ./machines/modules/shadowmend/rabbitmq.nix
-            ./machines/modules/shadowmend/zigbee2mqtt.nix
-            (import ./machines/modules/shadowmend/home-automation.nix { inherit homeAutomationPackage; })
-            ./machines/modules/shadowmend/users/ramona.nix
+            ./machines/shadowmend/hardware.nix
+            ./machines/shadowmend/networking.nix
+            ./machines/shadowmend/rabbitmq.nix
+            ./machines/shadowmend/zigbee2mqtt.nix
+            (import ./machines/shadowmend/home-automation.nix { inherit homeAutomationPackage; })
+            ./machines/shadowmend/users/ramona.nix
             ./machines/shadowmend.nix
           ];
         };
@@ -147,15 +147,15 @@
             home-manager.nixosModules.home-manager
             agenix.nixosModules.default
 
-            ./machines/modules/base.nix
-            ./machines/modules/installed_base.nix
-            ./machines/modules/workstation.nix
-            ./machines/modules/telegraf.nix
+            ./modules/base.nix
+            ./modules/installed_base.nix
+            ./modules/workstation.nix
+            ./modules/telegraf.nix
             (import ./users/ramona.nix { inherit agenix; })
             (import ./users/ramona_gui.nix { inherit barPackage; })
-            ./machines/modules/angelsin/hardware.nix
-            ./machines/modules/angelsin/networking.nix
-            ./machines/modules/angelsin/users/ramona_gui.nix
+            ./machines/angelsin/hardware.nix
+            ./machines/angelsin/networking.nix
+            ./machines/angelsin/users/ramona_gui.nix
             ./machines/angelsin.nix
           ];
         };
@@ -166,13 +166,13 @@
             agenix.nixosModules.default
             nixos-hardware.nixosModules.raspberry-pi-4
             
-            ./machines/modules/base.nix
-            ./machines/modules/installed_base.nix
-            ./machines/modules/telegraf.nix
+            ./modules/base.nix
+            ./modules/installed_base.nix
+            ./modules/telegraf.nix
             (import ./users/ramona.nix { inherit agenix; })
-            ./machines/modules/ananas/hardware.nix
-            ./machines/modules/ananas/networking.nix
-            (import ./machines/modules/ananas/music-control.nix { inherit ananasMusicControlPackage; })
+            ./machines/ananas/hardware.nix
+            ./machines/ananas/networking.nix
+            (import ./machines/ananas/music-control.nix { inherit ananasMusicControlPackage; })
           ];
         };
         iso = nixpkgs.lib.nixosSystem {
@@ -182,9 +182,9 @@
             agenix.nixosModules.default
 
             "${nixpkgs}/nixos/modules/installer/cd-dvd/installation-cd-minimal.nix"
-            ./machines/modules/base.nix
-            ./machines/modules/bcachefs.nix
-            ./machines/modules/iso.nix
+            ./modules/base.nix
+            ./modules/bcachefs.nix
+            ./modules/iso.nix
             (import ./users/ramona.nix { inherit agenix; })
           ];
         };
