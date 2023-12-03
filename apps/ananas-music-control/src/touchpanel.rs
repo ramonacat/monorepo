@@ -1,7 +1,7 @@
-use std::{thread::sleep, time::Duration};
+use std::{thread::sleep, time::{Duration, SystemTime}};
 
 use rppal::{
-    gpio::{InputPin, OutputPin},
+    gpio::{InputPin, Level, OutputPin},
     i2c::I2c,
 };
 
@@ -11,12 +11,12 @@ pub struct TouchPanel {
     i2c: I2c,
 }
 
-#[derive(Debug)]
+#[derive(Debug, PartialEq, Eq, Clone)]
 pub struct Touch {
-    x: usize,
-    y: usize,
-    strength: usize,
-    track_id: u8,
+    pub x: usize,
+    pub y: usize,
+    pub strength: usize,
+    pub track_id: u8,
 }
 
 impl TouchPanel {
@@ -45,53 +45,66 @@ impl TouchPanel {
         u32::from_le_bytes(buffer)
     }
 
-    pub fn wait_for_touch(&mut self) -> Vec<Touch> {
-        while !self.interrupt_pin.is_high() {
-            // FIXME use like interrupts or something instead of spinning
-        }
+    fn reset_interrupt(&mut self) {
+        self.i2c.smbus_write_word(0x81, 0x004E).unwrap();
+    }
 
-        self.i2c.smbus_write_byte(0x81, 0x4E).unwrap();
+    // https://github.com/torvalds/linux/blob/master/drivers/input/touchscreen/goodix.c
+    pub fn wait_for_touch(&mut self) -> Option<Vec<Touch>> {
+        self.reset_interrupt();
+
+        self.interrupt_pin
+            .set_interrupt(rppal::gpio::Trigger::RisingEdge)
+            .unwrap();
+
+        while self
+            .interrupt_pin
+            .poll_interrupt(false, None)
+            .unwrap()
+            .unwrap()
+            != Level::High
+        {}
+
         let mut buffer = [0u8; 1];
-        self.i2c.read(&mut buffer).unwrap();
 
-        if buffer[0] & 0x80 == 0 {
-            // TODO WTF does this do?
-            self.i2c.smbus_write_word(0x81, 0x004E).unwrap();
-            sleep(Duration::from_millis(10));
+        let start = SystemTime::now();
+        
+        loop {
+            self.i2c.smbus_write_byte(0x81, 0x4E).unwrap();
+            self.i2c.read(&mut buffer).unwrap();
 
-            vec![]
-        } else {
             let touchpoint_flag = buffer[0] & 0x80;
-            let touch_count = buffer[0] & 0x0f;
-
-            if touch_count > 5 || touch_count < 1 {
-                self.i2c.smbus_write_word(0x81, 0x004E).unwrap();
-                return vec![];
+            if touchpoint_flag != 0 {
+                break;
             }
 
-            let mut buffer_touches = vec![0u8; touch_count as usize * 8];
-            self.i2c.smbus_write_byte(0x81, 0x4F).unwrap();
-            self.i2c.read(&mut buffer_touches).unwrap();
-            self.i2c.smbus_write_word(0x81, 0x004E).unwrap();
-
-            println!("Touchpoint: {}, count: {}", touchpoint_flag, touch_count);
-            println!("Raw touch data: {:?}", buffer_touches);
-
-            let mut touches = vec![];
-
-            for i in 0..touch_count as usize {
-                touches.push(Touch {
-                    x: ((buffer_touches[2 + 8 * i] as usize) << 8)
-                        + buffer_touches[1 + 8 * i] as usize,
-                    y: ((buffer_touches[4 + 8 * i] as usize) << 8)
-                        + buffer_touches[3 + 8 * i] as usize,
-                    strength: ((buffer_touches[6 + 8 * i] as usize) << 8)
-                        + buffer_touches[5 + 8 * i] as usize,
-                    track_id: (buffer_touches[8 * i]),
-                });
+            if start.elapsed().unwrap().as_millis() > 20 {
+                return None;
             }
-
-            touches
         }
+
+        let touch_count = buffer[0] & 0x0f;
+
+        if touch_count > 5 || touch_count < 1 {
+            return Some(vec![]);
+        }
+
+        let mut buffer_touches = vec![0u8; touch_count as usize * 8];
+        self.i2c.smbus_write_byte(0x81, 0x4F).unwrap();
+        self.i2c.read(&mut buffer_touches).unwrap();
+
+        let mut touches = vec![];
+
+        for i in 0..touch_count as usize {
+            touches.push(Touch {
+                x: ((buffer_touches[2 + 8 * i] as usize) << 8) + buffer_touches[1 + 8 * i] as usize,
+                y: ((buffer_touches[4 + 8 * i] as usize) << 8) + buffer_touches[3 + 8 * i] as usize,
+                strength: ((buffer_touches[6 + 8 * i] as usize) << 8)
+                    + buffer_touches[5 + 8 * i] as usize,
+                track_id: (buffer_touches[8 * i]),
+            });
+        }
+
+        Some(touches)
     }
 }

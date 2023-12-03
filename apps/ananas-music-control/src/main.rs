@@ -1,3 +1,5 @@
+use std::thread;
+
 use embedded_graphics::{
     geometry::Point,
     image::{Image, ImageRaw},
@@ -8,22 +10,22 @@ use fontdue::{
     layout::{Layout, TextStyle},
     Font, FontSettings,
 };
-use opentelemetry::{
-    trace::{self, Tracer, TracerProvider},
-    KeyValue,
-};
+use opentelemetry::KeyValue;
 use opentelemetry_otlp::WithExportConfig;
 use opentelemetry_sdk::Resource;
 use rppal::{i2c::I2c, spi::Mode};
-use tracing::{level_filters::LevelFilter, info};
-use tracing_subscriber::{layer::SubscriberExt, util::SubscriberInitExt, Registry, Layer};
+use tokio::sync::mpsc::unbounded_channel;
+use tracing::{info, level_filters::LevelFilter};
+use tracing_subscriber::{layer::SubscriberExt, util::SubscriberInitExt, Layer, Registry};
 
 use crate::{
     epaper::{BufferedDrawTarget, EPaper, FlushableDrawTarget, RotatedDrawTarget},
+    touch::EventCoalescer,
     touchpanel::TouchPanel,
 };
 
 mod epaper;
+mod touch;
 mod touchpanel;
 
 const EPAPER_RESET_PIN: u8 = 17;
@@ -148,11 +150,15 @@ async fn main() {
 
     draw_target.flush();
 
-    loop {
-        let touches = touchpanel.wait_for_touch();
+    let (tx, mut rx) = unbounded_channel();
 
-        if touches.len() > 0 {
-            println!("{:?}", touches);
-        }
+    let coalescer = EventCoalescer::new(touchpanel, tx);
+
+    thread::spawn(|| coalescer.run());
+
+    loop {
+        let touches = rx.recv().await;
+
+        println!("{:?}", touches);
     }
 }
