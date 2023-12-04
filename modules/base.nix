@@ -1,3 +1,4 @@
+{ nixpkgs }:
 { lib, modulesPath, pkgs, ... }:
 {
   imports = [
@@ -47,5 +48,10 @@
     nixpkgs.config.allowUnfree = true;
     nix.settings.experimental-features = [ "nix-command flakes" ];
     system.stateVersion = "22.11";
+
+    nix.registry.nixpkgs.flake = nixpkgs;
+
+    # alter nixPath so legacy commands like nix-shell can find nixpkgs.
+    nix.nixPath = [ "nixpkgs=/etc/channels/nixpkgs" "nixos-config=/etc/nixos/configuration.nix" "/nix/var/nix/profiles/per-user/root/channels" ];
   };
 }

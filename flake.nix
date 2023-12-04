@@ -86,7 +86,7 @@
             home-manager.nixosModules.home-manager
             agenix.nixosModules.default
 
-            ./modules/base.nix
+            (import ./modules/base.nix { inherit nixpkgs; })
             ./modules/bcachefs.nix
             ./modules/installed_base.nix
             ./modules/telegraf.nix
@@ -108,7 +108,7 @@
             home-manager.nixosModules.home-manager
             agenix.nixosModules.default
 
-            ./modules/base.nix
+            (import ./modules/base.nix { inherit nixpkgs; })
             ./modules/installed_base.nix
             ./modules/workstation.nix
             ./modules/telegraf.nix
@@ -127,7 +127,7 @@
             home-manager.nixosModules.home-manager
             agenix.nixosModules.default
 
-            ./modules/base.nix
+            (import ./modules/base.nix { inherit nixpkgs; })
             ./modules/bcachefs.nix
             ./modules/installed_base.nix
             ./modules/telegraf.nix
@@ -147,7 +147,7 @@
             home-manager.nixosModules.home-manager
             agenix.nixosModules.default
 
-            ./modules/base.nix
+            (import ./modules/base.nix { inherit nixpkgs; })
             ./modules/installed_base.nix
             ./modules/workstation.nix
             ./modules/telegraf.nix
@@ -166,7 +166,7 @@
             agenix.nixosModules.default
             nixos-hardware.nixosModules.raspberry-pi-4
 
-            ./modules/base.nix
+            (import ./modules/base.nix { inherit nixpkgs; })
             ./modules/installed_base.nix
             ./modules/telegraf.nix
             (import ./users/ramona.nix { inherit agenix; })
@@ -182,7 +182,7 @@
             agenix.nixosModules.default
 
             "${nixpkgs}/nixos/modules/installer/cd-dvd/installation-cd-minimal.nix"
-            ./modules/base.nix
+            (import ./modules/base.nix { inherit nixpkgs; })
             ./modules/bcachefs.nix
             ./modules/iso.nix
             (import ./users/ramona.nix { inherit agenix; })
