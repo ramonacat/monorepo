@@ -5,17 +5,17 @@
       file = ../../secrets/minio-tempo.age;
       group = "tempo-secrets";
       mode = "440";
-    };  
-    
+    };
+
     users.groups.tempo-secrets = { };
-    users.groups.tempo = {};
+    users.groups.tempo = { };
     users.users.tempo = {
       group = "tempo";
       isSystemUser = true;
     };
 
     systemd.tmpfiles.rules = [
-        "d '/var/tempo' - tempo tempo - -"
+      "d '/var/tempo' - tempo tempo - -"
     ];
 
     systemd.services.tempo.serviceConfig.EnvironmentFile = config.age.secrets.minio-tempo.path;
@@ -35,8 +35,8 @@
           receivers = {
             otlp = {
               protocols = {
-                "grpc" = {};
-                "http" = {};
+                "grpc" = { };
+                "http" = { };
               };
             };
           };

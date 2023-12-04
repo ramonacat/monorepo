@@ -12,14 +12,14 @@
       enableJIT = true;
 
       authentication = ''
-      #type database  DBuser  addresss    auth-method
-      local all       all                 trust
-      host  all       all     100.0.0.0/8 scram-sha-256
+        #type database  DBuser  addresss    auth-method
+        local all       all                 trust
+        host  all       all     100.0.0.0/8 scram-sha-256
       '';
 
       package = pkgs.postgresql_16;
       dataDir = "/mnt/nas3/postgresql/16/";
-      initdbArgs = ["--data-checksums" ];
+      initdbArgs = [ "--data-checksums" ];
       enableTCPIP = true;
       settings = {
         wal_level = "replica";

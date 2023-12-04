@@ -165,7 +165,7 @@
             home-manager.nixosModules.home-manager
             agenix.nixosModules.default
             nixos-hardware.nixosModules.raspberry-pi-4
-            
+
             ./modules/base.nix
             ./modules/installed_base.nix
             ./modules/telegraf.nix

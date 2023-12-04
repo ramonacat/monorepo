@@ -39,8 +39,15 @@
       };
     };
 
+
+    networking.firewall.allowedTCPPorts = [
+      # For syncthing
+      22000
+      # For VNC 
+      5900
+    ];
+
     # For syncthing
-    networking.firewall.allowedTCPPorts = [ 22000 ];
     networking.firewall.allowedUDPPorts = [ 22000 21027 ];
   };
 }
