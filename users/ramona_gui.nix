@@ -1,4 +1,4 @@
-{ barPackage }:
+{ barPackage, nix-vscode-extensions }:
 { lib, modulesPath, pkgs, ... }:
 {
   # colors: https://coolors.co/ff1885-19323c-9da2ab-f3de8a-988f2a
@@ -44,9 +44,21 @@
 
       programs.vscode = {
         enable = true;
-        extensions = with pkgs.vscode-extensions; [
-          timonwong.shellcheck
+        extensions = with nix-vscode-extensions.extensions.x86_64-linux.vscode-marketplace; [
+          # timonwong.shellcheck
+          # tamasfe.even-better-toml
+
+          panicbit.cargo
+          devsense.composer-php-vscode
+          ms-azuretools.vscode-docker
           tamasfe.even-better-toml
+          github.vscode-github-actions
+          ms-kubernetes-tools.vscode-kubernetes-tools
+          bbenoist.nix
+          jnoortheen.nix-ide
+          ms-ossdata.vscode-postgresql
+          arrterian.nix-env-selector
+
         ];
       };
 

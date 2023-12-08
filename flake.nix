@@ -12,9 +12,10 @@
       url = "github:nix-community/home-manager";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+    nix-vscode-extensions.url = "github:nix-community/nix-vscode-extensions";
   };
 
-  outputs = { self, nixpkgs, home-manager, rust-overlay, crane, nixos-hardware, agenix }:
+  outputs = { self, nixpkgs, home-manager, rust-overlay, crane, nixos-hardware, agenix, nix-vscode-extensions }:
     let
       overlays = [ (import rust-overlay) ];
       pkgs = import nixpkgs { inherit overlays; system = "x86_64-linux"; };
@@ -113,7 +114,7 @@
             ./modules/workstation.nix
             ./modules/telegraf.nix
             (import ./users/ramona.nix { inherit agenix; })
-            (import ./users/ramona_gui.nix { inherit barPackage; })
+            (import ./users/ramona_gui.nix { inherit barPackage nix-vscode-extensions; })
             ./machines/moonfall/hardware.nix
             ./machines/moonfall/networking.nix
             ./machines/moonfall/virtualisation.nix
@@ -152,7 +153,7 @@
             ./modules/workstation.nix
             ./modules/telegraf.nix
             (import ./users/ramona.nix { inherit agenix; })
-            (import ./users/ramona_gui.nix { inherit barPackage; })
+            (import ./users/ramona_gui.nix { inherit barPackage nix-vscode-extensions; })
             ./machines/angelsin/hardware.nix
             ./machines/angelsin/networking.nix
             ./machines/angelsin/users/ramona_gui.nix
