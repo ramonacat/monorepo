@@ -44,7 +44,23 @@
             path_smartctl = "$SMARTCTL_PATH";
             path_nvme = "$NVME_PATH";
           };
+          inputs.syslog = {
+            server = "tcp4://:6514";
+          };
         };
       };
+
+    services.rsyslogd = {
+      enable = true;
+      defaultConfig = ''
+        $ActionQueueType LinkedList # use asynchronous processing
+        # $ActionQueueFileName srvrfwd # set file name, also enables disk mode
+        $ActionResumeRetryCount -1 # infinite retries on insert failure
+        $ActionQueueSaveOnShutdown on # save in-memory data if rsyslog shuts down
+
+        # forward over tcp with octet framing according to RFC 5425
+        *.* @@(o)127.0.0.1:6514;RSYSLOG_SyslogProtocol23Format
+      '';
+    };
   };
 }
