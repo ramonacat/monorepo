@@ -2,10 +2,12 @@
 {
   config = {
     users.users.ramona = {
-      extraGroups = [ "libvirtd" ];
+      extraGroups = [ "libvirtd" "openrazer" ];
     };
-
     home-manager.users.ramona = {
+      home.packages = with pkgs; [
+        polychromatic
+      ];
       wayland.windowManager.sway = {
         extraConfigEarly = ''
           	'';
