@@ -5,7 +5,6 @@
     boot.initrd.kernelModules = [ ];
     boot.kernelModules = [ ];
     boot.extraModulePackages = [ ];
-    boot.kernelPackages = pkgs.linuxPackages_latest;
     boot.kernelPatches = [{
       name = "allow-devmem";
       patch = null;

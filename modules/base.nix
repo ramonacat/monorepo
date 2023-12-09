@@ -10,6 +10,7 @@
       # this is needed for iotop
       "delayacct"
     ];
+    boot.kernelPackages = pkgs.linuxPackages_testing;
     security.sudo.wheelNeedsPassword = false;
     nix.settings.trusted-users = [ "@wheel" ];
 
@@ -53,5 +54,8 @@
 
     # alter nixPath so legacy commands like nix-shell can find nixpkgs.
     nix.nixPath = [ "nixpkgs=/etc/channels/nixpkgs" "nixos-config=/etc/nixos/configuration.nix" "/nix/var/nix/profiles/per-user/root/channels" ];
+                  nixpkgs.config.permittedInsecurePackages = [
+                "electron-25.9.0"
+              ];
   };
 }
