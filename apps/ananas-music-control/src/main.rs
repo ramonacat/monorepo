@@ -20,11 +20,13 @@ use tracing_subscriber::{layer::SubscriberExt, util::SubscriberInitExt, Layer, R
 
 use crate::{
     epaper::{BufferedDrawTarget, EPaper, FlushableDrawTarget, RotatedDrawTarget},
+    gui::{Button, Position, TextBox},
     touch::EventCoalescer,
     touchpanel::TouchPanel,
 };
 
 mod epaper;
+mod gui;
 mod touch;
 mod touchpanel;
 
@@ -99,7 +101,7 @@ async fn main() {
     );
 
     let draw_target = BufferedDrawTarget::new(epaper);
-    let mut draw_target = RotatedDrawTarget::new(draw_target);
+    let draw_target = RotatedDrawTarget::new(draw_target);
 
     let font_lato = Font::from_bytes(
         include_bytes!("../resources/Lato-Regular.ttf") as &[u8],
@@ -111,44 +113,21 @@ async fn main() {
         FontSettings::default(),
     )
     .unwrap();
-    let fonts = &[font_lato, font_noto_emoji];
-    let mut layout = Layout::new(fontdue::layout::CoordinateSystem::PositiveYDown);
+    let fonts = vec![font_lato, font_noto_emoji];
+    let mut gui = gui::Gui::new(fonts, draw_target);
 
-    layout.append(fonts, &TextStyle::new("gżegżółką ", 10.0, 0));
-    layout.append(fonts, &TextStyle::new("🙀🥺", 50.0, 1));
+    gui.add_control(Button::new(Box::new(TextBox::new(
+        "XXX".to_string(),
+        20,
+        Position::new(1, 1),
+    ))));
+    gui.add_control(Button::new(Box::new(TextBox::new(
+        "YYY".to_string(),
+        20,
+        Position::new(1, 31),
+    ))));
 
-    let mut pixels = vec![];
-    for glyph in layout.glyphs() {
-        let (metrics, data) = fonts[glyph.font_index].rasterize_config(glyph.key);
-
-        for (i, c) in data.iter().enumerate() {
-            let pixel_x = (i % metrics.width) + glyph.x as usize;
-            let pixel_y = (i / metrics.width) + glyph.y as usize;
-
-            if *c > 63 {
-                pixels.push((pixel_x, pixel_y));
-            }
-        }
-    }
-
-    let max_x = pixels.iter().map(|x| x.0).max().unwrap();
-    let max_y = pixels.iter().map(|x| x.1).max().unwrap();
-
-    let rounded_width_in_bytes = (max_x + 7) / 8;
-
-    let mut bytes = vec![0u8; (1 + rounded_width_in_bytes) * (max_y)];
-
-    for (x, y) in pixels {
-        let pixel_index = (y * rounded_width_in_bytes * 8) + x;
-        bytes[pixel_index / 8] |= 1 << (7 - (pixel_index % 8));
-    }
-
-    let image_raw = ImageRaw::<BinaryColor>::new(&bytes, 8 * rounded_width_in_bytes as u32);
-    let image = Image::new(&image_raw, Point { x: 20, y: 20 });
-
-    image.draw(&mut draw_target).unwrap();
-
-    draw_target.flush();
+    gui.render();
 
     let (tx, mut rx) = unbounded_channel();
 
@@ -157,8 +136,16 @@ async fn main() {
     thread::spawn(|| coalescer.run());
 
     loop {
-        let touches = rx.recv().await;
+        let Some(touch) = rx.recv().await else {
+            continue;
+        };
 
-        println!("{:?}", touches);
+        match touch {
+            touch::Event::TouchEnded(ref pos) => {
+                // The positions are flipped, because the display is!
+                gui.handle_event(gui::Event::Touch(gui::Position::new(pos.y(), pos.x())))
+            }
+            touch::Event::TouchStarted(_) | touch::Event::TouchMoved(_) => {}
+        }
     }
 }

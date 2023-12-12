@@ -45,9 +45,6 @@
       programs.vscode = {
         enable = true;
         extensions = with nix-vscode-extensions.extensions.x86_64-linux.vscode-marketplace; [
-          # timonwong.shellcheck
-          # tamasfe.even-better-toml
-
           panicbit.cargo
           devsense.composer-php-vscode
           ms-azuretools.vscode-docker
@@ -58,7 +55,9 @@
           jnoortheen.nix-ide
           ms-ossdata.vscode-postgresql
           arrterian.nix-env-selector
-
+          rust-lang.rust-analyzer
+          bbenoist.nix
+          arrterian.nix-env-selector
         ];
       };
 

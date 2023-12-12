@@ -1,4 +1,7 @@
-use std::{thread::sleep, time::{Duration, SystemTime}};
+use std::{
+    thread::sleep,
+    time::{Duration, SystemTime},
+};
 
 use rppal::{
     gpio::{InputPin, Level, OutputPin},
@@ -68,7 +71,7 @@ impl TouchPanel {
         let mut buffer = [0u8; 1];
 
         let start = SystemTime::now();
-        
+
         loop {
             self.i2c.smbus_write_byte(0x81, 0x4E).unwrap();
             self.i2c.read(&mut buffer).unwrap();

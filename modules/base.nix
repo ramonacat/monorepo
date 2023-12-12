@@ -5,7 +5,11 @@
     (modulesPath + "/installer/scan/not-detected.nix")
   ];
 
-  config = {
+  config = 
+  let
+    nixpkgsPath = "/etc/channels/nixpkgs";
+  in
+  {
     boot.kernelParams = [
       # this is needed for iotop
       "delayacct"
@@ -53,9 +57,14 @@
     nix.registry.nixpkgs.flake = nixpkgs;
 
     # alter nixPath so legacy commands like nix-shell can find nixpkgs.
-    nix.nixPath = [ "nixpkgs=/etc/channels/nixpkgs" "nixos-config=/etc/nixos/configuration.nix" "/nix/var/nix/profiles/per-user/root/channels" ];
-                  nixpkgs.config.permittedInsecurePackages = [
-                "electron-25.9.0"
-              ];
+    nix.nixPath = [
+      "nixpkgs=${nixpkgsPath}"
+    ];
+    systemd.tmpfiles.rules = [
+      "L+ ${nixpkgsPath}  - - - - ${nixpkgs}"
+    ];
+    nixpkgs.config.permittedInsecurePackages = [
+      "electron-25.9.0"
+    ];
   };
 }

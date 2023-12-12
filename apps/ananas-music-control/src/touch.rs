@@ -15,6 +15,16 @@ pub struct Position {
     id: u8,
 }
 
+impl Position {
+    pub fn x(&self) -> usize {
+        self.x
+    }
+
+    pub fn y(&self) -> usize {
+        self.y
+    }
+}
+
 impl From<Touch> for Position {
     fn from(value: Touch) -> Self {
         Self {
@@ -74,8 +84,6 @@ impl EventCoalescer {
                     current_touches.remove(&key);
                 }
             }
-
-            // dbg!(&current_touches);
         }
     }
 }
