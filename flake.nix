@@ -20,6 +20,7 @@
       overlays = [ (import rust-overlay) ];
       pkgs = import nixpkgs { inherit overlays; system = "x86_64-linux"; };
       pkgsAarch64 = import nixpkgs { inherit overlays; system = "aarch64-linux"; };
+      pkgsCross = import nixpkgs { inherit overlays; localSystem = "x86_64-linux"; crossSystem = "aarch64-linux"; };
       craneLib = (crane.mkLib pkgs).overrideToolchain rustVersion;
       rustVersion = pkgs.rust-bin.stable.latest.default;
       rustVersionAarch64 = pkgsAarch64.rust-bin.stable.latest.default;
@@ -171,7 +172,7 @@
             ./modules/installed_base.nix
             ./modules/telegraf.nix
             (import ./users/ramona.nix { inherit agenix; })
-            ./machines/ananas/hardware.nix
+            (import ./machines/ananas/hardware.nix {inherit pkgsCross; })
             ./machines/ananas/networking.nix
             (import ./machines/ananas/music-control.nix { inherit ananasMusicControlPackage; })
           ];

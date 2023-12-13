@@ -1,3 +1,4 @@
+{ pkgsCross }:
 { config, pkgs, lib, ... }:
 {
   config = {
@@ -12,6 +13,7 @@
         STRICT_DEVMEM n
       '';
     }];
+    boot.kernelPackages = lib.mkForce pkgsCross.linuxPackages_testing;
     fileSystems."/" =
       {
         device = "/dev/disk/by-label/NIXOS_SD";
