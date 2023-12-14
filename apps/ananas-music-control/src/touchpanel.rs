@@ -16,9 +16,9 @@ pub struct TouchPanel {
 
 #[derive(Debug, PartialEq, Eq, Clone)]
 pub struct Touch {
-    pub x: usize,
-    pub y: usize,
-    pub strength: usize,
+    pub x: u32,
+    pub y: u32,
+    pub size: u32,
     pub track_id: u8,
 }
 
@@ -100,10 +100,9 @@ impl TouchPanel {
 
         for i in 0..touch_count as usize {
             touches.push(Touch {
-                x: ((buffer_touches[2 + 8 * i] as usize) << 8) + buffer_touches[1 + 8 * i] as usize,
-                y: ((buffer_touches[4 + 8 * i] as usize) << 8) + buffer_touches[3 + 8 * i] as usize,
-                strength: ((buffer_touches[6 + 8 * i] as usize) << 8)
-                    + buffer_touches[5 + 8 * i] as usize,
+                x: ((buffer_touches[2 + 8 * i] as u32) << 8) + buffer_touches[1 + 8 * i] as u32,
+                y: ((buffer_touches[4 + 8 * i] as u32) << 8) + buffer_touches[3 + 8 * i] as u32,
+                size: ((buffer_touches[6 + 8 * i] as u32) << 8) + buffer_touches[5 + 8 * i] as u32,
                 track_id: (buffer_touches[8 * i]),
             });
         }

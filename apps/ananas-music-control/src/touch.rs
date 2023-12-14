@@ -1,26 +1,23 @@
-use std::{
-    collections::{HashMap, HashSet},
-    thread::current,
-};
+use std::collections::{HashMap, HashSet};
 
-use tokio::sync::mpsc::{Sender, UnboundedSender};
+use tokio::sync::mpsc::UnboundedSender;
 
 use crate::touchpanel::{Touch, TouchPanel};
 
 #[derive(Debug)]
 pub struct Position {
-    x: usize,
-    y: usize,
-    strength: usize,
+    x: u32,
+    y: u32,
+    size: u32,
     id: u8,
 }
 
 impl Position {
-    pub fn x(&self) -> usize {
+    pub fn x(&self) -> u32 {
         self.x
     }
 
-    pub fn y(&self) -> usize {
+    pub fn y(&self) -> u32 {
         self.y
     }
 }
@@ -30,7 +27,7 @@ impl From<Touch> for Position {
         Self {
             x: value.x,
             y: value.y,
-            strength: value.strength,
+            size: value.size,
             id: value.track_id,
         }
     }

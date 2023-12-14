@@ -27,6 +27,7 @@
         hunspellDicts.pl_PL
         obsidian
         light
+        loupe
 
         factorio
         prismlauncher

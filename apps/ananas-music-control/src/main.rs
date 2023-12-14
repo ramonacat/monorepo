@@ -1,15 +1,6 @@
 use std::thread;
 
-use embedded_graphics::{
-    geometry::Point,
-    image::{Image, ImageRaw},
-    pixelcolor::BinaryColor,
-    Drawable,
-};
-use fontdue::{
-    layout::{Layout, TextStyle},
-    Font, FontSettings,
-};
+use fontdue::{Font, FontSettings};
 use opentelemetry::KeyValue;
 use opentelemetry_otlp::WithExportConfig;
 use opentelemetry_sdk::Resource;
@@ -19,8 +10,11 @@ use tracing::{info, level_filters::LevelFilter};
 use tracing_subscriber::{layer::SubscriberExt, util::SubscriberInitExt, Layer, Registry};
 
 use crate::{
-    epaper::{BufferedDrawTarget, EPaper, FlushableDrawTarget, RotatedDrawTarget},
-    gui::{Button, Position, TextBox},
+    epaper::{BufferedDrawTarget, EPaper, RotatedDrawTarget},
+    gui::{
+        controls::{Button, Text},
+        Dimensions, Position,
+    },
     touch::EventCoalescer,
     touchpanel::TouchPanel,
 };
@@ -116,15 +110,17 @@ async fn main() {
     let fonts = vec![font_lato, font_noto_emoji];
     let mut gui = gui::Gui::new(fonts, draw_target);
 
-    gui.add_control(Button::new(Box::new(TextBox::new(
+    gui.add_control(Button::new(Box::new(Text::new(
         "XXX".to_string(),
         20,
         Position::new(1, 1),
+        Dimensions::auto(),
     ))));
-    gui.add_control(Button::new(Box::new(TextBox::new(
+    gui.add_control(Button::new(Box::new(Text::new(
         "YYY".to_string(),
         20,
         Position::new(1, 31),
+        Dimensions::auto(),
     ))));
 
     gui.render();
