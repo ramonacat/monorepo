@@ -41,11 +41,23 @@ impl<TDrawTarget: DrawTarget<Color = BinaryColor, Error = TError>, TError: Error
     fn render(
         &self,
         target: &mut TDrawTarget,
-        dimension_override: Option<Dimensions>,
+        dimensions_override: Option<Dimensions>,
         position_override: Option<crate::gui::ComputedPosition>,
         fonts: &[fontdue::Font],
     ) -> crate::gui::BoundingBox {
-        let dimensions = dimension_override.unwrap_or(self.dimensions);
+        let dimensions = dimensions_override.map(|x| {
+            let width = match x.width {
+                Dimension::Auto => self.dimensions.width,
+                px@Dimension::Pixel(_) => px,
+            };
+
+            let height = match x.height {
+                Dimension::Auto => self.dimensions.height,
+                px@Dimension::Pixel(_) => px,
+            };
+
+            Dimensions { width, height }
+        }).unwrap_or(self.dimensions);
 
         let position_x = position_override.map(|p| p.0).unwrap_or_else(|| {
             match self.position {
@@ -79,7 +91,7 @@ impl<TDrawTarget: DrawTarget<Color = BinaryColor, Error = TError>, TError: Error
                 fonts,
             );
 
-            current_y += inner_bounding_box.position.1 + inner_bounding_box.dimensions.height;
+            current_y = inner_bounding_box.position.1 + inner_bounding_box.dimensions.height;
         }
 
         BoundingBox {

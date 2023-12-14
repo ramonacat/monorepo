@@ -1,4 +1,4 @@
-use std::thread;
+use std::{thread, path::PathBuf};
 
 use fontdue::{Font, FontSettings};
 use opentelemetry::KeyValue;
@@ -23,6 +23,7 @@ mod epaper;
 mod gui;
 mod touch;
 mod touchpanel;
+mod library;
 
 const EPAPER_RESET_PIN: u8 = 17;
 const EPAPER_DC_PIN: u8 = 25;
@@ -111,31 +112,29 @@ async fn main() {
     let mut gui = gui::Gui::new(fonts, draw_target);
 
     let mut stack_panel_children: Vec<Box<dyn Control<_, _>>> = vec![];
-    stack_panel_children.push(Box::new(Button::new(
-        Box::new(Text::new(
-            "XXX".to_string(),
-            20,
-            Position::FromParent,
-            Dimensions::auto(),
-        )),
-        Dimensions::new(gui::Dimension::Pixel(100), gui::Dimension::Pixel(25)),
-        Position::FromParent,
-    )));
 
-    stack_panel_children.push(Box::new(Button::new(
-        Box::new(Text::new(
-            "YYY".to_string(),
-            20,
+    let library = library::Library::new(PathBuf::from("/mnt/nas/Music/"));
+    let mut artists = library.list_artists();
+
+    artists.sort();
+
+    for artist in artists.iter().take(3) {
+        stack_panel_children.push(Box::new(Button::new(
+            Box::new(Text::new(
+                artist.clone(),
+                20,
+                Position::FromParent,
+                Dimensions::auto(),
+            )),
+            Dimensions::new(gui::Dimension::Auto, gui::Dimension::Pixel(35)),
             Position::FromParent,
-            Dimensions::auto(),
-        )),
-        Dimensions::new(gui::Dimension::Pixel(100), gui::Dimension::Pixel(25)),
-        Position::FromParent,
-    )));
+        )));
+
+    }
 
     gui.add_control(StackPanel::new(
         Position::Specified(0, 0),
-        Dimensions::new(gui::Dimension::Pixel(50), gui::Dimension::Auto),
+        Dimensions::new(gui::Dimension::Pixel(200), gui::Dimension::Auto),
         stack_panel_children,
     ));
 

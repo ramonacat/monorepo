@@ -113,6 +113,7 @@
             (import ./modules/base.nix { inherit nixpkgs; })
             ./modules/installed_base.nix
             ./modules/workstation.nix
+            ./modules/nas-client.nix
             ./modules/telegraf.nix
             (import ./users/ramona.nix { inherit agenix; })
             (import ./users/ramona_gui.nix { inherit barPackage nix-vscode-extensions; })
@@ -132,6 +133,7 @@
             (import ./modules/base.nix { inherit nixpkgs; })
             ./modules/bcachefs.nix
             ./modules/installed_base.nix
+            ./modules/nas-client.nix
             ./modules/telegraf.nix
             (import ./users/ramona.nix { inherit agenix; })
             ./machines/shadowmend/hardware.nix
@@ -153,6 +155,7 @@
             (import ./modules/base.nix { inherit nixpkgs; })
             ./modules/installed_base.nix
             ./modules/workstation.nix
+            ./modules/nas-client.nix
             ./modules/telegraf.nix
             (import ./users/ramona.nix { inherit agenix; })
             (import ./users/ramona_gui.nix { inherit barPackage nix-vscode-extensions; })
@@ -172,6 +175,7 @@
             (import ./modules/base.nix { inherit nixpkgs; })
             ./modules/installed_base.nix
             ./modules/telegraf.nix
+            ./modules/nas-client.nix
             (import ./users/ramona.nix { inherit agenix; })
             (import ./machines/ananas/hardware.nix {inherit pkgsCross; })
             ./machines/ananas/networking.nix

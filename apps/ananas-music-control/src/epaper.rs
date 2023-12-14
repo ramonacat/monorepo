@@ -206,11 +206,17 @@ impl DrawTarget for BufferedDrawTarget {
             let pixel_x_byte_index = pixel.0.x / 8;
             let pixel_x_bit_index = 7 - (pixel.0.x % 8);
 
+            let pixel_index = (pixel_x_byte_index + pixel.0.y * row_width_bytes as i32) as usize;
+            if pixel_index >= self.buffer.len() {
+                // The documentation for embedded_graphics requires us to ignore requests to draw pixels outside of the screen
+                continue;
+            }
+
             if pixel.1 == BinaryColor::Off {
-                self.buffer[(pixel_x_byte_index + pixel.0.y * row_width_bytes as i32) as usize] |=
+                self.buffer[pixel_index] |=
                     1 << pixel_x_bit_index;
             } else {
-                self.buffer[(pixel_x_byte_index + pixel.0.y * row_width_bytes as i32) as usize] &=
+                self.buffer[pixel_index] &=
                     !(1 << pixel_x_bit_index);
             }
         }

@@ -44,11 +44,23 @@ impl<TDrawTarget: DrawTarget<Color = BinaryColor, Error = TError>, TError: Error
     fn render(
         &self,
         target: &mut TDrawTarget,
-        dimension_override: Option<Dimensions>,
+        dimensions_override: Option<Dimensions>,
         position_override: Option<ComputedPosition>,
         fonts: &[Font],
     ) -> BoundingBox {
-        let dimensions = dimension_override.unwrap_or(self.dimensions);
+        let dimensions = dimensions_override.map(|x| {
+            let width = match x.width {
+                Dimension::Auto => self.dimensions.width,
+                px@Dimension::Pixel(_) => px,
+            };
+
+            let height = match x.height {
+                Dimension::Auto => self.dimensions.height,
+                px@Dimension::Pixel(_) => px,
+            };
+
+            Dimensions { width, height }
+        }).unwrap_or(self.dimensions);
 
         let forced_width = match dimensions.width {
             Dimension::Auto => Dimension::Auto,

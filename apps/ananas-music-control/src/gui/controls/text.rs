@@ -43,7 +43,19 @@ impl<TDrawTarget: DrawTarget<Color = BinaryColor, Error = TError>, TError: Error
         position_override: Option<ComputedPosition>,
         fonts: &[Font],
     ) -> BoundingBox {
-        let dimensions = dimensions_override.unwrap_or(self.dimensions);
+        let dimensions = dimensions_override.map(|x| {
+            let width = match x.width {
+                Dimension::Auto => self.dimensions.width,
+                px@Dimension::Pixel(_) => px,
+            };
+
+            let height = match x.height {
+                Dimension::Auto => self.dimensions.height,
+                px@Dimension::Pixel(_) => px,
+            };
+
+            Dimensions { width, height }
+        }).unwrap_or(self.dimensions);
 
         let position_x = position_override.map(|p| p.0).unwrap_or_else(|| {
             match self.position {
@@ -71,7 +83,7 @@ impl<TDrawTarget: DrawTarget<Color = BinaryColor, Error = TError>, TError: Error
                 let pixel_x = (i % metrics.width) + glyph.x as usize;
                 let pixel_y = (i / metrics.width) + glyph.y as usize;
 
-                if *c > 63 {
+                if *c > 0 {
                     pixels.push((pixel_x, pixel_y));
                 }
             }
@@ -102,7 +114,7 @@ impl<TDrawTarget: DrawTarget<Color = BinaryColor, Error = TError>, TError: Error
         let mut bytes = vec![0u8; ((1 + rounded_width_in_bytes) * visible_height) as usize];
 
         for (x, y) in pixels.iter() {
-            if *x > visible_width as usize || *y > visible_height as usize {
+            if *x >= visible_width as usize || *y >= visible_height as usize {
                 continue;
             }
 
@@ -114,7 +126,6 @@ impl<TDrawTarget: DrawTarget<Color = BinaryColor, Error = TError>, TError: Error
 
         let centered_position = {
             let centered_x = if let Dimension::Pixel(dimension_x) = dimensions.width {
-                println!("{:?} {:?}", dimension_x, visible_width);
                 (dimension_x - visible_width) / 2
             } else {
                 0
@@ -149,8 +160,6 @@ impl<TDrawTarget: DrawTarget<Color = BinaryColor, Error = TError>, TError: Error
     }
 
     fn on_touch(&mut self, _position: ComputedPosition) -> EventResult {
-        println!("Touch received");
-
         EventResult::NoChange
     }
 }
