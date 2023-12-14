@@ -8,16 +8,13 @@ use crate::epaper::FlushableDrawTarget;
 pub mod controls;
 
 #[derive(Debug, Clone, Copy)]
-pub struct Position {
-    x: u32,
-    y: u32,
+pub enum Position {
+    Specified(u32, u32),
+    FromParent
 }
 
-impl Position {
-    pub fn new(x: u32, y: u32) -> Self {
-        Self { x, y }
-    }
-}
+#[derive(Debug, Clone, Copy)]
+pub struct ComputedPosition(pub u32, pub u32);
 
 #[derive(Debug, Clone, Copy)]
 pub enum Dimension {
@@ -32,7 +29,11 @@ pub struct Dimensions {
 }
 
 impl Dimensions {
-    pub(crate) fn auto() -> Self {
+    pub fn new(width: Dimension, height: Dimension) -> Self {
+        Self { width, height }
+    }
+
+    pub fn auto() -> Self {
         Self {
             width: Dimension::Auto,
             height: Dimension::Auto,
@@ -48,16 +49,16 @@ pub struct ComputedDimensions {
 
 #[derive(Debug, Clone)]
 pub struct BoundingBox {
-    position: Position,
+    position: ComputedPosition,
     dimensions: ComputedDimensions,
 }
 
 impl BoundingBox {
-    fn contains(&self, position: Position) -> bool {
-        position.x > self.position.x
-            && position.x < self.position.x + self.dimensions.width
-            && position.y > self.position.y
-            && position.y < self.position.y + self.dimensions.height
+    fn contains(&self, position: ComputedPosition) -> bool {
+        position.0 > self.position.0
+            && position.0 < self.position.0 + self.dimensions.width
+            && position.1 > self.position.1
+            && position.1 < self.position.1 + self.dimensions.height
     }
 }
 
@@ -93,8 +94,6 @@ impl<
         for (control_index, bounding_box) in self.bounding_boxes.iter() {
             match event {
                 Event::Touch(position) => {
-                    println!("{:?} {:?}", bounding_box, position);
-
                     if bounding_box.contains(position) {
                         let result = self.controls[*control_index].on_touch(position);
 
@@ -111,7 +110,7 @@ impl<
 
         for control_index in &controls_to_redraw {
             let bounding_box =
-                self.controls[*control_index].render(&mut self.draw_target, &self.fonts);
+                self.controls[*control_index].render(&mut self.draw_target, None, None, &self.fonts);
             self.bounding_boxes.insert(*control_index, bounding_box);
         }
 
@@ -122,12 +121,9 @@ impl<
 
     pub fn render(&mut self) {
         for (control_index, control) in self.controls.iter().enumerate() {
-            let bounding_box =
-                self.controls[control_index].render(&mut self.draw_target, &self.fonts);
+            let bounding_box = control.render(&mut self.draw_target, None, None, &self.fonts);
             self.bounding_boxes
                 .insert(control_index, bounding_box.clone());
-
-            println!("BBox: {:?}", bounding_box);
         }
 
         self.draw_target.flush();
@@ -135,7 +131,7 @@ impl<
 }
 
 pub enum Event {
-    Touch(Position),
+    Touch(ComputedPosition),
 }
 
 pub enum EventResult {
@@ -148,6 +144,12 @@ pub trait Control<
     TError: Error + Debug,
 >
 {
-    fn render(&self, target: &mut TDrawTarget, fonts: &[Font]) -> BoundingBox;
-    fn on_touch(&mut self, position: Position) -> EventResult;
+    fn render(
+        &self,
+        target: &mut TDrawTarget,
+        dimension_override: Option<Dimensions>,
+        position_override: Option<ComputedPosition>,
+        fonts: &[Font],
+    ) -> BoundingBox;
+    fn on_touch(&mut self, position: ComputedPosition) -> EventResult;
 }

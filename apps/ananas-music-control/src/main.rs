@@ -110,18 +110,27 @@ async fn main() {
     let fonts = vec![font_lato, font_noto_emoji];
     let mut gui = gui::Gui::new(fonts, draw_target);
 
-    gui.add_control(Button::new(Box::new(Text::new(
-        "XXX".to_string(),
-        20,
-        Position::new(1, 1),
-        Dimensions::auto(),
-    ))));
-    gui.add_control(Button::new(Box::new(Text::new(
-        "YYY".to_string(),
-        20,
-        Position::new(1, 31),
-        Dimensions::auto(),
-    ))));
+    gui.add_control(Button::new(
+        Box::new(Text::new(
+            "XXX".to_string(),
+            20,
+            Position::FromParent,
+            Dimensions::auto(),
+        )),
+        Dimensions::new(gui::Dimension::Pixel(100), gui::Dimension::Pixel(25)),
+        Position::Specified(0, 0)
+    ));
+
+    gui.add_control(Button::new(
+        Box::new(Text::new(
+            "YYY".to_string(),
+            20,
+            Position::FromParent,
+            Dimensions::auto(),
+        )),
+        Dimensions::new(gui::Dimension::Pixel(100), gui::Dimension::Pixel(25)),
+        Position::Specified(0, 27)
+    ));
 
     gui.render();
 
@@ -139,7 +148,7 @@ async fn main() {
         match touch {
             touch::Event::TouchEnded(ref pos) => {
                 // The positions are flipped, because the display is!
-                gui.handle_event(gui::Event::Touch(gui::Position::new(pos.y(), pos.x())))
+                gui.handle_event(gui::Event::Touch(gui::ComputedPosition(pos.y(), pos.x())))
             }
             touch::Event::TouchStarted(_) | touch::Event::TouchMoved(_) => {}
         }
