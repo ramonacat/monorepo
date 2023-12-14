@@ -25,6 +25,8 @@
         wal_level = "replica";
         archive_mode = "on";
         archive_command = "${pkgs.wal-g}/bin/wal-g --config ${config.age.secrets."wal-g-config.env".path} wal-push %p";
+        shared_preload_libraries = "pg_stat_statements";
+        "pg_stat_statements.track" = "all";
       };
     };
   };
