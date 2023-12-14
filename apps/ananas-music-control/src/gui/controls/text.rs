@@ -1,21 +1,18 @@
 use std::fmt::Debug;
 use std::{cmp::min, error::Error};
 
-use embedded_graphics::{
-    draw_target::DrawTarget,
-    geometry::{Point, Size},
-    image::{Image, ImageRaw},
-    pixelcolor::BinaryColor,
-    primitives::{PrimitiveStyleBuilder, Rectangle, StyledDrawable},
-    Drawable,
-};
+use embedded_graphics::geometry::Point;
+use embedded_graphics::image::{Image, ImageRaw};
+use embedded_graphics::Drawable;
+use embedded_graphics::{draw_target::DrawTarget, pixelcolor::BinaryColor};
 use fontdue::{
     layout::{Layout, TextStyle},
     Font,
 };
 
-use super::{
-    BoundingBox, ComputedDimensions, Control, Dimension, Dimensions, EventResult, Position, ComputedPosition,
+use crate::gui::{
+    BoundingBox, ComputedDimensions, ComputedPosition, Control, Dimension, Dimensions, EventResult,
+    Position,
 };
 
 pub struct Text {
@@ -53,8 +50,8 @@ impl<TDrawTarget: DrawTarget<Color = BinaryColor, Error = TError>, TError: Error
                 Position::Specified(x, _) => x,
                 Position::FromParent => 0, // FIXME: should this be an error instead?
             }
-        });        
-        
+        });
+
         let position_y = position_override.map(|p| p.1).unwrap_or_else(|| {
             match self.position {
                 Position::Specified(_, y) => y,
@@ -84,13 +81,13 @@ impl<TDrawTarget: DrawTarget<Color = BinaryColor, Error = TError>, TError: Error
         let rendered_height = pixels.iter().map(|x| x.1).max().unwrap() as u32;
 
         let dimension_x = match dimensions.width {
-            super::Dimension::Auto => None,
-            super::Dimension::Pixel(px) => Some(px),
+            Dimension::Auto => None,
+            Dimension::Pixel(px) => Some(px),
         };
 
         let dimension_y = match dimensions.height {
-            super::Dimension::Auto => None,
-            super::Dimension::Pixel(px) => Some(px),
+            Dimension::Auto => None,
+            Dimension::Pixel(px) => Some(px),
         };
 
         let visible_width = dimension_x
@@ -155,104 +152,5 @@ impl<TDrawTarget: DrawTarget<Color = BinaryColor, Error = TError>, TError: Error
         println!("Touch received");
 
         EventResult::NoChange
-    }
-}
-
-pub struct Button<
-    TDrawTarget: DrawTarget<Color = BinaryColor, Error = TError>,
-    TError: Error + Debug,
-> {
-    content: Box<dyn Control<TDrawTarget, TError>>,
-    dimensions: Dimensions,
-    position: Position,
-}
-
-impl<TDrawTarget: DrawTarget<Color = BinaryColor, Error = TError>, TError: Error + Debug>
-    Button<TDrawTarget, TError>
-{
-    pub fn new(content: Box<dyn Control<TDrawTarget, TError>>, dimensions: Dimensions, position: Position) -> Self {
-        Self {
-            content,
-            dimensions,
-            position,
-        }
-    }
-}
-
-impl<TDrawTarget: DrawTarget<Color = BinaryColor, Error = TError>, TError: Error + Debug>
-    Control<TDrawTarget, TError> for Button<TDrawTarget, TError>
-{
-    fn render(
-        &self,
-        target: &mut TDrawTarget,
-        dimension_override: Option<Dimensions>,
-        position_override: Option<ComputedPosition>,
-        fonts: &[Font],
-    ) -> BoundingBox {
-        let forced_width = match self.dimensions.width {
-            super::Dimension::Auto => Dimension::Auto,
-            super::Dimension::Pixel(px) => Dimension::Pixel(px + 2),
-        };
-
-        let forced_height = match self.dimensions.height {
-            Dimension::Auto => Dimension::Auto,
-            Dimension::Pixel(px) => Dimension::Pixel(px),
-        };
-
-        let position_x = position_override.map(|p| p.0).unwrap_or_else(|| {
-            match self.position {
-                Position::Specified(x, _) => x,
-                Position::FromParent => 0, // FIXME: should this be an error instead?
-            }
-        });        
-        
-        let position_y = position_override.map(|p| p.1).unwrap_or_else(|| {
-            match self.position {
-                Position::Specified(_, y) => y,
-                Position::FromParent => 0, // FIXME: should this be an error instead?
-            }
-        });
-
-        let inner_position = ComputedPosition(position_x + 1, position_y + 1);
-
-        let inner_bounding_box = self.content.render(
-            target,
-            Some(Dimensions {
-                width: forced_width,
-                height: forced_height,
-            }),
-            Some(inner_position),
-            fonts,
-        );
-        let new_dimensions = ComputedDimensions {
-            width: inner_bounding_box.dimensions.width + 2,
-            height: inner_bounding_box.dimensions.height + 2,
-        };
-
-        let rectangle = Rectangle::new(
-            Point {
-                x: inner_position.0 as i32 - 1,
-                y: inner_position.1 as i32 - 1,
-            },
-            Size {
-                width: new_dimensions.width as u32,
-                height: new_dimensions.height as u32,
-            },
-        );
-        let style = PrimitiveStyleBuilder::new()
-            .stroke_alignment(embedded_graphics::primitives::StrokeAlignment::Inside)
-            .stroke_width(1)
-            .stroke_color(BinaryColor::On)
-            .build();
-        rectangle.draw_styled(&style, target).unwrap();
-
-        BoundingBox {
-            position: ComputedPosition(position_x, position_y),
-            dimensions: new_dimensions,
-        }
-    }
-
-    fn on_touch(&mut self, _position: ComputedPosition) -> EventResult {
-        todo!()
     }
 }

@@ -10,7 +10,7 @@ pub mod controls;
 #[derive(Debug, Clone, Copy)]
 pub enum Position {
     Specified(u32, u32),
-    FromParent
+    FromParent,
 }
 
 #[derive(Debug, Clone, Copy)]
@@ -109,8 +109,12 @@ impl<
         }
 
         for control_index in &controls_to_redraw {
-            let bounding_box =
-                self.controls[*control_index].render(&mut self.draw_target, None, None, &self.fonts);
+            let bounding_box = self.controls[*control_index].render(
+                &mut self.draw_target,
+                None,
+                None,
+                &self.fonts,
+            );
             self.bounding_boxes.insert(*control_index, bounding_box);
         }
 

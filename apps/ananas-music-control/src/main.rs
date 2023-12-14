@@ -12,8 +12,8 @@ use tracing_subscriber::{layer::SubscriberExt, util::SubscriberInitExt, Layer, R
 use crate::{
     epaper::{BufferedDrawTarget, EPaper, RotatedDrawTarget},
     gui::{
-        controls::{Button, Text},
-        Dimensions, Position,
+        controls::{button::Button, stack_panel::StackPanel, text::Text},
+        Control, Dimensions, Position,
     },
     touch::EventCoalescer,
     touchpanel::TouchPanel,
@@ -110,7 +110,8 @@ async fn main() {
     let fonts = vec![font_lato, font_noto_emoji];
     let mut gui = gui::Gui::new(fonts, draw_target);
 
-    gui.add_control(Button::new(
+    let mut stack_panel_children: Vec<Box<dyn Control<_, _>>> = vec![];
+    stack_panel_children.push(Box::new(Button::new(
         Box::new(Text::new(
             "XXX".to_string(),
             20,
@@ -118,10 +119,10 @@ async fn main() {
             Dimensions::auto(),
         )),
         Dimensions::new(gui::Dimension::Pixel(100), gui::Dimension::Pixel(25)),
-        Position::Specified(0, 0)
-    ));
+        Position::FromParent,
+    )));
 
-    gui.add_control(Button::new(
+    stack_panel_children.push(Box::new(Button::new(
         Box::new(Text::new(
             "YYY".to_string(),
             20,
@@ -129,7 +130,13 @@ async fn main() {
             Dimensions::auto(),
         )),
         Dimensions::new(gui::Dimension::Pixel(100), gui::Dimension::Pixel(25)),
-        Position::Specified(0, 27)
+        Position::FromParent,
+    )));
+
+    gui.add_control(StackPanel::new(
+        Position::Specified(0, 0),
+        Dimensions::new(gui::Dimension::Pixel(50), gui::Dimension::Auto),
+        stack_panel_children,
     ));
 
     gui.render();
