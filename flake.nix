@@ -148,6 +148,7 @@
           modules = [
             home-manager.nixosModules.home-manager
             agenix.nixosModules.default
+            nixos-hardware.nixosModules.framework-13-7040-amd
 
             (import ./modules/base.nix { inherit nixpkgs; })
             ./modules/installed_base.nix
