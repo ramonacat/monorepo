@@ -1,4 +1,4 @@
-use std::{thread, path::PathBuf};
+use std::{path::PathBuf, thread};
 
 use fontdue::{Font, FontSettings};
 use opentelemetry::KeyValue;
@@ -21,9 +21,9 @@ use crate::{
 
 mod epaper;
 mod gui;
+mod library;
 mod touch;
 mod touchpanel;
-mod library;
 
 const EPAPER_RESET_PIN: u8 = 17;
 const EPAPER_DC_PIN: u8 = 25;
@@ -129,7 +129,6 @@ async fn main() {
             Dimensions::new(gui::Dimension::Auto, gui::Dimension::Pixel(35)),
             Position::FromParent,
         )));
-
     }
 
     gui.add_control(StackPanel::new(
@@ -152,11 +151,11 @@ async fn main() {
         };
 
         match touch {
-            touch::Event::TouchEnded(ref pos) => {
+            touch::Event::Ended(ref pos) => {
                 // The positions are flipped, because the display is!
                 gui.handle_event(gui::Event::Touch(gui::ComputedPosition(pos.y(), pos.x())))
             }
-            touch::Event::TouchStarted(_) | touch::Event::TouchMoved(_) => {}
+            touch::Event::Started(_) | touch::Event::Moved(_) => {}
         }
     }
 }

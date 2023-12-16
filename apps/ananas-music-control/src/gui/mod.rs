@@ -6,6 +6,7 @@ use fontdue::Font;
 use crate::epaper::FlushableDrawTarget;
 
 pub mod controls;
+mod positioning;
 
 #[derive(Debug, Clone, Copy)]
 pub enum Position {
@@ -118,7 +119,7 @@ impl<
             self.bounding_boxes.insert(*control_index, bounding_box);
         }
 
-        if controls_to_redraw.len() > 0 {
+        if !controls_to_redraw.is_empty() {
             self.draw_target.flush();
         }
     }
@@ -138,6 +139,7 @@ pub enum Event {
     Touch(ComputedPosition),
 }
 
+#[allow(unused)]
 pub enum EventResult {
     NoChange,
     MustRedraw,

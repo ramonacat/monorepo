@@ -5,6 +5,7 @@ use tokio::sync::mpsc::UnboundedSender;
 use crate::touchpanel::{Touch, TouchPanel};
 
 #[derive(Debug)]
+#[allow(unused)]
 pub struct Position {
     x: u32,
     y: u32,
@@ -35,9 +36,9 @@ impl From<Touch> for Position {
 
 #[derive(Debug)]
 pub enum Event {
-    TouchStarted(Position),
-    TouchEnded(Position),
-    TouchMoved(Position),
+    Started(Position),
+    Ended(Position),
+    Moved(Position),
 }
 
 pub struct EventCoalescer {
@@ -63,12 +64,10 @@ impl EventCoalescer {
             for touch in touches {
                 if let Some(current_touch) = current_touches.get(&touch.track_id) {
                     if *current_touch != touch {
-                        self.tx.send(Event::TouchMoved(touch.into())).unwrap();
+                        self.tx.send(Event::Moved(touch.into())).unwrap();
                     }
                 } else {
-                    self.tx
-                        .send(Event::TouchStarted(touch.clone().into()))
-                        .unwrap();
+                    self.tx.send(Event::Started(touch.clone().into())).unwrap();
 
                     current_touches.insert(touch.track_id, touch);
                 }
@@ -76,7 +75,7 @@ impl EventCoalescer {
 
             for (key, value) in current_touches.clone() {
                 if !touches_in_current.contains(&key) {
-                    self.tx.send(Event::TouchEnded(value.into())).unwrap();
+                    self.tx.send(Event::Ended(value.into())).unwrap();
 
                     current_touches.remove(&key);
                 }

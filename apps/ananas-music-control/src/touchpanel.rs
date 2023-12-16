@@ -88,7 +88,7 @@ impl TouchPanel {
 
         let touch_count = buffer[0] & 0x0f;
 
-        if touch_count > 5 || touch_count < 1 {
+        if !(1..=5).contains(&touch_count) {
             return Some(vec![]);
         }
 

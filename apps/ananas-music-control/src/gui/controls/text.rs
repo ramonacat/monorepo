@@ -10,6 +10,7 @@ use fontdue::{
     Font,
 };
 
+use crate::gui::positioning::{compute_dimensions_with_override, compute_position_with_override};
 use crate::gui::{
     BoundingBox, ComputedDimensions, ComputedPosition, Control, Dimension, Dimensions, EventResult,
     Position,
@@ -43,33 +44,8 @@ impl<TDrawTarget: DrawTarget<Color = BinaryColor, Error = TError>, TError: Error
         position_override: Option<ComputedPosition>,
         fonts: &[Font],
     ) -> BoundingBox {
-        let dimensions = dimensions_override.map(|x| {
-            let width = match x.width {
-                Dimension::Auto => self.dimensions.width,
-                px@Dimension::Pixel(_) => px,
-            };
-
-            let height = match x.height {
-                Dimension::Auto => self.dimensions.height,
-                px@Dimension::Pixel(_) => px,
-            };
-
-            Dimensions { width, height }
-        }).unwrap_or(self.dimensions);
-
-        let position_x = position_override.map(|p| p.0).unwrap_or_else(|| {
-            match self.position {
-                Position::Specified(x, _) => x,
-                Position::FromParent => 0, // FIXME: should this be an error instead?
-            }
-        });
-
-        let position_y = position_override.map(|p| p.1).unwrap_or_else(|| {
-            match self.position {
-                Position::Specified(_, y) => y,
-                Position::FromParent => 0, // FIXME: should this be an error instead?
-            }
-        });
+        let dimensions = compute_dimensions_with_override(self.dimensions, dimensions_override);
+        let position = compute_position_with_override(self.position, position_override);
 
         let mut layout = Layout::new(fontdue::layout::CoordinateSystem::PositiveYDown);
 
@@ -129,13 +105,13 @@ impl<TDrawTarget: DrawTarget<Color = BinaryColor, Error = TError>, TError: Error
                 (dimension_x - visible_width) / 2
             } else {
                 0
-            } + position_x;
+            } + position.0;
 
             let centered_y = if let Dimension::Pixel(dimension_y) = dimensions.height {
                 (dimension_y - visible_height) / 2
             } else {
                 0
-            } + position_y;
+            } + position.1;
 
             ComputedPosition(centered_x, centered_y)
         };

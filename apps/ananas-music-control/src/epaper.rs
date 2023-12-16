@@ -213,11 +213,9 @@ impl DrawTarget for BufferedDrawTarget {
             }
 
             if pixel.1 == BinaryColor::Off {
-                self.buffer[pixel_index] |=
-                    1 << pixel_x_bit_index;
+                self.buffer[pixel_index] |= 1 << pixel_x_bit_index;
             } else {
-                self.buffer[pixel_index] &=
-                    !(1 << pixel_x_bit_index);
+                self.buffer[pixel_index] &= !(1 << pixel_x_bit_index);
             }
         }
 
@@ -256,7 +254,7 @@ impl<T: DrawTarget + OriginDimensions + FlushableDrawTarget> DrawTarget for Rota
             Pixel(
                 Point {
                     x: (inner_size.width - x.0.y as u32) as i32,
-                    y: x.0.x as i32,
+                    y: x.0.x,
                 },
                 x.1,
             )

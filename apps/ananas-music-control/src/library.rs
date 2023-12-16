@@ -1,7 +1,7 @@
 use std::path::PathBuf;
 
 pub struct Library {
-    path: PathBuf
+    path: PathBuf,
 }
 
 impl Library {
@@ -20,7 +20,7 @@ impl Library {
             }
 
             let name = subdirectory.file_name().to_string_lossy().to_string();
-            
+
             if name.starts_with('.') {
                 continue;
             }
