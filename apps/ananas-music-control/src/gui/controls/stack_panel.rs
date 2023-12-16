@@ -1,4 +1,4 @@
-use std::error::Error;
+use std::{error::Error, collections::HashMap};
 use std::fmt::Debug;
 
 use embedded_graphics::{draw_target::DrawTarget, pixelcolor::BinaryColor};
@@ -15,6 +15,7 @@ pub struct StackPanel<
     position: Position,
     dimensions: Dimensions,
     children: Vec<Box<dyn Control<TDrawTarget, TError>>>,
+    bounding_boxes: HashMap<usize, BoundingBox>
 }
 
 impl<TDrawTarget: DrawTarget<Color = BinaryColor, Error = TError>, TError: Error + Debug>
@@ -29,6 +30,7 @@ impl<TDrawTarget: DrawTarget<Color = BinaryColor, Error = TError>, TError: Error
             position,
             dimensions,
             children,
+            bounding_boxes: HashMap::new()
         }
     }
 }
@@ -37,7 +39,7 @@ impl<TDrawTarget: DrawTarget<Color = BinaryColor, Error = TError>, TError: Error
     Control<TDrawTarget, TError> for StackPanel<TDrawTarget, TError>
 {
     fn render(
-        &self,
+        &mut self,
         target: &mut TDrawTarget,
         dimensions_override: Option<Dimensions>,
         position_override: Option<crate::gui::ComputedPosition>,
@@ -53,7 +55,7 @@ impl<TDrawTarget: DrawTarget<Color = BinaryColor, Error = TError>, TError: Error
 
         let mut current_y = position.1;
 
-        for control in self.children.iter() {
+        for (index, control) in self.children.iter_mut().enumerate() {
             let inner_bounding_box = control.render(
                 target,
                 Some(Dimensions {
@@ -65,6 +67,8 @@ impl<TDrawTarget: DrawTarget<Color = BinaryColor, Error = TError>, TError: Error
             );
 
             current_y = inner_bounding_box.position.1 + inner_bounding_box.dimensions.height;
+
+            self.bounding_boxes.insert(index, inner_bounding_box);
         }
 
         BoundingBox {
@@ -76,7 +80,13 @@ impl<TDrawTarget: DrawTarget<Color = BinaryColor, Error = TError>, TError: Error
         }
     }
 
-    fn on_touch(&mut self, _position: crate::gui::ComputedPosition) -> crate::gui::EventResult {
-        todo!()
+    fn on_touch(&mut self, position: crate::gui::ComputedPosition) -> crate::gui::EventResult {
+        for (i, bounding_box) in self.bounding_boxes.iter() {
+           if bounding_box.contains(position)  {
+            return self.children.get_mut(*i).unwrap().on_touch(position);
+           }
+        }
+
+        return crate::gui::EventResult::NoChange;
     }
 }

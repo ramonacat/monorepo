@@ -125,7 +125,7 @@ impl<
     }
 
     pub fn render(&mut self) {
-        for (control_index, control) in self.controls.iter().enumerate() {
+        for (control_index, control) in self.controls.iter_mut().enumerate() {
             let bounding_box = control.render(&mut self.draw_target, None, None, &self.fonts);
             self.bounding_boxes
                 .insert(control_index, bounding_box.clone());
@@ -151,7 +151,7 @@ pub trait Control<
 >
 {
     fn render(
-        &self,
+        &mut self,
         target: &mut TDrawTarget,
         dimension_override: Option<Dimensions>,
         position_override: Option<ComputedPosition>,

@@ -43,7 +43,7 @@ impl<TDrawTarget: DrawTarget<Color = BinaryColor, Error = TError>, TError: Error
     Control<TDrawTarget, TError> for Button<TDrawTarget, TError>
 {
     fn render(
-        &self,
+        &mut self,
         target: &mut TDrawTarget,
         dimensions_override: Option<Dimensions>,
         position_override: Option<ComputedPosition>,
