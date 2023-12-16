@@ -8,6 +8,12 @@ use crate::gui::{
     BoundingBox, ComputedDimensions, ComputedPosition, Control, Dimension, Dimensions, Position,
 };
 
+#[derive(Debug, Eq, PartialEq)]
+pub enum Direction {
+    Vertical,
+    Horizontal
+}
+
 pub struct StackPanel<
     TDrawTarget: DrawTarget<Color = BinaryColor, Error = TError>,
     TError: Error + Debug,
@@ -15,7 +21,8 @@ pub struct StackPanel<
     position: Position,
     dimensions: Dimensions,
     children: Vec<Box<dyn Control<TDrawTarget, TError>>>,
-    bounding_boxes: HashMap<usize, BoundingBox>
+    bounding_boxes: HashMap<usize, BoundingBox>,
+    direction: Direction
 }
 
 impl<TDrawTarget: DrawTarget<Color = BinaryColor, Error = TError>, TError: Error + Debug>
@@ -25,12 +32,14 @@ impl<TDrawTarget: DrawTarget<Color = BinaryColor, Error = TError>, TError: Error
         position: Position,
         dimensions: Dimensions,
         children: Vec<Box<dyn Control<TDrawTarget, TError>>>,
+        direction: Direction
     ) -> Self {
         Self {
             position,
             dimensions,
             children,
-            bounding_boxes: HashMap::new()
+            bounding_boxes: HashMap::new(),
+            direction
         }
     }
 }
@@ -52,30 +61,41 @@ impl<TDrawTarget: DrawTarget<Color = BinaryColor, Error = TError>, TError: Error
             crate::gui::Dimension::Auto => 100, // FIXME: this should be based on the dimensions of the content as it renders!
             crate::gui::Dimension::Pixel(px) => px,
         };
+        
+        let height = match dimensions.height {
+            crate::gui::Dimension::Auto => 100, // FIXME: this should be based on the dimensions of the content as it renders!
+            crate::gui::Dimension::Pixel(px) => px,
+        };
 
+        let mut current_x = position.0;
         let mut current_y = position.1;
 
         for (index, control) in self.children.iter_mut().enumerate() {
             let inner_bounding_box = control.render(
                 target,
                 Some(Dimensions {
-                    width: Dimension::Pixel(width),
-                    height: Dimension::Auto,
+                    width: if self.direction == Direction::Horizontal { Dimension::Auto } else { Dimension::Pixel(width) },
+                    height: if self.direction == Direction::Horizontal { Dimension::Pixel(height) } else { Dimension::Auto },
                 }),
                 Some(ComputedPosition(position.0, current_y)),
                 fonts,
             );
 
-            current_y = inner_bounding_box.position.1 + inner_bounding_box.dimensions.height;
+            if self.direction == Direction::Horizontal {
+                current_x = inner_bounding_box.position.0 + inner_bounding_box.dimensions.width;
+            }
+            else {
+                current_y = inner_bounding_box.position.1 + inner_bounding_box.dimensions.height;
+            }
 
             self.bounding_boxes.insert(index, inner_bounding_box);
         }
 
         BoundingBox {
-            position: ComputedPosition(position.0, current_y),
+            position: ComputedPosition(position.0, position.1),
             dimensions: ComputedDimensions {
-                width,
-                height: current_y - position.1,
+                width: if self.direction == Direction::Horizontal { current_x - position.0 } else { width },
+                height: if self.direction == Direction::Horizontal { height } else { current_y - position.1 },
             },
         }
     }

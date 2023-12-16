@@ -49,7 +49,8 @@ TError: Error + Debug,
         let mut stack_panel = StackPanel::new(
             self.position,
             self.dimensions,
-            self.children.drain(0..self.show_items).collect() // FIXME: take the children back while destroying the parent, once rendering is complete
+            self.children.drain(0..self.show_items).collect(), // FIXME: take the children back while destroying the parent, once rendering is complete
+            super::stack_panel::Direction::Vertical
         );
 
         stack_panel.render(target, dimension_override, position_override, fonts)
