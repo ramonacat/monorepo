@@ -156,7 +156,8 @@ async fn main() {
         match touch {
             touch::Event::Ended(ref pos) => {
                 // The positions are flipped, because the display is!
-                gui.handle_event(gui::Event::Touch(gui::ComputedPosition(pos.y(), pos.x())))
+                // TODO 250 is the height of the epaper, move it to a constant or something!
+                gui.handle_event(gui::Event::Touch(gui::ComputedPosition(250 - pos.y(), pos.x())))
             }
             touch::Event::Started(_) | touch::Event::Moved(_) => {}
         }
