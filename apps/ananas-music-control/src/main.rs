@@ -12,7 +12,7 @@ use tracing_subscriber::{layer::SubscriberExt, util::SubscriberInitExt, Layer, R
 use crate::{
     epaper::{BufferedDrawTarget, EPaper, RotatedDrawTarget},
     gui::{
-        controls::{button::Button, stack_panel::StackPanel, text::Text},
+        controls::{button::Button, stack_panel::StackPanel, text::Text, item_scroller::ItemScroller},
         Control, Dimensions, Position,
     },
     touch::EventCoalescer,
@@ -111,15 +111,15 @@ async fn main() {
     let fonts = vec![font_lato, font_noto_emoji];
     let mut gui = gui::Gui::new(fonts, draw_target);
 
-    let mut stack_panel_children: Vec<Box<dyn Control<_, _>>> = vec![];
+    let mut item_scroller_children: Vec<Box<dyn Control<_, _>>> = vec![];
 
     let library = library::Library::new(PathBuf::from("/mnt/nas/Music/"));
     let mut artists = library.list_artists();
 
     artists.sort();
 
-    for artist in artists.iter().take(3) {
-        stack_panel_children.push(Box::new(Button::new(
+    for artist in artists.iter() {
+        item_scroller_children.push(Box::new(Button::new(
             Box::new(Text::new(
                 artist.clone(),
                 20,
@@ -131,10 +131,11 @@ async fn main() {
         )));
     }
 
-    gui.add_control(StackPanel::new(
+    gui.add_control(ItemScroller::new(
         Position::Specified(0, 0),
         Dimensions::new(gui::Dimension::Pixel(200), gui::Dimension::Auto),
-        stack_panel_children,
+        item_scroller_children,
+        3
     ));
 
     gui.render();
