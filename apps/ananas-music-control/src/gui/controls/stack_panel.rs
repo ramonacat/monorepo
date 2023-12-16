@@ -1,5 +1,5 @@
-use std::{error::Error, collections::HashMap};
 use std::fmt::Debug;
+use std::{collections::HashMap, error::Error};
 
 use embedded_graphics::{draw_target::DrawTarget, pixelcolor::BinaryColor};
 
@@ -11,7 +11,7 @@ use crate::gui::{
 #[derive(Debug, Eq, PartialEq)]
 pub enum Direction {
     Vertical,
-    Horizontal
+    Horizontal,
 }
 
 pub struct StackPanel<
@@ -22,7 +22,7 @@ pub struct StackPanel<
     dimensions: Dimensions,
     children: Vec<Box<dyn Control<TDrawTarget, TError>>>,
     bounding_boxes: HashMap<usize, BoundingBox>,
-    direction: Direction
+    direction: Direction,
 }
 
 impl<TDrawTarget: DrawTarget<Color = BinaryColor, Error = TError>, TError: Error + Debug>
@@ -32,14 +32,14 @@ impl<TDrawTarget: DrawTarget<Color = BinaryColor, Error = TError>, TError: Error
         position: Position,
         dimensions: Dimensions,
         children: Vec<Box<dyn Control<TDrawTarget, TError>>>,
-        direction: Direction
+        direction: Direction,
     ) -> Self {
         Self {
             position,
             dimensions,
             children,
             bounding_boxes: HashMap::new(),
-            direction
+            direction,
         }
     }
 }
@@ -61,7 +61,7 @@ impl<TDrawTarget: DrawTarget<Color = BinaryColor, Error = TError>, TError: Error
             crate::gui::Dimension::Auto => 100, // FIXME: this should be based on the dimensions of the content as it renders!
             crate::gui::Dimension::Pixel(px) => px,
         };
-        
+
         let height = match dimensions.height {
             crate::gui::Dimension::Auto => 100, // FIXME: this should be based on the dimensions of the content as it renders!
             crate::gui::Dimension::Pixel(px) => px,
@@ -74,17 +74,24 @@ impl<TDrawTarget: DrawTarget<Color = BinaryColor, Error = TError>, TError: Error
             let inner_bounding_box = control.render(
                 target,
                 Some(Dimensions {
-                    width: if self.direction == Direction::Horizontal { Dimension::Auto } else { Dimension::Pixel(width) },
-                    height: if self.direction == Direction::Horizontal { Dimension::Pixel(height) } else { Dimension::Auto },
+                    width: if self.direction == Direction::Horizontal {
+                        Dimension::Auto
+                    } else {
+                        Dimension::Pixel(width)
+                    },
+                    height: if self.direction == Direction::Horizontal {
+                        Dimension::Pixel(height)
+                    } else {
+                        Dimension::Auto
+                    },
                 }),
-                Some(ComputedPosition(position.0, current_y)),
+                Some(ComputedPosition(current_x, current_y)),
                 fonts,
             );
 
             if self.direction == Direction::Horizontal {
                 current_x = inner_bounding_box.position.0 + inner_bounding_box.dimensions.width;
-            }
-            else {
+            } else {
                 current_y = inner_bounding_box.position.1 + inner_bounding_box.dimensions.height;
             }
 
@@ -94,17 +101,25 @@ impl<TDrawTarget: DrawTarget<Color = BinaryColor, Error = TError>, TError: Error
         BoundingBox {
             position: ComputedPosition(position.0, position.1),
             dimensions: ComputedDimensions {
-                width: if self.direction == Direction::Horizontal { current_x - position.0 } else { width },
-                height: if self.direction == Direction::Horizontal { height } else { current_y - position.1 },
+                width: if self.direction == Direction::Horizontal {
+                    current_x - position.0
+                } else {
+                    width
+                },
+                height: if self.direction == Direction::Horizontal {
+                    height
+                } else {
+                    current_y - position.1
+                },
             },
         }
     }
 
     fn on_touch(&mut self, position: crate::gui::ComputedPosition) -> crate::gui::EventResult {
         for (i, bounding_box) in self.bounding_boxes.iter() {
-           if bounding_box.contains(position)  {
-            return self.children.get_mut(*i).unwrap().on_touch(position);
-           }
+            if bounding_box.contains(position) {
+                return self.children.get_mut(*i).unwrap().on_touch(position);
+            }
         }
 
         return crate::gui::EventResult::NoChange;

@@ -12,7 +12,9 @@ use tracing_subscriber::{layer::SubscriberExt, util::SubscriberInitExt, Layer, R
 use crate::{
     epaper::{BufferedDrawTarget, EPaper, RotatedDrawTarget},
     gui::{
-        controls::{button::Button, stack_panel::StackPanel, text::Text, item_scroller::ItemScroller},
+        controls::{
+            button::Button, item_scroller::ItemScroller, stack_panel::StackPanel, text::Text,
+        },
         Control, Dimensions, Position,
     },
     touch::EventCoalescer,
@@ -135,7 +137,7 @@ async fn main() {
         Position::Specified(0, 0),
         Dimensions::new(gui::Dimension::Pixel(200), gui::Dimension::Auto),
         item_scroller_children,
-        3
+        3,
     ));
 
     gui.render();
