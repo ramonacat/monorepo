@@ -5,8 +5,8 @@ use std::{collections::HashMap, error::Error};
 
 use embedded_graphics::{draw_target::DrawTarget, pixelcolor::BinaryColor};
 
-use crate::gui::{BoundingBox, Control, GuiCommand};
-use crate::gui::{Dimensions, Position};
+use crate::gui::{Control, GuiCommand, Rectangle};
+use crate::gui::{Dimensions, Point};
 
 #[derive(Debug, Eq, PartialEq, Clone, Copy)]
 pub enum Direction {
@@ -19,7 +19,7 @@ pub struct StackPanel<
     TError: Error + Debug,
 > {
     children: Vec<Box<dyn Control<TDrawTarget, TError>>>,
-    bounding_boxes: HashMap<usize, BoundingBox>,
+    bounding_boxes: HashMap<usize, Rectangle>,
     direction: Direction,
     command_channel: Option<Sender<GuiCommand>>,
 }
@@ -46,9 +46,9 @@ impl<
         &mut self,
         target: &mut TDrawTarget,
         dimensions: Dimensions,
-        position: Position,
+        position: Point,
         fonts: &[fontdue::Font],
-    ) -> crate::gui::BoundingBox {
+    ) {
         let render_result = crate::gui::layouts::stack::render_stack(
             target,
             self.children.iter_mut(),
@@ -58,14 +58,12 @@ impl<
             fonts,
         );
 
-        for (child_index, child_bounding_box) in render_result.0 {
+        for (child_index, child_bounding_box) in render_result {
             self.bounding_boxes.insert(child_index, child_bounding_box);
         }
-
-        render_result.1
     }
 
-    fn on_touch(&mut self, position: crate::gui::Position) {
+    fn on_touch(&mut self, position: crate::gui::Point) {
         for (i, bounding_box) in self.bounding_boxes.iter() {
             if bounding_box.contains(position) {
                 self.children.get_mut(*i).unwrap().on_touch(position);

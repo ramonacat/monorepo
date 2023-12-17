@@ -5,7 +5,7 @@ use std::sync::mpsc::{channel, Receiver, Sender};
 use embedded_graphics::{draw_target::DrawTarget, pixelcolor::BinaryColor};
 
 use crate::gui::layouts::stack::render_stack;
-use crate::gui::{BoundingBox, Dimensions, Position, Control, GuiCommand};
+use crate::gui::{Control, Dimensions, GuiCommand, Point, Rectangle};
 
 use super::button::Button;
 use super::stack_panel::StackPanel;
@@ -23,11 +23,11 @@ pub struct ItemScroller<
     children: Vec<Box<dyn Control<TDrawTarget, TError>>>,
     show_items: usize,
     buttons_stack_panel: StackPanel<TDrawTarget, TError>,
-    buttons_stack_panel_bounding_box: Option<BoundingBox>,
+    buttons_stack_panel_bounding_box: Option<Rectangle>,
     scroll_index: usize,
     scroll_rx: Receiver<ScrollRequest>,
     command_channel: Option<Sender<GuiCommand>>,
-    bounding_box: Option<BoundingBox>,
+    bounding_box: Option<Rectangle>,
 }
 impl<
         TDrawTarget: DrawTarget<Color = BinaryColor, Error = TError> + 'static,
@@ -82,18 +82,22 @@ impl<
         &mut self,
         target: &mut TDrawTarget,
         dimensions: Dimensions,
-        position: Position,
+        position: Point,
         fonts: &[fontdue::Font],
-    ) -> BoundingBox {
-        self.buttons_stack_panel_bounding_box = Some(self.buttons_stack_panel.render(
-            target,
-            Dimensions {
-                width: 30,
-                height: dimensions.height,
-            },
-            Position(position.0 + (dimensions.width - 30), position.1),
-            fonts,
-        ));
+    ) {
+        let buttons_dimensions = Dimensions {
+            width: 30,
+            height: dimensions.height,
+        };
+
+        let buttons_position = Point(position.0 + (dimensions.width - 30), position.1);
+
+        self.buttons_stack_panel
+            .render(target, buttons_dimensions, buttons_position, fonts);
+        self.buttons_stack_panel_bounding_box = Some(Rectangle {
+            position: buttons_position,
+            dimensions: buttons_dimensions,
+        });
 
         render_stack(
             target,
@@ -110,17 +114,15 @@ impl<
             fonts,
         );
 
-        let bounding_box = BoundingBox {
+        let bounding_box = Rectangle {
             position,
             dimensions,
         };
 
         self.bounding_box = Some(bounding_box.clone());
-
-        bounding_box
     }
 
-    fn on_touch(&mut self, position: crate::gui::Position) {
+    fn on_touch(&mut self, position: crate::gui::Point) {
         if let Some(buttons_bounding_box) = &self.buttons_stack_panel_bounding_box {
             if buttons_bounding_box.contains(position) {
                 self.buttons_stack_panel.on_touch(position);

@@ -2,7 +2,6 @@ use std::fmt::Debug;
 use std::sync::mpsc::Sender;
 use std::{cmp::min, error::Error};
 
-use embedded_graphics::geometry::Point;
 use embedded_graphics::image::{Image, ImageRaw};
 use embedded_graphics::Drawable;
 use embedded_graphics::{draw_target::DrawTarget, pixelcolor::BinaryColor};
@@ -11,7 +10,7 @@ use fontdue::{
     Font,
 };
 
-use crate::gui::{BoundingBox, Dimensions, Position, Control, GuiCommand};
+use crate::gui::{Control, Dimensions, GuiCommand, Point};
 
 pub struct Text {
     text: String,
@@ -71,9 +70,9 @@ impl<TDrawTarget: DrawTarget<Color = BinaryColor, Error = TError>, TError: Error
         &mut self,
         target: &mut TDrawTarget,
         dimensions: Dimensions,
-        position: Position,
+        position: Point,
         fonts: &[Font],
-    ) -> BoundingBox {
+    ) {
         let rendered_text = render_text(&self.text, self.font_size as f32, 0, fonts);
         let visible_width = min(rendered_text.width, dimensions.width);
         let visible_height = rendered_text.height;
@@ -92,31 +91,23 @@ impl<TDrawTarget: DrawTarget<Color = BinaryColor, Error = TError>, TError: Error
         }
 
         let image_raw = ImageRaw::<BinaryColor>::new(&bytes, 8 * rounded_width_in_bytes as u32);
-        let centered_position = Position(
+        let centered_position = Point(
             position.0 + (dimensions.width - visible_width) / 2,
             position.1 + (dimensions.height - visible_height) / 2,
         );
 
         let image = Image::new(
             &image_raw,
-            Point {
+            embedded_graphics::geometry::Point {
                 x: centered_position.0 as i32,
                 y: centered_position.1 as i32,
             },
         );
 
         image.draw(target).unwrap();
-
-        BoundingBox {
-            position: centered_position,
-            dimensions: Dimensions {
-                width: dimensions.width,
-                height: dimensions.height,
-            },
-        }
     }
 
-    fn on_touch(&mut self, _position: Position) {}
+    fn on_touch(&mut self, _position: Point) {}
 
     fn compute_dimensions(&mut self, fonts: &[Font]) -> crate::gui::Dimensions {
         let rendered_text = render_text(&self.text, self.font_size as f32, 0, fonts);

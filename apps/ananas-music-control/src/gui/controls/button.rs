@@ -1,6 +1,6 @@
 use embedded_graphics::{
     draw_target::DrawTarget,
-    geometry::{Point, Size},
+    geometry::Size,
     pixelcolor::BinaryColor,
     primitives::{PrimitiveStyleBuilder, Rectangle, StyledDrawable},
 };
@@ -8,7 +8,7 @@ use fontdue::Font;
 use std::fmt::Debug;
 use std::{error::Error, sync::mpsc::Sender};
 
-use crate::gui::{BoundingBox, Dimensions, Position, Control, GuiCommand};
+use crate::gui::{Control, Dimensions, GuiCommand, Point};
 
 pub struct Button<
     TDrawTarget: DrawTarget<Color = BinaryColor, Error = TError>,
@@ -41,11 +41,11 @@ impl<TDrawTarget: DrawTarget<Color = BinaryColor, Error = TError>, TError: Error
         &mut self,
         target: &mut TDrawTarget,
         dimensions: Dimensions,
-        position: Position,
+        position: Point,
         fonts: &[Font],
-    ) -> BoundingBox {
+    ) {
         let rectangle = Rectangle::new(
-            Point {
+            embedded_graphics::geometry::Point {
                 x: position.0 as i32,
                 y: position.1 as i32,
             },
@@ -68,17 +68,12 @@ impl<TDrawTarget: DrawTarget<Color = BinaryColor, Error = TError>, TError: Error
                 width: dimensions.width - 2,
                 height: dimensions.height - 2,
             },
-            Position(position.0 + 1, position.1 + 1),
+            Point(position.0 + 1, position.1 + 1),
             fonts,
         );
-
-        BoundingBox {
-            position,
-            dimensions,
-        }
     }
 
-    fn on_touch(&mut self, _position: Position) {
+    fn on_touch(&mut self, _position: Point) {
         (self.action)();
     }
 

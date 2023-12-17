@@ -3,9 +3,7 @@ use std::{collections::HashMap, error::Error};
 use embedded_graphics::{draw_target::DrawTarget, pixelcolor::BinaryColor};
 use fontdue::Font;
 
-use crate::gui::{
-    controls::stack_panel::Direction, BoundingBox, Dimensions, Position, Control,
-};
+use crate::gui::{controls::stack_panel::Direction, Control, Dimensions, Point, Rectangle};
 
 pub fn render_stack<
     'a,
@@ -15,10 +13,10 @@ pub fn render_stack<
     target: &mut TDrawTarget,
     items: impl Iterator<Item = &'a mut Box<dyn Control<TDrawTarget, TError>>>,
     dimensions: Dimensions,
-    position: Position,
+    position: Point,
     direction: Direction,
     fonts: &[Font],
-) -> (HashMap<usize, BoundingBox>, BoundingBox) {
+) -> HashMap<usize, Rectangle> {
     let mut bounding_boxes = HashMap::new();
 
     let mut current_x = position.0;
@@ -26,38 +24,36 @@ pub fn render_stack<
 
     for (index, control) in items.enumerate() {
         let control_size = control.compute_dimensions(fonts);
-        let inner_bounding_box = control.render(
-            target,
-            Dimensions {
-                width: if direction == Direction::Horizontal {
-                    control_size.width
-                } else {
-                    dimensions.width
-                },
-                height: if direction == Direction::Horizontal {
-                    dimensions.height
-                } else {
-                    control_size.height
-                },
+
+        let control_dimensions = Dimensions {
+            width: if direction == Direction::Horizontal {
+                control_size.width
+            } else {
+                dimensions.width
             },
-            Position(current_x, current_y),
-            fonts,
-        );
+            height: if direction == Direction::Horizontal {
+                dimensions.height
+            } else {
+                control_size.height
+            },
+        };
+        let control_position = Point(current_x, current_y);
+        control.render(target, control_dimensions, control_position, fonts);
 
         if direction == Direction::Horizontal {
-            current_x = inner_bounding_box.position.0 + control_size.width;
+            current_x = current_x + control_size.width;
         } else {
-            current_y = inner_bounding_box.position.1 + control_size.height;
+            current_y = current_y + control_size.height;
         }
 
-        bounding_boxes.insert(index, inner_bounding_box);
+        bounding_boxes.insert(
+            index,
+            Rectangle {
+                position: control_position,
+                dimensions: control_dimensions,
+            },
+        );
     }
 
-    (
-        bounding_boxes,
-        BoundingBox {
-            position: Position(position.0, position.1),
-            dimensions: dimensions,
-        },
-    )
+    bounding_boxes
 }

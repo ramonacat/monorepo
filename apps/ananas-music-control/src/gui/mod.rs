@@ -1,7 +1,8 @@
 use std::{
     error::Error,
     fmt::Debug,
-    sync::mpsc::{Receiver, Sender}, time::Duration,
+    sync::mpsc::{Receiver, Sender},
+    time::Duration,
 };
 
 use embedded_graphics::{draw_target::DrawTarget, pixelcolor::BinaryColor};
@@ -13,7 +14,7 @@ pub mod controls;
 mod layouts;
 
 #[derive(Debug, Clone, Copy)]
-pub struct Position(pub u32, pub u32);
+pub struct Point(pub u32, pub u32);
 
 #[derive(Debug, Clone, Copy)]
 pub struct Dimensions {
@@ -22,13 +23,13 @@ pub struct Dimensions {
 }
 
 #[derive(Debug, Clone)]
-pub struct BoundingBox {
-    position: Position,
+pub struct Rectangle {
+    position: Point,
     dimensions: Dimensions,
 }
 
-impl BoundingBox {
-    fn contains(&self, position: Position) -> bool {
+impl Rectangle {
+    fn contains(&self, position: Point) -> bool {
         position.0 > self.position.0
             && position.0 < self.position.0 + self.dimensions.width
             && position.1 > self.position.1
@@ -81,7 +82,7 @@ impl<
                 width: size.width,
                 height: size.height,
             },
-            Position(top_left.x as u32, top_left.y as u32),
+            Point(top_left.x as u32, top_left.y as u32),
             &self.fonts,
         );
 
@@ -124,12 +125,12 @@ impl<
 }
 
 pub enum Event {
-    Touch(Position),
+    Touch(Point),
 }
 
 #[derive(Debug)]
 pub enum GuiCommand {
-    Redraw(Position, Dimensions),
+    Redraw(Point, Dimensions),
 }
 
 pub trait Control<
@@ -144,8 +145,8 @@ pub trait Control<
         &mut self,
         target: &mut TDrawTarget,
         dimensions: Dimensions,
-        position: Position,
+        position: Point,
         fonts: &[Font],
-    ) -> BoundingBox;
-    fn on_touch(&mut self, position: Position);
+    );
+    fn on_touch(&mut self, position: Point);
 }
