@@ -109,7 +109,6 @@ async fn main() {
     )
     .unwrap();
     let fonts = vec![font_lato, font_noto_emoji];
-    let mut gui = gui::Gui::new(fonts, draw_target);
 
     let mut item_scroller_children: Vec<Box<dyn Control<_, _>>> = vec![];
 
@@ -130,7 +129,11 @@ async fn main() {
         )));
     }
 
-    gui.add_control(ItemScroller::new(item_scroller_children, 3));
+    let mut gui = gui::Gui::new(
+        fonts,
+        draw_target,
+        Box::new(ItemScroller::new(item_scroller_children, 3)),
+    );
 
     gui.render();
 

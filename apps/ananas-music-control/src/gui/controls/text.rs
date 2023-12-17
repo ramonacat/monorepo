@@ -91,8 +91,6 @@ impl<TDrawTarget: DrawTarget<Color = BinaryColor, Error = TError>, TError: Error
             position.1 + (dimensions.height - visible_height) / 2,
         );
 
-        println!("Text@{:?}", centered_position);
-
         let image = Image::new(
             &image_raw,
             Point {

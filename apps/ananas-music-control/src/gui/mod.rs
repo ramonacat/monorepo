@@ -1,4 +1,4 @@
-use std::{collections::HashMap, error::Error, fmt::Debug};
+use std::{error::Error, fmt::Debug};
 
 use embedded_graphics::{draw_target::DrawTarget, pixelcolor::BinaryColor};
 use fontdue::Font;
@@ -36,8 +36,7 @@ pub struct Gui<TDrawTarget: DrawTarget<Color = BinaryColor, Error = TError>, TEr
 {
     fonts: Vec<Font>,
     draw_target: TDrawTarget,
-    controls: Vec<Box<dyn Control<TDrawTarget, TError>>>,
-    bounding_boxes: HashMap<usize, BoundingBox>,
+    root_control: Box<dyn Control<TDrawTarget, TError>>,
 }
 
 impl<
@@ -45,76 +44,40 @@ impl<
         TError: Error + Debug,
     > Gui<TDrawTarget, TError>
 {
-    pub fn new(fonts: Vec<Font>, draw_target: TDrawTarget) -> Self {
+    pub fn new(
+        fonts: Vec<Font>,
+        draw_target: TDrawTarget,
+        root_control: Box<dyn Control<TDrawTarget, TError>>,
+    ) -> Self {
         Gui {
             fonts,
             draw_target,
-            controls: vec![],
-            bounding_boxes: HashMap::new(),
+            root_control,
         }
     }
-
-    pub fn add_control(&mut self, control: impl Control<TDrawTarget, TError> + 'static) {
-        self.controls.push(Box::new(control));
-    }
-
     pub fn handle_event(&mut self, event: Event) {
-        let mut controls_to_redraw = vec![];
-
-        for (control_index, bounding_box) in self.bounding_boxes.iter() {
-            match event {
-                Event::Touch(position) => {
-                    if bounding_box.contains(position) {
-                        let result = self.controls[*control_index].on_touch(position);
-
-                        match result {
-                            EventResult::NoChange => {}
-                            EventResult::MustRedraw => {
-                                controls_to_redraw.push(*control_index);
-                            }
-                        }
-                    }
-                }
-            };
+        match event {
+            Event::Touch(position) => {
+                self.root_control.on_touch(position);
+            }
         }
 
-        let top_left = self.draw_target.bounding_box().top_left;
-        let size = self.draw_target.bounding_box().size;
-        for control_index in &controls_to_redraw {
-            let bounding_box = self.controls[*control_index].render(
-                &mut self.draw_target,
-                ComputedDimensions {
-                    width: size.width,
-                    height: size.height,
-                },
-                ComputedPosition(top_left.x as u32, top_left.y as u32),
-                &self.fonts,
-            );
-            self.bounding_boxes.insert(*control_index, bounding_box);
-        }
-
-        if !controls_to_redraw.is_empty() {
-            self.draw_target.flush();
-        }
+        self.render();
     }
 
     pub fn render(&mut self) {
         let top_left = self.draw_target.bounding_box().top_left;
         let size = self.draw_target.bounding_box().size;
 
-        for (control_index, control) in self.controls.iter_mut().enumerate() {
-            let bounding_box = control.render(
-                &mut self.draw_target,
-                ComputedDimensions {
-                    width: size.width,
-                    height: size.height,
-                },
-                ComputedPosition(top_left.x as u32, top_left.y as u32),
-                &self.fonts,
-            );
-            self.bounding_boxes
-                .insert(control_index, bounding_box.clone());
-        }
+        self.root_control.render(
+            &mut self.draw_target,
+            ComputedDimensions {
+                width: size.width,
+                height: size.height,
+            },
+            ComputedPosition(top_left.x as u32, top_left.y as u32),
+            &self.fonts,
+        );
 
         self.draw_target.flush();
     }

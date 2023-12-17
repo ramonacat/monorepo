@@ -33,8 +33,6 @@ pub fn render_stack<
             fonts,
         );
 
-        println!("{:?} {:?} {:?}", index, control_size, inner_bounding_box);
-
         if direction == Direction::Horizontal {
             current_x = inner_bounding_box.position.0 + control_size.width;
         } else {
