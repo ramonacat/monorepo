@@ -83,7 +83,7 @@
       services.swayidle = {
         enable = true;
         timeouts = [
-          { timeout = 60; command = "${pkgs.sway}/bin/swaymsg \"output * dpms off\""; resumeCommand = "${pkgs.sway}/bin/swaymsg \"output * dpms on\""; }
+          { timeout = 540; command = "${pkgs.sway}/bin/swaymsg \"output * dpms off\""; resumeCommand = "${pkgs.sway}/bin/swaymsg \"output * dpms on\""; }
           { timeout = 600; command = "${pkgs.systemd}/bin/systemctl suspend"; }
         ];
       };
