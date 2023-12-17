@@ -53,6 +53,7 @@ impl<TDrawTarget: DrawTarget<Color = BinaryColor, Error = TError>, TError: Error
             .stroke_alignment(embedded_graphics::primitives::StrokeAlignment::Inside)
             .stroke_width(1)
             .stroke_color(BinaryColor::On)
+            .fill_color(BinaryColor::Off)
             .build();
         rectangle.draw_styled(&style, target).unwrap();
 
