@@ -3,6 +3,7 @@ use std::{collections::HashMap, error::Error};
 
 use embedded_graphics::{draw_target::DrawTarget, pixelcolor::BinaryColor};
 
+use crate::gui::{Dimension, ComputedDimensions};
 use crate::gui::{
     positioning::{compute_dimensions_with_override, compute_position_with_override},
     BoundingBox, Control, Dimensions, Position,
@@ -83,5 +84,19 @@ impl<
         }
 
         return crate::gui::EventResult::NoChange;
+    }
+
+    fn compute_dimensions(&mut self, fonts: &[fontdue::Font]) -> crate::gui::ComputedDimensions {
+        let width = match self.dimensions.width {
+            Dimension::Auto => 200,
+            Dimension::Pixel(px) => px,
+        };
+
+        let height = match self.dimensions.height {
+            Dimension::Auto => 100,
+            Dimension::Pixel(px) => px,
+        };
+
+        ComputedDimensions { width, height }
     }
 }

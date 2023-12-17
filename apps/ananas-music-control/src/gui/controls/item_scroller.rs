@@ -175,4 +175,18 @@ impl<
 
         return crate::gui::EventResult::NoChange;
     }
+
+    fn compute_dimensions(&mut self, fonts: &[fontdue::Font]) -> ComputedDimensions {
+        let width = match self.dimensions.width {
+            Dimension::Auto => 200,
+            Dimension::Pixel(px) => px,
+        };
+
+        let height = match self.dimensions.height {
+            Dimension::Auto => 100,
+            Dimension::Pixel(px) => px,
+        };
+
+        ComputedDimensions { width, height }
+    }
 }

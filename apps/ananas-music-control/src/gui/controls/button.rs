@@ -107,4 +107,10 @@ impl<TDrawTarget: DrawTarget<Color = BinaryColor, Error = TError>, TError: Error
     fn on_touch(&mut self, _position: ComputedPosition) -> EventResult {
         (self.action)()
     }
+
+    fn compute_dimensions(&mut self, fonts: &[Font]) -> crate::gui::ComputedDimensions  {
+        let from_child = self.content.compute_dimensions(fonts);
+
+        ComputedDimensions { width: from_child.width + 2, height: from_child.height + 2 }
+    }
 }

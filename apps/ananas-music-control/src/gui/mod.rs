@@ -146,11 +146,14 @@ pub enum EventResult {
     MustRedraw,
 }
 
+
 pub trait Control<
     TDrawTarget: DrawTarget<Color = BinaryColor, Error = TError>,
     TError: Error + Debug,
 >
 {
+    fn compute_dimensions(&mut self, fonts: &[Font]) -> ComputedDimensions;
+
     fn render(
         &mut self,
         target: &mut TDrawTarget,
