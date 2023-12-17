@@ -1,4 +1,5 @@
 use std::fmt::Debug;
+use std::sync::mpsc::Sender;
 use std::{cmp::min, error::Error};
 
 use embedded_graphics::geometry::Point;
@@ -10,16 +11,21 @@ use fontdue::{
     Font,
 };
 
-use crate::gui::{BoundingBox, ComputedDimensions, ComputedPosition, Control, EventResult};
+use crate::gui::{BoundingBox, ComputedDimensions, ComputedPosition, Control, GuiCommand};
 
 pub struct Text {
     text: String,
     font_size: usize,
+    command_channel: Option<Sender<GuiCommand>>,
 }
 
 impl Text {
     pub fn new(text: String, font_size: usize) -> Self {
-        Self { text, font_size }
+        Self {
+            text,
+            font_size,
+            command_channel: None,
+        }
     }
 }
 
@@ -110,9 +116,7 @@ impl<TDrawTarget: DrawTarget<Color = BinaryColor, Error = TError>, TError: Error
         }
     }
 
-    fn on_touch(&mut self, _position: ComputedPosition) -> EventResult {
-        EventResult::NoChange
-    }
+    fn on_touch(&mut self, _position: ComputedPosition) {}
 
     fn compute_dimensions(&mut self, fonts: &[Font]) -> crate::gui::ComputedDimensions {
         let rendered_text = render_text(&self.text, self.font_size as f32, 0, fonts);
@@ -121,5 +125,9 @@ impl<TDrawTarget: DrawTarget<Color = BinaryColor, Error = TError>, TError: Error
             width: rendered_text.width as u32,
             height: rendered_text.height as u32,
         }
+    }
+
+    fn register_command_channel(&mut self, tx: std::sync::mpsc::Sender<crate::gui::GuiCommand>) {
+        self.command_channel = Some(tx);
     }
 }

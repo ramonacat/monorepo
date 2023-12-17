@@ -1,6 +1,7 @@
-use std::collections::{HashMap, HashSet};
-
-use tokio::sync::mpsc::UnboundedSender;
+use std::{
+    collections::{HashMap, HashSet},
+    sync::mpsc::Sender,
+};
 
 use crate::touchpanel::{Touch, TouchPanel};
 
@@ -43,11 +44,11 @@ pub enum Event {
 
 pub struct EventCoalescer {
     panel: TouchPanel,
-    tx: UnboundedSender<Event>,
+    tx: Sender<Event>,
 }
 
 impl EventCoalescer {
-    pub fn new(panel: TouchPanel, tx: UnboundedSender<Event>) -> Self {
+    pub fn new(panel: TouchPanel, tx: Sender<Event>) -> Self {
         Self { panel, tx }
     }
 

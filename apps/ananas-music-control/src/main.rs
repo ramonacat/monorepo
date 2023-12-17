@@ -1,11 +1,10 @@
-use std::{path::PathBuf, thread};
+use std::{path::PathBuf, sync::mpsc::channel, thread};
 
 use fontdue::{Font, FontSettings};
 use opentelemetry::KeyValue;
 use opentelemetry_otlp::WithExportConfig;
 use opentelemetry_sdk::Resource;
 use rppal::{i2c::I2c, spi::Mode};
-use tokio::sync::mpsc::unbounded_channel;
 use tracing::{info, level_filters::LevelFilter};
 use tracing_subscriber::{layer::SubscriberExt, util::SubscriberInitExt, Layer, Registry};
 
@@ -124,40 +123,43 @@ async fn main() {
             Box::new(Text::new(artist.clone(), 20)),
             Box::new(move || {
                 println!("{:?}", artist_clone);
-                gui::EventResult::NoChange
             }),
         )));
     }
 
-    let mut gui = gui::Gui::new(
+    let (events_tx, events_rx) = channel();
+    let gui = gui::Gui::new(
         fonts,
         draw_target,
         Box::new(ItemScroller::new(item_scroller_children, 3)),
+        events_rx,
     );
 
-    gui.render();
-
-    let (tx, mut rx) = unbounded_channel();
-
+    let (tx, rx) = channel();
     let coalescer = EventCoalescer::new(touchpanel, tx);
-
     thread::spawn(|| coalescer.run());
 
-    loop {
-        let Some(touch) = rx.recv().await else {
-            continue;
-        };
-
-        match touch {
-            touch::Event::Ended(ref pos) => {
-                // The positions are flipped, because the display is!
-                // TODO 250 is the height of the epaper, move it to a constant or something!
-                gui.handle_event(gui::Event::Touch(gui::ComputedPosition(
-                    250 - pos.y(),
-                    pos.x(),
-                )))
+    thread::spawn(move || {
+        loop {
+            if let Ok(touch) = rx.recv() {
+                match touch {
+                    touch::Event::Ended(ref pos) => {
+                        // The positions are flipped, because the display is!
+                        // TODO 250 is the height of the epaper, move it to a constant or something!
+                        events_tx
+                            .send(gui::Event::Touch(gui::ComputedPosition(
+                                250 - pos.y(),
+                                pos.x(),
+                            )))
+                            .unwrap();
+                    }
+                    touch::Event::Started(_) | touch::Event::Moved(_) => {}
+                }
+            } else {
+                break;
             }
-            touch::Event::Started(_) | touch::Event::Moved(_) => {}
         }
-    }
+    });
+
+    gui.run();
 }

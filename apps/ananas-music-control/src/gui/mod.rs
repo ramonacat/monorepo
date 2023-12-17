@@ -1,4 +1,8 @@
-use std::{error::Error, fmt::Debug};
+use std::{
+    error::Error,
+    fmt::Debug,
+    sync::mpsc::{Receiver, Sender}, time::Duration,
+};
 
 use embedded_graphics::{draw_target::DrawTarget, pixelcolor::BinaryColor};
 use fontdue::Font;
@@ -37,6 +41,7 @@ pub struct Gui<TDrawTarget: DrawTarget<Color = BinaryColor, Error = TError>, TEr
     fonts: Vec<Font>,
     draw_target: TDrawTarget,
     root_control: Box<dyn Control<TDrawTarget, TError>>,
+    events_rx: Receiver<Event>,
 }
 
 impl<
@@ -48,24 +53,25 @@ impl<
         fonts: Vec<Font>,
         draw_target: TDrawTarget,
         root_control: Box<dyn Control<TDrawTarget, TError>>,
+        events_rx: Receiver<Event>,
     ) -> Self {
         Gui {
             fonts,
             draw_target,
             root_control,
+            events_rx,
         }
     }
-    pub fn handle_event(&mut self, event: Event) {
+
+    fn handle_event(&mut self, event: Event) {
         match event {
             Event::Touch(position) => {
                 self.root_control.on_touch(position);
             }
         }
-
-        self.render();
     }
 
-    pub fn render(&mut self) {
+    fn render(&mut self) {
         let top_left = self.draw_target.bounding_box().top_left;
         let size = self.draw_target.bounding_box().size;
 
@@ -81,16 +87,49 @@ impl<
 
         self.draw_target.flush();
     }
+
+    pub fn run(mut self) {
+        let (command_tx, command_rx) = std::sync::mpsc::channel();
+
+        self.root_control.register_command_channel(command_tx);
+        self.render();
+
+        loop {
+            if let Ok(event) = self.events_rx.recv_timeout(Duration::from_millis(50)) {
+                self.handle_event(event);
+            } else {
+                continue;
+            }
+
+            while let Ok(event) = self.events_rx.try_recv() {
+                self.handle_event(event);
+            }
+
+            let mut redraw = false;
+            while let Ok(command) = command_rx.try_recv() {
+                // TODO: Coalesce the events and do a partial redraw!
+
+                match command {
+                    GuiCommand::Redraw(_, _) => redraw = true,
+                }
+            }
+
+            if redraw {
+                self.render();
+            }
+
+            // todo sleep here?
+        }
+    }
 }
 
 pub enum Event {
     Touch(ComputedPosition),
 }
 
-#[allow(unused)]
-pub enum EventResult {
-    NoChange,
-    MustRedraw,
+#[derive(Debug)]
+pub enum GuiCommand {
+    Redraw(ComputedPosition, ComputedDimensions),
 }
 
 pub trait Control<
@@ -98,6 +137,7 @@ pub trait Control<
     TError: Error + Debug,
 >
 {
+    fn register_command_channel(&mut self, tx: Sender<GuiCommand>);
     fn compute_dimensions(&mut self, fonts: &[Font]) -> ComputedDimensions;
 
     fn render(
@@ -107,5 +147,5 @@ pub trait Control<
         position: ComputedPosition,
         fonts: &[Font],
     ) -> BoundingBox;
-    fn on_touch(&mut self, position: ComputedPosition) -> EventResult;
+    fn on_touch(&mut self, position: ComputedPosition);
 }

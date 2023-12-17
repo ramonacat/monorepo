@@ -5,17 +5,18 @@ use embedded_graphics::{
     primitives::{PrimitiveStyleBuilder, Rectangle, StyledDrawable},
 };
 use fontdue::Font;
-use std::error::Error;
 use std::fmt::Debug;
+use std::{error::Error, sync::mpsc::Sender};
 
-use crate::gui::{BoundingBox, ComputedDimensions, ComputedPosition, Control, EventResult};
+use crate::gui::{BoundingBox, ComputedDimensions, ComputedPosition, Control, GuiCommand};
 
 pub struct Button<
     TDrawTarget: DrawTarget<Color = BinaryColor, Error = TError>,
     TError: Error + Debug,
 > {
     content: Box<dyn Control<TDrawTarget, TError>>,
-    action: Box<dyn FnMut() -> EventResult>,
+    action: Box<dyn FnMut() -> ()>,
+    command_channel: Option<Sender<GuiCommand>>,
 }
 
 impl<TDrawTarget: DrawTarget<Color = BinaryColor, Error = TError>, TError: Error + Debug>
@@ -23,9 +24,13 @@ impl<TDrawTarget: DrawTarget<Color = BinaryColor, Error = TError>, TError: Error
 {
     pub fn new(
         content: Box<dyn Control<TDrawTarget, TError>>,
-        action: Box<dyn FnMut() -> EventResult>,
+        action: Box<dyn FnMut() -> ()>,
     ) -> Self {
-        Self { content, action }
+        Self {
+            content,
+            action,
+            command_channel: None,
+        }
     }
 }
 
@@ -73,8 +78,8 @@ impl<TDrawTarget: DrawTarget<Color = BinaryColor, Error = TError>, TError: Error
         }
     }
 
-    fn on_touch(&mut self, _position: ComputedPosition) -> EventResult {
-        (self.action)()
+    fn on_touch(&mut self, _position: ComputedPosition) {
+        (self.action)();
     }
 
     fn compute_dimensions(&mut self, fonts: &[Font]) -> crate::gui::ComputedDimensions {
@@ -84,5 +89,10 @@ impl<TDrawTarget: DrawTarget<Color = BinaryColor, Error = TError>, TError: Error
             width: from_child.width + 2,
             height: from_child.height + 2,
         }
+    }
+
+    fn register_command_channel(&mut self, tx: std::sync::mpsc::Sender<crate::gui::GuiCommand>) {
+        self.command_channel = Some(tx.clone());
+        self.content.register_command_channel(tx);
     }
 }

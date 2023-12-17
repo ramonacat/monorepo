@@ -1,10 +1,11 @@
 use std::cmp::max;
 use std::fmt::Debug;
+use std::sync::mpsc::Sender;
 use std::{collections::HashMap, error::Error};
 
 use embedded_graphics::{draw_target::DrawTarget, pixelcolor::BinaryColor};
 
-use crate::gui::{BoundingBox, Control};
+use crate::gui::{BoundingBox, Control, GuiCommand};
 use crate::gui::{ComputedDimensions, ComputedPosition};
 
 #[derive(Debug, Eq, PartialEq, Clone, Copy)]
@@ -20,6 +21,7 @@ pub struct StackPanel<
     children: Vec<Box<dyn Control<TDrawTarget, TError>>>,
     bounding_boxes: HashMap<usize, BoundingBox>,
     direction: Direction,
+    command_channel: Option<Sender<GuiCommand>>,
 }
 
 impl<TDrawTarget: DrawTarget<Color = BinaryColor, Error = TError>, TError: Error + Debug>
@@ -30,6 +32,7 @@ impl<TDrawTarget: DrawTarget<Color = BinaryColor, Error = TError>, TError: Error
             children,
             bounding_boxes: HashMap::new(),
             direction,
+            command_channel: None,
         }
     }
 }
@@ -62,14 +65,12 @@ impl<
         render_result.1
     }
 
-    fn on_touch(&mut self, position: crate::gui::ComputedPosition) -> crate::gui::EventResult {
+    fn on_touch(&mut self, position: crate::gui::ComputedPosition) {
         for (i, bounding_box) in self.bounding_boxes.iter() {
             if bounding_box.contains(position) {
-                return self.children.get_mut(*i).unwrap().on_touch(position);
+                self.children.get_mut(*i).unwrap().on_touch(position);
             }
         }
-
-        return crate::gui::EventResult::NoChange;
     }
 
     fn compute_dimensions(&mut self, fonts: &[fontdue::Font]) -> crate::gui::ComputedDimensions {
@@ -83,5 +84,13 @@ impl<
         }
 
         ComputedDimensions { width, height }
+    }
+
+    fn register_command_channel(&mut self, tx: std::sync::mpsc::Sender<crate::gui::GuiCommand>) {
+        self.command_channel = Some(tx.clone());
+
+        for child in self.children.iter_mut() {
+            child.register_command_channel(tx.clone());
+        }
     }
 }
