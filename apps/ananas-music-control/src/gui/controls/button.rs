@@ -21,6 +21,7 @@ pub struct Button<
     content: Box<dyn Control<TDrawTarget, TError>>,
     dimensions: Dimensions,
     position: Position,
+    action: Box<dyn FnMut() -> EventResult>,
 }
 
 impl<TDrawTarget: DrawTarget<Color = BinaryColor, Error = TError>, TError: Error + Debug>
@@ -30,11 +31,13 @@ impl<TDrawTarget: DrawTarget<Color = BinaryColor, Error = TError>, TError: Error
         content: Box<dyn Control<TDrawTarget, TError>>,
         dimensions: Dimensions,
         position: Position,
+        action: Box<dyn FnMut() -> EventResult>,
     ) -> Self {
         Self {
             content,
             dimensions,
             position,
+            action,
         }
     }
 }
@@ -102,6 +105,6 @@ impl<TDrawTarget: DrawTarget<Color = BinaryColor, Error = TError>, TError: Error
     }
 
     fn on_touch(&mut self, _position: ComputedPosition) -> EventResult {
-        todo!()
+        (self.action)()
     }
 }

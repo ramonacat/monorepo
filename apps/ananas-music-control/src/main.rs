@@ -12,9 +12,7 @@ use tracing_subscriber::{layer::SubscriberExt, util::SubscriberInitExt, Layer, R
 use crate::{
     epaper::{BufferedDrawTarget, EPaper, RotatedDrawTarget},
     gui::{
-        controls::{
-            button::Button, item_scroller::ItemScroller, stack_panel::StackPanel, text::Text,
-        },
+        controls::{button::Button, item_scroller::ItemScroller, text::Text},
         Control, Dimensions, Position,
     },
     touch::EventCoalescer,
@@ -121,6 +119,8 @@ async fn main() {
     artists.sort();
 
     for artist in artists.iter() {
+        let artist_clone = artist.clone();
+
         item_scroller_children.push(Box::new(Button::new(
             Box::new(Text::new(
                 artist.clone(),
@@ -130,6 +130,7 @@ async fn main() {
             )),
             Dimensions::new(gui::Dimension::Auto, gui::Dimension::Pixel(35)),
             Position::FromParent,
+            Box::new(move || {println!("{:?}", artist_clone); gui::EventResult::NoChange }),
         )));
     }
 
@@ -157,7 +158,10 @@ async fn main() {
             touch::Event::Ended(ref pos) => {
                 // The positions are flipped, because the display is!
                 // TODO 250 is the height of the epaper, move it to a constant or something!
-                gui.handle_event(gui::Event::Touch(gui::ComputedPosition(250 - pos.y(), pos.x())))
+                gui.handle_event(gui::Event::Touch(gui::ComputedPosition(
+                    250 - pos.y(),
+                    pos.x(),
+                )))
             }
             touch::Event::Started(_) | touch::Event::Moved(_) => {}
         }

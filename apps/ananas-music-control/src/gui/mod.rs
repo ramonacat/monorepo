@@ -6,6 +6,7 @@ use fontdue::Font;
 use crate::epaper::FlushableDrawTarget;
 
 pub mod controls;
+mod layouts;
 mod positioning;
 
 #[derive(Debug, Clone, Copy)]

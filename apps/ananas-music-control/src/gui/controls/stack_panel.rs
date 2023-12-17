@@ -5,10 +5,10 @@ use embedded_graphics::{draw_target::DrawTarget, pixelcolor::BinaryColor};
 
 use crate::gui::{
     positioning::{compute_dimensions_with_override, compute_position_with_override},
-    BoundingBox, ComputedDimensions, ComputedPosition, Control, Dimension, Dimensions, Position,
+    BoundingBox, Control, Dimensions, Position,
 };
 
-#[derive(Debug, Eq, PartialEq)]
+#[derive(Debug, Eq, PartialEq, Clone, Copy)]
 pub enum Direction {
     Vertical,
     Horizontal,
@@ -44,8 +44,10 @@ impl<TDrawTarget: DrawTarget<Color = BinaryColor, Error = TError>, TError: Error
     }
 }
 
-impl<TDrawTarget: DrawTarget<Color = BinaryColor, Error = TError>, TError: Error + Debug>
-    Control<TDrawTarget, TError> for StackPanel<TDrawTarget, TError>
+impl<
+        TDrawTarget: DrawTarget<Color = BinaryColor, Error = TError> + 'static,
+        TError: Error + Debug + 'static,
+    > Control<TDrawTarget, TError> for StackPanel<TDrawTarget, TError>
 {
     fn render(
         &mut self,
@@ -57,62 +59,20 @@ impl<TDrawTarget: DrawTarget<Color = BinaryColor, Error = TError>, TError: Error
         let dimensions = compute_dimensions_with_override(self.dimensions, dimensions_override);
         let position = compute_position_with_override(self.position, position_override);
 
-        let width = match dimensions.width {
-            crate::gui::Dimension::Auto => 100, // FIXME: this should be based on the dimensions of the content as it renders!
-            crate::gui::Dimension::Pixel(px) => px,
-        };
+        let render_result = crate::gui::layouts::stack::render_stack(
+            target,
+            self.children.iter_mut(),
+            dimensions,
+            position,
+            self.direction,
+            fonts,
+        );
 
-        let height = match dimensions.height {
-            crate::gui::Dimension::Auto => 100, // FIXME: this should be based on the dimensions of the content as it renders!
-            crate::gui::Dimension::Pixel(px) => px,
-        };
-
-        let mut current_x = position.0;
-        let mut current_y = position.1;
-
-        for (index, control) in self.children.iter_mut().enumerate() {
-            let inner_bounding_box = control.render(
-                target,
-                Some(Dimensions {
-                    width: if self.direction == Direction::Horizontal {
-                        Dimension::Auto
-                    } else {
-                        Dimension::Pixel(width)
-                    },
-                    height: if self.direction == Direction::Horizontal {
-                        Dimension::Pixel(height)
-                    } else {
-                        Dimension::Auto
-                    },
-                }),
-                Some(ComputedPosition(current_x, current_y)),
-                fonts,
-            );
-
-            if self.direction == Direction::Horizontal {
-                current_x = inner_bounding_box.position.0 + inner_bounding_box.dimensions.width;
-            } else {
-                current_y = inner_bounding_box.position.1 + inner_bounding_box.dimensions.height;
-            }
-
-            self.bounding_boxes.insert(index, inner_bounding_box);
+        for (child_index, child_bounding_box) in render_result.0 {
+            self.bounding_boxes.insert(child_index, child_bounding_box);
         }
 
-        BoundingBox {
-            position: ComputedPosition(position.0, position.1),
-            dimensions: ComputedDimensions {
-                width: if self.direction == Direction::Horizontal {
-                    current_x - position.0
-                } else {
-                    width
-                },
-                height: if self.direction == Direction::Horizontal {
-                    height
-                } else {
-                    current_y - position.1
-                },
-            },
-        }
+        render_result.1
     }
 
     fn on_touch(&mut self, position: crate::gui::ComputedPosition) -> crate::gui::EventResult {
