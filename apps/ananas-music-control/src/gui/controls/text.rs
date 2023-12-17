@@ -11,7 +11,7 @@ use fontdue::{
     Font,
 };
 
-use crate::gui::{BoundingBox, ComputedDimensions, ComputedPosition, Control, GuiCommand};
+use crate::gui::{BoundingBox, Dimensions, Position, Control, GuiCommand};
 
 pub struct Text {
     text: String,
@@ -70,8 +70,8 @@ impl<TDrawTarget: DrawTarget<Color = BinaryColor, Error = TError>, TError: Error
     fn render(
         &mut self,
         target: &mut TDrawTarget,
-        dimensions: ComputedDimensions,
-        position: ComputedPosition,
+        dimensions: Dimensions,
+        position: Position,
         fonts: &[Font],
     ) -> BoundingBox {
         let rendered_text = render_text(&self.text, self.font_size as f32, 0, fonts);
@@ -92,7 +92,7 @@ impl<TDrawTarget: DrawTarget<Color = BinaryColor, Error = TError>, TError: Error
         }
 
         let image_raw = ImageRaw::<BinaryColor>::new(&bytes, 8 * rounded_width_in_bytes as u32);
-        let centered_position = ComputedPosition(
+        let centered_position = Position(
             position.0 + (dimensions.width - visible_width) / 2,
             position.1 + (dimensions.height - visible_height) / 2,
         );
@@ -109,19 +109,19 @@ impl<TDrawTarget: DrawTarget<Color = BinaryColor, Error = TError>, TError: Error
 
         BoundingBox {
             position: centered_position,
-            dimensions: ComputedDimensions {
+            dimensions: Dimensions {
                 width: dimensions.width,
                 height: dimensions.height,
             },
         }
     }
 
-    fn on_touch(&mut self, _position: ComputedPosition) {}
+    fn on_touch(&mut self, _position: Position) {}
 
-    fn compute_dimensions(&mut self, fonts: &[Font]) -> crate::gui::ComputedDimensions {
+    fn compute_dimensions(&mut self, fonts: &[Font]) -> crate::gui::Dimensions {
         let rendered_text = render_text(&self.text, self.font_size as f32, 0, fonts);
 
-        ComputedDimensions {
+        Dimensions {
             width: rendered_text.width as u32,
             height: rendered_text.height as u32,
         }

@@ -13,22 +13,22 @@ pub mod controls;
 mod layouts;
 
 #[derive(Debug, Clone, Copy)]
-pub struct ComputedPosition(pub u32, pub u32);
+pub struct Position(pub u32, pub u32);
 
 #[derive(Debug, Clone, Copy)]
-pub struct ComputedDimensions {
+pub struct Dimensions {
     width: u32,
     height: u32,
 }
 
 #[derive(Debug, Clone)]
 pub struct BoundingBox {
-    position: ComputedPosition,
-    dimensions: ComputedDimensions,
+    position: Position,
+    dimensions: Dimensions,
 }
 
 impl BoundingBox {
-    fn contains(&self, position: ComputedPosition) -> bool {
+    fn contains(&self, position: Position) -> bool {
         position.0 > self.position.0
             && position.0 < self.position.0 + self.dimensions.width
             && position.1 > self.position.1
@@ -77,11 +77,11 @@ impl<
 
         self.root_control.render(
             &mut self.draw_target,
-            ComputedDimensions {
+            Dimensions {
                 width: size.width,
                 height: size.height,
             },
-            ComputedPosition(top_left.x as u32, top_left.y as u32),
+            Position(top_left.x as u32, top_left.y as u32),
             &self.fonts,
         );
 
@@ -124,12 +124,12 @@ impl<
 }
 
 pub enum Event {
-    Touch(ComputedPosition),
+    Touch(Position),
 }
 
 #[derive(Debug)]
 pub enum GuiCommand {
-    Redraw(ComputedPosition, ComputedDimensions),
+    Redraw(Position, Dimensions),
 }
 
 pub trait Control<
@@ -138,14 +138,14 @@ pub trait Control<
 >
 {
     fn register_command_channel(&mut self, tx: Sender<GuiCommand>);
-    fn compute_dimensions(&mut self, fonts: &[Font]) -> ComputedDimensions;
+    fn compute_dimensions(&mut self, fonts: &[Font]) -> Dimensions;
 
     fn render(
         &mut self,
         target: &mut TDrawTarget,
-        dimensions: ComputedDimensions,
-        position: ComputedPosition,
+        dimensions: Dimensions,
+        position: Position,
         fonts: &[Font],
     ) -> BoundingBox;
-    fn on_touch(&mut self, position: ComputedPosition);
+    fn on_touch(&mut self, position: Position);
 }

@@ -147,7 +147,7 @@ async fn main() {
                         // The positions are flipped, because the display is!
                         // TODO 250 is the height of the epaper, move it to a constant or something!
                         events_tx
-                            .send(gui::Event::Touch(gui::ComputedPosition(
+                            .send(gui::Event::Touch(gui::Position(
                                 250 - pos.y(),
                                 pos.x(),
                             )))

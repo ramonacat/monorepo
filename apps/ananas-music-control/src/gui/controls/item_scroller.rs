@@ -5,7 +5,7 @@ use std::sync::mpsc::{channel, Receiver, Sender};
 use embedded_graphics::{draw_target::DrawTarget, pixelcolor::BinaryColor};
 
 use crate::gui::layouts::stack::render_stack;
-use crate::gui::{BoundingBox, ComputedDimensions, ComputedPosition, Control, GuiCommand};
+use crate::gui::{BoundingBox, Dimensions, Position, Control, GuiCommand};
 
 use super::button::Button;
 use super::stack_panel::StackPanel;
@@ -81,17 +81,17 @@ impl<
     fn render(
         &mut self,
         target: &mut TDrawTarget,
-        dimensions: ComputedDimensions,
-        position: ComputedPosition,
+        dimensions: Dimensions,
+        position: Position,
         fonts: &[fontdue::Font],
     ) -> BoundingBox {
         self.buttons_stack_panel_bounding_box = Some(self.buttons_stack_panel.render(
             target,
-            ComputedDimensions {
+            Dimensions {
                 width: 30,
                 height: dimensions.height,
             },
-            ComputedPosition(position.0 + (dimensions.width - 30), position.1),
+            Position(position.0 + (dimensions.width - 30), position.1),
             fonts,
         ));
 
@@ -101,7 +101,7 @@ impl<
                 .iter_mut()
                 .skip(self.scroll_index)
                 .take(self.show_items),
-            ComputedDimensions {
+            Dimensions {
                 width: dimensions.width - 30,
                 height: dimensions.height,
             },
@@ -120,7 +120,7 @@ impl<
         bounding_box
     }
 
-    fn on_touch(&mut self, position: crate::gui::ComputedPosition) {
+    fn on_touch(&mut self, position: crate::gui::Position) {
         if let Some(buttons_bounding_box) = &self.buttons_stack_panel_bounding_box {
             if buttons_bounding_box.contains(position) {
                 self.buttons_stack_panel.on_touch(position);
@@ -159,8 +159,8 @@ impl<
         }
     }
 
-    fn compute_dimensions(&mut self, _fonts: &[fontdue::Font]) -> ComputedDimensions {
-        ComputedDimensions {
+    fn compute_dimensions(&mut self, _fonts: &[fontdue::Font]) -> Dimensions {
+        Dimensions {
             width: 30,
             height: 30,
         }

@@ -4,7 +4,7 @@ use embedded_graphics::{draw_target::DrawTarget, pixelcolor::BinaryColor};
 use fontdue::Font;
 
 use crate::gui::{
-    controls::stack_panel::Direction, BoundingBox, ComputedDimensions, ComputedPosition, Control,
+    controls::stack_panel::Direction, BoundingBox, Dimensions, Position, Control,
 };
 
 pub fn render_stack<
@@ -14,8 +14,8 @@ pub fn render_stack<
 >(
     target: &mut TDrawTarget,
     items: impl Iterator<Item = &'a mut Box<dyn Control<TDrawTarget, TError>>>,
-    dimensions: ComputedDimensions,
-    position: ComputedPosition,
+    dimensions: Dimensions,
+    position: Position,
     direction: Direction,
     fonts: &[Font],
 ) -> (HashMap<usize, BoundingBox>, BoundingBox) {
@@ -28,7 +28,7 @@ pub fn render_stack<
         let control_size = control.compute_dimensions(fonts);
         let inner_bounding_box = control.render(
             target,
-            ComputedDimensions {
+            Dimensions {
                 width: if direction == Direction::Horizontal {
                     control_size.width
                 } else {
@@ -40,7 +40,7 @@ pub fn render_stack<
                     control_size.height
                 },
             },
-            ComputedPosition(current_x, current_y),
+            Position(current_x, current_y),
             fonts,
         );
 
@@ -56,7 +56,7 @@ pub fn render_stack<
     (
         bounding_boxes,
         BoundingBox {
-            position: ComputedPosition(position.0, position.1),
+            position: Position(position.0, position.1),
             dimensions: dimensions,
         },
     )

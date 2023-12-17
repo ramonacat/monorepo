@@ -8,7 +8,7 @@ use fontdue::Font;
 use std::fmt::Debug;
 use std::{error::Error, sync::mpsc::Sender};
 
-use crate::gui::{BoundingBox, ComputedDimensions, ComputedPosition, Control, GuiCommand};
+use crate::gui::{BoundingBox, Dimensions, Position, Control, GuiCommand};
 
 pub struct Button<
     TDrawTarget: DrawTarget<Color = BinaryColor, Error = TError>,
@@ -40,8 +40,8 @@ impl<TDrawTarget: DrawTarget<Color = BinaryColor, Error = TError>, TError: Error
     fn render(
         &mut self,
         target: &mut TDrawTarget,
-        dimensions: ComputedDimensions,
-        position: ComputedPosition,
+        dimensions: Dimensions,
+        position: Position,
         fonts: &[Font],
     ) -> BoundingBox {
         let rectangle = Rectangle::new(
@@ -64,11 +64,11 @@ impl<TDrawTarget: DrawTarget<Color = BinaryColor, Error = TError>, TError: Error
 
         self.content.render(
             target,
-            ComputedDimensions {
+            Dimensions {
                 width: dimensions.width - 2,
                 height: dimensions.height - 2,
             },
-            ComputedPosition(position.0 + 1, position.1 + 1),
+            Position(position.0 + 1, position.1 + 1),
             fonts,
         );
 
@@ -78,14 +78,14 @@ impl<TDrawTarget: DrawTarget<Color = BinaryColor, Error = TError>, TError: Error
         }
     }
 
-    fn on_touch(&mut self, _position: ComputedPosition) {
+    fn on_touch(&mut self, _position: Position) {
         (self.action)();
     }
 
-    fn compute_dimensions(&mut self, fonts: &[Font]) -> crate::gui::ComputedDimensions {
+    fn compute_dimensions(&mut self, fonts: &[Font]) -> crate::gui::Dimensions {
         let from_child = self.content.compute_dimensions(fonts);
 
-        ComputedDimensions {
+        Dimensions {
             width: from_child.width + 2,
             height: from_child.height + 2,
         }

@@ -6,7 +6,7 @@ use std::{collections::HashMap, error::Error};
 use embedded_graphics::{draw_target::DrawTarget, pixelcolor::BinaryColor};
 
 use crate::gui::{BoundingBox, Control, GuiCommand};
-use crate::gui::{ComputedDimensions, ComputedPosition};
+use crate::gui::{Dimensions, Position};
 
 #[derive(Debug, Eq, PartialEq, Clone, Copy)]
 pub enum Direction {
@@ -45,8 +45,8 @@ impl<
     fn render(
         &mut self,
         target: &mut TDrawTarget,
-        dimensions: ComputedDimensions,
-        position: ComputedPosition,
+        dimensions: Dimensions,
+        position: Position,
         fonts: &[fontdue::Font],
     ) -> crate::gui::BoundingBox {
         let render_result = crate::gui::layouts::stack::render_stack(
@@ -65,7 +65,7 @@ impl<
         render_result.1
     }
 
-    fn on_touch(&mut self, position: crate::gui::ComputedPosition) {
+    fn on_touch(&mut self, position: crate::gui::Position) {
         for (i, bounding_box) in self.bounding_boxes.iter() {
             if bounding_box.contains(position) {
                 self.children.get_mut(*i).unwrap().on_touch(position);
@@ -73,7 +73,7 @@ impl<
         }
     }
 
-    fn compute_dimensions(&mut self, fonts: &[fontdue::Font]) -> crate::gui::ComputedDimensions {
+    fn compute_dimensions(&mut self, fonts: &[fontdue::Font]) -> crate::gui::Dimensions {
         let mut width = 0;
         let mut height = 0;
         for child in self.children.iter_mut() {
@@ -83,7 +83,7 @@ impl<
             height += child_dimensions.height;
         }
 
-        ComputedDimensions { width, height }
+        Dimensions { width, height }
     }
 
     fn register_command_channel(&mut self, tx: std::sync::mpsc::Sender<crate::gui::GuiCommand>) {
