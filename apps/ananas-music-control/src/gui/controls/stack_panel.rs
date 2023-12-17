@@ -1,13 +1,11 @@
+use std::cmp::max;
 use std::fmt::Debug;
 use std::{collections::HashMap, error::Error};
 
 use embedded_graphics::{draw_target::DrawTarget, pixelcolor::BinaryColor};
 
-use crate::gui::{Dimension, ComputedDimensions};
-use crate::gui::{
-    positioning::{compute_dimensions_with_override, compute_position_with_override},
-    BoundingBox, Control, Dimensions, Position,
-};
+use crate::gui::{BoundingBox, Control};
+use crate::gui::{ComputedDimensions, ComputedPosition};
 
 #[derive(Debug, Eq, PartialEq, Clone, Copy)]
 pub enum Direction {
@@ -19,8 +17,6 @@ pub struct StackPanel<
     TDrawTarget: DrawTarget<Color = BinaryColor, Error = TError>,
     TError: Error + Debug,
 > {
-    position: Position,
-    dimensions: Dimensions,
     children: Vec<Box<dyn Control<TDrawTarget, TError>>>,
     bounding_boxes: HashMap<usize, BoundingBox>,
     direction: Direction,
@@ -29,15 +25,8 @@ pub struct StackPanel<
 impl<TDrawTarget: DrawTarget<Color = BinaryColor, Error = TError>, TError: Error + Debug>
     StackPanel<TDrawTarget, TError>
 {
-    pub fn new(
-        position: Position,
-        dimensions: Dimensions,
-        children: Vec<Box<dyn Control<TDrawTarget, TError>>>,
-        direction: Direction,
-    ) -> Self {
+    pub fn new(children: Vec<Box<dyn Control<TDrawTarget, TError>>>, direction: Direction) -> Self {
         Self {
-            position,
-            dimensions,
             children,
             bounding_boxes: HashMap::new(),
             direction,
@@ -53,13 +42,10 @@ impl<
     fn render(
         &mut self,
         target: &mut TDrawTarget,
-        dimensions_override: Option<Dimensions>,
-        position_override: Option<crate::gui::ComputedPosition>,
+        dimensions: ComputedDimensions,
+        position: ComputedPosition,
         fonts: &[fontdue::Font],
     ) -> crate::gui::BoundingBox {
-        let dimensions = compute_dimensions_with_override(self.dimensions, dimensions_override);
-        let position = compute_position_with_override(self.position, position_override);
-
         let render_result = crate::gui::layouts::stack::render_stack(
             target,
             self.children.iter_mut(),
@@ -87,15 +73,14 @@ impl<
     }
 
     fn compute_dimensions(&mut self, fonts: &[fontdue::Font]) -> crate::gui::ComputedDimensions {
-        let width = match self.dimensions.width {
-            Dimension::Auto => 200,
-            Dimension::Pixel(px) => px,
-        };
+        let mut width = 0;
+        let mut height = 0;
+        for child in self.children.iter_mut() {
+            let child_dimensions = child.compute_dimensions(fonts);
 
-        let height = match self.dimensions.height {
-            Dimension::Auto => 100,
-            Dimension::Pixel(px) => px,
-        };
+            width = max(width, child_dimensions.width);
+            height += child_dimensions.height;
+        }
 
         ComputedDimensions { width, height }
     }

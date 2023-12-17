@@ -13,7 +13,7 @@ use crate::{
     epaper::{BufferedDrawTarget, EPaper, RotatedDrawTarget},
     gui::{
         controls::{button::Button, item_scroller::ItemScroller, text::Text},
-        Control, Dimensions, Position,
+        Control,
     },
     touch::EventCoalescer,
     touchpanel::TouchPanel,
@@ -122,24 +122,15 @@ async fn main() {
         let artist_clone = artist.clone();
 
         item_scroller_children.push(Box::new(Button::new(
-            Box::new(Text::new(
-                artist.clone(),
-                20,
-                Position::FromParent,
-                Dimensions::auto(),
-            )),
-            Dimensions::new(gui::Dimension::Auto, gui::Dimension::Pixel(35)),
-            Position::FromParent,
-            Box::new(move || {println!("{:?}", artist_clone); gui::EventResult::NoChange }),
+            Box::new(Text::new(artist.clone(), 20)),
+            Box::new(move || {
+                println!("{:?}", artist_clone);
+                gui::EventResult::NoChange
+            }),
         )));
     }
 
-    gui.add_control(ItemScroller::new(
-        Position::Specified(0, 0),
-        Dimensions::new(gui::Dimension::Pixel(200), gui::Dimension::Auto),
-        item_scroller_children,
-        3,
-    ));
+    gui.add_control(ItemScroller::new(item_scroller_children, 3));
 
     gui.render();
 

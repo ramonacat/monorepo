@@ -10,40 +10,29 @@ use fontdue::{
     Font,
 };
 
-use crate::gui::positioning::{compute_dimensions_with_override, compute_position_with_override};
-use crate::gui::{
-    BoundingBox, ComputedDimensions, ComputedPosition, Control, Dimension, Dimensions, EventResult,
-    Position,
-};
+use crate::gui::{BoundingBox, ComputedDimensions, ComputedPosition, Control, EventResult};
 
 pub struct Text {
     text: String,
     font_size: usize,
-    position: Position,
-    dimensions: Dimensions,
 }
 
 impl Text {
-    pub fn new(text: String, font_size: usize, position: Position, dimensions: Dimensions) -> Self {
-        Self {
-            text,
-            font_size,
-            position,
-            dimensions,
-        }
+    pub fn new(text: String, font_size: usize) -> Self {
+        Self { text, font_size }
     }
 }
 
 struct RenderedText {
     pixels: Vec<(usize, usize)>,
-    width: usize,
-    height: usize
+    width: u32,
+    height: u32,
 }
 
 fn render_text(text: &str, font_size: f32, font_index: usize, fonts: &[Font]) -> RenderedText {
     let mut layout = Layout::new(fontdue::layout::CoordinateSystem::PositiveYDown);
 
-    layout.append(fonts, &TextStyle::new(&text, font_size, 0));
+    layout.append(fonts, &TextStyle::new(&text, font_size, font_index));
 
     let mut pixels = vec![];
     for glyph in layout.glyphs() {
@@ -64,9 +53,9 @@ fn render_text(text: &str, font_size: f32, font_index: usize, fonts: &[Font]) ->
 
     return RenderedText {
         pixels,
-        width: width,
-        height: height
-    }
+        width: width as u32,
+        height: height as u32,
+    };
 }
 
 impl<TDrawTarget: DrawTarget<Color = BinaryColor, Error = TError>, TError: Error + Debug>
@@ -75,31 +64,13 @@ impl<TDrawTarget: DrawTarget<Color = BinaryColor, Error = TError>, TError: Error
     fn render(
         &mut self,
         target: &mut TDrawTarget,
-        dimensions_override: Option<Dimensions>,
-        position_override: Option<ComputedPosition>,
+        dimensions: ComputedDimensions,
+        position: ComputedPosition,
         fonts: &[Font],
     ) -> BoundingBox {
-        let dimensions = compute_dimensions_with_override(self.dimensions, dimensions_override);
-        let position = compute_position_with_override(self.position, position_override);
-
         let rendered_text = render_text(&self.text, self.font_size as f32, 0, fonts);
-
-        let dimension_x = match dimensions.width {
-            Dimension::Auto => None,
-            Dimension::Pixel(px) => Some(px),
-        };
-
-        let dimension_y = match dimensions.height {
-            Dimension::Auto => None,
-            Dimension::Pixel(px) => Some(px),
-        };
-
-        let visible_width = dimension_x
-            .map(|x| min(x, rendered_text.width as u32))
-            .unwrap_or(rendered_text.width as u32);
-        let visible_height = dimension_y
-            .map(|y| min(y, rendered_text.height as u32))
-            .unwrap_or(rendered_text.height as u32);
+        let visible_width = min(rendered_text.width, dimensions.width);
+        let visible_height = rendered_text.height;
 
         let rounded_width_in_bytes = (visible_width + 7) / 8;
 
@@ -115,22 +86,12 @@ impl<TDrawTarget: DrawTarget<Color = BinaryColor, Error = TError>, TError: Error
         }
 
         let image_raw = ImageRaw::<BinaryColor>::new(&bytes, 8 * rounded_width_in_bytes as u32);
+        let centered_position = ComputedPosition(
+            position.0 + (dimensions.width - visible_width) / 2,
+            position.1 + (dimensions.height - visible_height) / 2,
+        );
 
-        let centered_position = {
-            let centered_x = if let Dimension::Pixel(dimension_x) = dimensions.width {
-                (dimension_x - visible_width) / 2
-            } else {
-                0
-            } + position.0;
-
-            let centered_y = if let Dimension::Pixel(dimension_y) = dimensions.height {
-                (dimension_y - visible_height) / 2
-            } else {
-                0
-            } + position.1;
-
-            ComputedPosition(centered_x, centered_y)
-        };
+        println!("Text@{:?}", centered_position);
 
         let image = Image::new(
             &image_raw,
@@ -145,8 +106,8 @@ impl<TDrawTarget: DrawTarget<Color = BinaryColor, Error = TError>, TError: Error
         BoundingBox {
             position: centered_position,
             dimensions: ComputedDimensions {
-                width: dimension_x.unwrap_or(visible_width),
-                height: dimension_y.unwrap_or(visible_height),
+                width: dimensions.width,
+                height: dimensions.height,
             },
         }
     }
@@ -158,6 +119,9 @@ impl<TDrawTarget: DrawTarget<Color = BinaryColor, Error = TError>, TError: Error
     fn compute_dimensions(&mut self, fonts: &[Font]) -> crate::gui::ComputedDimensions {
         let rendered_text = render_text(&self.text, self.font_size as f32, 0, fonts);
 
-        ComputedDimensions { width: rendered_text.width as u32,  height: rendered_text.height as u32 }
+        ComputedDimensions {
+            width: rendered_text.width as u32,
+            height: rendered_text.height as u32,
+        }
     }
 }

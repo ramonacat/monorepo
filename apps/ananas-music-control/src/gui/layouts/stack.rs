@@ -5,7 +5,6 @@ use fontdue::Font;
 
 use crate::gui::{
     controls::stack_panel::Direction, BoundingBox, ComputedDimensions, ComputedPosition, Control,
-    Dimension, Dimensions,
 };
 
 pub fn render_stack<
@@ -15,49 +14,31 @@ pub fn render_stack<
 >(
     target: &mut TDrawTarget,
     items: impl Iterator<Item = &'a mut Box<dyn Control<TDrawTarget, TError>>>,
-    dimensions: Dimensions,
+    dimensions: ComputedDimensions,
     position: ComputedPosition,
     direction: Direction,
     fonts: &[Font],
 ) -> (HashMap<usize, BoundingBox>, BoundingBox) {
-    let width = match dimensions.width {
-        crate::gui::Dimension::Auto => 100, // FIXME: this should be based on the dimensions of the content as it renders!
-        crate::gui::Dimension::Pixel(px) => px,
-    };
-
-    let height = match dimensions.height {
-        crate::gui::Dimension::Auto => 100, // FIXME: this should be based on the dimensions of the content as it renders!
-        crate::gui::Dimension::Pixel(px) => px,
-    };
-
     let mut bounding_boxes = HashMap::new();
 
     let mut current_x = position.0;
     let mut current_y = position.1;
 
     for (index, control) in items.enumerate() {
+        let control_size = control.compute_dimensions(fonts);
         let inner_bounding_box = control.render(
             target,
-            Some(Dimensions {
-                width: if direction == Direction::Horizontal {
-                    Dimension::Auto
-                } else {
-                    Dimension::Pixel(width)
-                },
-                height: if direction == Direction::Horizontal {
-                    Dimension::Pixel(height)
-                } else {
-                    Dimension::Auto
-                },
-            }),
-            Some(ComputedPosition(current_x, current_y)),
+            control_size,
+            ComputedPosition(current_x, current_y),
             fonts,
         );
 
+        println!("{:?} {:?} {:?}", index, control_size, inner_bounding_box);
+
         if direction == Direction::Horizontal {
-            current_x = inner_bounding_box.position.0 + inner_bounding_box.dimensions.width;
+            current_x = inner_bounding_box.position.0 + control_size.width;
         } else {
-            current_y = inner_bounding_box.position.1 + inner_bounding_box.dimensions.height;
+            current_y = inner_bounding_box.position.1 + control_size.height;
         }
 
         bounding_boxes.insert(index, inner_bounding_box);
@@ -67,18 +48,7 @@ pub fn render_stack<
         bounding_boxes,
         BoundingBox {
             position: ComputedPosition(position.0, position.1),
-            dimensions: ComputedDimensions {
-                width: if direction == Direction::Horizontal {
-                    current_x - position.0
-                } else {
-                    width
-                },
-                height: if direction == Direction::Horizontal {
-                    height
-                } else {
-                    current_y - position.1
-                },
-            },
+            dimensions: dimensions,
         },
     )
 }

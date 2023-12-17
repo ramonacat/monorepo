@@ -7,41 +7,9 @@ use crate::epaper::FlushableDrawTarget;
 
 pub mod controls;
 mod layouts;
-mod positioning;
-
-#[derive(Debug, Clone, Copy)]
-pub enum Position {
-    Specified(u32, u32),
-    FromParent,
-}
 
 #[derive(Debug, Clone, Copy)]
 pub struct ComputedPosition(pub u32, pub u32);
-
-#[derive(Debug, Clone, Copy)]
-pub enum Dimension {
-    Auto,
-    Pixel(u32),
-}
-
-#[derive(Debug, Clone, Copy)]
-pub struct Dimensions {
-    width: Dimension,
-    height: Dimension,
-}
-
-impl Dimensions {
-    pub fn new(width: Dimension, height: Dimension) -> Self {
-        Self { width, height }
-    }
-
-    pub fn auto() -> Self {
-        Self {
-            width: Dimension::Auto,
-            height: Dimension::Auto,
-        }
-    }
-}
 
 #[derive(Debug, Clone, Copy)]
 pub struct ComputedDimensions {
@@ -110,11 +78,16 @@ impl<
             };
         }
 
+        let top_left = self.draw_target.bounding_box().top_left;
+        let size = self.draw_target.bounding_box().size;
         for control_index in &controls_to_redraw {
             let bounding_box = self.controls[*control_index].render(
                 &mut self.draw_target,
-                None,
-                None,
+                ComputedDimensions {
+                    width: size.width,
+                    height: size.height,
+                },
+                ComputedPosition(top_left.x as u32, top_left.y as u32),
                 &self.fonts,
             );
             self.bounding_boxes.insert(*control_index, bounding_box);
@@ -126,8 +99,19 @@ impl<
     }
 
     pub fn render(&mut self) {
+        let top_left = self.draw_target.bounding_box().top_left;
+        let size = self.draw_target.bounding_box().size;
+
         for (control_index, control) in self.controls.iter_mut().enumerate() {
-            let bounding_box = control.render(&mut self.draw_target, None, None, &self.fonts);
+            let bounding_box = control.render(
+                &mut self.draw_target,
+                ComputedDimensions {
+                    width: size.width,
+                    height: size.height,
+                },
+                ComputedPosition(top_left.x as u32, top_left.y as u32),
+                &self.fonts,
+            );
             self.bounding_boxes
                 .insert(control_index, bounding_box.clone());
         }
@@ -146,7 +130,6 @@ pub enum EventResult {
     MustRedraw,
 }
 
-
 pub trait Control<
     TDrawTarget: DrawTarget<Color = BinaryColor, Error = TError>,
     TError: Error + Debug,
@@ -157,8 +140,8 @@ pub trait Control<
     fn render(
         &mut self,
         target: &mut TDrawTarget,
-        dimension_override: Option<Dimensions>,
-        position_override: Option<ComputedPosition>,
+        dimensions: ComputedDimensions,
+        position: ComputedPosition,
         fonts: &[Font],
     ) -> BoundingBox;
     fn on_touch(&mut self, position: ComputedPosition) -> EventResult;
