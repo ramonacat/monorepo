@@ -28,7 +28,18 @@ pub fn render_stack<
         let control_size = control.compute_dimensions(fonts);
         let inner_bounding_box = control.render(
             target,
-            control_size,
+            ComputedDimensions {
+                width: if direction == Direction::Horizontal {
+                    control_size.width
+                } else {
+                    dimensions.width
+                },
+                height: if direction == Direction::Horizontal {
+                    dimensions.height
+                } else {
+                    control_size.height
+                },
+            },
             ComputedPosition(current_x, current_y),
             fonts,
         );
