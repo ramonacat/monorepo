@@ -8,7 +8,7 @@ use fontdue::Font;
 use std::fmt::Debug;
 use std::{error::Error, sync::mpsc::Sender};
 
-use crate::gui::{Control, Dimensions, GuiCommand, Point};
+use crate::gui::{Control, Dimensions, GuiCommand, Padding, Point};
 
 pub struct Button<
     TDrawTarget: DrawTarget<Color = BinaryColor, Error = TError>,
@@ -17,15 +17,21 @@ pub struct Button<
     content: Box<dyn Control<TDrawTarget, TError>>,
     action: Box<dyn FnMut()>,
     command_channel: Option<Sender<GuiCommand>>,
+    padding: Padding,
 }
 
 impl<TDrawTarget: DrawTarget<Color = BinaryColor, Error = TError>, TError: Error + Debug>
     Button<TDrawTarget, TError>
 {
-    pub fn new(content: Box<dyn Control<TDrawTarget, TError>>, action: Box<dyn FnMut()>) -> Self {
+    pub fn new(
+        content: Box<dyn Control<TDrawTarget, TError>>,
+        padding: Padding,
+        action: Box<dyn FnMut()>,
+    ) -> Self {
         Self {
             content,
             action,
+            padding,
             command_channel: None,
         }
     }
@@ -61,8 +67,11 @@ impl<TDrawTarget: DrawTarget<Color = BinaryColor, Error = TError>, TError: Error
 
         self.content.render(
             target,
-            Dimensions::new(dimensions.width() - 2, dimensions.height() - 2),
-            Point(position.0 + 1, position.1 + 1),
+            Dimensions::new(dimensions.width() - self.padding.left - self.padding.right - 2, dimensions.height() - self.padding.top - self.padding.bottom - 2),
+            Point(
+                position.0 + 1 + self.padding.left,
+                position.1 + 1 + self.padding.top,
+            ),
             fonts,
         );
     }
@@ -74,7 +83,10 @@ impl<TDrawTarget: DrawTarget<Color = BinaryColor, Error = TError>, TError: Error
     fn compute_dimensions(&mut self, fonts: &[Font]) -> crate::gui::Dimensions {
         let child_dimensions = self.content.compute_dimensions(fonts);
 
-        Dimensions::new(child_dimensions.width() + 2, child_dimensions.height() + 2)
+        Dimensions::new(
+            child_dimensions.width() + 2 + self.padding.left + self.padding.right,
+            child_dimensions.height() + 2 + self.padding.top + self.padding.bottom,
+        )
     }
 
     fn register_command_channel(&mut self, tx: std::sync::mpsc::Sender<crate::gui::GuiCommand>) {

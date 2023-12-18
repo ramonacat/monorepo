@@ -13,7 +13,7 @@ use crate::{
     gui::{
         controls::{button::Button, item_scroller::ItemScroller, text::Text},
         geometry::Point,
-        Control,
+        Control, Padding,
     },
     touch::EventCoalescer,
     touchpanel::TouchPanel,
@@ -122,6 +122,7 @@ async fn main() {
 
         item_scroller_children.push(Box::new(Button::new(
             Box::new(Text::new(artist.clone(), 20)),
+            Padding::new(5, 8, 0, 0),
             Box::new(move || {
                 println!("{:?}", artist_clone);
             }),

@@ -16,6 +16,24 @@ pub mod controls;
 pub mod geometry;
 mod layouts;
 
+pub struct Padding {
+    top: u32,
+    bottom: u32,
+    left: u32,
+    right: u32,
+}
+
+impl Padding {
+    pub fn new(top: u32, bottom: u32, left: u32, right: u32) -> Self {
+        Self {
+            top,
+            bottom,
+            left,
+            right,
+        }
+    }
+}
+
 pub struct Gui<TDrawTarget: DrawTarget<Color = BinaryColor, Error = TError>, TError: Error + Debug>
 {
     fonts: Vec<Font>,

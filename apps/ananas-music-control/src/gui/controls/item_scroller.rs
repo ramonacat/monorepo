@@ -6,7 +6,7 @@ use embedded_graphics::{draw_target::DrawTarget, pixelcolor::BinaryColor};
 
 use crate::gui::geometry::Rectangle;
 use crate::gui::layouts::stack::render_stack;
-use crate::gui::{Control, Dimensions, GuiCommand, Point};
+use crate::gui::{Control, Dimensions, GuiCommand, Padding, Point};
 
 use super::button::Button;
 use super::stack_panel::StackPanel;
@@ -47,12 +47,24 @@ impl<
             vec![
                 Box::new(Button::<TDrawTarget, TError>::new(
                     Box::new(Text::new("⬆".to_string(), 20)),
+                    Padding {
+                        top: 5,
+                        bottom: 5,
+                        left: 0,
+                        right: 0,
+                    },
                     Box::new(move || {
                         scroll_tx.send(ScrollRequest::Up).unwrap();
                     }),
                 )),
                 Box::new(Button::<TDrawTarget, TError>::new(
                     Box::new(Text::new("⬇".to_string(), 20)),
+                    Padding {
+                        top: 5,
+                        bottom: 5,
+                        left: 0,
+                        right: 0,
+                    },
                     Box::new(move || {
                         scroll_tx_.send(ScrollRequest::Down).unwrap();
                     }),
