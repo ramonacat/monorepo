@@ -1,3 +1,4 @@
+use std::collections::HashMap;
 use std::error::Error;
 use std::fmt::Debug;
 use std::sync::mpsc::{channel, Receiver, Sender};
@@ -29,6 +30,7 @@ pub struct ItemScroller<
     scroll_rx: Receiver<ScrollRequest>,
     command_channel: Option<Sender<GuiCommand>>,
     bounding_box: Option<Rectangle>,
+    children_bounding_boxes: Option<HashMap<usize, Rectangle>>
 }
 impl<
         TDrawTarget: DrawTarget<Color = BinaryColor, Error = TError> + 'static,
@@ -82,6 +84,7 @@ impl<
             command_channel: None,
             scroll_rx,
             bounding_box: None,
+            children_bounding_boxes: None
         }
     }
 }
@@ -107,7 +110,7 @@ impl<
         self.buttons_stack_panel_bounding_box =
             Some(Rectangle::new(buttons_position, buttons_dimensions));
 
-        render_stack(
+        let children_bounding_boxes = render_stack(
             target,
             self.children
                 .iter_mut()
@@ -118,6 +121,7 @@ impl<
             super::stack_panel::Direction::Vertical,
             fonts,
         );
+        self.children_bounding_boxes = Some(children_bounding_boxes);
 
         self.bounding_box = Some(Rectangle::new(position, dimensions));
     }
@@ -126,6 +130,14 @@ impl<
         if let Some(buttons_bounding_box) = &self.buttons_stack_panel_bounding_box {
             if buttons_bounding_box.contains(position) {
                 self.buttons_stack_panel.on_touch(position);
+            }
+        }
+
+        if let Some(children_bounding_boxes) = &self.children_bounding_boxes {
+            for (control_offset, bounding_box) in children_bounding_boxes {
+                if bounding_box.contains(position) {
+                    self.children[self.scroll_index + control_offset].on_touch(position);
+                }
             }
         }
 
