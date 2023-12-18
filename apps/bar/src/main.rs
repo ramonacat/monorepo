@@ -1,3 +1,5 @@
+mod upower;
+
 use std::{
     process::{Command, Stdio},
     time::Duration,
@@ -5,7 +7,7 @@ use std::{
 
 use regex::Regex;
 use serde::Serialize;
-use upower_dbus::UPowerProxy;
+use upower::UPowerProxy;
 
 // https://i3wm.org/docs/i3bar-protocol.html
 #[derive(Debug, Serialize)]
@@ -57,7 +59,9 @@ fn get_pa_mute() -> bool {
 
 struct BatteryState {
     is_on_battery: bool,
-    percent: f64
+    percent: f64,
+    energy_rate: f64,
+    time_left: Duration
 }
 
 async fn get_battery_state(upower: Option<&UPowerProxy<'_>>) -> Option<BatteryState> {
@@ -71,17 +75,53 @@ async fn get_battery_state(upower: Option<&UPowerProxy<'_>>) -> Option<BatterySt
                 return None;
             };
 
-            let Ok(percent) = display_device.percentage().await else {
+            let Ok(energy) = display_device.energy().await else {
                 return None;
             };
 
-            Some(BatteryState{
+            let Ok(energy_empty) = display_device.energy_empty().await else {
+                return None;
+            };
+
+            let Ok(energy_full) = display_device.energy_full().await else {
+                return None;
+            };
+
+            let Ok(energy_rate) = display_device.energy_rate().await else {
+                return None;
+            };
+
+            let Ok(time_left) = (if is_on_battery { display_device.time_to_empty().await } else { display_device.time_to_full().await }) else {
+                return None;
+            };
+
+            let percent = ((energy - energy_empty) / (energy_full - energy_empty)) * 100.0;
+
+            Some(BatteryState {
                 is_on_battery,
-                percent
+                percent,
+                energy_rate,
+                time_left: Duration::from_secs(time_left as u64)
             } )
         }
         None => None
     }
+}
+
+fn format_duration(duration: Duration) -> String {
+    let mut result = String::new();
+
+    let total_seconds = duration.as_secs();
+
+    let hours = total_seconds/(60*60);
+    let minutes = total_seconds/60 - hours * 60;
+    let seconds = total_seconds - hours*60*60 - minutes*60;
+
+    if hours > 0 {
+        result += &format!("{:0>2}:", hours);
+    }
+
+    result + &format!("{:0>2}:{:0>2}", minutes, seconds)
 }
 
 #[tokio::main]
@@ -106,8 +146,26 @@ async fn main() {
         let mut blocks = vec![];
         if let Some(battery_state) = battery_state {
             let battery_emoji = if battery_state.is_on_battery { "🔋" } else { "🔌" };
+            let mut battery_string = format!("{} {:.0}%", battery_emoji, battery_state.percent);
+
+            let energy_rate = battery_state.energy_rate;
+
+            if energy_rate > 0.0 || battery_state.time_left.as_secs() > 0 {
+                battery_string += " (";
+
+                if energy_rate > 0.0 {
+                    battery_string += &format!("{:.2}W ", energy_rate);
+                }
+
+                if battery_state.time_left.as_secs() > 0 {
+                    battery_string += &format_duration(battery_state.time_left);
+                }
+
+                battery_string += ")";
+            }
+
             blocks.push(Block {
-                full_text: format!("{} {:.0}%", battery_emoji, battery_state.percent)
+                full_text: battery_string
             })
         }
 
