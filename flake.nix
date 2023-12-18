@@ -116,7 +116,8 @@
             ./modules/nas-client.nix
             ./modules/telegraf.nix
             (import ./users/ramona.nix { inherit agenix; })
-            (import ./users/ramona_gui.nix { inherit barPackage nix-vscode-extensions; })
+            (import ./users/ramona/gui.nix { inherit nix-vscode-extensions; })
+            (import ./users/ramona/sway.nix { inherit barPackage; })
             ./machines/moonfall/hardware.nix
             ./machines/moonfall/networking.nix
             ./machines/moonfall/virtualisation.nix
@@ -158,7 +159,8 @@
             ./modules/nas-client.nix
             ./modules/telegraf.nix
             (import ./users/ramona.nix { inherit agenix; })
-            (import ./users/ramona_gui.nix { inherit barPackage nix-vscode-extensions; })
+            (import ./users/ramona/gui.nix { inherit nix-vscode-extensions; })
+            (import ./users/ramona/sway.nix { inherit barPackage; })
             ./machines/angelsin/hardware.nix
             ./machines/angelsin/networking.nix
             ./machines/angelsin/users/ramona_gui.nix
@@ -180,6 +182,25 @@
             (import ./machines/ananas/hardware.nix {inherit pkgsCross; })
             ./machines/ananas/networking.nix
             (import ./machines/ananas/music-control.nix { inherit ananasMusicControlPackage; })
+          ];
+        };
+        evillian = nixpkgs.lib.nixosSystem {
+          system = "x86_64-linux";
+          modules = [
+            home-manager.nixosModules.home-manager
+            agenix.nixosModules.default
+            nixos-hardware.nixosModules.microsoft-surface-go
+
+            (import ./modules/base.nix { inherit nixpkgs; })
+            ./modules/installed_base.nix
+            ./modules/workstation.nix
+            ./modules/nas-client.nix
+            ./modules/telegraf.nix
+            (import ./users/ramona.nix { inherit agenix; })
+            (import ./users/ramona/gui.nix { inherit nix-vscode-extensions; })
+            ./machines/evillian/hardware.nix
+            ./machines/evillian/networking.nix
+            ./machines/evillian.nix
           ];
         };
         iso = nixpkgs.lib.nixosSystem {
