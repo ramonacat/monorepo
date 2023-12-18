@@ -123,8 +123,28 @@ async fn main() {
         item_scroller_children.push(Box::new(Button::new(
             Box::new(Text::new(artist.clone(), 20)),
             Padding::new(5, 8, 0, 0),
-            Box::new(move || {
-                println!("{:?}", artist_clone);
+            Box::new(move |command_tx| {
+                // todo we should probably not have a library per button... use an Arc here
+                let library = library::Library::new(PathBuf::from("/mnt/nas/Music/"));
+                let mut item_scroller_children: Vec<Box<dyn Control<_, _>>> = vec![];
+
+                for album in library.list_albums(&artist_clone) {
+                   item_scroller_children.push(Box::new(
+                    Button::new(
+                        Box::new(Text::new(album.clone(), 20)),
+                        Padding::new(5, 8, 0, 0),
+                        Box::new(move |_command_tx| {
+                            println!("{:?}", album);
+                        })
+                    )
+                   ));
+                }
+
+                let item_scroller = ItemScroller::new(
+                    item_scroller_children,
+                    3
+                );
+                command_tx.send(gui::GuiCommand::ReplaceRoot(Box::new(item_scroller))).unwrap();
             }),
         )));
     }

@@ -22,7 +22,7 @@ pub struct StackPanel<
     children: Vec<Box<dyn Control<TDrawTarget, TError>>>,
     bounding_boxes: HashMap<usize, Rectangle>,
     direction: Direction,
-    command_channel: Option<Sender<GuiCommand>>,
+    command_channel: Option<Sender<GuiCommand<TDrawTarget, TError>>>,
 }
 
 impl<TDrawTarget: DrawTarget<Color = BinaryColor, Error = TError>, TError: Error + Debug>
@@ -85,7 +85,7 @@ impl<
         Dimensions::new(width, height)
     }
 
-    fn register_command_channel(&mut self, tx: std::sync::mpsc::Sender<crate::gui::GuiCommand>) {
+    fn register_command_channel(&mut self, tx: std::sync::mpsc::Sender<crate::gui::GuiCommand<TDrawTarget, TError>>) {
         self.command_channel = Some(tx.clone());
 
         for child in self.children.iter_mut() {

@@ -15,8 +15,8 @@ pub struct Button<
     TError: Error + Debug,
 > {
     content: Box<dyn Control<TDrawTarget, TError>>,
-    action: Box<dyn FnMut()>,
-    command_channel: Option<Sender<GuiCommand>>,
+    action: Box<dyn FnMut(Sender<GuiCommand<TDrawTarget, TError>>)>,
+    command_channel: Option<Sender<GuiCommand<TDrawTarget, TError>>>,
     padding: Padding,
 }
 
@@ -26,7 +26,7 @@ impl<TDrawTarget: DrawTarget<Color = BinaryColor, Error = TError>, TError: Error
     pub fn new(
         content: Box<dyn Control<TDrawTarget, TError>>,
         padding: Padding,
-        action: Box<dyn FnMut()>,
+        action: Box<dyn FnMut(Sender<GuiCommand<TDrawTarget, TError>>)>,
     ) -> Self {
         Self {
             content,
@@ -77,7 +77,9 @@ impl<TDrawTarget: DrawTarget<Color = BinaryColor, Error = TError>, TError: Error
     }
 
     fn on_touch(&mut self, _position: Point) {
-        (self.action)();
+        if let Some(command_channel) = self.command_channel.as_ref() {
+            (self.action)(command_channel.clone());
+        }
     }
 
     fn compute_dimensions(&mut self, fonts: &[Font]) -> crate::gui::Dimensions {
@@ -89,7 +91,7 @@ impl<TDrawTarget: DrawTarget<Color = BinaryColor, Error = TError>, TError: Error
         )
     }
 
-    fn register_command_channel(&mut self, tx: std::sync::mpsc::Sender<crate::gui::GuiCommand>) {
+    fn register_command_channel(&mut self, tx: std::sync::mpsc::Sender<crate::gui::GuiCommand<TDrawTarget, TError>>) {
         self.command_channel = Some(tx.clone());
         self.content.register_command_channel(tx);
     }

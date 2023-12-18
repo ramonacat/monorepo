@@ -30,4 +30,29 @@ impl Library {
 
         artists
     }
+
+    pub fn list_albums(&self, artist: &str) -> Vec<String>{
+        let mut albums = vec![];
+
+        let mut path = self.path.clone();
+        path.push(artist);
+
+        for subdirectory in std::fs::read_dir(&path).unwrap() {
+            let subdirectory = subdirectory.unwrap();
+
+            if !subdirectory.metadata().unwrap().is_dir() {
+                continue;
+            }
+
+            let name = subdirectory.file_name().to_string_lossy().to_string();
+
+            if name.starts_with('.') {
+                continue;
+            }
+
+            albums.push(name);
+        }
+
+        albums
+    }
 }

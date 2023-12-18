@@ -12,13 +12,13 @@ use fontdue::{
 
 use crate::gui::{Control, Dimensions, GuiCommand, Point};
 
-pub struct Text {
+pub struct Text<TDrawTarget: DrawTarget<Color = BinaryColor, Error = TError>, TError: Error + Debug> {
     text: String,
     font_size: usize,
-    command_channel: Option<Sender<GuiCommand>>,
+    command_channel: Option<Sender<GuiCommand<TDrawTarget, TError>>>,
 }
 
-impl Text {
+impl<TDrawTarget: DrawTarget<Color = BinaryColor, Error = TError>, TError: Error + Debug> Text<TDrawTarget, TError> {
     pub fn new(text: String, font_size: usize) -> Self {
         Self {
             text,
@@ -64,7 +64,7 @@ fn render_text(text: &str, font_size: f32, font_index: usize, fonts: &[Font]) ->
 }
 
 impl<TDrawTarget: DrawTarget<Color = BinaryColor, Error = TError>, TError: Error + Debug>
-    Control<TDrawTarget, TError> for Text
+    Control<TDrawTarget, TError> for Text<TDrawTarget, TError>
 {
     fn render(
         &mut self,
@@ -115,7 +115,7 @@ impl<TDrawTarget: DrawTarget<Color = BinaryColor, Error = TError>, TError: Error
         Dimensions::new(rendered_text.width as u32, rendered_text.height as u32)
     }
 
-    fn register_command_channel(&mut self, tx: std::sync::mpsc::Sender<crate::gui::GuiCommand>) {
+    fn register_command_channel(&mut self, tx: std::sync::mpsc::Sender<crate::gui::GuiCommand<TDrawTarget, TError>>) {
         self.command_channel = Some(tx);
     }
 }

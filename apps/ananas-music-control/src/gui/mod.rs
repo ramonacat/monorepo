@@ -5,7 +5,7 @@ use std::{
     time::Duration,
 };
 
-use embedded_graphics::{draw_target::DrawTarget, pixelcolor::BinaryColor};
+use embedded_graphics::{draw_target::DrawTarget, pixelcolor::BinaryColor, primitives::{Rectangle, StyledDrawable, PrimitiveStyleBuilder}};
 use fontdue::Font;
 
 use crate::epaper::FlushableDrawTarget;
@@ -70,6 +70,8 @@ impl<
     }
 
     fn render(&mut self) {
+        self.clear_screen();
+
         let top_left = self.draw_target.bounding_box().top_left;
         let size = self.draw_target.bounding_box().size;
 
@@ -83,10 +85,19 @@ impl<
         self.draw_target.flush();
     }
 
+    fn clear_screen(&mut self) {
+        let rectangle = Rectangle::new(embedded_graphics::geometry::Point::new(0, 0), self.draw_target.bounding_box().size);
+        let style = PrimitiveStyleBuilder::new()
+            .fill_color(BinaryColor::Off)
+            .build();
+
+        rectangle.draw_styled(&style, &mut self.draw_target).unwrap();
+    }
+
     pub fn run(mut self) {
         let (command_tx, command_rx) = std::sync::mpsc::channel();
 
-        self.root_control.register_command_channel(command_tx);
+        self.root_control.register_command_channel(command_tx.clone());
         self.render();
 
         loop {
@@ -106,6 +117,11 @@ impl<
 
                 match command {
                     GuiCommand::Redraw(_, _) => redraw = true,
+                    GuiCommand::ReplaceRoot(mut new_root) => {
+                        new_root.register_command_channel(command_tx.clone());
+                        self.root_control = new_root;
+                        redraw = true;
+                    },
                 }
             }
 
@@ -122,9 +138,9 @@ pub enum Event {
     Touch(Point),
 }
 
-#[derive(Debug)]
-pub enum GuiCommand {
+pub enum GuiCommand<TDrawTarget: DrawTarget, TError: Error + Debug> {
     Redraw(Point, Dimensions),
+    ReplaceRoot(Box<dyn Control<TDrawTarget, TError>>)
 }
 
 pub trait Control<
@@ -132,7 +148,7 @@ pub trait Control<
     TError: Error + Debug,
 >
 {
-    fn register_command_channel(&mut self, tx: Sender<GuiCommand>);
+    fn register_command_channel(&mut self, tx: Sender<GuiCommand<TDrawTarget, TError>>);
     fn compute_dimensions(&mut self, fonts: &[Font]) -> Dimensions;
 
     fn render(
