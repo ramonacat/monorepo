@@ -37,7 +37,7 @@ struct RenderedText {
 fn render_text(text: &str, font_size: f32, font_index: usize, fonts: &[Font]) -> RenderedText {
     let mut layout = Layout::new(fontdue::layout::CoordinateSystem::PositiveYDown);
 
-    layout.append(fonts, &TextStyle::new(&text, font_size, font_index));
+    layout.append(fonts, &TextStyle::new(text, font_size, font_index));
 
     let mut pixels = vec![];
     for glyph in layout.glyphs() {
@@ -56,11 +56,11 @@ fn render_text(text: &str, font_size: f32, font_index: usize, fonts: &[Font]) ->
     let width = pixels.iter().map(|x| x.0).max().unwrap();
     let height = pixels.iter().map(|x| x.1).max().unwrap();
 
-    return RenderedText {
+    RenderedText {
         pixels,
         width: width as u32,
         height: height as u32,
-    };
+    }
 }
 
 impl<TDrawTarget: DrawTarget<Color = BinaryColor, Error = TError>, TError: Error + Debug>
@@ -74,7 +74,7 @@ impl<TDrawTarget: DrawTarget<Color = BinaryColor, Error = TError>, TError: Error
         fonts: &[Font],
     ) {
         let rendered_text = render_text(&self.text, self.font_size as f32, 0, fonts);
-        let visible_width = min(rendered_text.width, dimensions.width);
+        let visible_width = min(rendered_text.width, dimensions.width());
         let visible_height = rendered_text.height;
 
         let rounded_width_in_bytes = (visible_width + 7) / 8;
@@ -92,8 +92,8 @@ impl<TDrawTarget: DrawTarget<Color = BinaryColor, Error = TError>, TError: Error
 
         let image_raw = ImageRaw::<BinaryColor>::new(&bytes, 8 * rounded_width_in_bytes as u32);
         let centered_position = Point(
-            position.0 + (dimensions.width - visible_width) / 2,
-            position.1 + (dimensions.height - visible_height) / 2,
+            position.0 + (dimensions.width() - visible_width) / 2,
+            position.1 + (dimensions.height() - visible_height) / 2,
         );
 
         let image = Image::new(
@@ -112,10 +112,7 @@ impl<TDrawTarget: DrawTarget<Color = BinaryColor, Error = TError>, TError: Error
     fn compute_dimensions(&mut self, fonts: &[Font]) -> crate::gui::Dimensions {
         let rendered_text = render_text(&self.text, self.font_size as f32, 0, fonts);
 
-        Dimensions {
-            width: rendered_text.width as u32,
-            height: rendered_text.height as u32,
-        }
+        Dimensions::new(rendered_text.width as u32, rendered_text.height as u32)
     }
 
     fn register_command_channel(&mut self, tx: std::sync::mpsc::Sender<crate::gui::GuiCommand>) {

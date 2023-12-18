@@ -12,6 +12,7 @@ use crate::{
     epaper::{BufferedDrawTarget, EPaper, RotatedDrawTarget},
     gui::{
         controls::{button::Button, item_scroller::ItemScroller, text::Text},
+        geometry::Point,
         Control,
     },
     touch::EventCoalescer,
@@ -140,20 +141,16 @@ async fn main() {
     thread::spawn(|| coalescer.run());
 
     thread::spawn(move || {
-        loop {
-            if let Ok(touch) = rx.recv() {
-                match touch {
-                    touch::Event::Ended(ref pos) => {
-                        // The positions are flipped, because the display is!
-                        // TODO 250 is the height of the epaper, move it to a constant or something!
-                        events_tx
-                            .send(gui::Event::Touch(gui::Point(250 - pos.y(), pos.x())))
-                            .unwrap();
-                    }
-                    touch::Event::Started(_) | touch::Event::Moved(_) => {}
+        while let Ok(touch) = rx.recv() {
+            match touch {
+                touch::Event::Ended(ref pos) => {
+                    // The positions are flipped, because the display is!
+                    // TODO 250 is the height of the epaper, move it to a constant or something!
+                    events_tx
+                        .send(gui::Event::Touch(Point(250 - pos.y(), pos.x())))
+                        .unwrap();
                 }
-            } else {
-                break;
+                touch::Event::Started(_) | touch::Event::Moved(_) => {}
             }
         }
     });

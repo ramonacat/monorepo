@@ -15,17 +15,14 @@ pub struct Button<
     TError: Error + Debug,
 > {
     content: Box<dyn Control<TDrawTarget, TError>>,
-    action: Box<dyn FnMut() -> ()>,
+    action: Box<dyn FnMut()>,
     command_channel: Option<Sender<GuiCommand>>,
 }
 
 impl<TDrawTarget: DrawTarget<Color = BinaryColor, Error = TError>, TError: Error + Debug>
     Button<TDrawTarget, TError>
 {
-    pub fn new(
-        content: Box<dyn Control<TDrawTarget, TError>>,
-        action: Box<dyn FnMut() -> ()>,
-    ) -> Self {
+    pub fn new(content: Box<dyn Control<TDrawTarget, TError>>, action: Box<dyn FnMut()>) -> Self {
         Self {
             content,
             action,
@@ -50,8 +47,8 @@ impl<TDrawTarget: DrawTarget<Color = BinaryColor, Error = TError>, TError: Error
                 y: position.1 as i32,
             },
             Size {
-                width: dimensions.width as u32,
-                height: dimensions.height as u32,
+                width: dimensions.width(),
+                height: dimensions.height(),
             },
         );
         let style = PrimitiveStyleBuilder::new()
@@ -64,10 +61,7 @@ impl<TDrawTarget: DrawTarget<Color = BinaryColor, Error = TError>, TError: Error
 
         self.content.render(
             target,
-            Dimensions {
-                width: dimensions.width - 2,
-                height: dimensions.height - 2,
-            },
+            Dimensions::new(dimensions.width() - 2, dimensions.height() - 2),
             Point(position.0 + 1, position.1 + 1),
             fonts,
         );
@@ -78,12 +72,9 @@ impl<TDrawTarget: DrawTarget<Color = BinaryColor, Error = TError>, TError: Error
     }
 
     fn compute_dimensions(&mut self, fonts: &[Font]) -> crate::gui::Dimensions {
-        let from_child = self.content.compute_dimensions(fonts);
+        let child_dimensions = self.content.compute_dimensions(fonts);
 
-        Dimensions {
-            width: from_child.width + 2,
-            height: from_child.height + 2,
-        }
+        Dimensions::new(child_dimensions.width() + 2, child_dimensions.height() + 2)
     }
 
     fn register_command_channel(&mut self, tx: std::sync::mpsc::Sender<crate::gui::GuiCommand>) {

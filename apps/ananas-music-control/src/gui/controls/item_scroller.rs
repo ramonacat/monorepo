@@ -4,8 +4,9 @@ use std::sync::mpsc::{channel, Receiver, Sender};
 
 use embedded_graphics::{draw_target::DrawTarget, pixelcolor::BinaryColor};
 
+use crate::gui::geometry::Rectangle;
 use crate::gui::layouts::stack::render_stack;
-use crate::gui::{Control, Dimensions, GuiCommand, Point, Rectangle};
+use crate::gui::{Control, Dimensions, GuiCommand, Point};
 
 use super::button::Button;
 use super::stack_panel::StackPanel;
@@ -85,19 +86,14 @@ impl<
         position: Point,
         fonts: &[fontdue::Font],
     ) {
-        let buttons_dimensions = Dimensions {
-            width: 30,
-            height: dimensions.height,
-        };
+        let buttons_dimensions = Dimensions::new(30, dimensions.height());
 
-        let buttons_position = Point(position.0 + (dimensions.width - 30), position.1);
+        let buttons_position = Point(position.0 + (dimensions.width() - 30), position.1);
 
         self.buttons_stack_panel
             .render(target, buttons_dimensions, buttons_position, fonts);
-        self.buttons_stack_panel_bounding_box = Some(Rectangle {
-            position: buttons_position,
-            dimensions: buttons_dimensions,
-        });
+        self.buttons_stack_panel_bounding_box =
+            Some(Rectangle::new(buttons_position, buttons_dimensions));
 
         render_stack(
             target,
@@ -105,21 +101,13 @@ impl<
                 .iter_mut()
                 .skip(self.scroll_index)
                 .take(self.show_items),
-            Dimensions {
-                width: dimensions.width - 30,
-                height: dimensions.height,
-            },
+            Dimensions::new(dimensions.width() - 30, dimensions.height()),
             position,
             super::stack_panel::Direction::Vertical,
             fonts,
         );
 
-        let bounding_box = Rectangle {
-            position,
-            dimensions,
-        };
-
-        self.bounding_box = Some(bounding_box.clone());
+        self.bounding_box = Some(Rectangle::new(position, dimensions));
     }
 
     fn on_touch(&mut self, position: crate::gui::Point) {
@@ -152,8 +140,8 @@ impl<
             if needs_contents_redraw {
                 if let Some(tx) = &self.command_channel {
                     tx.send(GuiCommand::Redraw(
-                        bounding_box.position,
-                        bounding_box.dimensions,
+                        bounding_box.position(),
+                        bounding_box.dimensions(),
                     ))
                     .unwrap();
                 }
@@ -162,10 +150,7 @@ impl<
     }
 
     fn compute_dimensions(&mut self, _fonts: &[fontdue::Font]) -> Dimensions {
-        Dimensions {
-            width: 30,
-            height: 30,
-        }
+        Dimensions::new(30, 30)
     }
 
     fn register_command_channel(&mut self, tx: std::sync::mpsc::Sender<crate::gui::GuiCommand>) {

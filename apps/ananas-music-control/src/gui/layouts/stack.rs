@@ -3,7 +3,9 @@ use std::{collections::HashMap, error::Error};
 use embedded_graphics::{draw_target::DrawTarget, pixelcolor::BinaryColor};
 use fontdue::Font;
 
-use crate::gui::{controls::stack_panel::Direction, Control, Dimensions, Point, Rectangle};
+use crate::gui::{
+    controls::stack_panel::Direction, geometry::Rectangle, Control, Dimensions, Point,
+};
 
 pub fn render_stack<
     'a,
@@ -25,34 +27,28 @@ pub fn render_stack<
     for (index, control) in items.enumerate() {
         let control_size = control.compute_dimensions(fonts);
 
-        let control_dimensions = Dimensions {
-            width: if direction == Direction::Horizontal {
-                control_size.width
+        let control_dimensions = Dimensions::new(
+            if direction == Direction::Horizontal {
+                control_size.width()
             } else {
-                dimensions.width
+                dimensions.width()
             },
-            height: if direction == Direction::Horizontal {
-                dimensions.height
+            if direction == Direction::Horizontal {
+                dimensions.height()
             } else {
-                control_size.height
+                control_size.height()
             },
-        };
+        );
         let control_position = Point(current_x, current_y);
         control.render(target, control_dimensions, control_position, fonts);
 
         if direction == Direction::Horizontal {
-            current_x = current_x + control_size.width;
+            current_x += control_size.width();
         } else {
-            current_y = current_y + control_size.height;
+            current_y += control_size.height();
         }
 
-        bounding_boxes.insert(
-            index,
-            Rectangle {
-                position: control_position,
-                dimensions: control_dimensions,
-            },
-        );
+        bounding_boxes.insert(index, Rectangle::new(control_position, control_dimensions));
     }
 
     bounding_boxes

@@ -5,7 +5,8 @@ use std::{collections::HashMap, error::Error};
 
 use embedded_graphics::{draw_target::DrawTarget, pixelcolor::BinaryColor};
 
-use crate::gui::{Control, GuiCommand, Rectangle};
+use crate::gui::geometry::Rectangle;
+use crate::gui::{Control, GuiCommand};
 use crate::gui::{Dimensions, Point};
 
 #[derive(Debug, Eq, PartialEq, Clone, Copy)]
@@ -77,11 +78,11 @@ impl<
         for child in self.children.iter_mut() {
             let child_dimensions = child.compute_dimensions(fonts);
 
-            width = max(width, child_dimensions.width);
-            height += child_dimensions.height;
+            width = max(width, child_dimensions.width());
+            height += child_dimensions.height();
         }
 
-        Dimensions { width, height }
+        Dimensions::new(width, height)
     }
 
     fn register_command_channel(&mut self, tx: std::sync::mpsc::Sender<crate::gui::GuiCommand>) {

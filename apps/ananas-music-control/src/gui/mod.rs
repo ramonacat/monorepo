@@ -10,32 +10,11 @@ use fontdue::Font;
 
 use crate::epaper::FlushableDrawTarget;
 
+use self::geometry::{Dimensions, Point};
+
 pub mod controls;
+pub mod geometry;
 mod layouts;
-
-#[derive(Debug, Clone, Copy)]
-pub struct Point(pub u32, pub u32);
-
-#[derive(Debug, Clone, Copy)]
-pub struct Dimensions {
-    width: u32,
-    height: u32,
-}
-
-#[derive(Debug, Clone)]
-pub struct Rectangle {
-    position: Point,
-    dimensions: Dimensions,
-}
-
-impl Rectangle {
-    fn contains(&self, position: Point) -> bool {
-        position.0 > self.position.0
-            && position.0 < self.position.0 + self.dimensions.width
-            && position.1 > self.position.1
-            && position.1 < self.position.1 + self.dimensions.height
-    }
-}
 
 pub struct Gui<TDrawTarget: DrawTarget<Color = BinaryColor, Error = TError>, TError: Error + Debug>
 {
@@ -78,10 +57,7 @@ impl<
 
         self.root_control.render(
             &mut self.draw_target,
-            Dimensions {
-                width: size.width,
-                height: size.height,
-            },
+            Dimensions::new(size.width, size.height),
             Point(top_left.x as u32, top_left.y as u32),
             &self.fonts,
         );
