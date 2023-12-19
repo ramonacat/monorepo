@@ -1,4 +1,8 @@
-use std::{path::PathBuf, sync::mpsc::channel, thread};
+use std::{
+    path::PathBuf,
+    sync::{mpsc::channel, Arc},
+    thread,
+};
 
 use fontdue::{Font, FontSettings};
 use opentelemetry::KeyValue;
@@ -10,13 +14,9 @@ use tracing_subscriber::{layer::SubscriberExt, util::SubscriberInitExt, Layer, R
 
 use crate::{
     epaper::{BufferedDrawTarget, EPaper, RotatedDrawTarget},
-    gui::{
-        controls::{button::Button, item_scroller::ItemScroller, text::Text},
-        geometry::Point,
-        Control, Padding,
-    },
+    gui::geometry::Point,
     touch::EventCoalescer,
-    touchpanel::TouchPanel,
+    touchpanel::TouchPanel, views::initial_view,
 };
 
 mod epaper;
@@ -24,6 +24,7 @@ mod gui;
 mod library;
 mod touch;
 mod touchpanel;
+mod views;
 
 const EPAPER_RESET_PIN: u8 = 17;
 const EPAPER_DC_PIN: u8 = 25;
@@ -110,52 +111,10 @@ async fn main() {
     .unwrap();
     let fonts = vec![font_lato, font_noto_emoji];
 
-    let mut item_scroller_children: Vec<Box<dyn Control<_, _>>> = vec![];
-
-    let library = library::Library::new(PathBuf::from("/mnt/nas/Music/"));
-    let mut artists = library.list_artists();
-
-    artists.sort();
-
-    for artist in artists.iter() {
-        let artist_clone = artist.clone();
-
-        item_scroller_children.push(Box::new(Button::new(
-            Box::new(Text::new(artist.clone(), 20)),
-            Padding::new(5, 8, 0, 0),
-            Box::new(move |command_tx| {
-                // todo we should probably not have a library per button... use an Arc here
-                let library = library::Library::new(PathBuf::from("/mnt/nas/Music/"));
-                let mut item_scroller_children: Vec<Box<dyn Control<_, _>>> = vec![];
-
-                for album in library.list_albums(&artist_clone) {
-                   item_scroller_children.push(Box::new(
-                    Button::new(
-                        Box::new(Text::new(album.clone(), 20)),
-                        Padding::new(5, 8, 0, 0),
-                        Box::new(move |_command_tx| {
-                            println!("{:?}", album);
-                        })
-                    )
-                   ));
-                }
-
-                let item_scroller = ItemScroller::new(
-                    item_scroller_children,
-                    3
-                );
-                command_tx.send(gui::GuiCommand::ReplaceRoot(Box::new(item_scroller))).unwrap();
-            }),
-        )));
-    }
+    let library = Arc::new(library::Library::new(PathBuf::from("/mnt/nas/Music/")));
 
     let (events_tx, events_rx) = channel();
-    let gui = gui::Gui::new(
-        fonts,
-        draw_target,
-        Box::new(ItemScroller::new(item_scroller_children, 3)),
-        events_rx,
-    );
+    let gui = gui::Gui::new(fonts, draw_target, initial_view(library), events_rx);
 
     let (tx, rx) = channel();
     let coalescer = EventCoalescer::new(touchpanel, tx);

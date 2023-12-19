@@ -31,7 +31,7 @@ impl Library {
         artists
     }
 
-    pub fn list_albums(&self, artist: &str) -> Vec<String>{
+    pub fn list_albums(&self, artist: &str) -> Vec<String> {
         let mut albums = vec![];
 
         let mut path = self.path.clone();

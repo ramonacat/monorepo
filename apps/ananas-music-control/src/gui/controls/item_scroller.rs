@@ -30,7 +30,7 @@ pub struct ItemScroller<
     scroll_rx: Receiver<ScrollRequest>,
     command_channel: Option<Sender<GuiCommand<TDrawTarget, TError>>>,
     bounding_box: Option<Rectangle>,
-    children_bounding_boxes: Option<HashMap<usize, Rectangle>>
+    children_bounding_boxes: Option<HashMap<usize, Rectangle>>,
 }
 impl<
         TDrawTarget: DrawTarget<Color = BinaryColor, Error = TError> + 'static,
@@ -84,7 +84,7 @@ impl<
             command_channel: None,
             scroll_rx,
             bounding_box: None,
-            children_bounding_boxes: None
+            children_bounding_boxes: None,
         }
     }
 }
@@ -177,7 +177,10 @@ impl<
         Dimensions::new(30, 30)
     }
 
-    fn register_command_channel(&mut self, tx: std::sync::mpsc::Sender<crate::gui::GuiCommand<TDrawTarget, TError>>) {
+    fn register_command_channel(
+        &mut self,
+        tx: std::sync::mpsc::Sender<crate::gui::GuiCommand<TDrawTarget, TError>>,
+    ) {
         self.command_channel = Some(tx.clone());
         self.buttons_stack_panel
             .register_command_channel(tx.clone());

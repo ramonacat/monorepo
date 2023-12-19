@@ -5,7 +5,11 @@ use std::{
     time::Duration,
 };
 
-use embedded_graphics::{draw_target::DrawTarget, pixelcolor::BinaryColor, primitives::{Rectangle, StyledDrawable, PrimitiveStyleBuilder}};
+use embedded_graphics::{
+    draw_target::DrawTarget,
+    pixelcolor::BinaryColor,
+    primitives::{PrimitiveStyleBuilder, Rectangle, StyledDrawable},
+};
 use fontdue::Font;
 
 use crate::epaper::FlushableDrawTarget;
@@ -86,18 +90,24 @@ impl<
     }
 
     fn clear_screen(&mut self) {
-        let rectangle = Rectangle::new(embedded_graphics::geometry::Point::new(0, 0), self.draw_target.bounding_box().size);
+        let rectangle = Rectangle::new(
+            embedded_graphics::geometry::Point::new(0, 0),
+            self.draw_target.bounding_box().size,
+        );
         let style = PrimitiveStyleBuilder::new()
             .fill_color(BinaryColor::Off)
             .build();
 
-        rectangle.draw_styled(&style, &mut self.draw_target).unwrap();
+        rectangle
+            .draw_styled(&style, &mut self.draw_target)
+            .unwrap();
     }
 
     pub fn run(mut self) {
         let (command_tx, command_rx) = std::sync::mpsc::channel();
 
-        self.root_control.register_command_channel(command_tx.clone());
+        self.root_control
+            .register_command_channel(command_tx.clone());
         self.render();
 
         loop {
@@ -121,7 +131,7 @@ impl<
                         new_root.register_command_channel(command_tx.clone());
                         self.root_control = new_root;
                         redraw = true;
-                    },
+                    }
                 }
             }
 
@@ -140,7 +150,7 @@ pub enum Event {
 
 pub enum GuiCommand<TDrawTarget: DrawTarget, TError: Error + Debug> {
     Redraw(Point, Dimensions),
-    ReplaceRoot(Box<dyn Control<TDrawTarget, TError>>)
+    ReplaceRoot(Box<dyn Control<TDrawTarget, TError>>),
 }
 
 pub trait Control<

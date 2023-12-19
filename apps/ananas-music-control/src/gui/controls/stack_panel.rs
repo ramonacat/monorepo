@@ -85,7 +85,10 @@ impl<
         Dimensions::new(width, height)
     }
 
-    fn register_command_channel(&mut self, tx: std::sync::mpsc::Sender<crate::gui::GuiCommand<TDrawTarget, TError>>) {
+    fn register_command_channel(
+        &mut self,
+        tx: std::sync::mpsc::Sender<crate::gui::GuiCommand<TDrawTarget, TError>>,
+    ) {
         self.command_channel = Some(tx.clone());
 
         for child in self.children.iter_mut() {

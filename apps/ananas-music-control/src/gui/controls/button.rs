@@ -67,7 +67,10 @@ impl<TDrawTarget: DrawTarget<Color = BinaryColor, Error = TError>, TError: Error
 
         self.content.render(
             target,
-            Dimensions::new(dimensions.width() - self.padding.left - self.padding.right - 2, dimensions.height() - self.padding.top - self.padding.bottom - 2),
+            Dimensions::new(
+                dimensions.width() - self.padding.left - self.padding.right - 2,
+                dimensions.height() - self.padding.top - self.padding.bottom - 2,
+            ),
             Point(
                 position.0 + 1 + self.padding.left,
                 position.1 + 1 + self.padding.top,
@@ -91,7 +94,10 @@ impl<TDrawTarget: DrawTarget<Color = BinaryColor, Error = TError>, TError: Error
         )
     }
 
-    fn register_command_channel(&mut self, tx: std::sync::mpsc::Sender<crate::gui::GuiCommand<TDrawTarget, TError>>) {
+    fn register_command_channel(
+        &mut self,
+        tx: std::sync::mpsc::Sender<crate::gui::GuiCommand<TDrawTarget, TError>>,
+    ) {
         self.command_channel = Some(tx.clone());
         self.content.register_command_channel(tx);
     }
