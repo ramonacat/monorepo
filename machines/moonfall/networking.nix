@@ -8,5 +8,6 @@
     networking.interfaces.eno1.wakeOnLan = {
       enable = true;
     };
+    networking.enableIPv6 = false;
   };
 }
