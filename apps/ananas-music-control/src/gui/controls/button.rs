@@ -2,7 +2,7 @@ use embedded_graphics::{
     draw_target::DrawTarget,
     geometry::Size,
     pixelcolor::BinaryColor,
-    primitives::{PrimitiveStyleBuilder, Rectangle, StyledDrawable},
+    primitives::{PrimitiveStyle, PrimitiveStyleBuilder, Rectangle, StyledDrawable},
 };
 use fontdue::Font;
 use std::fmt::Debug;
@@ -10,12 +10,14 @@ use std::{error::Error, sync::mpsc::Sender};
 
 use crate::gui::{Control, Dimensions, GuiCommand, Padding, Point};
 
+type Callback<TDrawTarget, TError> = Box<dyn FnMut(Sender<GuiCommand<TDrawTarget, TError>>)>;
+
 pub struct Button<
     TDrawTarget: DrawTarget<Color = BinaryColor, Error = TError>,
     TError: Error + Debug,
 > {
     content: Box<dyn Control<TDrawTarget, TError>>,
-    action: Box<dyn FnMut(Sender<GuiCommand<TDrawTarget, TError>>)>,
+    action: Callback<TDrawTarget, TError>,
     command_channel: Option<Sender<GuiCommand<TDrawTarget, TError>>>,
     padding: Padding,
 }
@@ -26,7 +28,7 @@ impl<TDrawTarget: DrawTarget<Color = BinaryColor, Error = TError>, TError: Error
     pub fn new(
         content: Box<dyn Control<TDrawTarget, TError>>,
         padding: Padding,
-        action: Box<dyn FnMut(Sender<GuiCommand<TDrawTarget, TError>>)>,
+        action: Callback<TDrawTarget, TError>,
     ) -> Self {
         Self {
             content,
@@ -36,6 +38,13 @@ impl<TDrawTarget: DrawTarget<Color = BinaryColor, Error = TError>, TError: Error
         }
     }
 }
+
+const BUTTON_STYLE: PrimitiveStyle<BinaryColor> = PrimitiveStyleBuilder::new()
+    .stroke_alignment(embedded_graphics::primitives::StrokeAlignment::Inside)
+    .stroke_width(1)
+    .stroke_color(BinaryColor::On)
+    .fill_color(BinaryColor::Off)
+    .build();
 
 impl<TDrawTarget: DrawTarget<Color = BinaryColor, Error = TError>, TError: Error + Debug>
     Control<TDrawTarget, TError> for Button<TDrawTarget, TError>
@@ -57,24 +66,15 @@ impl<TDrawTarget: DrawTarget<Color = BinaryColor, Error = TError>, TError: Error
                 height: dimensions.height(),
             },
         );
-        let style = PrimitiveStyleBuilder::new()
-            .stroke_alignment(embedded_graphics::primitives::StrokeAlignment::Inside)
-            .stroke_width(1)
-            .stroke_color(BinaryColor::On)
-            .fill_color(BinaryColor::Off)
-            .build();
-        rectangle.draw_styled(&style, target).unwrap();
+        rectangle.draw_styled(&BUTTON_STYLE, target).unwrap();
+
+        let dimensions = self.padding.adjust_dimensions(dimensions);
+        let position = self.padding.adjust_position(position);
 
         self.content.render(
             target,
-            Dimensions::new(
-                dimensions.width() - self.padding.left - self.padding.right - 2,
-                dimensions.height() - self.padding.top - self.padding.bottom - 2,
-            ),
-            Point(
-                position.0 + 1 + self.padding.left,
-                position.1 + 1 + self.padding.top,
-            ),
+            Dimensions::new(dimensions.width() - 2, dimensions.height() - 2),
+            Point(position.0 + 1, position.1 + 1),
             fonts,
         );
     }
@@ -89,8 +89,8 @@ impl<TDrawTarget: DrawTarget<Color = BinaryColor, Error = TError>, TError: Error
         let child_dimensions = self.content.compute_dimensions(fonts);
 
         Dimensions::new(
-            child_dimensions.width() + 2 + self.padding.left + self.padding.right,
-            child_dimensions.height() + 2 + self.padding.top + self.padding.bottom,
+            child_dimensions.width() + 2 + self.padding.total_horizontal(),
+            child_dimensions.height() + 2 + self.padding.total_vertical(),
         )
     }
 

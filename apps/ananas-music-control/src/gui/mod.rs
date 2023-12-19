@@ -46,15 +46,6 @@ impl Padding {
         }
     }
 
-    pub fn horizontal(left: u32, right: u32) -> Self {
-        Self {
-            top: 0,
-            bottom: 0,
-            left,
-            right,
-        }
-    }
-
     pub fn vertical(top: u32, bottom: u32) -> Self {
         Self {
             top,

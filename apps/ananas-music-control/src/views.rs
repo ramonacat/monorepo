@@ -18,23 +18,11 @@ fn playback_view<
     artist: &str,
     album: &str,
 ) -> Box<dyn Control<TDrawTarget, TError>> {
-    let mut stack_panel_children: Vec<Box<dyn Control<_, _>>> = vec![];
-    stack_panel_children.push(Box::new(Text::new(
-        artist.to_string(),
-        18,
-        Padding::vertical(10, 10),
-    )));
-    stack_panel_children.push(Box::new(Text::new(
-        album.to_string(),
-        20,
-        Padding::vertical(10, 10),
-    )));
-    stack_panel_children.push(Box::new(ProgressBar::new(
-        50,
-        150,
-        5,
-        Padding::new(15, 10, 0, 0),
-    )));
+    let stack_panel_children: Vec<Box<dyn Control<_, _>>> = vec![
+        Box::new(Text::new(artist.to_string(), 18, Padding::vertical(10, 10))),
+        Box::new(Text::new(album.to_string(), 20, Padding::vertical(10, 10))),
+        Box::new(ProgressBar::new(50, 150, 5, Padding::new(15, 10, 0, 0))),
+    ];
 
     Box::new(StackPanel::new(stack_panel_children, Orientation::Vertical))
 }

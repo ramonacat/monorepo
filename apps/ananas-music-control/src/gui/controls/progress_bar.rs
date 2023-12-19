@@ -42,7 +42,6 @@ impl<TDrawTarget: DrawTarget<Color = BinaryColor, Error = TError>, TError: Error
     }
 
     fn compute_dimensions(&mut self, _fonts: &[fontdue::Font]) -> crate::gui::geometry::Dimensions {
-        // FIXME: support padding here
         Dimensions::new(
             50 + self.padding.total_horizontal(),
             self.height + self.padding.total_vertical(),
@@ -56,22 +55,21 @@ impl<TDrawTarget: DrawTarget<Color = BinaryColor, Error = TError>, TError: Error
         position: crate::gui::geometry::Point,
         _fonts: &[fontdue::Font],
     ) {
-        // FIXME: support padding here
+        let dimensions = self.padding.adjust_dimensions(dimensions);
+        let position = self.padding.adjust_position(position);
 
-        let height = dimensions.height() - self.padding.total_vertical();
-        let width = dimensions.width() - self.padding.total_horizontal();
+        let height = dimensions.height();
+        let width = dimensions.width();
 
         let progress_width =
             (width as f32 * (self.progress as f32 / self.progress_max as f32)) as u32;
-        let position_y = position.1 + self.padding.top;
-        let position_x = position.0 + self.padding.left;
 
         let rectangle_progress = Rectangle::new(
-            Point::new(position_x as i32, position_y as i32),
+            Point::new(position.0 as i32, position.1 as i32),
             Size::new(progress_width, height),
         );
         let rectangle_clear = Rectangle::new(
-            Point::new((position_x + progress_width) as i32, position_y as i32),
+            Point::new((position.0 + progress_width) as i32, position.1 as i32),
             Size::new(width - progress_width, height),
         );
 
