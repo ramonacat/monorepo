@@ -10,23 +10,25 @@ use fontdue::{
     Font,
 };
 
-use crate::gui::{Control, Dimensions, GuiCommand, Point};
+use crate::gui::{Control, Dimensions, GuiCommand, Padding, Point};
 
 pub struct Text<TDrawTarget: DrawTarget<Color = BinaryColor, Error = TError>, TError: Error + Debug>
 {
     text: String,
     font_size: usize,
     command_channel: Option<Sender<GuiCommand<TDrawTarget, TError>>>,
+    padding: Padding,
 }
 
 impl<TDrawTarget: DrawTarget<Color = BinaryColor, Error = TError>, TError: Error + Debug>
     Text<TDrawTarget, TError>
 {
-    pub fn new(text: String, font_size: usize) -> Self {
+    pub fn new(text: String, font_size: usize, padding: Padding) -> Self {
         Self {
             text,
             font_size,
             command_channel: None,
+            padding,
         }
     }
 }
@@ -76,6 +78,9 @@ impl<TDrawTarget: DrawTarget<Color = BinaryColor, Error = TError>, TError: Error
         position: Point,
         fonts: &[Font],
     ) {
+        let dimensions = self.padding.adjust_dimensions(dimensions);
+        let position = self.padding.adjust_position(position);
+
         let rendered_text = render_text(&self.text, self.font_size as f32, 0, fonts);
         let visible_width = min(rendered_text.width, dimensions.width());
         let visible_height = rendered_text.height;
@@ -107,6 +112,8 @@ impl<TDrawTarget: DrawTarget<Color = BinaryColor, Error = TError>, TError: Error
             },
         );
 
+        println!("{:?} {:?}", dimensions, position);
+
         image.draw(target).unwrap();
     }
 
@@ -115,7 +122,10 @@ impl<TDrawTarget: DrawTarget<Color = BinaryColor, Error = TError>, TError: Error
     fn compute_dimensions(&mut self, fonts: &[Font]) -> crate::gui::Dimensions {
         let rendered_text = render_text(&self.text, self.font_size as f32, 0, fonts);
 
-        Dimensions::new(rendered_text.width as u32, rendered_text.height as u32)
+        Dimensions::new(
+            rendered_text.width as u32 + self.padding.total_horizontal(),
+            rendered_text.height as u32 + self.padding.total_vertical(),
+        )
     }
 
     fn register_command_channel(

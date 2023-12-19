@@ -6,14 +6,8 @@ use std::{collections::HashMap, error::Error};
 use embedded_graphics::{draw_target::DrawTarget, pixelcolor::BinaryColor};
 
 use crate::gui::geometry::Rectangle;
-use crate::gui::{Control, GuiCommand};
+use crate::gui::{Control, GuiCommand, Orientation};
 use crate::gui::{Dimensions, Point};
-
-#[derive(Debug, Eq, PartialEq, Clone, Copy)]
-pub enum Direction {
-    Vertical,
-    Horizontal,
-}
 
 pub struct StackPanel<
     TDrawTarget: DrawTarget<Color = BinaryColor, Error = TError>,
@@ -21,14 +15,17 @@ pub struct StackPanel<
 > {
     children: Vec<Box<dyn Control<TDrawTarget, TError>>>,
     bounding_boxes: HashMap<usize, Rectangle>,
-    direction: Direction,
+    direction: Orientation,
     command_channel: Option<Sender<GuiCommand<TDrawTarget, TError>>>,
 }
 
 impl<TDrawTarget: DrawTarget<Color = BinaryColor, Error = TError>, TError: Error + Debug>
     StackPanel<TDrawTarget, TError>
 {
-    pub fn new(children: Vec<Box<dyn Control<TDrawTarget, TError>>>, direction: Direction) -> Self {
+    pub fn new(
+        children: Vec<Box<dyn Control<TDrawTarget, TError>>>,
+        direction: Orientation,
+    ) -> Self {
         Self {
             children,
             bounding_boxes: HashMap::new(),

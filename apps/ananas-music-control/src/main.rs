@@ -16,7 +16,8 @@ use crate::{
     epaper::{BufferedDrawTarget, EPaper, RotatedDrawTarget},
     gui::geometry::Point,
     touch::EventCoalescer,
-    touchpanel::TouchPanel, views::initial_view,
+    touchpanel::TouchPanel,
+    views::initial_view,
 };
 
 mod epaper;

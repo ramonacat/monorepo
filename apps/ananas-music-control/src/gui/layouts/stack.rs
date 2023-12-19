@@ -3,9 +3,7 @@ use std::{collections::HashMap, error::Error};
 use embedded_graphics::{draw_target::DrawTarget, pixelcolor::BinaryColor};
 use fontdue::Font;
 
-use crate::gui::{
-    controls::stack_panel::Direction, geometry::Rectangle, Control, Dimensions, Point,
-};
+use crate::gui::{geometry::Rectangle, Control, Dimensions, Orientation, Point};
 
 pub fn render_stack<
     'a,
@@ -16,7 +14,7 @@ pub fn render_stack<
     items: impl Iterator<Item = &'a mut Box<dyn Control<TDrawTarget, TError>>>,
     dimensions: Dimensions,
     position: Point,
-    direction: Direction,
+    direction: Orientation,
     fonts: &[Font],
 ) -> HashMap<usize, Rectangle> {
     let mut bounding_boxes = HashMap::new();
@@ -28,12 +26,12 @@ pub fn render_stack<
         let control_size = control.compute_dimensions(fonts);
 
         let control_dimensions = Dimensions::new(
-            if direction == Direction::Horizontal {
+            if direction == Orientation::Horizontal {
                 control_size.width()
             } else {
                 dimensions.width()
             },
-            if direction == Direction::Horizontal {
+            if direction == Orientation::Horizontal {
                 dimensions.height()
             } else {
                 control_size.height()
@@ -42,7 +40,7 @@ pub fn render_stack<
         let control_position = Point(current_x, current_y);
         control.render(target, control_dimensions, control_position, fonts);
 
-        if direction == Direction::Horizontal {
+        if direction == Orientation::Horizontal {
             current_x += control_size.width();
         } else {
             current_y += control_size.height();

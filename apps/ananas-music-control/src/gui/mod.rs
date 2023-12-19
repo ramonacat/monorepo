@@ -36,6 +36,58 @@ impl Padding {
             right,
         }
     }
+
+    pub fn zero() -> Self {
+        Self {
+            top: 0,
+            bottom: 0,
+            left: 0,
+            right: 0,
+        }
+    }
+
+    pub fn horizontal(left: u32, right: u32) -> Self {
+        Self {
+            top: 0,
+            bottom: 0,
+            left,
+            right,
+        }
+    }
+
+    pub fn vertical(top: u32, bottom: u32) -> Self {
+        Self {
+            top,
+            bottom,
+            left: 0,
+            right: 0,
+        }
+    }
+
+    pub fn total_vertical(&self) -> u32 {
+        self.top + self.bottom
+    }
+
+    pub fn total_horizontal(&self) -> u32 {
+        self.left + self.right
+    }
+
+    pub fn adjust_position(&self, point: Point) -> Point {
+        Point(point.0 + self.left, point.1 + self.top)
+    }
+
+    pub fn adjust_dimensions(&self, dimensions: Dimensions) -> Dimensions {
+        Dimensions::new(
+            dimensions.width() - self.total_horizontal(),
+            dimensions.height() - self.total_vertical(),
+        )
+    }
+}
+
+#[derive(Debug, Eq, PartialEq, Clone, Copy)]
+pub enum Orientation {
+    Vertical,
+    Horizontal,
 }
 
 pub struct Gui<TDrawTarget: DrawTarget<Color = BinaryColor, Error = TError>, TError: Error + Debug>

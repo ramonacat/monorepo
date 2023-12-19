@@ -7,7 +7,7 @@ use embedded_graphics::{draw_target::DrawTarget, pixelcolor::BinaryColor};
 
 use crate::gui::geometry::Rectangle;
 use crate::gui::layouts::stack::render_stack;
-use crate::gui::{Control, Dimensions, GuiCommand, Padding, Point};
+use crate::gui::{Control, Dimensions, GuiCommand, Orientation, Padding, Point};
 
 use super::button::Button;
 use super::stack_panel::StackPanel;
@@ -48,7 +48,7 @@ impl<
         let buttons_stack_panel: StackPanel<TDrawTarget, TError> = StackPanel::new(
             vec![
                 Box::new(Button::<TDrawTarget, TError>::new(
-                    Box::new(Text::new("⬆".to_string(), 20)),
+                    Box::new(Text::new("⬆".to_string(), 20, Padding::zero())),
                     Padding {
                         top: 5,
                         bottom: 5,
@@ -60,7 +60,7 @@ impl<
                     }),
                 )),
                 Box::new(Button::<TDrawTarget, TError>::new(
-                    Box::new(Text::new("⬇".to_string(), 20)),
+                    Box::new(Text::new("⬇".to_string(), 20, Padding::zero())),
                     Padding {
                         top: 5,
                         bottom: 5,
@@ -72,7 +72,7 @@ impl<
                     }),
                 )),
             ],
-            super::stack_panel::Direction::Vertical,
+            Orientation::Vertical,
         );
 
         Self {
@@ -118,7 +118,7 @@ impl<
                 .take(self.show_items),
             Dimensions::new(dimensions.width() - 30, dimensions.height()),
             position,
-            super::stack_panel::Direction::Vertical,
+            Orientation::Vertical,
             fonts,
         );
         self.children_bounding_boxes = Some(children_bounding_boxes);
