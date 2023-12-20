@@ -9,83 +9,110 @@ use crate::gui::controls::stack_panel::StackPanel;
 use crate::gui::controls::text::Text;
 use crate::gui::{Control, GuiCommand, Orientation, Padding};
 use crate::library::Library;
+use crate::playback::Player;
 
-fn playback_view<
-    TDrawTarget: DrawTarget<Color = BinaryColor, Error = TError> + 'static,
-    TError: Error + Debug + 'static,
->(
+pub struct App {
     library: Arc<Library>,
-    artist: &str,
-    album: &str,
-) -> Box<dyn Control<TDrawTarget, TError>> {
-    let stack_panel_children: Vec<Box<dyn Control<_, _>>> = vec![
-        Box::new(Text::new(artist.to_string(), 18, Padding::vertical(10, 10))),
-        Box::new(Text::new(album.to_string(), 20, Padding::vertical(10, 10))),
-        Box::new(ProgressBar::new(50, 150, 5, Padding::new(15, 10, 0, 0))),
-    ];
-
-    Box::new(StackPanel::new(stack_panel_children, Orientation::Vertical))
+    player: Arc<Player>,
 }
 
-fn artist_view<
-    TDrawTarget: DrawTarget<Color = BinaryColor, Error = TError> + 'static,
-    TError: Error + Debug + 'static,
->(
-    library: Arc<Library>,
-    artist: &str,
-) -> Box<dyn Control<TDrawTarget, TError>> {
-    let mut item_scroller_children: Vec<Box<dyn Control<_, _>>> = vec![];
+impl App {
+    pub fn new(library: Arc<Library>) -> Arc<Self> {
+        let player = Player::new();
 
-    for album in library.list_albums(artist) {
-        let artist = artist.to_string();
-        let library = library.clone();
-
-        item_scroller_children.push(Box::new(Button::new(
-            Box::new(Text::new(album.clone(), 20, Padding::zero())),
-            Padding::new(5, 8, 0, 0),
-            Box::new(move |command_tx| {
-                command_tx
-                    .send(GuiCommand::ReplaceRoot(playback_view(
-                        library.clone(),
-                        &artist,
-                        &album,
-                    )))
-                    .unwrap();
-            }),
-        )));
+        Arc::new(Self {
+            library,
+            player: Arc::new(player),
+        })
     }
 
-    Box::new(ItemScroller::new(item_scroller_children, 3))
-}
+    fn playback_view<
+        TDrawTarget: DrawTarget<Color = BinaryColor, Error = TError> + 'static,
+        TError: Error + Debug + 'static,
+    >(
+        self: Arc<Self>,
+        artist: &str,
+        album: &str,
+    ) -> Box<dyn Control<TDrawTarget, TError>> {
+        for track in self.library.list_tracks(artist, album) {
+            println!("Adding to queue: {:?}", &track);
+            self.player.add_to_queue(track);
+            println!("Added");
+        }
 
-pub fn initial_view<
-    TDrawTarget: DrawTarget<Color = BinaryColor, Error = TError> + 'static,
-    TError: Error + Debug + 'static,
->(
-    library: Arc<Library>,
-) -> Box<dyn Control<TDrawTarget, TError>> {
-    let mut item_scroller_children: Vec<Box<dyn Control<_, _>>> = vec![];
-    let mut artists = library.list_artists();
+        println!("Play...");
+        self.player.play();
+        println!("Play done");
 
-    artists.sort();
+        let stack_panel_children: Vec<Box<dyn Control<_, _>>> = vec![
+            Box::new(Text::new(artist.to_string(), 18, Padding::vertical(10, 10))),
+            Box::new(Text::new(album.to_string(), 20, Padding::vertical(10, 10))),
+            Box::new(ProgressBar::new(50, 150, 5, Padding::new(15, 10, 0, 0))),
+        ];
 
-    for artist in artists.iter() {
-        let artist_clone = artist.clone();
-
-        let library_ = library.clone();
-        item_scroller_children.push(Box::new(Button::new(
-            Box::new(Text::new(artist.clone(), 20, Padding::zero())),
-            Padding::new(5, 8, 0, 0),
-            Box::new(move |command_tx| {
-                command_tx
-                    .send(GuiCommand::ReplaceRoot(artist_view(
-                        library_.clone(),
-                        &artist_clone,
-                    )))
-                    .unwrap();
-            }),
-        )));
+        Box::new(StackPanel::new(stack_panel_children, Orientation::Vertical))
     }
 
-    Box::new(ItemScroller::new(item_scroller_children, 3))
+    fn artist_view<
+        TDrawTarget: DrawTarget<Color = BinaryColor, Error = TError> + 'static,
+        TError: Error + Debug + 'static,
+    >(
+        self: Arc<Self>,
+        library: Arc<Library>,
+        artist: &str,
+    ) -> Box<dyn Control<TDrawTarget, TError>> {
+        let mut item_scroller_children: Vec<Box<dyn Control<_, _>>> = vec![];
+
+        for album in library.list_albums(artist) {
+            let artist = artist.to_string();
+            let self_ = self.clone();
+
+            item_scroller_children.push(Box::new(Button::new(
+                Box::new(Text::new(album.clone(), 20, Padding::zero())),
+                Padding::new(5, 8, 0, 0),
+                Box::new(move |command_tx| {
+                    command_tx
+                        .send(GuiCommand::ReplaceRoot(
+                            self_.clone().playback_view(&artist, &album),
+                        ))
+                        .unwrap();
+                }),
+            )));
+        }
+
+        Box::new(ItemScroller::new(item_scroller_children, 3))
+    }
+
+    pub fn initial_view<
+        TDrawTarget: DrawTarget<Color = BinaryColor, Error = TError> + 'static,
+        TError: Error + Debug + 'static,
+    >(
+        self: Arc<Self>,
+    ) -> Box<dyn Control<TDrawTarget, TError>> {
+        let mut item_scroller_children: Vec<Box<dyn Control<_, _>>> = vec![];
+        let mut artists = self.library.list_artists();
+
+        artists.sort();
+
+        for artist in artists.iter() {
+            let artist_clone = artist.clone();
+
+            let self_ = self.clone();
+            item_scroller_children.push(Box::new(Button::new(
+                Box::new(Text::new(artist.clone(), 20, Padding::zero())),
+                Padding::new(5, 8, 0, 0),
+                Box::new(move |command_tx| {
+                    let self_ = self_.clone();
+                    let library = self_.library.clone();
+                    command_tx
+                        .send(GuiCommand::ReplaceRoot(
+                            self_.artist_view(library, &artist_clone),
+                        ))
+                        .unwrap();
+                }),
+            )));
+        }
+
+        Box::new(ItemScroller::new(item_scroller_children, 3))
+    }
 }

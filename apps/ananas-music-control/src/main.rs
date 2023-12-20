@@ -17,12 +17,13 @@ use crate::{
     gui::geometry::Point,
     touch::EventCoalescer,
     touchpanel::TouchPanel,
-    views::initial_view,
+    views::App,
 };
 
 mod epaper;
 mod gui;
 mod library;
+mod playback;
 mod touch;
 mod touchpanel;
 mod views;
@@ -115,7 +116,8 @@ async fn main() {
     let library = Arc::new(library::Library::new(PathBuf::from("/mnt/nas/Music/")));
 
     let (events_tx, events_rx) = channel();
-    let gui = gui::Gui::new(fonts, draw_target, initial_view(library), events_rx);
+    let app = App::new(library);
+    let gui = gui::Gui::new(fonts, draw_target, app.initial_view(), events_rx);
 
     let (tx, rx) = channel();
     let coalescer = EventCoalescer::new(touchpanel, tx);

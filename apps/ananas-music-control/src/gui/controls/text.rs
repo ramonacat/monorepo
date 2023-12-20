@@ -112,8 +112,6 @@ impl<TDrawTarget: DrawTarget<Color = BinaryColor, Error = TError>, TError: Error
             },
         );
 
-        println!("{:?} {:?}", dimensions, position);
-
         image.draw(target).unwrap();
     }
 

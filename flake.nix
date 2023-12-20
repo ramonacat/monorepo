@@ -57,7 +57,9 @@
           src = craneLib.path ./apps/ananas-music-control;
           filter = sourceFilter;
         };
-        buildInputs = with pkgs; [
+        buildInputs = with pkgsAarch64; [
+          pkg-config
+          alsaLib.dev
         ];
       };
       ananasMusicControlPackageCargoArtifacts = craneLibAarch64.buildDepsOnly ananasMusicControlPackageArguments;
@@ -74,6 +76,7 @@
           pkg-config
           pipewire
           clang
+          alsaLib.dev
           (pkgs.rust-bin.stable.latest.default.override {
             extensions = [ "rust-src" ];
             targets = [ "aarch64-unknown-linux-gnu" ];
@@ -182,6 +185,7 @@
             (import ./machines/ananas/hardware.nix {inherit pkgsCross; })
             ./machines/ananas/networking.nix
             (import ./machines/ananas/music-control.nix { inherit ananasMusicControlPackage; })
+            ./machines/ananas.nix
           ];
         };
         evillian = nixpkgs.lib.nixosSystem {
