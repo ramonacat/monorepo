@@ -64,6 +64,8 @@ impl Library {
             files.push(file.path());
         }
 
+        files.sort();
+
         files
     }
 }
