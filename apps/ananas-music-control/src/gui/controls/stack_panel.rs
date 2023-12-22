@@ -5,6 +5,7 @@ use std::{collections::HashMap, error::Error};
 
 use embedded_graphics::{draw_target::DrawTarget, pixelcolor::BinaryColor};
 
+use crate::gui::fonts::Fonts;
 use crate::gui::geometry::Rectangle;
 use crate::gui::layouts::stack::render_stack;
 use crate::gui::{Control, GuiCommand, Orientation, StackUnitDimension};
@@ -27,14 +28,14 @@ impl<TDrawTarget: DrawTarget<Color = BinaryColor, Error = TError>, TError: Error
     pub fn new(
         children: Vec<Box<dyn Control<TDrawTarget, TError>>>,
         direction: Orientation,
-        unit_dimensions: Vec<StackUnitDimension>
+        unit_dimensions: Vec<StackUnitDimension>,
     ) -> Self {
         Self {
             children,
             bounding_boxes: HashMap::new(),
             direction,
             command_channel: None,
-            unit_dimensions
+            unit_dimensions,
         }
     }
 }
@@ -49,7 +50,7 @@ impl<
         target: &mut TDrawTarget,
         dimensions: Dimensions,
         position: Point,
-        fonts: &[fontdue::Font],
+        fonts: &Fonts,
     ) {
         let render_result = render_stack(
             target,
@@ -74,7 +75,7 @@ impl<
         }
     }
 
-    fn compute_natural_dimensions(&mut self, fonts: &[fontdue::Font]) -> crate::gui::Dimensions {
+    fn compute_natural_dimensions(&mut self, fonts: &Fonts) -> crate::gui::Dimensions {
         let mut width = 0;
         let mut height = 0;
         for child in self.children.iter_mut() {

@@ -7,7 +7,7 @@ use embedded_graphics::{
     primitives::{PrimitiveStyleBuilder, Rectangle, StyledDrawable},
 };
 
-use crate::gui::{geometry::Dimensions, Control, GuiCommand, Padding};
+use crate::gui::{geometry::Dimensions, Control, GuiCommand, Padding, fonts::Fonts};
 
 pub struct ProgressBar<
     TDrawTarget: DrawTarget<Color = BinaryColor, Error = TError>,
@@ -41,7 +41,10 @@ impl<TDrawTarget: DrawTarget<Color = BinaryColor, Error = TError>, TError: Error
         self.command_channel = Some(tx);
     }
 
-    fn compute_natural_dimensions(&mut self, _fonts: &[fontdue::Font]) -> crate::gui::geometry::Dimensions {
+    fn compute_natural_dimensions(
+        &mut self,
+        _fonts: &Fonts,
+    ) -> crate::gui::geometry::Dimensions {
         Dimensions::new(
             50 + self.padding.total_horizontal(),
             self.height + self.padding.total_vertical(),
@@ -53,7 +56,7 @@ impl<TDrawTarget: DrawTarget<Color = BinaryColor, Error = TError>, TError: Error
         target: &mut TDrawTarget,
         dimensions: crate::gui::geometry::Dimensions,
         position: crate::gui::geometry::Point,
-        _fonts: &[fontdue::Font],
+        _fonts: &Fonts,
     ) {
         let dimensions = self.padding.adjust_dimensions(dimensions);
         let position = self.padding.adjust_position(position);

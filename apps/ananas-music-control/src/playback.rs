@@ -6,7 +6,7 @@ use std::time::Duration;
 use std::{path::PathBuf, sync::Mutex, thread};
 
 use cpal::traits::HostTrait;
-use rodio::{Decoder, OutputStream, Sink, DeviceTrait};
+use rodio::{Decoder, DeviceTrait, OutputStream, Sink};
 
 pub struct Player {
     queue: Arc<Mutex<Vec<PathBuf>>>,
@@ -23,11 +23,10 @@ impl Player {
             queue_thread: thread::spawn(move || {
                 let cpal_dev = cpal::default_host().default_output_device().unwrap();
                 let (stream, stream_handle) = OutputStream::try_from_device(&cpal_dev).unwrap();
-        
-       
+
                 let sink = Arc::new(Sink::try_new(&stream_handle).unwrap());
                 let sink_ = sink.clone();
-        
+
                 sink.pause();
                 let sink = sink_;
                 let queue = queue_;

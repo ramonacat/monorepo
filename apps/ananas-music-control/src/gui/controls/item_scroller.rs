@@ -5,9 +5,12 @@ use std::sync::mpsc::{channel, Receiver, Sender};
 
 use embedded_graphics::{draw_target::DrawTarget, pixelcolor::BinaryColor};
 
+use crate::gui::fonts::{Fonts, FontKind};
 use crate::gui::geometry::Rectangle;
 use crate::gui::layouts::stack::render_stack;
-use crate::gui::{Control, Dimensions, GuiCommand, Orientation, Padding, Point, StackUnitDimension};
+use crate::gui::{
+    Control, Dimensions, GuiCommand, Orientation, Padding, Point, StackUnitDimension,
+};
 
 use super::button::Button;
 use super::stack_panel::StackPanel;
@@ -48,7 +51,7 @@ impl<
         let buttons_stack_panel: StackPanel<TDrawTarget, TError> = StackPanel::new(
             vec![
                 Box::new(Button::<TDrawTarget, TError>::new(
-                    Box::new(Text::new("⬆".to_string(), 20, Padding::zero())),
+                    Box::new(Text::new("⬆".to_string(), 20, FontKind::Emoji, Padding::zero())),
                     Padding {
                         top: 5,
                         bottom: 5,
@@ -60,7 +63,7 @@ impl<
                     }),
                 )),
                 Box::new(Button::<TDrawTarget, TError>::new(
-                    Box::new(Text::new("⬇".to_string(), 20, Padding::zero())),
+                    Box::new(Text::new("⬇".to_string(), 20, FontKind::Emoji, Padding::zero())),
                     Padding {
                         top: 5,
                         bottom: 5,
@@ -73,7 +76,7 @@ impl<
                 )),
             ],
             Orientation::Vertical,
-            vec![StackUnitDimension::Stretch, StackUnitDimension::Stretch]
+            vec![StackUnitDimension::Stretch, StackUnitDimension::Stretch],
         );
 
         Self {
@@ -100,7 +103,7 @@ impl<
         target: &mut TDrawTarget,
         dimensions: Dimensions,
         position: Point,
-        fonts: &[fontdue::Font],
+        fonts: &Fonts,
     ) {
         let buttons_dimensions = Dimensions::new(30, dimensions.height());
 
@@ -175,7 +178,7 @@ impl<
         }
     }
 
-    fn compute_natural_dimensions(&mut self, _fonts: &[fontdue::Font]) -> Dimensions {
+    fn compute_natural_dimensions(&mut self, _fonts: &Fonts) -> Dimensions {
         Dimensions::new(30, 30)
     }
 

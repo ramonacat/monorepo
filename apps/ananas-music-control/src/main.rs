@@ -14,7 +14,7 @@ use tracing_subscriber::{layer::SubscriberExt, util::SubscriberInitExt, Layer, R
 
 use crate::{
     epaper::{BufferedDrawTarget, EPaper, RotatedDrawTarget},
-    gui::geometry::Point,
+    gui::{geometry::Point, fonts::Fonts},
     touch::EventCoalescer,
     touchpanel::TouchPanel,
     views::App,
@@ -111,13 +111,12 @@ async fn main() {
         FontSettings::default(),
     )
     .unwrap();
-    let fonts = vec![font_lato, font_noto_emoji];
 
     let library = Arc::new(library::Library::new(PathBuf::from("/mnt/nas/Music/")));
 
     let (events_tx, events_rx) = channel();
     let app = App::new(library);
-    let gui = gui::Gui::new(fonts, draw_target, app.initial_view(), events_rx);
+    let gui = gui::Gui::new(Fonts::new(font_lato, font_noto_emoji), draw_target, app.initial_view(), events_rx);
 
     let (tx, rx) = channel();
     let coalescer = EventCoalescer::new(touchpanel, tx);

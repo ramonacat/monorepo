@@ -1,9 +1,14 @@
-use std::{collections::HashMap, error::Error, cmp::{min, max}};
+use std::{
+    cmp::max,
+    collections::HashMap,
+    error::Error,
+};
 
 use embedded_graphics::{draw_target::DrawTarget, pixelcolor::BinaryColor};
-use fontdue::Font;
 
-use crate::gui::{geometry::Rectangle, Control, Dimensions, Orientation, Point, StackUnitDimension};
+use crate::gui::{
+    geometry::Rectangle, Control, Dimensions, Orientation, Point, StackUnitDimension, fonts::Fonts,
+};
 
 pub fn render_stack<
     'a,
@@ -16,23 +21,28 @@ pub fn render_stack<
     position: Point,
     direction: Orientation,
     unit_dimensions: &[StackUnitDimension],
-    fonts: &[Font],
+    fonts: &Fonts,
 ) -> HashMap<usize, Rectangle> {
     let mut bounding_boxes = HashMap::new();
 
     let mut current_x = position.0;
     let mut current_y = position.1;
 
-    let mut items:Vec<_> = items.collect();
+    let mut items: Vec<_> = items.collect();
 
     // TODO: do an if here instead and return an error as needed
     assert!(unit_dimensions.len() <= items.len());
-    
-    let stretch_count = unit_dimensions.iter().filter(|x| matches!(x, StackUnitDimension::Stretch)).count() as u32;
+
+    let stretch_count = unit_dimensions
+        .iter()
+        .filter(|x| matches!(x, StackUnitDimension::Stretch))
+        .count() as u32;
 
     for (index, control) in items.iter_mut().enumerate() {
         let control_size = control.compute_natural_dimensions(fonts);
-        let current_control_unit_dimension = unit_dimensions.get(index).unwrap_or(&StackUnitDimension::Auto);
+        let current_control_unit_dimension = unit_dimensions
+            .get(index)
+            .unwrap_or(&StackUnitDimension::Auto);
 
         let control_dimensions = Dimensions::new(
             if direction == Orientation::Horizontal {
@@ -71,22 +81,27 @@ pub fn render_stack<
         (dimensions.height() - (current_y - position.1)) / max(stretch_count, 1)
     };
 
-    let mut dimension_offset:u32 = 0;
+    let mut dimension_offset: u32 = 0;
     for (control_index, bounding_box) in bounding_boxes.iter_mut() {
         let adjusted_positon = Point(
-            (bounding_box.position().0 + if direction == Orientation::Horizontal {
-                dimension_offset
-            } else {
-                0
-            }) as u32,
-            (bounding_box.position().1 + if direction == Orientation::Horizontal {
-                0
-            } else {
-                dimension_offset
-            }) as u32,
+            (bounding_box.position().0
+                + if direction == Orientation::Horizontal {
+                    dimension_offset
+                } else {
+                    0
+                }) as u32,
+            (bounding_box.position().1
+                + if direction == Orientation::Horizontal {
+                    0
+                } else {
+                    dimension_offset
+                }) as u32,
         );
 
-        match unit_dimensions.get(*control_index).unwrap_or(&StackUnitDimension::Auto) {
+        match unit_dimensions
+            .get(*control_index)
+            .unwrap_or(&StackUnitDimension::Auto)
+        {
             StackUnitDimension::Stretch => {
                 let new_width = if direction == Orientation::Horizontal {
                     stretch_dimension
@@ -95,30 +110,29 @@ pub fn render_stack<
                 };
 
                 let new_height = if direction == Orientation::Horizontal {
-                    bounding_box.dimensions().height() 
+                    bounding_box.dimensions().height()
                 } else {
                     stretch_dimension
                 };
 
-                *bounding_box = Rectangle::new(
-                    adjusted_positon, 
-                    Dimensions::new(
-                        new_width,
-                        new_height
-                    )
-                );
+                *bounding_box =
+                    Rectangle::new(adjusted_positon, Dimensions::new(new_width, new_height));
 
                 dimension_offset += stretch_dimension;
-            },
+            }
             StackUnitDimension::Auto | StackUnitDimension::Pixel(_) => {
                 *bounding_box = Rectangle::new(adjusted_positon, bounding_box.dimensions());
-            },
+            }
         }
-
     }
 
-    for (index, bounding_box) in bounding_boxes.iter() { 
-        items[*index].render(target, bounding_box.dimensions(), bounding_box.position(), fonts);
+    for (index, bounding_box) in bounding_boxes.iter() {
+        items[*index].render(
+            target,
+            bounding_box.dimensions(),
+            bounding_box.position(),
+            fonts,
+        );
     }
 
     bounding_boxes

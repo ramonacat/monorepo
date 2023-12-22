@@ -4,11 +4,10 @@ use embedded_graphics::{
     pixelcolor::BinaryColor,
     primitives::{PrimitiveStyle, PrimitiveStyleBuilder, Rectangle, StyledDrawable},
 };
-use fontdue::Font;
 use std::fmt::Debug;
 use std::{error::Error, sync::mpsc::Sender};
 
-use crate::gui::{Control, Dimensions, GuiCommand, Padding, Point};
+use crate::gui::{Control, Dimensions, GuiCommand, Padding, Point, fonts::Fonts};
 
 type Callback<TDrawTarget, TError> = Box<dyn FnMut(Sender<GuiCommand<TDrawTarget, TError>>)>;
 
@@ -54,7 +53,7 @@ impl<TDrawTarget: DrawTarget<Color = BinaryColor, Error = TError>, TError: Error
         target: &mut TDrawTarget,
         dimensions: Dimensions,
         position: Point,
-        fonts: &[Font],
+        fonts: &Fonts,
     ) {
         let rectangle = Rectangle::new(
             embedded_graphics::geometry::Point {
@@ -85,7 +84,7 @@ impl<TDrawTarget: DrawTarget<Color = BinaryColor, Error = TError>, TError: Error
         }
     }
 
-    fn compute_natural_dimensions(&mut self, fonts: &[Font]) -> crate::gui::Dimensions {
+    fn compute_natural_dimensions(&mut self, fonts: &Fonts) -> crate::gui::Dimensions {
         let child_dimensions = self.content.compute_natural_dimensions(fonts);
 
         Dimensions::new(

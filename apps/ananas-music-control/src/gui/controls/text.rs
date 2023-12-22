@@ -5,11 +5,9 @@ use std::{cmp::min, error::Error};
 use embedded_graphics::image::{Image, ImageRaw};
 use embedded_graphics::Drawable;
 use embedded_graphics::{draw_target::DrawTarget, pixelcolor::BinaryColor};
-use fontdue::{
-    layout::{Layout, TextStyle},
-    Font,
-};
+use fontdue::layout::{Layout, TextStyle};
 
+use crate::gui::fonts::{Fonts, FontKind};
 use crate::gui::{Control, Dimensions, GuiCommand, Padding, Point};
 
 pub struct Text<TDrawTarget: DrawTarget<Color = BinaryColor, Error = TError>, TError: Error + Debug>
@@ -18,17 +16,19 @@ pub struct Text<TDrawTarget: DrawTarget<Color = BinaryColor, Error = TError>, TE
     font_size: usize,
     command_channel: Option<Sender<GuiCommand<TDrawTarget, TError>>>,
     padding: Padding,
+    font_kind: FontKind,
 }
 
 impl<TDrawTarget: DrawTarget<Color = BinaryColor, Error = TError>, TError: Error + Debug>
     Text<TDrawTarget, TError>
 {
-    pub fn new(text: String, font_size: usize, padding: Padding) -> Self {
+    pub fn new(text: String, font_size: usize, font_kind: FontKind, padding: Padding) -> Self {
         Self {
             text,
             font_size,
             command_channel: None,
             padding,
+            font_kind
         }
     }
 }
@@ -39,14 +39,14 @@ struct RenderedText {
     height: u32,
 }
 
-fn render_text(text: &str, font_size: f32, font_index: usize, fonts: &[Font]) -> RenderedText {
+fn render_text(text: &str, font_size: f32, font_kind: FontKind, fonts: &Fonts) -> RenderedText {
     let mut layout = Layout::new(fontdue::layout::CoordinateSystem::PositiveYDown);
 
-    layout.append(fonts, &TextStyle::new(text, font_size, font_index));
+    layout.append(fonts.all(), &TextStyle::new(text, font_size, fonts.index_of(font_kind)));
 
     let mut pixels = vec![];
     for glyph in layout.glyphs() {
-        let (metrics, data) = fonts[glyph.font_index].rasterize_config(glyph.key);
+        let (metrics, data) = fonts.all()[glyph.font_index].rasterize_config(glyph.key);
 
         for (i, c) in data.iter().enumerate() {
             let pixel_x = (i % metrics.width) + glyph.x as usize;
@@ -76,12 +76,12 @@ impl<TDrawTarget: DrawTarget<Color = BinaryColor, Error = TError>, TError: Error
         target: &mut TDrawTarget,
         dimensions: Dimensions,
         position: Point,
-        fonts: &[Font],
+        fonts: &Fonts,
     ) {
         let dimensions = self.padding.adjust_dimensions(dimensions);
         let position = self.padding.adjust_position(position);
 
-        let rendered_text = render_text(&self.text, self.font_size as f32, 0, fonts);
+        let rendered_text = render_text(&self.text, self.font_size as f32, self.font_kind, fonts);
         let visible_width = min(rendered_text.width, dimensions.width());
         let visible_height = rendered_text.height;
 
@@ -117,8 +117,8 @@ impl<TDrawTarget: DrawTarget<Color = BinaryColor, Error = TError>, TError: Error
 
     fn on_touch(&mut self, _position: Point) {}
 
-    fn compute_natural_dimensions(&mut self, fonts: &[Font]) -> crate::gui::Dimensions {
-        let rendered_text = render_text(&self.text, self.font_size as f32, 0, fonts);
+    fn compute_natural_dimensions(&mut self, fonts: &Fonts) -> crate::gui::Dimensions {
+        let rendered_text = render_text(&self.text, self.font_size as f32, self.font_kind, fonts);
 
         Dimensions::new(
             rendered_text.width as u32 + self.padding.total_horizontal(),

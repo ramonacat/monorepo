@@ -10,14 +10,18 @@ use embedded_graphics::{
     pixelcolor::BinaryColor,
     primitives::{PrimitiveStyleBuilder, Rectangle, StyledDrawable},
 };
-use fontdue::Font;
 
 use crate::epaper::FlushableDrawTarget;
 
-use self::geometry::{Dimensions, Point};
+use self::{
+    fonts::Fonts,
+    geometry::{Dimensions, Point},
+};
 
 pub mod controls;
+pub mod fonts;
 pub mod geometry;
+
 mod layouts;
 
 pub struct Padding {
@@ -85,12 +89,12 @@ pub enum Orientation {
 pub enum StackUnitDimension {
     Auto,
     Stretch,
-    Pixel(u32)
+    Pixel(u32),
 }
 
 pub struct Gui<TDrawTarget: DrawTarget<Color = BinaryColor, Error = TError>, TError: Error + Debug>
 {
-    fonts: Vec<Font>,
+    fonts: Fonts,
     draw_target: TDrawTarget,
     root_control: Box<dyn Control<TDrawTarget, TError>>,
     events_rx: Receiver<Event>,
@@ -102,7 +106,7 @@ impl<
     > Gui<TDrawTarget, TError>
 {
     pub fn new(
-        fonts: Vec<Font>,
+        fonts: Fonts,
         draw_target: TDrawTarget,
         root_control: Box<dyn Control<TDrawTarget, TError>>,
         events_rx: Receiver<Event>,
@@ -210,14 +214,14 @@ pub trait Control<
 >
 {
     fn register_command_channel(&mut self, tx: Sender<GuiCommand<TDrawTarget, TError>>);
-    fn compute_natural_dimensions(&mut self, fonts: &[Font]) -> Dimensions;
+    fn compute_natural_dimensions(&mut self, fonts: &Fonts) -> Dimensions;
 
     fn render(
         &mut self,
         target: &mut TDrawTarget,
         dimensions: Dimensions,
         position: Point,
-        fonts: &[Font],
+        fonts: &Fonts,
     );
     fn on_touch(&mut self, position: Point);
 }

@@ -7,6 +7,7 @@ use crate::gui::controls::item_scroller::ItemScroller;
 use crate::gui::controls::progress_bar::ProgressBar;
 use crate::gui::controls::stack_panel::StackPanel;
 use crate::gui::controls::text::Text;
+use crate::gui::fonts::FontKind;
 use crate::gui::{Control, GuiCommand, Orientation, Padding};
 use crate::library::Library;
 use crate::playback::Player;
@@ -45,12 +46,16 @@ impl App {
         println!("Play done");
 
         let stack_panel_children: Vec<Box<dyn Control<_, _>>> = vec![
-            Box::new(Text::new(artist.to_string(), 18, Padding::vertical(10, 10))),
-            Box::new(Text::new(album.to_string(), 20, Padding::vertical(10, 10))),
+            Box::new(Text::new(artist.to_string(), 18, FontKind::MainText, Padding::vertical(10, 10))),
+            Box::new(Text::new(album.to_string(), 20, FontKind::MainText, Padding::vertical(10, 10))),
             Box::new(ProgressBar::new(50, 150, 5, Padding::new(15, 10, 0, 0))),
         ];
 
-        Box::new(StackPanel::new(stack_panel_children, Orientation::Vertical, vec![]))
+        Box::new(StackPanel::new(
+            stack_panel_children,
+            Orientation::Vertical,
+            vec![],
+        ))
     }
 
     fn artist_view<
@@ -68,7 +73,7 @@ impl App {
             let self_ = self.clone();
 
             item_scroller_children.push(Box::new(Button::new(
-                Box::new(Text::new(album.clone(), 20, Padding::zero())),
+                Box::new(Text::new(album.clone(), 20, FontKind::MainText, Padding::zero())),
                 Padding::new(5, 8, 0, 0),
                 Box::new(move |command_tx| {
                     command_tx
@@ -99,7 +104,7 @@ impl App {
 
             let self_ = self.clone();
             item_scroller_children.push(Box::new(Button::new(
-                Box::new(Text::new(artist.clone(), 20, Padding::zero())),
+                Box::new(Text::new(artist.clone(), 20, FontKind::MainText, Padding::zero())),
                 Padding::new(5, 8, 0, 0),
                 Box::new(move |command_tx| {
                     let self_ = self_.clone();
