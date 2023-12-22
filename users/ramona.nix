@@ -24,6 +24,7 @@
         mutableTrust = false;
         mutableKeys = false;
       };
+
       services.gpg-agent = {
         enable = true;
         pinentryFlavor = "tty";
@@ -32,6 +33,7 @@
       };
 
       programs.direnv.enable = true;
+
       programs.zsh = {
         enable = true;
         oh-my-zsh = {
@@ -78,6 +80,20 @@
             defaultBranch = "main";
           };
         };
+      };
+
+      programs.neovim = {
+        enable = true;
+        viAlias = true;
+        vimAlias = true;
+        vimdiffAlias = true;
+
+        plugins = with pkgs.vimPlugins; [
+          nvim-lspconfig
+          cmp-git
+          cmp-nvim-lsp
+        ];
+        extraLuaConfig = lib.readFile ./ramona/neovim/extraConfig.lua;
       };
     };
 
