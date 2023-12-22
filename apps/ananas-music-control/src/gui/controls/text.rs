@@ -117,7 +117,7 @@ impl<TDrawTarget: DrawTarget<Color = BinaryColor, Error = TError>, TError: Error
 
     fn on_touch(&mut self, _position: Point) {}
 
-    fn compute_dimensions(&mut self, fonts: &[Font]) -> crate::gui::Dimensions {
+    fn compute_natural_dimensions(&mut self, fonts: &[Font]) -> crate::gui::Dimensions {
         let rendered_text = render_text(&self.text, self.font_size as f32, 0, fonts);
 
         Dimensions::new(

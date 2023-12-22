@@ -6,7 +6,8 @@ use std::{collections::HashMap, error::Error};
 use embedded_graphics::{draw_target::DrawTarget, pixelcolor::BinaryColor};
 
 use crate::gui::geometry::Rectangle;
-use crate::gui::{Control, GuiCommand, Orientation};
+use crate::gui::layouts::stack::render_stack;
+use crate::gui::{Control, GuiCommand, Orientation, StackUnitDimension};
 use crate::gui::{Dimensions, Point};
 
 pub struct StackPanel<
@@ -17,6 +18,7 @@ pub struct StackPanel<
     bounding_boxes: HashMap<usize, Rectangle>,
     direction: Orientation,
     command_channel: Option<Sender<GuiCommand<TDrawTarget, TError>>>,
+    unit_dimensions: Vec<StackUnitDimension>,
 }
 
 impl<TDrawTarget: DrawTarget<Color = BinaryColor, Error = TError>, TError: Error + Debug>
@@ -25,12 +27,14 @@ impl<TDrawTarget: DrawTarget<Color = BinaryColor, Error = TError>, TError: Error
     pub fn new(
         children: Vec<Box<dyn Control<TDrawTarget, TError>>>,
         direction: Orientation,
+        unit_dimensions: Vec<StackUnitDimension>
     ) -> Self {
         Self {
             children,
             bounding_boxes: HashMap::new(),
             direction,
             command_channel: None,
+            unit_dimensions
         }
     }
 }
@@ -47,12 +51,13 @@ impl<
         position: Point,
         fonts: &[fontdue::Font],
     ) {
-        let render_result = crate::gui::layouts::stack::render_stack(
+        let render_result = render_stack(
             target,
             self.children.iter_mut(),
             dimensions,
             position,
             self.direction,
+            &self.unit_dimensions,
             fonts,
         );
 
@@ -69,11 +74,11 @@ impl<
         }
     }
 
-    fn compute_dimensions(&mut self, fonts: &[fontdue::Font]) -> crate::gui::Dimensions {
+    fn compute_natural_dimensions(&mut self, fonts: &[fontdue::Font]) -> crate::gui::Dimensions {
         let mut width = 0;
         let mut height = 0;
         for child in self.children.iter_mut() {
-            let child_dimensions = child.compute_dimensions(fonts);
+            let child_dimensions = child.compute_natural_dimensions(fonts);
 
             width = max(width, child_dimensions.width());
             height += child_dimensions.height();

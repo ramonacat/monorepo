@@ -81,6 +81,13 @@ pub enum Orientation {
     Horizontal,
 }
 
+#[derive(Debug, Eq, PartialEq, Clone, Copy)]
+pub enum StackUnitDimension {
+    Auto,
+    Stretch,
+    Pixel(u32)
+}
+
 pub struct Gui<TDrawTarget: DrawTarget<Color = BinaryColor, Error = TError>, TError: Error + Debug>
 {
     fonts: Vec<Font>,
@@ -187,6 +194,7 @@ impl<
     }
 }
 
+#[derive(Debug)]
 pub enum Event {
     Touch(Point),
 }
@@ -202,7 +210,7 @@ pub trait Control<
 >
 {
     fn register_command_channel(&mut self, tx: Sender<GuiCommand<TDrawTarget, TError>>);
-    fn compute_dimensions(&mut self, fonts: &[Font]) -> Dimensions;
+    fn compute_natural_dimensions(&mut self, fonts: &[Font]) -> Dimensions;
 
     fn render(
         &mut self,

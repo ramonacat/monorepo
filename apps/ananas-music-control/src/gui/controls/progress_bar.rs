@@ -41,7 +41,7 @@ impl<TDrawTarget: DrawTarget<Color = BinaryColor, Error = TError>, TError: Error
         self.command_channel = Some(tx);
     }
 
-    fn compute_dimensions(&mut self, _fonts: &[fontdue::Font]) -> crate::gui::geometry::Dimensions {
+    fn compute_natural_dimensions(&mut self, _fonts: &[fontdue::Font]) -> crate::gui::geometry::Dimensions {
         Dimensions::new(
             50 + self.padding.total_horizontal(),
             self.height + self.padding.total_vertical(),

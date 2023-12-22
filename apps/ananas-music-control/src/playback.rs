@@ -24,8 +24,7 @@ impl Player {
                 let cpal_dev = cpal::default_host().default_output_device().unwrap();
                 let (stream, stream_handle) = OutputStream::try_from_device(&cpal_dev).unwrap();
         
-                println!("Dev: {:?}", cpal_dev.name());
-        
+       
                 let sink = Arc::new(Sink::try_new(&stream_handle).unwrap());
                 let sink_ = sink.clone();
         

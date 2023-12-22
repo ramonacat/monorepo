@@ -85,8 +85,8 @@ impl<TDrawTarget: DrawTarget<Color = BinaryColor, Error = TError>, TError: Error
         }
     }
 
-    fn compute_dimensions(&mut self, fonts: &[Font]) -> crate::gui::Dimensions {
-        let child_dimensions = self.content.compute_dimensions(fonts);
+    fn compute_natural_dimensions(&mut self, fonts: &[Font]) -> crate::gui::Dimensions {
+        let child_dimensions = self.content.compute_natural_dimensions(fonts);
 
         Dimensions::new(
             child_dimensions.width() + 2 + self.padding.total_horizontal(),

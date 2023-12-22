@@ -50,7 +50,7 @@ impl App {
             Box::new(ProgressBar::new(50, 150, 5, Padding::new(15, 10, 0, 0))),
         ];
 
-        Box::new(StackPanel::new(stack_panel_children, Orientation::Vertical))
+        Box::new(StackPanel::new(stack_panel_children, Orientation::Vertical, vec![]))
     }
 
     fn artist_view<

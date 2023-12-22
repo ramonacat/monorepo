@@ -7,7 +7,7 @@ use embedded_graphics::{draw_target::DrawTarget, pixelcolor::BinaryColor};
 
 use crate::gui::geometry::Rectangle;
 use crate::gui::layouts::stack::render_stack;
-use crate::gui::{Control, Dimensions, GuiCommand, Orientation, Padding, Point};
+use crate::gui::{Control, Dimensions, GuiCommand, Orientation, Padding, Point, StackUnitDimension};
 
 use super::button::Button;
 use super::stack_panel::StackPanel;
@@ -73,6 +73,7 @@ impl<
                 )),
             ],
             Orientation::Vertical,
+            vec![StackUnitDimension::Stretch, StackUnitDimension::Stretch]
         );
 
         Self {
@@ -119,6 +120,7 @@ impl<
             Dimensions::new(dimensions.width() - 30, dimensions.height()),
             position,
             Orientation::Vertical,
+            &[], // FIXME: get this as an arg?
             fonts,
         );
         self.children_bounding_boxes = Some(children_bounding_boxes);
@@ -173,7 +175,7 @@ impl<
         }
     }
 
-    fn compute_dimensions(&mut self, _fonts: &[fontdue::Font]) -> Dimensions {
+    fn compute_natural_dimensions(&mut self, _fonts: &[fontdue::Font]) -> Dimensions {
         Dimensions::new(30, 30)
     }
 
