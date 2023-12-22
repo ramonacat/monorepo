@@ -7,7 +7,7 @@ use embedded_graphics::{
 use std::fmt::Debug;
 use std::{error::Error, sync::mpsc::Sender};
 
-use crate::gui::{Control, Dimensions, GuiCommand, Padding, Point, fonts::Fonts};
+use crate::gui::{fonts::Fonts, Control, Dimensions, GuiCommand, Padding, Point};
 
 type Callback<TDrawTarget, TError> = Box<dyn FnMut(Sender<GuiCommand<TDrawTarget, TError>>)>;
 

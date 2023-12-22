@@ -7,7 +7,7 @@ use embedded_graphics::Drawable;
 use embedded_graphics::{draw_target::DrawTarget, pixelcolor::BinaryColor};
 use fontdue::layout::{Layout, TextStyle};
 
-use crate::gui::fonts::{Fonts, FontKind};
+use crate::gui::fonts::{FontKind, Fonts};
 use crate::gui::{Control, Dimensions, GuiCommand, Padding, Point};
 
 pub struct Text<TDrawTarget: DrawTarget<Color = BinaryColor, Error = TError>, TError: Error + Debug>
@@ -28,7 +28,7 @@ impl<TDrawTarget: DrawTarget<Color = BinaryColor, Error = TError>, TError: Error
             font_size,
             command_channel: None,
             padding,
-            font_kind
+            font_kind,
         }
     }
 }
@@ -42,7 +42,10 @@ struct RenderedText {
 fn render_text(text: &str, font_size: f32, font_kind: FontKind, fonts: &Fonts) -> RenderedText {
     let mut layout = Layout::new(fontdue::layout::CoordinateSystem::PositiveYDown);
 
-    layout.append(fonts.all(), &TextStyle::new(text, font_size, fonts.index_of(font_kind)));
+    layout.append(
+        fonts.all(),
+        &TextStyle::new(text, font_size, fonts.index_of(font_kind)),
+    );
 
     let mut pixels = vec![];
     for glyph in layout.glyphs() {

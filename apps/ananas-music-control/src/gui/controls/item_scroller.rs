@@ -1,11 +1,12 @@
-use std::collections::HashMap;
+use std::cmp::max;
+use std::collections::BTreeMap;
 use std::error::Error;
 use std::fmt::Debug;
 use std::sync::mpsc::{channel, Receiver, Sender};
 
 use embedded_graphics::{draw_target::DrawTarget, pixelcolor::BinaryColor};
 
-use crate::gui::fonts::{Fonts, FontKind};
+use crate::gui::fonts::{FontKind, Fonts};
 use crate::gui::geometry::Rectangle;
 use crate::gui::layouts::stack::render_stack;
 use crate::gui::{
@@ -33,7 +34,7 @@ pub struct ItemScroller<
     scroll_rx: Receiver<ScrollRequest>,
     command_channel: Option<Sender<GuiCommand<TDrawTarget, TError>>>,
     bounding_box: Option<Rectangle>,
-    children_bounding_boxes: Option<HashMap<usize, Rectangle>>,
+    children_bounding_boxes: Option<BTreeMap<usize, Rectangle>>,
 }
 impl<
         TDrawTarget: DrawTarget<Color = BinaryColor, Error = TError> + 'static,
@@ -51,7 +52,12 @@ impl<
         let buttons_stack_panel: StackPanel<TDrawTarget, TError> = StackPanel::new(
             vec![
                 Box::new(Button::<TDrawTarget, TError>::new(
-                    Box::new(Text::new("⬆".to_string(), 20, FontKind::Emoji, Padding::zero())),
+                    Box::new(Text::new(
+                        "⬆".to_string(),
+                        20,
+                        FontKind::Emoji,
+                        Padding::zero(),
+                    )),
                     Padding {
                         top: 5,
                         bottom: 5,
@@ -63,7 +69,12 @@ impl<
                     }),
                 )),
                 Box::new(Button::<TDrawTarget, TError>::new(
-                    Box::new(Text::new("⬇".to_string(), 20, FontKind::Emoji, Padding::zero())),
+                    Box::new(Text::new(
+                        "⬇".to_string(),
+                        20,
+                        FontKind::Emoji,
+                        Padding::zero(),
+                    )),
                     Padding {
                         top: 5,
                         bottom: 5,
@@ -114,6 +125,8 @@ impl<
         self.buttons_stack_panel_bounding_box =
             Some(Rectangle::new(buttons_position, buttons_dimensions));
 
+        let children_len = self.children.len();
+
         let children_bounding_boxes = render_stack(
             target,
             self.children
@@ -123,7 +136,8 @@ impl<
             Dimensions::new(dimensions.width() - 30, dimensions.height()),
             position,
             Orientation::Vertical,
-            &[], // FIXME: get this as an arg?
+            &[],
+            // &[StackUnitDimension::Stretch].repeat(max(self.show_items, children_len - self.scroll_index - 1)),
             fonts,
         );
         self.children_bounding_boxes = Some(children_bounding_boxes);

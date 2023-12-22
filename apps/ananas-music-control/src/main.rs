@@ -13,20 +13,20 @@ use tracing::{info, level_filters::LevelFilter};
 use tracing_subscriber::{layer::SubscriberExt, util::SubscriberInitExt, Layer, Registry};
 
 use crate::{
+    app::App,
     epaper::{BufferedDrawTarget, EPaper, RotatedDrawTarget},
-    gui::{geometry::Point, fonts::Fonts},
+    gui::{fonts::Fonts, geometry::Point},
     touch::EventCoalescer,
     touchpanel::TouchPanel,
-    views::App,
 };
 
+mod app;
 mod epaper;
 mod gui;
 mod library;
 mod playback;
 mod touch;
 mod touchpanel;
-mod views;
 
 const EPAPER_RESET_PIN: u8 = 17;
 const EPAPER_DC_PIN: u8 = 25;
@@ -116,7 +116,12 @@ async fn main() {
 
     let (events_tx, events_rx) = channel();
     let app = App::new(library);
-    let gui = gui::Gui::new(Fonts::new(font_lato, font_noto_emoji), draw_target, app.initial_view(), events_rx);
+    let gui = gui::Gui::new(
+        Fonts::new(font_lato, font_noto_emoji),
+        draw_target,
+        app.initial_view(),
+        events_rx,
+    );
 
     let (tx, rx) = channel();
     let coalescer = EventCoalescer::new(touchpanel, tx);

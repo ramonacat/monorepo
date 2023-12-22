@@ -1,13 +1,9 @@
-use std::{
-    cmp::max,
-    collections::HashMap,
-    error::Error,
-};
+use std::{cmp::max, collections::BTreeMap, error::Error};
 
 use embedded_graphics::{draw_target::DrawTarget, pixelcolor::BinaryColor};
 
 use crate::gui::{
-    geometry::Rectangle, Control, Dimensions, Orientation, Point, StackUnitDimension, fonts::Fonts,
+    fonts::Fonts, geometry::Rectangle, Control, Dimensions, Orientation, Point, StackUnitDimension,
 };
 
 pub fn render_stack<
@@ -22,8 +18,8 @@ pub fn render_stack<
     direction: Orientation,
     unit_dimensions: &[StackUnitDimension],
     fonts: &Fonts,
-) -> HashMap<usize, Rectangle> {
-    let mut bounding_boxes = HashMap::new();
+) -> BTreeMap<usize, Rectangle> {
+    let mut bounding_boxes = BTreeMap::new();
 
     let mut current_x = position.0;
     let mut current_y = position.1;
