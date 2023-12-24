@@ -107,6 +107,7 @@ pub struct Player {
     queue_thread: JoinHandle<()>,
     tx: Sender<PlayerCommand>,
     status_callback: StatusCallback,
+    pause_status: Arc<AtomicBool>,
 }
 
 impl Player {
@@ -116,6 +117,9 @@ impl Player {
 
         let status_callback: StatusCallback = Arc::new(Mutex::new(Box::new(|_| {})));
         let status_callback_ = status_callback.clone();
+
+        let pause_status = Arc::new(AtomicBool::new(true));
+        let pause_status_ = pause_status.clone();
 
         let (tx, rx) = channel();
 
@@ -135,9 +139,18 @@ impl Player {
                 let exit = AtomicBool::new(false);
 
                 let handle_command = |command: PlayerCommand| match command {
-                    PlayerCommand::Play => sink.play(),
-                    PlayerCommand::Pause => sink.pause(),
-                    PlayerCommand::Stop => sink.stop(),
+                    PlayerCommand::Play => {
+                        sink.play();
+                        pause_status_.store(false, Ordering::SeqCst);
+                    }
+                    PlayerCommand::Pause => {
+                        sink.pause();
+                        pause_status_.store(true, Ordering::SeqCst);
+                    }
+                    PlayerCommand::Stop => {
+                        sink.stop();
+                        pause_status_.store(true, Ordering::SeqCst);
+                    }
                     PlayerCommand::Exit => exit.store(true, Ordering::SeqCst),
                 };
 
@@ -186,6 +199,7 @@ impl Player {
             }),
             tx,
             status_callback,
+            pause_status,
         }
     }
 
@@ -212,6 +226,10 @@ impl Player {
         self.queue.lock().unwrap().clear();
 
         self.tx.send(PlayerCommand::Stop).unwrap();
+    }
+
+    pub fn is_paused(&self) -> bool {
+        self.pause_status.load(Ordering::SeqCst)
     }
 }
 

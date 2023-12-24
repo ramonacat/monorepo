@@ -98,12 +98,46 @@ impl<
 
         let self_ = self.clone();
         let artist = artist.to_string();
+
+        let player_ = self.player.clone();
+        let player__ = self.player.clone();
         self.wrapping_view(
             stack_panel,
             Some(Box::new(move |tx| {
                 tx.send(GuiCommand::ReplaceRoot(self_.clone().artist_view(&artist)))
                     .unwrap();
             })),
+            vec![
+                Box::new(Button::new(
+                    Box::new(Text::new(
+                        "⏹️".to_string(),
+                        15,
+                        FontKind::Emoji,
+                        Padding::zero(),
+                    )),
+                    Padding::horizontal(4, 4),
+                    Box::new(move |_| {
+                        player_.clone().stop();
+                    }),
+                )),
+                Box::new(Button::new(
+                    Box::new(Text::new(
+                        "⏯️".to_string(),
+                        15,
+                        FontKind::Emoji,
+                        Padding::zero(),
+                    )),
+                    Padding::horizontal(4, 4),
+                    Box::new(move |_| {
+                        let player = player__.clone();
+                        if player.is_paused() {
+                            player.clone().play();
+                        } else {
+                            player.clone().pause();
+                        }
+                    }),
+                )),
+            ],
         )
     }
 
@@ -134,7 +168,7 @@ impl<
 
         let scroller = Box::new(ItemScroller::new(item_scroller_children, 3));
 
-        self.wrapping_view(scroller, None)
+        self.wrapping_view(scroller, None, vec![])
     }
 
     pub fn initial_view(self: Arc<Self>) -> Box<dyn Control<TDrawTarget, TError>> {
@@ -167,13 +201,14 @@ impl<
 
         let scroller = Box::new(ItemScroller::new(item_scroller_children, 3));
 
-        self.wrapping_view(scroller, None)
+        self.wrapping_view(scroller, None, vec![])
     }
 
     pub fn wrapping_view(
         self: Arc<Self>,
         content: Box<dyn Control<TDrawTarget, TError>>,
         back: BackCallback<TDrawTarget, TError>,
+        additional_buttons: Vec<Box<dyn Control<TDrawTarget, TError>>>,
     ) -> Box<dyn Control<TDrawTarget, TError>> {
         let mut navigation_buttons: Vec<Box<dyn Control<_, _>>> = vec![];
         let self_ = self.clone();
@@ -203,6 +238,8 @@ impl<
                 back_action,
             )));
         }
+
+        navigation_buttons.extend(additional_buttons);
 
         let navigation = StackPanel::new(navigation_buttons, Orientation::Horizontal, vec![]);
         let stack_panel = StackPanel::new(

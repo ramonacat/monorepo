@@ -60,6 +60,15 @@ impl Padding {
         }
     }
 
+    pub fn horizontal(left: u32, right: u32) -> Self {
+        Self {
+            top: 0,
+            bottom: 0,
+            left,
+            right
+        }
+    }
+
     pub fn total_vertical(&self) -> u32 {
         self.top + self.bottom
     }
