@@ -50,7 +50,7 @@ impl<
             self.player.add_to_queue(track);
         }
 
-        let progress_bar = ProgressBar::new(50, 150, 5, Padding::new(5, 5, 0, 0));
+        let progress_bar = ProgressBar::new(0, 150, 5, Padding::new(5, 5, 0, 0));
 
         let progress = progress_bar.progress();
         let progress_max = progress_bar.progress_max();
