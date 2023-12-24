@@ -157,23 +157,25 @@ impl Player {
                         result
                     };
 
-                    if let Some(next) = popped {
-                        let status_callback_ = status_callback_.clone();
-                        let filename = next.clone();
-                        sink.append(StatusReportingDecoder::new(
-                            Decoder::new(BufReader::new(File::open(next).unwrap())).unwrap(),
-                            Box::new(move |progress, progress_max| {
-                                (status_callback_.lock().unwrap())(PlaybackStatus {
-                                    progress: progress as u32,
-                                    progress_max: progress_max as u32,
-                                    title: filename
-                                        .file_name()
-                                        .unwrap()
-                                        .to_string_lossy()
-                                        .to_string(),
-                                });
-                            }),
-                        ));
+                    if sink.empty() {
+                        if let Some(next) = popped {
+                            let status_callback_ = status_callback_.clone();
+                            let filename = next.clone();
+                            sink.append(StatusReportingDecoder::new(
+                                Decoder::new(BufReader::new(File::open(next).unwrap())).unwrap(),
+                                Box::new(move |progress, progress_max| {
+                                    (status_callback_.lock().unwrap())(PlaybackStatus {
+                                        progress: progress as u32,
+                                        progress_max: progress_max as u32,
+                                        title: filename
+                                            .file_name()
+                                            .unwrap()
+                                            .to_string_lossy()
+                                            .to_string(),
+                                    });
+                                }),
+                            ));
+                        }
                     }
 
                     if exit.load(Ordering::SeqCst) {
@@ -191,9 +193,15 @@ impl Player {
         self.queue.lock().unwrap().push(path);
     }
 
-    pub fn play(&self, status_callback: Box<impl Fn(PlaybackStatus) + Send + 'static>) {
-        self.tx.send(PlayerCommand::Play).unwrap();
+    pub fn set_playback_status_callback(
+        &self,
+        status_callback: Box<impl Fn(PlaybackStatus) + Send + 'static>,
+    ) {
         *self.status_callback.lock().unwrap() = status_callback;
+    }
+
+    pub fn play(&self) {
+        self.tx.send(PlayerCommand::Play).unwrap();
     }
 
     pub fn pause(&self) {

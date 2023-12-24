@@ -24,6 +24,7 @@ impl<T: Send> ReactiveProperty<T> {
     }
 
     pub fn send(&self, new_value: T) {
-        self.tx.send(new_value).unwrap();
+        // TODO: actual error handling
+        let _ = self.tx.send(new_value);
     }
 }

@@ -63,12 +63,15 @@ impl<
         let progress = progress_bar.progress();
         let progress_max = progress_bar.progress_max();
 
-        self.player
-            .play(Box::new(move |playback_status: PlaybackStatus| {
+        self.player.set_playback_status_callback(Box::new(
+            move |playback_status: PlaybackStatus| {
                 track_title_text.send(playback_status.title().to_string());
                 progress.send(playback_status.elapsed());
                 progress_max.send(playback_status.total_length());
-            }));
+            },
+        ));
+
+        self.player.play();
 
         let stack_panel_children: Vec<Box<dyn Control<_, _>>> = vec![
             Box::new(Text::new(
