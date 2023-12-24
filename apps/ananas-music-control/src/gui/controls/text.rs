@@ -118,7 +118,9 @@ impl<TDrawTarget: DrawTarget<Color = BinaryColor, Error = TError>, TError: Error
         image.draw(target).unwrap();
     }
 
-    fn on_touch(&mut self, _position: Point) {}
+    fn on_event(&mut self, _event: crate::gui::Event) {
+        // Text is not interactive
+    }
 
     fn compute_natural_dimensions(&mut self, fonts: &Fonts) -> crate::gui::Dimensions {
         let rendered_text = render_text(&self.text, self.font_size as f32, self.font_kind, fonts);

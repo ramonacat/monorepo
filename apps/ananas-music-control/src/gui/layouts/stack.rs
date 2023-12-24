@@ -80,18 +80,18 @@ pub fn render_stack<
     let mut dimension_offset: u32 = 0;
     for (control_index, bounding_box) in bounding_boxes.iter_mut() {
         let adjusted_positon = Point(
-            (bounding_box.position().0
+            bounding_box.position().0
                 + if direction == Orientation::Horizontal {
                     dimension_offset
                 } else {
                     0
-                }) as u32,
-            (bounding_box.position().1
+                },
+            bounding_box.position().1
                 + if direction == Orientation::Horizontal {
                     0
                 } else {
                     dimension_offset
-                }) as u32,
+                },
         );
 
         match unit_dimensions

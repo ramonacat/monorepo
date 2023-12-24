@@ -7,7 +7,7 @@ use embedded_graphics::{
 use std::fmt::Debug;
 use std::{error::Error, sync::mpsc::Sender};
 
-use crate::gui::{fonts::Fonts, Control, Dimensions, GuiCommand, Padding, Point};
+use crate::gui::{fonts::Fonts, Control, Dimensions, Event, GuiCommand, Padding, Point};
 
 type Callback<TDrawTarget, TError> = Box<dyn FnMut(Sender<GuiCommand<TDrawTarget, TError>>)>;
 
@@ -78,10 +78,17 @@ impl<TDrawTarget: DrawTarget<Color = BinaryColor, Error = TError>, TError: Error
         );
     }
 
-    fn on_touch(&mut self, _position: Point) {
-        if let Some(command_channel) = self.command_channel.as_ref() {
-            (self.action)(command_channel.clone());
-        }
+    fn on_event(&mut self, event: Event) {
+        match event {
+            Event::Touch(_) => {
+                if let Some(command_channel) = self.command_channel.as_ref() {
+                    (self.action)(command_channel.clone());
+                }
+            }
+            Event::Heartbeat => {
+                self.content.on_event(event);
+            }
+        };
     }
 
     fn compute_natural_dimensions(&mut self, fonts: &Fonts) -> crate::gui::Dimensions {

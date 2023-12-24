@@ -67,10 +67,19 @@ impl<
         }
     }
 
-    fn on_touch(&mut self, position: crate::gui::Point) {
-        for (i, bounding_box) in self.bounding_boxes.iter() {
-            if bounding_box.contains(position) {
-                self.children.get_mut(*i).unwrap().on_touch(position);
+    fn on_event(&mut self, event: crate::gui::Event) {
+        match event {
+            crate::gui::Event::Touch(position) => {
+                for (i, bounding_box) in self.bounding_boxes.iter() {
+                    if bounding_box.contains(position) {
+                        self.children.get_mut(*i).unwrap().on_event(event);
+                    }
+                }
+            }
+            crate::gui::Event::Heartbeat => {
+                for c in self.children.iter_mut() {
+                    c.on_event(event);
+                }
             }
         }
     }

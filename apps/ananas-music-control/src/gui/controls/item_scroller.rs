@@ -1,4 +1,3 @@
-use std::cmp::max;
 use std::collections::BTreeMap;
 use std::error::Error;
 use std::fmt::Debug;
@@ -10,7 +9,7 @@ use crate::gui::fonts::{FontKind, Fonts};
 use crate::gui::geometry::Rectangle;
 use crate::gui::layouts::stack::render_stack;
 use crate::gui::{
-    Control, Dimensions, GuiCommand, Orientation, Padding, Point, StackUnitDimension,
+    Control, Dimensions, Event, GuiCommand, Orientation, Padding, Point, StackUnitDimension,
 };
 
 use super::button::Button;
@@ -125,8 +124,6 @@ impl<
         self.buttons_stack_panel_bounding_box =
             Some(Rectangle::new(buttons_position, buttons_dimensions));
 
-        let children_len = self.children.len();
-
         let children_bounding_boxes = render_stack(
             target,
             self.children
@@ -136,8 +133,7 @@ impl<
             Dimensions::new(dimensions.width() - 30, dimensions.height()),
             position,
             Orientation::Vertical,
-            &[],
-            // &[StackUnitDimension::Stretch].repeat(max(self.show_items, children_len - self.scroll_index - 1)),
+            &[], // TODO stretch all the children
             fonts,
         );
         self.children_bounding_boxes = Some(children_bounding_boxes);
@@ -145,51 +141,61 @@ impl<
         self.bounding_box = Some(Rectangle::new(position, dimensions));
     }
 
-    fn on_touch(&mut self, position: crate::gui::Point) {
-        if let Some(buttons_bounding_box) = &self.buttons_stack_panel_bounding_box {
-            if buttons_bounding_box.contains(position) {
-                self.buttons_stack_panel.on_touch(position);
-            }
-        }
-
-        if let Some(children_bounding_boxes) = &self.children_bounding_boxes {
-            for (control_offset, bounding_box) in children_bounding_boxes {
-                if bounding_box.contains(position) {
-                    self.children[self.scroll_index + control_offset].on_touch(position);
-                }
-            }
-        }
-
-        let mut needs_contents_redraw = false;
-
-        if let Some(bounding_box) = &self.bounding_box {
-            while let Ok(request) = self.scroll_rx.try_recv() {
-                match request {
-                    ScrollRequest::Up => {
-                        if self.scroll_index > 0 {
-                            self.scroll_index -= 1;
-                            needs_contents_redraw = true;
-                        }
+    fn on_event(&mut self, event: Event) {
+        match event {
+            Event::Touch(position) => {
+                if let Some(buttons_bounding_box) = &self.buttons_stack_panel_bounding_box {
+                    if buttons_bounding_box.contains(position) {
+                        self.buttons_stack_panel.on_event(event);
                     }
-                    ScrollRequest::Down => {
-                        if self.scroll_index < self.children.len() {
-                            self.scroll_index += 1;
-                            needs_contents_redraw = true;
+                }
+
+                if let Some(children_bounding_boxes) = &self.children_bounding_boxes {
+                    for (control_offset, bounding_box) in children_bounding_boxes {
+                        if bounding_box.contains(position) {
+                            self.children[self.scroll_index + control_offset].on_event(event);
                         }
                     }
                 }
-            }
 
-            if needs_contents_redraw {
-                if let Some(tx) = &self.command_channel {
-                    tx.send(GuiCommand::Redraw(
-                        bounding_box.position(),
-                        bounding_box.dimensions(),
-                    ))
-                    .unwrap();
+                let mut needs_contents_redraw = false;
+
+                if let Some(bounding_box) = &self.bounding_box {
+                    while let Ok(request) = self.scroll_rx.try_recv() {
+                        match request {
+                            ScrollRequest::Up => {
+                                if self.scroll_index > 0 {
+                                    self.scroll_index -= 1;
+                                    needs_contents_redraw = true;
+                                }
+                            }
+                            ScrollRequest::Down => {
+                                if self.scroll_index < self.children.len() {
+                                    self.scroll_index += 1;
+                                    needs_contents_redraw = true;
+                                }
+                            }
+                        }
+                    }
+
+                    if needs_contents_redraw {
+                        if let Some(tx) = &self.command_channel {
+                            tx.send(GuiCommand::Redraw(
+                                bounding_box.position(),
+                                bounding_box.dimensions(),
+                            ))
+                            .unwrap();
+                        }
+                    }
                 }
             }
-        }
+            Event::Heartbeat => {
+                self.buttons_stack_panel.on_event(event);
+                for c in self.children.iter_mut() {
+                    c.on_event(event);
+                }
+            }
+        };
     }
 
     fn compute_natural_dimensions(&mut self, _fonts: &Fonts) -> Dimensions {

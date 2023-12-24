@@ -1,4 +1,8 @@
-use std::{error::Error, fmt::Debug, sync::mpsc::Sender};
+use std::{
+    error::Error,
+    fmt::Debug,
+    sync::{mpsc::Sender, Arc},
+};
 
 use embedded_graphics::{
     draw_target::DrawTarget,
@@ -7,7 +11,12 @@ use embedded_graphics::{
     primitives::{PrimitiveStyleBuilder, Rectangle, StyledDrawable},
 };
 
-use crate::gui::{fonts::Fonts, geometry::Dimensions, Control, GuiCommand, Padding};
+use crate::gui::{
+    fonts::Fonts,
+    geometry::Dimensions,
+    reactivity::property::{ReactiveProperty, ReactivePropertyReceiver},
+    Control, Event, GuiCommand, Padding,
+};
 
 pub struct ProgressBar<
     TDrawTarget: DrawTarget<Color = BinaryColor, Error = TError>,
@@ -18,19 +27,44 @@ pub struct ProgressBar<
     progress: u32,
     progress_max: u32,
     height: u32,
+
+    dimensions: Option<Dimensions>,
+    position: Option<crate::gui::geometry::Point>,
+
+    progress_property: Arc<ReactiveProperty<u32>>,
+    progress_max_property: Arc<ReactiveProperty<u32>>,
+
+    progress_property_receiver: ReactivePropertyReceiver<u32>,
+    progress_max_property_receiver: ReactivePropertyReceiver<u32>,
 }
 
 impl<TDrawTarget: DrawTarget<Color = BinaryColor, Error = TError>, TError: Error + Debug>
     ProgressBar<TDrawTarget, TError>
 {
     pub fn new(progress: u32, progress_max: u32, height: u32, padding: Padding) -> Self {
+        let (progress_property, progress_property_receiver) = ReactiveProperty::new();
+        let (progress_max_property, progress_max_property_receiver) = ReactiveProperty::new();
         Self {
             progress,
             progress_max,
             padding,
             command_channel: None,
             height,
+            dimensions: None,
+            position: None,
+            progress_property_receiver,
+            progress_max_property_receiver,
+            progress_property: Arc::new(progress_property),
+            progress_max_property: Arc::new(progress_max_property),
         }
+    }
+
+    pub fn progress(&self) -> Arc<ReactiveProperty<u32>> {
+        self.progress_property.clone()
+    }
+
+    pub fn progress_max(&self) -> Arc<ReactiveProperty<u32>> {
+        self.progress_max_property.clone()
     }
 }
 
@@ -58,19 +92,19 @@ impl<TDrawTarget: DrawTarget<Color = BinaryColor, Error = TError>, TError: Error
         let dimensions = self.padding.adjust_dimensions(dimensions);
         let position = self.padding.adjust_position(position);
 
-        let height = dimensions.height();
-        let width = dimensions.width();
+        self.dimensions = Some(dimensions);
+        self.position = Some(position);
 
         let progress_width =
-            (width as f32 * (self.progress as f32 / self.progress_max as f32)) as u32;
+            (dimensions.width() as f32 * (self.progress as f32 / self.progress_max as f32)) as u32;
 
         let rectangle_progress = Rectangle::new(
             Point::new(position.0 as i32, position.1 as i32),
-            Size::new(progress_width, height),
+            Size::new(progress_width, dimensions.height()),
         );
         let rectangle_clear = Rectangle::new(
             Point::new((position.0 + progress_width) as i32, position.1 as i32),
-            Size::new(width - progress_width, height),
+            Size::new(dimensions.width() - progress_width, dimensions.height()),
         );
 
         rectangle_progress
@@ -91,7 +125,35 @@ impl<TDrawTarget: DrawTarget<Color = BinaryColor, Error = TError>, TError: Error
             .unwrap();
     }
 
-    fn on_touch(&mut self, _position: crate::gui::geometry::Point) {
-        // progress bar is not interactive
+    fn on_event(&mut self, event: Event) {
+        match event {
+            Event::Touch(_) => {}
+            Event::Heartbeat => {
+                let mut redraw = false;
+
+                if let Some(progress) = self.progress_property_receiver.latest_value() {
+                    if progress != self.progress {
+                        self.progress = progress;
+                        redraw = true;
+                    }
+                }
+
+                if let Some(progress_max) = self.progress_max_property_receiver.latest_value() {
+                    if self.progress_max != progress_max {
+                        self.progress_max = progress_max;
+                        redraw = true;
+                    }
+                }
+
+                if let (true, Some(tx), Some(dimensions), Some(position)) = (
+                    redraw,
+                    &self.command_channel,
+                    self.dimensions,
+                    self.position,
+                ) {
+                    tx.send(GuiCommand::Redraw(position, dimensions)).unwrap();
+                }
+            }
+        }
     }
 }

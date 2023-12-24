@@ -23,6 +23,7 @@ pub mod fonts;
 pub mod geometry;
 
 mod layouts;
+pub mod reactivity;
 
 pub struct Padding {
     top: u32,
@@ -120,11 +121,7 @@ impl<
     }
 
     fn handle_event(&mut self, event: Event) {
-        match event {
-            Event::Touch(position) => {
-                self.root_control.on_touch(position);
-            }
-        }
+        self.root_control.on_event(event);
     }
 
     fn render(&mut self) {
@@ -165,14 +162,14 @@ impl<
         self.render();
 
         loop {
+            self.handle_event(Event::Heartbeat);
+
             if let Ok(event) = self.events_rx.recv_timeout(Duration::from_millis(50)) {
                 self.handle_event(event);
-            } else {
-                continue;
-            }
 
-            while let Ok(event) = self.events_rx.try_recv() {
-                self.handle_event(event);
+                while let Ok(event) = self.events_rx.try_recv() {
+                    self.handle_event(event);
+                }
             }
 
             let mut redraw = false;
@@ -192,15 +189,14 @@ impl<
             if redraw {
                 self.render();
             }
-
-            // todo sleep here?
         }
     }
 }
 
-#[derive(Debug)]
+#[derive(Debug, Clone, Copy)]
 pub enum Event {
     Touch(Point),
+    Heartbeat,
 }
 
 pub enum GuiCommand<TDrawTarget: DrawTarget, TError: Error + Debug> {
@@ -223,5 +219,6 @@ pub trait Control<
         position: Point,
         fonts: &Fonts,
     );
-    fn on_touch(&mut self, position: Point);
+
+    fn on_event(&mut self, event: Event);
 }

@@ -12,7 +12,7 @@ impl Library {
     fn list_subdirectories(&self, path: &Path) -> Vec<String> {
         let mut artists = vec![];
 
-        for subdirectory in std::fs::read_dir(&path).unwrap() {
+        for subdirectory in std::fs::read_dir(path).unwrap() {
             let subdirectory = subdirectory.unwrap();
 
             if !subdirectory.metadata().unwrap().is_dir() {

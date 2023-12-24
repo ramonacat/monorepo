@@ -12,7 +12,10 @@ use crate::gui::controls::text::Text;
 use crate::gui::fonts::FontKind;
 use crate::gui::{Control, GuiCommand, Orientation, Padding, StackUnitDimension};
 use crate::library::Library;
-use crate::playback::Player;
+use crate::playback::{PlaybackStatus, Player};
+
+type BackCallback<TDrawTarget, TError> =
+    Option<Box<dyn FnMut(Sender<GuiCommand<TDrawTarget, TError>>)>>;
 
 pub struct App<
     TDrawTarget: DrawTarget<Color = BinaryColor, Error = TError> + 'static,
@@ -44,29 +47,34 @@ impl<
         album: &str,
     ) -> Box<dyn Control<TDrawTarget, TError>> {
         for track in self.library.list_tracks(artist, album) {
-            println!("Adding to queue: {:?}", &track);
             self.player.add_to_queue(track);
-            println!("Added");
         }
 
-        println!("Play...");
-        self.player.play();
-        println!("Play done");
+        let progress_bar = ProgressBar::new(50, 150, 5, Padding::new(5, 5, 0, 0));
+
+        let progress = progress_bar.progress();
+        let progress_max = progress_bar.progress_max();
+
+        self.player
+            .play(Box::new(move |playback_status: PlaybackStatus| {
+                progress.send(playback_status.elapsed());
+                progress_max.send(playback_status.total_length());
+            }));
 
         let stack_panel_children: Vec<Box<dyn Control<_, _>>> = vec![
             Box::new(Text::new(
                 artist.to_string(),
                 18,
                 FontKind::MainText,
-                Padding::vertical(10, 10),
+                Padding::vertical(5, 5),
             )),
             Box::new(Text::new(
                 album.to_string(),
                 20,
                 FontKind::MainText,
-                Padding::vertical(10, 10),
+                Padding::vertical(5, 5),
             )),
-            Box::new(ProgressBar::new(50, 150, 5, Padding::new(15, 10, 0, 0))),
+            Box::new(progress_bar),
         ];
 
         let stack_panel = Box::new(StackPanel::new(
@@ -152,7 +160,7 @@ impl<
     pub fn wrapping_view(
         self: Arc<Self>,
         content: Box<dyn Control<TDrawTarget, TError>>,
-        back: Option<Box<dyn FnMut(Sender<GuiCommand<TDrawTarget, TError>>)>>,
+        back: BackCallback<TDrawTarget, TError>,
     ) -> Box<dyn Control<TDrawTarget, TError>> {
         let mut navigation_buttons: Vec<Box<dyn Control<_, _>>> = vec![];
         let self_ = self.clone();
