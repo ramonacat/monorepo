@@ -1,5 +1,6 @@
 use std::fmt::Debug;
 use std::sync::mpsc::Sender;
+use std::sync::Arc;
 use std::{cmp::min, error::Error};
 
 use embedded_graphics::image::{Image, ImageRaw};
@@ -8,6 +9,7 @@ use embedded_graphics::{draw_target::DrawTarget, pixelcolor::BinaryColor};
 use fontdue::layout::{Layout, TextStyle};
 
 use crate::gui::fonts::{FontKind, Fonts};
+use crate::gui::reactivity::property::{ReactiveProperty, ReactivePropertyReceiver};
 use crate::gui::{Control, Dimensions, GuiCommand, Padding, Point};
 
 pub struct Text<TDrawTarget: DrawTarget<Color = BinaryColor, Error = TError>, TError: Error + Debug>
@@ -17,19 +19,35 @@ pub struct Text<TDrawTarget: DrawTarget<Color = BinaryColor, Error = TError>, TE
     command_channel: Option<Sender<GuiCommand<TDrawTarget, TError>>>,
     padding: Padding,
     font_kind: FontKind,
+
+    text_property: Arc<ReactiveProperty<String>>,
+    text_property_receiver: ReactivePropertyReceiver<String>,
+
+    position: Option<Point>,
+    dimensions: Option<Dimensions>,
 }
 
 impl<TDrawTarget: DrawTarget<Color = BinaryColor, Error = TError>, TError: Error + Debug>
     Text<TDrawTarget, TError>
 {
     pub fn new(text: String, font_size: usize, font_kind: FontKind, padding: Padding) -> Self {
+        let (text_property, text_property_receiver) = ReactiveProperty::new();
+
         Self {
             text,
             font_size,
             command_channel: None,
             padding,
             font_kind,
+            text_property: Arc::new(text_property),
+            text_property_receiver,
+            position: None,
+            dimensions: None,
         }
+    }
+
+    pub fn text(&self) -> Arc<ReactiveProperty<String>> {
+        self.text_property.clone()
     }
 }
 
@@ -61,8 +79,8 @@ fn render_text(text: &str, font_size: f32, font_kind: FontKind, fonts: &Fonts) -
         }
     }
 
-    let width = pixels.iter().map(|x| x.0).max().unwrap();
-    let height = pixels.iter().map(|x| x.1).max().unwrap();
+    let width = pixels.iter().map(|x| x.0).max().unwrap_or(0);
+    let height = pixels.iter().map(|x| x.1).max().unwrap_or(0);
 
     RenderedText {
         pixels,
@@ -116,10 +134,33 @@ impl<TDrawTarget: DrawTarget<Color = BinaryColor, Error = TError>, TError: Error
         );
 
         image.draw(target).unwrap();
+
+        self.position = Some(position);
+        self.dimensions = Some(dimensions);
     }
 
-    fn on_event(&mut self, _event: crate::gui::Event) {
-        // Text is not interactive
+    fn on_event(&mut self, event: crate::gui::Event) {
+        match event {
+            crate::gui::Event::Touch(_) => {}
+            crate::gui::Event::Heartbeat => {
+                let mut redraw = false;
+                if let Some(text) = self.text_property_receiver.latest_value() {
+                    if text != self.text {
+                        self.text = text;
+                        redraw = true;
+                    }
+                }
+
+                if let (true, Some(tx), Some(position), Some(dimensions)) = (
+                    redraw,
+                    &self.command_channel,
+                    self.position,
+                    self.dimensions,
+                ) {
+                    tx.send(GuiCommand::Redraw(position, dimensions)).unwrap();
+                }
+            }
+        };
     }
 
     fn compute_natural_dimensions(&mut self, fonts: &Fonts) -> crate::gui::Dimensions {

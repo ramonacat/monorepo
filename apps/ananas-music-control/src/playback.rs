@@ -86,6 +86,7 @@ enum PlayerCommand {
 pub struct PlaybackStatus {
     progress: u32,
     progress_max: u32,
+    title: String,
 }
 
 impl PlaybackStatus {
@@ -94,6 +95,10 @@ impl PlaybackStatus {
     }
     pub fn total_length(&self) -> u32 {
         self.progress_max
+    }
+
+    pub fn title(&self) -> &str {
+        &self.title
     }
 }
 
@@ -154,12 +159,18 @@ impl Player {
 
                     if let Some(next) = popped {
                         let status_callback_ = status_callback_.clone();
+                        let filename = next.clone();
                         sink.append(StatusReportingDecoder::new(
                             Decoder::new(BufReader::new(File::open(next).unwrap())).unwrap(),
                             Box::new(move |progress, progress_max| {
                                 (status_callback_.lock().unwrap())(PlaybackStatus {
                                     progress: progress as u32,
                                     progress_max: progress_max as u32,
+                                    title: filename
+                                        .file_name()
+                                        .unwrap()
+                                        .to_string_lossy()
+                                        .to_string(),
                                 });
                             }),
                         ));
