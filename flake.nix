@@ -18,7 +18,7 @@
   outputs = { self, nixpkgs, home-manager, rust-overlay, crane, nixos-hardware, agenix, nix-vscode-extensions }:
     let
       overlays = [ (import rust-overlay) ];
-      pkgs = import nixpkgs { inherit overlays; system = "x86_64-linux"; };
+      pkgs = import nixpkgs { inherit overlays; system = "x86_64-linux"; config.allowUnfree = true; };
       pkgsAarch64 = import nixpkgs { inherit overlays; system = "aarch64-linux"; };
       pkgsCross = import nixpkgs { inherit overlays; localSystem = "x86_64-linux"; crossSystem = "aarch64-linux"; };
       craneLib = (crane.mkLib pkgs).overrideToolchain rustVersion;
@@ -68,17 +68,18 @@
       });
     in
     {
-      formatter.x86_64-linux = nixpkgs.legacyPackages.x86_64-linux.nixpkgs-fmt;
-      devShells.x86_64-linux.default = nixpkgs.legacyPackages.x86_64-linux.mkShell {
+      formatter.x86_64-linux = pkgs.nixpkgs-fmt;
+      devShells.x86_64-linux.default = pkgs.mkShell {
         shellHook = ''
         '';
-        packages = with nixpkgs.legacyPackages.x86_64-linux; [
+        packages = with pkgs; [
           pkg-config
           pipewire
           clang
           alsaLib.dev
           rust-analyzer
           lua-language-server
+          terraform
           (pkgs.rust-bin.stable.latest.default.override {
             extensions = [ "rust-src" ];
             targets = [ "aarch64-unknown-linux-gnu" ];

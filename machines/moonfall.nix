@@ -1,6 +1,11 @@
 { config, pkgs, lib, ... }:
 {
   config = {
+    age.secrets.minio-terraform-state = {
+      file = ../secrets/minio-terraform-state.age;
+      owner = "ramona";
+    };
+  
     boot.binfmt.emulatedSystems = [ "aarch64-linux" ];
 
     services.syncthing = {

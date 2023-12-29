@@ -60,6 +60,7 @@
           bbenoist.nix
           arrterian.nix-env-selector
           thenuprojectcontributors.vscode-nushell-lang
+          hashicorp.terraform
         ];
       };
 

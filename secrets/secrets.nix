@@ -16,4 +16,5 @@ in
   "minio-tempo.age".publicKeys = users ++ [ hallewell ];
   "wal-g-config.env.age".publicKeys = users ++ [ hallewell ];
   "telegraf-database.age".publicKeys = users ++ [ hallewell ananas shadowmend moonfall angelsin evillian ];
+  "minio-terraform-state.age".publicKeys = users ++ [moonfall];
 }
