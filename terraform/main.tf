@@ -32,3 +32,8 @@ variable "hcloud_token" {
 provider "hcloud" {
   token = var.hcloud_token
 }
+
+provider "google" {
+  project     = "ramona-infra"
+  region      = "europe-west10"
+}

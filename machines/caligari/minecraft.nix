@@ -71,7 +71,7 @@ EOS
       };
     };
 
-    networking.firewall.allowedUDPPorts = [ 
+    networking.firewall.allowedTCPPorts = [ 
       43000 # gierki
     ];
   };

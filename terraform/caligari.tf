@@ -1,34 +1,14 @@
-resource "hcloud_server" "caligari" {
-    name = "caligari"
-    server_type = "cx11"
-    location = "nbg1"
-    image = "debian-12"
-
-    ssh_keys = [ hcloud_ssh_key.ramona.id ]
-
-    public_net {
-        ipv4_enabled = true
-        ipv6_enabled = true
-    }
+resource "google_dns_managed_zone" "ramona-fun" {
+  name        = "ramona-fun"
+  dns_name    = "ramona.fun."
+  description = "ramona.fun"
 }
 
-output "caligari_ip4" {
-    value = hcloud_server.caligari.ipv4_address
-}
+resource "google_dns_record_set" "caligari-devices-ramona-fun" {
+  name = "caligari.devices.${google_dns_managed_zone.ramona-fun.dns_name}"
+  type = "A"
+  ttl = "60"
+  managed_zone = google_dns_managed_zone.ramona-fun.name
 
-module "caligari-system-build" {
-  source            = "github.com/nix-community/nixos-anywhere//terraform/nix-build"
-  attribute         = ".#nixosConfigurations.caligari.config.system.build.toplevel"
-}
-
-module "caligari-disko" {
-  source         = "github.com/nix-community/nixos-anywhere//terraform/nix-build"
-  attribute      = ".#nixosConfigurations.caligari.config.system.build.diskoScript"
-}
-
-module "caligari-install" {
-  source            = "github.com/nix-community/nixos-anywhere//terraform/install"
-  nixos_system      = module.caligari-system-build.result.out
-  nixos_partitioner = module.caligari-disko.result.out
-  target_host       = hcloud_server.caligari.ipv4_address
+  rrdatas = ["85.10.199.138"]
 }

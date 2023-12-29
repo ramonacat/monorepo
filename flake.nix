@@ -91,6 +91,7 @@
           rust-analyzer
           lua-language-server
           terraform
+          google-cloud-sdk
           (pkgs.rust-bin.stable.latest.default.override {
             extensions = [ "rust-src" ];
             targets = [ "aarch64-unknown-linux-gnu" ];
