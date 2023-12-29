@@ -14,7 +14,7 @@
         # this is needed for iotop
         "delayacct"
       ];
-      boot.kernelPackages = lib.mkDefault pkgs.linuxPackages_testing;
+      boot.kernelPackages = pkgs.linuxPackages_testing;
       security.sudo.wheelNeedsPassword = false;
       nix.settings.trusted-users = [ "@wheel" ];
 
