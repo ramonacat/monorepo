@@ -9,7 +9,7 @@
     nixpkgs.hostPlatform = lib.mkDefault "x86_64-linux";
     hardware.cpu.amd.updateMicrocode = true;
 
-      fileSystems."/" =
+    fileSystems."/" =
       {
         device = "/dev/nvme0n1p2:/dev/nvme1n1p1";
         fsType = "bcachefs";
@@ -24,8 +24,6 @@
     boot.loader.grub = {
       enable = true;
       devices = [ "/dev/nvme0n1" ];
-      efiSupport = true;
-      efiInstallAsRemovable = true;
     };
   };
 }

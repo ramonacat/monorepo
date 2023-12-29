@@ -50,7 +50,6 @@
       programs.zsh.enable = true;
 
       console.keyMap = "pl";
-      nixpkgs.config.allowUnfree = true;
       nix.settings.experimental-features = [ "nix-command flakes" ];
       system.stateVersion = "22.11";
 
@@ -62,9 +61,6 @@
       ];
       systemd.tmpfiles.rules = [
         "L+ ${nixpkgsPath}  - - - - ${nixpkgs}"
-      ];
-      nixpkgs.config.permittedInsecurePackages = [
-        "electron-25.9.0"
       ];
     };
 }

@@ -13,12 +13,23 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
     nix-vscode-extensions.url = "github:nix-community/nix-vscode-extensions";
+    nix-minecraft.url = "github:Infinidoge/nix-minecraft";
   };
 
-  outputs = { self, nixpkgs, home-manager, rust-overlay, crane, nixos-hardware, agenix, nix-vscode-extensions, disko }:
+  outputs = { self, nixpkgs, home-manager, rust-overlay, crane, nixos-hardware, agenix, nix-vscode-extensions, nix-minecraft }:
     let
-      overlays = [ (import rust-overlay) ];
-      pkgs = import nixpkgs { inherit overlays; system = "x86_64-linux"; config.allowUnfree = true; };
+      overlays = [ (import rust-overlay) nix-minecraft.overlay ];
+      pkgs = import nixpkgs {
+        inherit overlays; system = "x86_64-linux";
+        config.allowUnfree = true;
+        # Dark magic for transcoding acceleration on hallewell
+        config.packageOverrides = pkgs: {
+          vaapiIntel = pkgs.vaapiIntel.override { enableHybridCodec = true; };
+        };
+        config.permittedInsecurePackages = [
+          "electron-25.9.0"
+        ];
+      };
       pkgsAarch64 = import nixpkgs { inherit overlays; system = "aarch64-linux"; };
       pkgsCross = import nixpkgs { inherit overlays; localSystem = "x86_64-linux"; crossSystem = "aarch64-linux"; };
       craneLib = (crane.mkLib pkgs).overrideToolchain rustVersion;
@@ -89,6 +100,7 @@
       };
       nixosConfigurations = {
         hallewell = nixpkgs.lib.nixosSystem {
+          inherit pkgs;
           system = "x86_64-linux";
           modules = [
             home-manager.nixosModules.home-manager
@@ -111,6 +123,7 @@
           ];
         };
         moonfall = nixpkgs.lib.nixosSystem {
+          inherit pkgs;
           system = "x86_64-linux";
           modules = [
             home-manager.nixosModules.home-manager
@@ -133,6 +146,7 @@
           ];
         };
         shadowmend = nixpkgs.lib.nixosSystem {
+          inherit pkgs;
           system = "x86_64-linux";
           modules = [
             home-manager.nixosModules.home-manager
@@ -154,6 +168,7 @@
           ];
         };
         angelsin = nixpkgs.lib.nixosSystem {
+          inherit pkgs;
           system = "x86_64-linux";
           modules = [
             home-manager.nixosModules.home-manager
@@ -176,6 +191,7 @@
           ];
         };
         ananas = nixpkgs.lib.nixosSystem {
+          pkgs = pkgsAarch64;
           system = "aarch64-linux";
           modules = [
             home-manager.nixosModules.home-manager
@@ -194,6 +210,7 @@
           ];
         };
         evillian = nixpkgs.lib.nixosSystem {
+          inherit pkgs;
           system = "x86_64-linux";
           modules = [
             home-manager.nixosModules.home-manager
@@ -213,10 +230,12 @@
           ];
         };
         caligari = nixpkgs.lib.nixosSystem {
+          inherit pkgs;
           system = "x86_64-linux";
           modules = [
             home-manager.nixosModules.home-manager
             agenix.nixosModules.default
+            nix-minecraft.nixosModules.minecraft-servers
 
             (import ./modules/base.nix { inherit nixpkgs; })
             ./modules/bcachefs.nix
@@ -224,10 +243,12 @@
             (import ./users/ramona.nix { inherit agenix; })
             ./machines/caligari/hardware.nix
             ./machines/caligari/networking.nix
+            ./machines/caligari/minecraft.nix
             ./machines/caligari.nix
           ];
         };
         iso = nixpkgs.lib.nixosSystem {
+          inherit pkgs;
           system = "x86_64-linux";
           modules = [
             home-manager.nixosModules.home-manager
