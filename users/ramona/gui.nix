@@ -45,6 +45,7 @@
 
       programs.vscode = {
         enable = true;
+        mutableExtensionsDir = false;
         extensions = with nix-vscode-extensions.extensions.x86_64-linux.vscode-marketplace; [
           panicbit.cargo
           devsense.composer-php-vscode

@@ -6,5 +6,5 @@
       defaults.pcm.card 3
       defaults.ctl.card 3
     '';
- };
+  };
 }

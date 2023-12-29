@@ -16,7 +16,7 @@
         device = "/dev/disk/by-uuid/A3FA-597D";
         fsType = "vfat";
       };
-    swapDevices =     [ { device = "/dev/disk/by-uuid/b616878a-7677-4844-b81c-b11f7ae1421c"; }     ];
+    swapDevices = [{ device = "/dev/disk/by-uuid/b616878a-7677-4844-b81c-b11f7ae1421c"; }];
 
     nixpkgs.hostPlatform = lib.mkDefault "x86_64-linux";
     hardware.cpu.intel.updateMicrocode = true;

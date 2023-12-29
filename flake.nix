@@ -15,7 +15,7 @@
     nix-vscode-extensions.url = "github:nix-community/nix-vscode-extensions";
   };
 
-  outputs = { self, nixpkgs, home-manager, rust-overlay, crane, nixos-hardware, agenix, nix-vscode-extensions }:
+  outputs = { self, nixpkgs, home-manager, rust-overlay, crane, nixos-hardware, agenix, nix-vscode-extensions, disko }:
     let
       overlays = [ (import rust-overlay) ];
       pkgs = import nixpkgs { inherit overlays; system = "x86_64-linux"; config.allowUnfree = true; };
@@ -121,6 +121,7 @@
             ./modules/workstation.nix
             ./modules/nas-client.nix
             ./modules/telegraf.nix
+            ./modules/terraform-tokens.nix
             (import ./users/ramona.nix { inherit agenix; })
             (import ./users/ramona/gui.nix { inherit nix-vscode-extensions; })
             (import ./users/ramona/sway.nix { inherit barPackage; })
@@ -164,6 +165,7 @@
             ./modules/workstation.nix
             ./modules/nas-client.nix
             ./modules/telegraf.nix
+            ./modules/terraform-tokens.nix
             (import ./users/ramona.nix { inherit agenix; })
             (import ./users/ramona/gui.nix { inherit nix-vscode-extensions; })
             (import ./users/ramona/sway.nix { inherit barPackage; })
@@ -185,7 +187,7 @@
             ./modules/telegraf.nix
             ./modules/nas-client.nix
             (import ./users/ramona.nix { inherit agenix; })
-            (import ./machines/ananas/hardware.nix {inherit pkgsCross; })
+            (import ./machines/ananas/hardware.nix { inherit pkgsCross; })
             ./machines/ananas/networking.nix
             (import ./machines/ananas/music-control.nix { inherit ananasMusicControlPackage; })
             ./machines/ananas.nix
@@ -208,6 +210,20 @@
             ./machines/evillian/hardware.nix
             ./machines/evillian/networking.nix
             ./machines/evillian.nix
+          ];
+        };
+        caligari = nixpkgs.lib.nixosSystem {
+          system = "x86_64-linux";
+          modules = [
+            home-manager.nixosModules.home-manager
+            agenix.nixosModules.default
+
+            (import ./modules/base.nix { inherit nixpkgs; })
+            ./modules/installed_base.nix
+            (import ./users/ramona.nix { inherit agenix; })
+            ./machines/caligari/hardware.nix
+            ./machines/caligari/networking.nix
+            ./machines/caligari.nix
           ];
         };
         iso = nixpkgs.lib.nixosSystem {

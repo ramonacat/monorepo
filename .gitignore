@@ -2,3 +2,4 @@ result
 .vscode/
 .direnv/
 target/
+terraform/.terraform/

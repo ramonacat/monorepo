@@ -7,7 +7,7 @@
       home.username = "ramona";
       home.homeDirectory = "/home/ramona";
       home.stateVersion = "22.11";
-      home.packages = with pkgs; [ minikube kubectl pulseaudio unzip yt-dlp agenix.packages.x86_64-linux.default ];
+      home.packages = with pkgs; [ minikube kubectl pulseaudio unzip yt-dlp agenix.packages.x86_64-linux.default jq ];
 
       programs.gpg = {
         enable = true;
