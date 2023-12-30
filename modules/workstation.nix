@@ -16,6 +16,8 @@
       };
     };
 
+    environment.etc."pipewire/pipewire.conf.d/scarlett.conf".source = ./scarlett.pipewire.conf;
+
     programs.dconf.enable = true;
     programs.nix-ld.enable = true;
 
