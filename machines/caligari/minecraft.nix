@@ -32,9 +32,9 @@
     };
 
     # Backups
-    systemd.services.backup-minecraft-gierki = 
-    let 
-      script = pkgs.writeShellScriptBin "backup-minecraft-server-gierki" "
+    systemd.services.backup-minecraft-gierki =
+      let
+        script = pkgs.writeShellScriptBin "backup-minecraft-server-gierki" "
           #!/usr/bin/env bash
 
           set -euo pipefail
@@ -53,14 +53,15 @@ EOS
           ${pkgs.rclone}/bin/rclone --config=${config.age.secrets.caligari-minecraft-rclone-config.path} --verbose copy /tmp/gierki.tar b2:ramona-minecraft-backups/
           rm /tmp/gierki.tar
         ";
-    in {
-      after = [ "network.target" ];
-      description = "Backup the Minecraft server (gierki)";
-      serviceConfig = {
-        Type = "oneshot";
-        ExecStart = "${script}/bin/backup-minecraft-server-gierki";
+      in
+      {
+        after = [ "network.target" ];
+        description = "Backup the Minecraft server (gierki)";
+        serviceConfig = {
+          Type = "oneshot";
+          ExecStart = "${script}/bin/backup-minecraft-server-gierki";
+        };
       };
-    };
 
     systemd.timers.backup-minecraft-gierki = {
       wantedBy = [ "timers.target" ];
@@ -71,7 +72,7 @@ EOS
       };
     };
 
-    networking.firewall.allowedTCPPorts = [ 
+    networking.firewall.allowedTCPPorts = [
       43000 # gierki
     ];
   };
