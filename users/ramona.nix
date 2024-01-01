@@ -25,6 +25,15 @@
         mutableKeys = false;
       };
 
+      programs.tmux = {
+        enable = true;
+        clock24 = true;
+        newSession = true;
+        plugins = with pkgs.tmuxPlugins; [
+          sensible
+        ];
+      };
+
       services.gpg-agent = {
         enable = true;
         pinentryFlavor = "tty";

@@ -28,6 +28,7 @@
         noto-fonts
         noto-fonts-emoji
         lato
+        (nerdfonts.override { fonts = [ "Iosevka" ]; })
       ];
 
       fontconfig = {
@@ -37,7 +38,7 @@
         defaultFonts = {
           serif = [ "Noto Serif" "Noto Color Emoji" ];
           sansSerif = [ "Lato" "Noto Sans" "Noto Color Emoji" ];
-          monospace = [ "Iosevka" "Noto Color Emoji" ];
+          monospace = [ "Iosevka Nerd Font" "Noto Color Emoji" ];
         };
       };
     };

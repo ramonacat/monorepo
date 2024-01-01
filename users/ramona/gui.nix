@@ -63,6 +63,15 @@
           thenuprojectcontributors.vscode-nushell-lang
           hashicorp.terraform
         ];
+        userSettings = {
+          "workbench.colorTheme" = "Visual Studio Dark";
+          "window.zoomLevel" = 1;
+          "editor.fontFamily" = "'Iosevka', 'monospace', monospace";
+          "files.autoSave" = "onFocusChange";
+          "editor.cursorBlinking" = "smooth";
+          "editor.fontLigatures" = true;
+          "editor.mouseWheelZoom" = true;
+        };
       };
 
       gtk = {
