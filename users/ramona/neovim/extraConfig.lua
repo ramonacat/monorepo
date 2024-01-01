@@ -1,12 +1,27 @@
-(require 'cmp').setup {
+local cmp = require 'cmp';
+cmp.setup {
+    snippet = {
+        expand = function(args)
+            vim.fn["vsnip#anonymous"](args.body)
+        end,
+    },
     sources = {
-      { name = 'nvim_lsp' }
-    }
+      { name = 'nvim_lsp' },
+      { name = 'vsnip' }
+    },
+    mapping = cmp.mapping.preset.insert({
+      ['<C-b>'] = cmp.mapping.scroll_docs(-4),
+      ['<C-f>'] = cmp.mapping.scroll_docs(4),
+      ['<C-Space>'] = cmp.mapping.complete(),
+      ['<C-e>'] = cmp.mapping.abort(),
+      ['<CR>'] =  cmp.mapping.confirm({ select = true }), -- Accept currently selected item. Set `select` to `false` to only confirm explicitly selected items.
+      ['<Tab>'] = cmp.mapping.confirm({ select = true }),
+    }),
   }
-  
-  -- The nvim-cmp almost supports LSP's capabilities so You should advertise it to LSP servers..
+
+-- The nvim-cmp almost supports LSP's capabilities so You should advertise it to LSP servers..
 local capabilities = require('cmp_nvim_lsp').default_capabilities();
-  
+
 (require 'lspconfig').rust_analyzer.setup {
     capabilities = capabilities,}
 require'lspconfig'.lua_ls.setup {
@@ -69,8 +84,19 @@ callback = function(ev)
 end,
 })
 
+require('neo-tree').setup({})
+
+require('auto-save').setup({})
 
 vim.o.tabstop = 4
 vim.o.expandtab = true
 vim.o.softtabstop = 4
 vim.o.shiftwidth = 4
+vim.o.relativenumber = true
+
+-- Reload files when changed externaly (e.g. cargo fmt)
+vim.o.autoread = true
+vim.api.nvim_create_autocmd({ "BufEnter", "CursorHold", "CursorHoldI", "FocusGained" }, {
+  command = "if mode() != 'c' | checktime | endif",
+  pattern = { "*" },
+})

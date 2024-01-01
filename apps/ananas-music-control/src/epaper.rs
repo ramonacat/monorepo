@@ -11,8 +11,55 @@ use rppal::{
     spi::Spi,
 };
 
-const EPAPER_WIDTH: usize = 122;
-const EPAPER_HEIGHT: usize = 250;
+use crate::gui::geometry::{Rectangle, Dimensions};
+
+const EPAPER_WIDTH: u32 = 122;
+const EPAPER_HEIGHT: u32 = 250;
+
+const LUT_PARTIAL:[u8; 159] = [
+        0x0,0x40,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,
+        0x80,0x80,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,
+        0x40,0x40,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,
+        0x0,0x80,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,
+        0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,
+        0x10,0x0,0x0,0x0,0x0,0x0,0x0,  
+        0x1,0x0,0x0,0x0,0x0,0x0,0x0,
+        0x1,0x0,0x0,0x0,0x0,0x0,0x0,
+        0x0,0x0,0x0,0x0,0x0,0x0,0x0,
+        0x0,0x0,0x0,0x0,0x0,0x0,0x0,
+        0x0,0x0,0x0,0x0,0x0,0x0,0x0,
+        0x0,0x0,0x0,0x0,0x0,0x0,0x0,
+        0x0,0x0,0x0,0x0,0x0,0x0,0x0,
+        0x0,0x0,0x0,0x0,0x0,0x0,0x0,
+        0x0,0x0,0x0,0x0,0x0,0x0,0x0,
+        0x0,0x0,0x0,0x0,0x0,0x0,0x0,
+        0x0,0x0,0x0,0x0,0x0,0x0,0x0,
+        0x22,0x22,0x22,0x22,0x22,0x22,0x0,0x0,0x0,
+        0x22,0x17,0x41,0x00,0x32,0x36,
+];
+
+
+const LUT_FULL:[u8; 159] = [
+            0x80,0x4A,0x40,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,
+        0x40,0x4A,0x80,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,
+        0x80,0x4A,0x40,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,
+        0x40,0x4A,0x80,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,
+        0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,
+        0xF,0x0,0x0,0x0,0x0,0x0,0x0,
+        0xF,0x0,0x0,0xF,0x0,0x0,0x2,
+        0xF,0x0,0x0,0x0,0x0,0x0,0x0,
+        0x1,0x0,0x0,0x0,0x0,0x0,0x0,
+        0x0,0x0,0x0,0x0,0x0,0x0,0x0,
+        0x0,0x0,0x0,0x0,0x0,0x0,0x0,
+        0x0,0x0,0x0,0x0,0x0,0x0,0x0,
+        0x0,0x0,0x0,0x0,0x0,0x0,0x0,
+        0x0,0x0,0x0,0x0,0x0,0x0,0x0,
+        0x0,0x0,0x0,0x0,0x0,0x0,0x0,
+        0x0,0x0,0x0,0x0,0x0,0x0,0x0,
+        0x0,0x0,0x0,0x0,0x0,0x0,0x0,
+        0x22,0x22,0x22,0x22,0x22,0x22,0x0,0x0,0x0,
+        0x22,0x17,0x41,0x0,0x32,0x36,
+];
 
 pub struct EPaper {
     reset_pin: OutputPin,
@@ -74,20 +121,20 @@ impl EPaper {
 
     fn turn_on_for_full_update(&mut self) {
         self.send_command(&[0x22]);
-        self.send_data(&[0xF7]);
+        self.send_data(&[0xc7]);
         self.send_command(&[0x20]);
     }
 
     fn turn_on_for_partial_update(&mut self) {
         self.send_command(&[0x22]);
-        self.send_data(&[0xFF]);
+        self.send_data(&[0x0c]);
         self.send_command(&[0x20]);
     }
 
     fn set_display_window(
         &mut self,
-        (x_start, y_start): (usize, usize),
-        (x_end, y_end): (usize, usize),
+        (x_start, y_start): (u32, u32),
+        (x_end, y_end): (u32, u32),
     ) {
         self.send_command(&[0x44]); // SET_RAM_X_ADDRESS_START_END_POSITION
         self.send_data(&[(x_start >> 3 & 0xFF) as u8]);
@@ -102,7 +149,7 @@ impl EPaper {
         self.send_data(&[(y_end >> 8 & 0xFF) as u8]);
     }
 
-    fn set_cursor(&mut self, (x, y): (usize, usize)) {
+    fn set_cursor(&mut self, (x, y): (u32, u32)) {
         self.send_command(&[0x4E]); // SET_RAM_X_ADDRESS_COUNTER
         self.send_data(&[(x & 0xFF) as u8]);
 
@@ -129,7 +176,7 @@ impl EPaper {
         self.set_display_window((0, 0), (EPAPER_WIDTH - 1, EPAPER_HEIGHT - 1));
         self.set_cursor((0, 0));
 
-        self.send_command(&[0x3c]);
+        self.send_command(&[0x3c]); // Border waveform
         self.send_data(&[0x05]);
 
         self.send_command(&[0x21]); // display update control
@@ -138,6 +185,56 @@ impl EPaper {
 
         self.send_command(&[0x18]); // display update control
         self.send_data(&[0x80]);
+
+        self.set_lut(&LUT_FULL);
+    }
+
+    fn initialize_for_partial_update(&mut self, location: Rectangle) {
+        self.reset_pin.set_low();
+        sleep(Duration::from_millis(1));
+        self.reset_pin.set_high();
+
+        self.set_lut(&LUT_PARTIAL);
+
+        self.send_command(&[0x37]);
+        self.send_data(&[0x00]);
+        self.send_data(&[0x00]);
+        self.send_data(&[0x00]);
+        self.send_data(&[0x00]);
+        self.send_data(&[0x00]);
+        self.send_data(&[0x40]);
+        self.send_data(&[0x00]);
+        self.send_data(&[0x00]);
+        self.send_data(&[0x00]);  
+        self.send_data(&[0x00]);
+
+        self.send_command(&[0x3c]); // Border waveform
+        self.send_data(&[0x80]);
+
+        self.send_command(&[0x22]);
+        self.send_data(&[0xc0]);
+        self.send_command(&[0x20]);
+
+        self.wait_while_busy();
+    }
+
+    fn set_lut(&mut self, lut: &[u8]) {
+        self.send_command(&[0x32]);
+        self.send_data(&lut[0..153]);
+
+        self.send_command(&[0x3f]);
+        self.send_data(&[lut[153]]);
+
+        self.send_command(&[0x03]);
+        self.send_data(&[lut[154]]);
+
+        self.send_command(&[0x04]);
+        self.send_data(&[lut[155]]);
+        self.send_data(&[lut[156]]);
+        self.send_data(&[lut[157]]);
+
+        self.send_command(&[0x2c]);
+        self.send_data(&[lut[158]]);
     }
 
     fn turn_off(&mut self) {
@@ -152,25 +249,50 @@ impl EPaper {
     }
 
     // FIXME validate dimensions
-    pub fn write_image(&mut self, image: &[u8]) {
-        self.initialize_for_full_update();
+    // FIXME the partial/full update decision should be made internally here, in the driver
+    pub fn write_image(&mut self, image: &[u8], location: Rectangle) {
+        // TODO This whole condition is borked, get rid of it and check how many pixels were changed
+        // since last update, how many updates were done and how much time has passsed
+        let is_full_update = location.dimensions().width() == EPAPER_WIDTH
+            && location.dimensions().height() == EPAPER_HEIGHT
+            && location.position().0 == 0
+            && location.position().1 == 0;
+
+        println!("full update? {:?}", is_full_update);
+        if is_full_update {
+            self.initialize_for_full_update();
+        } 
 
         self.send_command(&[0x24]);
         self.send_data(image);
 
-        self.turn_on_for_full_update();
+        if is_full_update {
+            self.send_command(&[0x26]);
+            self.send_data(image);
+        }
+
+        if is_full_update {
+            self.turn_on_for_full_update();
+        } else {
+            self.turn_on_for_partial_update();
+        }
         self.wait_while_busy();
-        self.turn_off();
+
+        if is_full_update {
+            self.initialize_for_partial_update(location);
+        }
+        // self.turn_off();
     }
 }
 
 pub trait FlushableDrawTarget {
-    fn flush(&mut self);
+    fn flush(&mut self, location: Rectangle);
 }
 
 pub struct BufferedDrawTarget {
     epaper: EPaper,
     buffer: Vec<u8>,
+    row_width_bytes: u32,
 }
 
 impl BufferedDrawTarget {
@@ -179,14 +301,15 @@ impl BufferedDrawTarget {
 
         Self {
             epaper,
-            buffer: vec![0xFF; row_width_bytes * EPAPER_HEIGHT],
+            buffer: vec![0xFF; (row_width_bytes * EPAPER_HEIGHT) as usize],
+            row_width_bytes,
         }
     }
 }
 
 impl FlushableDrawTarget for BufferedDrawTarget {
-    fn flush(&mut self) {
-        self.epaper.write_image(&self.buffer);
+    fn flush(&mut self, location: Rectangle) {
+        self.epaper.write_image(&self.buffer, location);
     }
 }
 
@@ -278,7 +401,13 @@ impl<T: DrawTarget + OriginDimensions + FlushableDrawTarget> OriginDimensions
 impl<T: DrawTarget + OriginDimensions + FlushableDrawTarget> FlushableDrawTarget
     for RotatedDrawTarget<T>
 {
-    fn flush(&mut self) {
-        self.inner.flush()
+    fn flush(&mut self, location: Rectangle) {
+        let flipped_location = Rectangle::new(
+            crate::gui::geometry::Point(
+            location.position().1,
+            location.position().0),
+            Dimensions::new(location.dimensions().height(), location.dimensions().width())
+        );
+        self.inner.flush(flipped_location)
     }
 }

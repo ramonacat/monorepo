@@ -8,6 +8,9 @@
       programs.alacritty = {
         enable = true;
         settings = {
+          font = {
+            size = 16;
+          };
           colors = {
             primary = {
               background = "#282828";

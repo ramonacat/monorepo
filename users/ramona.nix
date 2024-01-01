@@ -43,15 +43,6 @@
 
       programs.direnv.enable = true;
 
-      programs.zsh = {
-        enable = true;
-        oh-my-zsh = {
-          enable = true;
-          theme = "agnoster";
-          plugins = [ "git" "docker" ];
-        };
-      };
-
       programs = {
         nushell = {
           enable = true;
@@ -101,6 +92,10 @@
           nvim-lspconfig
           cmp-git
           cmp-nvim-lsp
+          vim-vsnip
+          cmp-vsnip
+          neo-tree-nvim
+          auto-save-nvim
         ];
         extraLuaConfig = lib.readFile ./ramona/neovim/extraConfig.lua;
       };
