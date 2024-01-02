@@ -1,4 +1,5 @@
 mod upower;
+mod sway;
 
 use std::{
     process::{Command, Stdio},
@@ -126,6 +127,7 @@ fn format_duration(duration: Duration) -> String {
 
 #[tokio::main]
 async fn main() {
+    let mut sway = sway::Sway::connect().await;
     let connection = zbus::Connection::system().await.unwrap();
     let upower = UPowerProxy::new(&connection).await.ok();
 
@@ -137,6 +139,11 @@ async fn main() {
         let volume = get_pa_volume();
         let mute_emoji = if get_pa_mute() { "🔇" } else { "🔊" };
         let now = chrono::Local::now();
+        let keyboard_layout = match sway.keyboard_layout().await.as_str() {
+            "Polish" => "🇲🇨", // yes, I think this is funny
+            "German" => "🇩🇪",
+            other => other
+        }.to_string();
 
         let mut loadavg = [0.0f64; 2];
         unsafe {
@@ -168,6 +175,10 @@ async fn main() {
                 full_text: battery_string
             })
         }
+
+        blocks.push(Block {
+            full_text: keyboard_layout
+        });
 
         blocks.push(Block {
             full_text: format!("{} {:.0}%", mute_emoji, volume * 100.0f64)
