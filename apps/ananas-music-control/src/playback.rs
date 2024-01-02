@@ -5,10 +5,12 @@ use std::sync::mpsc::{channel, Sender};
 use std::sync::Arc;
 use std::thread::JoinHandle;
 use std::time::Duration;
-use std::{path::PathBuf, sync::Mutex, thread};
+use std::{sync::Mutex, thread};
 
 use cpal::traits::HostTrait;
 use rodio::{Decoder, OutputStream, Sink, Source};
+
+use crate::library::Track;
 
 type StatusCallback = Arc<Mutex<Box<dyn Fn(PlaybackStatus) + Send>>>;
 
@@ -88,7 +90,7 @@ pub struct PlaybackStatus {
     progress_max: u32,
     title: String,
     album_title: String,
-    album_artist: String
+    album_artist: String,
 }
 
 impl PlaybackStatus {
@@ -113,7 +115,7 @@ impl PlaybackStatus {
 }
 
 pub struct Player {
-    queue: Arc<Mutex<Vec<PathBuf>>>,
+    queue: Arc<Mutex<Vec<Track>>>,
     queue_thread: JoinHandle<()>,
     tx: Sender<PlayerCommand>,
     status_callback: StatusCallback,
@@ -183,39 +185,19 @@ impl Player {
                     if sink.empty() {
                         if let Some(next) = popped {
                             let status_callback_ = status_callback_.clone();
-                            let filename = next.clone();
-                            let vorbis_comment = flac::metadata::get_vorbis_comment(filename.to_string_lossy().as_ref());
 
-                            let mut album_artist = String::new();
-                            let mut album_title = String::new();
-                            let mut track_title = String::new();
-
-                            if let Ok(vorbis_comment) = vorbis_comment {
-                                let comments = vorbis_comment.comments;
-
-                                album_artist = comments.get("ALBUMARTIST")
-                                    .or_else(|| comments.get("ARTIST"))
-                                    .map(|x| x.to_string())
-                                    .unwrap_or_else(|| "Unknown Artist".to_string());
-
-                                album_title = comments.get("ALBUM")
-                                    .map(|x| x.to_string())
-                                    .unwrap_or_else(|| "Unknown Album".to_string());
-
-                                track_title = comments.get("TITLE")
-                                    .map(|x| x.to_string())
-                                    .unwrap_or_else(|| filename.file_name().unwrap().to_string_lossy().to_string());
-                            }
+                            println!("{:?}", &next);
 
                             sink.append(StatusReportingDecoder::new(
-                                Decoder::new(BufReader::new(File::open(next).unwrap())).unwrap(),
+                                Decoder::new(BufReader::new(File::open(next.path()).unwrap()))
+                                    .unwrap(),
                                 Box::new(move |progress, progress_max| {
                                     (status_callback_.lock().unwrap())(PlaybackStatus {
                                         progress: progress as u32,
                                         progress_max: progress_max as u32,
-                                        title: track_title.clone(),
-                                        album_artist: album_artist.clone(),
-                                        album_title: album_title.clone()
+                                        title: next.title().to_string(),
+                                        album_artist: next.artist().to_string(),
+                                        album_title: next.album().to_string(),
                                     });
                                 }),
                             ));
@@ -234,8 +216,8 @@ impl Player {
         }
     }
 
-    pub fn add_to_queue(&self, path: PathBuf) {
-        self.queue.lock().unwrap().push(path);
+    pub fn add_to_queue(&self, track: Track) {
+        self.queue.lock().unwrap().push(track);
     }
 
     pub fn set_playback_status_callback(

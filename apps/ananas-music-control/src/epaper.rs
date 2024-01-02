@@ -224,13 +224,10 @@ impl EPaper {
     }
 
     // FIXME validate dimensions
-    // FIXME the partial/full update decision should be made internally here, in the driver
     pub fn write_image(&mut self, image: &[u8]) {
+        let partial = (self.write_count % 10) != 0; // FIXME: this is an extremely simplified condition
         self.write_count += 1;
 
-        let partial = (self.write_count % 10) != 0; // FIXME: this is an extremely simplified condition
-                                                    // TODO This whole condition is borked, get rid of it and check how many pixels were changed
-                                                    // since last update, how many updates were done and how much time has passsed
         if !partial {
             self.initialize_for_full_update();
         }

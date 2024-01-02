@@ -57,17 +57,17 @@ impl<
             Padding::vertical(5, 5),
         );
         let artist_control = Text::new(
-                artist.to_string(),
-                15,
-                FontKind::MainText,
-                Padding::vertical(3, 3),
-            );
+            artist.to_string(),
+            15,
+            FontKind::MainText,
+            Padding::vertical(3, 3),
+        );
         let album_title_control = Text::new(
-                album.to_string(),
-                17,
-                FontKind::MainText,
-                Padding::vertical(3, 3),
-            );
+            album.to_string(),
+            17,
+            FontKind::MainText,
+            Padding::vertical(3, 3),
+        );
         let progress_bar = ProgressBar::new(0, 150, 5, Padding::new(5, 5, 0, 0));
 
         let track_title_text = track_title.text();
@@ -157,7 +157,7 @@ impl<
             item_scroller_children.push(Box::new(Button::new(
                 Box::new(Text::new(
                     album.clone(),
-                    20,
+                    15,
                     FontKind::MainText,
                     Padding::zero(),
                 )),
