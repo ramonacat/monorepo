@@ -87,6 +87,8 @@ pub struct PlaybackStatus {
     progress: u32,
     progress_max: u32,
     title: String,
+    album_title: String,
+    album_artist: String
 }
 
 impl PlaybackStatus {
@@ -99,6 +101,14 @@ impl PlaybackStatus {
 
     pub fn title(&self) -> &str {
         &self.title
+    }
+
+    pub fn album_title(&self) -> &str {
+        &self.album_title
+    }
+
+    pub fn album_artist(&self) -> &str {
+        &self.album_artist
     }
 }
 
@@ -174,17 +184,38 @@ impl Player {
                         if let Some(next) = popped {
                             let status_callback_ = status_callback_.clone();
                             let filename = next.clone();
+                            let vorbis_comment = flac::metadata::get_vorbis_comment(filename.to_string_lossy().as_ref());
+
+                            let mut album_artist = String::new();
+                            let mut album_title = String::new();
+                            let mut track_title = String::new();
+
+                            if let Ok(vorbis_comment) = vorbis_comment {
+                                let comments = vorbis_comment.comments;
+
+                                album_artist = comments.get("ALBUMARTIST")
+                                    .or_else(|| comments.get("ARTIST"))
+                                    .map(|x| x.to_string())
+                                    .unwrap_or_else(|| "Unknown Artist".to_string());
+
+                                album_title = comments.get("ALBUM")
+                                    .map(|x| x.to_string())
+                                    .unwrap_or_else(|| "Unknown Album".to_string());
+
+                                track_title = comments.get("TITLE")
+                                    .map(|x| x.to_string())
+                                    .unwrap_or_else(|| filename.file_name().unwrap().to_string_lossy().to_string());
+                            }
+
                             sink.append(StatusReportingDecoder::new(
                                 Decoder::new(BufReader::new(File::open(next).unwrap())).unwrap(),
                                 Box::new(move |progress, progress_max| {
                                     (status_callback_.lock().unwrap())(PlaybackStatus {
                                         progress: progress as u32,
                                         progress_max: progress_max as u32,
-                                        title: filename
-                                            .file_name()
-                                            .unwrap()
-                                            .to_string_lossy()
-                                            .to_string(),
+                                        title: track_title.clone(),
+                                        album_artist: album_artist.clone(),
+                                        album_title: album_title.clone()
                                     });
                                 }),
                             ));

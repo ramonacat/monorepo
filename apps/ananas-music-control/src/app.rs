@@ -56,15 +56,31 @@ impl<
             FontKind::MainText,
             Padding::vertical(5, 5),
         );
+        let artist_control = Text::new(
+                artist.to_string(),
+                15,
+                FontKind::MainText,
+                Padding::vertical(3, 3),
+            );
+        let album_title_control = Text::new(
+                album.to_string(),
+                17,
+                FontKind::MainText,
+                Padding::vertical(3, 3),
+            );
         let progress_bar = ProgressBar::new(0, 150, 5, Padding::new(5, 5, 0, 0));
 
         let track_title_text = track_title.text();
+        let artist_text = artist_control.text();
+        let album_title_text = album_title_control.text();
 
         let progress = progress_bar.progress();
         let progress_max = progress_bar.progress_max();
 
         self.player.set_playback_status_callback(Box::new(
             move |playback_status: PlaybackStatus| {
+                album_title_text.send(playback_status.album_title().to_string());
+                artist_text.send(playback_status.album_artist().to_string());
                 track_title_text.send(playback_status.title().to_string());
                 progress.send(playback_status.elapsed());
                 progress_max.send(playback_status.total_length());
@@ -74,18 +90,8 @@ impl<
         self.player.play();
 
         let stack_panel_children: Vec<Box<dyn Control<_, _>>> = vec![
-            Box::new(Text::new(
-                artist.to_string(),
-                15,
-                FontKind::MainText,
-                Padding::vertical(3, 3),
-            )),
-            Box::new(Text::new(
-                album.to_string(),
-                17,
-                FontKind::MainText,
-                Padding::vertical(3, 3),
-            )),
+            Box::new(artist_control),
+            Box::new(album_title_control),
             Box::new(track_title),
             Box::new(progress_bar),
         ];
