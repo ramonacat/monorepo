@@ -25,7 +25,7 @@
               statusCommand = "${barPackage}/bin/bar";
               fonts = {
                 names = [ "Noto Sans" "Iosevka" ];
-                size = 11.0;
+                size = 13.0;
               };
               colors = {
                 activeWorkspace = {
