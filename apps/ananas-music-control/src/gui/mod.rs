@@ -7,8 +7,9 @@ use std::{
 
 use embedded_graphics::{
     draw_target::DrawTarget,
+    geometry::OriginDimensions,
     pixelcolor::BinaryColor,
-    primitives::{PrimitiveStyleBuilder, Rectangle, StyledDrawable}, geometry::OriginDimensions,
+    primitives::{PrimitiveStyleBuilder, Rectangle, StyledDrawable},
 };
 
 use crate::epaper::FlushableDrawTarget;
@@ -65,7 +66,7 @@ impl Padding {
             top: 0,
             bottom: 0,
             left,
-            right
+            right,
         }
     }
 
@@ -133,7 +134,7 @@ impl<
         self.root_control.on_event(event);
     }
 
-    fn render(&mut self, location: geometry::Rectangle) {
+    fn render(&mut self) {
         self.clear_screen();
 
         let top_left = self.draw_target.bounding_box().top_left;
@@ -146,9 +147,7 @@ impl<
             &self.fonts,
         );
 
-        self.draw_target.flush(
-            location
-        );
+        self.draw_target.flush();
     }
 
     fn clear_screen(&mut self) {
@@ -170,7 +169,7 @@ impl<
 
         self.root_control
             .register_command_channel(command_tx.clone());
-        self.render(geometry::Rectangle::new(Point(0, 0), Dimensions::new(self.draw_target.size().width, self.draw_target.size().height)));
+        self.render();
 
         loop {
             self.handle_event(Event::Heartbeat);
@@ -184,48 +183,22 @@ impl<
             }
 
             let mut redraw = false;
-            let mut redraw_start_x = self.draw_target.size().width;
-            let mut redraw_start_y = self.draw_target.size().height;
-            let mut redraw_end_x = 0;
-            let mut redraw_end_y = 0;
 
             while let Ok(command) = command_rx.try_recv() {
-                // TODO: Coalesce the events and do a partial redraw!
-
                 match command {
-                    GuiCommand::Redraw(position, dimensions) => {
-                        if position.0 < redraw_start_x {
-                            redraw_start_x = position.0;
-                        }
-
-                        if position.1 < redraw_start_y {
-                            redraw_start_y = position.1;
-                        }
-
-                        if position.0 + dimensions.width() > redraw_end_x {
-                            redraw_end_x = position.0 + dimensions.width();
-                        }
-
-                        if position.1 + dimensions.height() > redraw_end_y {
-                            redraw_end_y = position.1 + dimensions.height();
-                        }
+                    GuiCommand::Redraw => {
                         redraw = true;
-                    },
+                    }
                     GuiCommand::ReplaceRoot(mut new_root) => {
                         new_root.register_command_channel(command_tx.clone());
                         self.root_control = new_root;
                         redraw = true;
-                        redraw_start_x = 0;
-                        redraw_start_y = 0;
-                        redraw_end_x = self.draw_target.size().width;
-                        redraw_end_y = self.draw_target.size().height;
                     }
                 }
             }
 
             if redraw {
-                println!("{} {} {} {}", redraw_start_x, redraw_start_y, redraw_end_x, redraw_end_y);
-                self.render(geometry::Rectangle::new(Point(redraw_start_x, redraw_start_y), Dimensions::new(redraw_end_x - redraw_start_x, redraw_end_y - redraw_start_y)));
+                self.render();
             }
         }
     }
@@ -238,7 +211,7 @@ pub enum Event {
 }
 
 pub enum GuiCommand<TDrawTarget: DrawTarget, TError: Error + Debug> {
-    Redraw(Point, Dimensions),
+    Redraw,
     ReplaceRoot(Box<dyn Control<TDrawTarget, TError>>),
 }
 

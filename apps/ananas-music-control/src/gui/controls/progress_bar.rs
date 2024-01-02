@@ -145,13 +145,8 @@ impl<TDrawTarget: DrawTarget<Color = BinaryColor, Error = TError>, TError: Error
                     }
                 }
 
-                if let (true, Some(tx), Some(dimensions), Some(position)) = (
-                    redraw,
-                    &self.command_channel,
-                    self.dimensions,
-                    self.position,
-                ) {
-                    tx.send(GuiCommand::Redraw(position, dimensions)).unwrap();
+                if let (true, Some(tx)) = (redraw, &self.command_channel) {
+                    tx.send(GuiCommand::Redraw).unwrap();
                 }
             }
         }

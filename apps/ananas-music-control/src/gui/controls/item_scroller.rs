@@ -160,32 +160,26 @@ impl<
 
                 let mut needs_contents_redraw = false;
 
-                if let Some(bounding_box) = &self.bounding_box {
-                    while let Ok(request) = self.scroll_rx.try_recv() {
-                        match request {
-                            ScrollRequest::Up => {
-                                if self.scroll_index > 0 {
-                                    self.scroll_index -= 1;
-                                    needs_contents_redraw = true;
-                                }
+                while let Ok(request) = self.scroll_rx.try_recv() {
+                    match request {
+                        ScrollRequest::Up => {
+                            if self.scroll_index > 0 {
+                                self.scroll_index -= 1;
+                                needs_contents_redraw = true;
                             }
-                            ScrollRequest::Down => {
-                                if self.scroll_index < self.children.len() {
-                                    self.scroll_index += 1;
-                                    needs_contents_redraw = true;
-                                }
+                        }
+                        ScrollRequest::Down => {
+                            if self.scroll_index < self.children.len() {
+                                self.scroll_index += 1;
+                                needs_contents_redraw = true;
                             }
                         }
                     }
+                }
 
-                    if needs_contents_redraw {
-                        if let Some(tx) = &self.command_channel {
-                            tx.send(GuiCommand::Redraw(
-                                bounding_box.position(),
-                                bounding_box.dimensions(),
-                            ))
-                            .unwrap();
-                        }
+                if needs_contents_redraw {
+                    if let Some(tx) = &self.command_channel {
+                        tx.send(GuiCommand::Redraw).unwrap();
                     }
                 }
             }
