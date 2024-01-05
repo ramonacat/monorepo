@@ -21,6 +21,7 @@
 
         wayland.windowManager.sway = {
           enable = true;
+          wrapperFeatures.gtk = true;
           config = {
             terminal = "alacritty";
             modifier = "Mod4";
