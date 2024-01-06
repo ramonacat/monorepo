@@ -7,7 +7,7 @@
       home.username = "ramona";
       home.homeDirectory = "/home/ramona";
       home.stateVersion = "22.11";
-      home.packages = with pkgs; [ pulseaudio unzip yt-dlp agenix.packages.x86_64-linux.default jq atop ];
+      home.packages = with pkgs; [ pulseaudio unzip yt-dlp agenix.packages.x86_64-linux.default jq atop ripgrep ];
 
       programs.gpg = {
         enable = true;
@@ -96,6 +96,7 @@
           cmp-vsnip
           neo-tree-nvim
           auto-save-nvim
+          telescope-nvim
         ];
         extraLuaConfig = lib.readFile ./ramona/neovim/extraConfig.lua;
       };
