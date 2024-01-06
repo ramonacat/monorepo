@@ -61,6 +61,7 @@
         obsidian
         light
         loupe
+        obs-studio
 
         factorio
         prismlauncher
