@@ -3,12 +3,25 @@
 {
   # colors: https://coolors.co/ff1885-19323c-9da2ab-f3de8a-988f2a
   config = {
+    xdg.portal = {
+      enable = true;
+      wlr = {
+        enable = true;
+        settings = {
+          screencast = {
+            chooser_type = "simple";
+            chooser_cmd = "${pkgs.slurp}/bin/slurp -f %o -ro";
+          };
+        };
+      };
+      config.common.default = "wlr";
+    };
     home-manager.users.ramona =
       {
-      home.packages = with pkgs; [
-        wl-clipboard
-        wtype
-      ];
+        home.packages = with pkgs; [
+          wl-clipboard
+          wtype
+        ];
         services.swayidle = {
           enable = true;
           timeouts = [
@@ -22,6 +35,7 @@
         wayland.windowManager.sway = {
           enable = true;
           wrapperFeatures.gtk = true;
+          systemd.enable = true;
           config = {
             terminal = "alacritty";
             modifier = "Mod4";
@@ -77,6 +91,9 @@
             bindsym XF86AudioMute exec 'pactl set-sink-mute @DEFAULT_SINK@ toggle'
             bindsym XF86MonBrightnessUp exec sudo light -A 10
             bindsym XF86MonBrightnessDown exec sudo light -U 10
+
+            exec systemctl --user import-environment XDG_SESSION_TYPE XDG_CURRENT_DESKTOP
+            exec dbus-update-activation-environment --systemd WAYLAND_DISPLAY XDG_CURRENT_DESKTOP=sway
           '';
         };
       };
