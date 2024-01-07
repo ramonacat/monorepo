@@ -1,4 +1,8 @@
-use std::{convert::Infallible, thread::sleep, time::Duration};
+use std::{
+    convert::Infallible,
+    thread::sleep,
+    time::{Duration, SystemTime},
+};
 
 use embedded_graphics::{
     draw_target::DrawTarget,
@@ -44,7 +48,9 @@ pub struct EPaper {
     chip_select_pin: OutputPin,
     busy_pin: InputPin,
     spi: Spi,
-    write_count: u32,
+    write_count: usize,
+    changed_pixel_count: usize,
+    last_full_update: SystemTime,
 }
 
 impl EPaper {
@@ -62,6 +68,8 @@ impl EPaper {
             busy_pin,
             spi,
             write_count: 0,
+            changed_pixel_count: 0,
+            last_full_update: SystemTime::UNIX_EPOCH,
         }
     }
 
@@ -224,11 +232,28 @@ impl EPaper {
     }
 
     // FIXME validate dimensions
-    pub fn write_image(&mut self, image: &[u8]) {
-        let partial = (self.write_count % 10) != 0; // FIXME: this is an extremely simplified condition
+    pub fn write_image(&mut self, image: &[u8], changed_pixel_count: usize) {
         self.write_count += 1;
+        self.changed_pixel_count += changed_pixel_count;
+
+        // These numbers are chosen by vibes, could be wrong but who knows.
+        let partial = self.write_count < 100
+            && self.changed_pixel_count < 250000
+            && SystemTime::now()
+                .duration_since(self.last_full_update)
+                .unwrap_or(Duration::MAX)
+                .as_secs()
+                < 3600;
 
         if !partial {
+            println!(
+                "{} {} {:?}",
+                self.write_count, self.changed_pixel_count, self.last_full_update
+            );
+            self.last_full_update = SystemTime::now();
+            self.write_count = 0;
+            self.changed_pixel_count = 0;
+
             self.initialize_for_full_update();
         }
 
@@ -250,7 +275,6 @@ impl EPaper {
         if !partial {
             self.initialize_for_partial_update();
         }
-        // self.turn_off();
     }
 }
 
@@ -267,6 +291,7 @@ pub trait FlushableDrawTarget {
 pub struct BufferedDrawTarget {
     epaper: EPaper,
     buffer: Vec<u8>,
+    changed_pixel_count: usize,
 }
 
 impl BufferedDrawTarget {
@@ -276,13 +301,16 @@ impl BufferedDrawTarget {
         Self {
             epaper,
             buffer: vec![0xFF; (row_width_bytes * EPAPER_HEIGHT) as usize],
+            changed_pixel_count: 0,
         }
     }
 }
 
 impl FlushableDrawTarget for BufferedDrawTarget {
     fn flush(&mut self) {
-        self.epaper.write_image(&self.buffer);
+        self.epaper
+            .write_image(&self.buffer, self.changed_pixel_count);
+        self.changed_pixel_count = 0;
     }
 }
 
@@ -308,10 +336,16 @@ impl DrawTarget for BufferedDrawTarget {
                 continue;
             }
 
+            let previous_state = self.buffer[pixel_index];
+
             if pixel.1 == BinaryColor::Off {
                 self.buffer[pixel_index] |= 1 << pixel_x_bit_index;
             } else {
                 self.buffer[pixel_index] &= !(1 << pixel_x_bit_index);
+            }
+
+            if previous_state != self.buffer[pixel_index] {
+                self.changed_pixel_count += 1;
             }
         }
 
