@@ -20,4 +20,5 @@ in
   "minio-terraform-state.age".publicKeys = users ++ [ moonfall angelsin ];
   "terraform-tokens.age".publicKeys = users ++ [ moonfall angelsin ];
   "caligari-minecraft-rclone-config.age".publicKeys = users ++ [ caligari ];
+  "caligari-github-pat-runner-registration.age".publicKeys = users ++ [ caligari ];
 }
