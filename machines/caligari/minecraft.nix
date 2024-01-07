@@ -18,6 +18,7 @@
           openFirewall = false;
           whitelist = {
             Agares2 = "2535f2de-9174-4bc5-8bdf-233649bc0449";
+            GayEmoPirate = "f14060b2-1b7a-436e-bb09-c7c693b4503b";
           };
           serverProperties = {
             server-port = 43000;
