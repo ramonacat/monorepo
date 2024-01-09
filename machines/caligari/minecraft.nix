@@ -29,6 +29,22 @@
           };
           package = pkgs.minecraftServers.vanilla-1_20_4;
         };
+        luczkiewy = {
+          enable = true;
+          openFirewall = false;
+          whitelist = {
+            Agares2 = "2535f2de-9174-4bc5-8bdf-233649bc0449";
+            GayEmoPirate = "f14060b2-1b7a-436e-bb09-c7c693b4503b";
+          };
+          serverProperties = {
+            server-port = 43001;
+            white-list = true;
+            enable-rcon = true;
+            "rcon.port" = 25576;
+            "rcon.password" = "rcon";
+          };
+          package = pkgs.minecraftServers.vanilla-1_20_4;
+        };
       };
     };
 
@@ -73,8 +89,49 @@ EOS
       };
     };
 
+    systemd.services.backup-minecraft-luczkiewy =
+      let
+        script = pkgs.writeShellScriptBin "backup-minecraft-server-luczkiewy" "
+          #!/usr/bin/env bash
+
+          set -euo pipefail
+          set -x
+
+          ${pkgs.rcon}/bin/rcon -H localhost -p 25576 -P rcon <<EOS
+            say [§4WARNING§r] starting server backup
+            save-off
+            save-all
+EOS
+          ${pkgs.gnutar}/bin/tar -cf /tmp/luczkiewy.tar /srv/minecraft/luczkiewy/
+          ${pkgs.rcon}/bin/rcon -H localhost -p 25576 -P rcon <<EOS
+            save-on
+            say [§bNOTICE§r] server backup finished
+EOS
+          ${pkgs.rclone}/bin/rclone --config=${config.age.secrets.caligari-minecraft-rclone-config.path} --verbose copy /tmp/luczkiewy.tar b2:ramona-minecraft-backups/
+          rm /tmp/luczkiewy.tar
+        ";
+      in
+      {
+        after = [ "network.target" ];
+        description = "Backup the Minecraft server (luczkiewy)";
+        serviceConfig = {
+          Type = "oneshot";
+          ExecStart = "${script}/bin/backup-minecraft-server-luczkiewy";
+        };
+      };
+
+    systemd.timers.backup-minecraft-luczkiewy = {
+      wantedBy = [ "timers.target" ];
+      timerConfig = {
+        OnBootSec = "1h";
+        OnUnitActiveSec = "1h";
+        Unit = "backup-minecraft-luczkiewy.service";
+      };
+    };
+
     networking.firewall.allowedTCPPorts = [
       43000 # gierki
+      43001 # luczkiewy
     ];
   };
 }
