@@ -27,6 +27,6 @@
     boot.loader.systemd-boot.enable = true;
     boot.loader.efi.canTouchEfiVariables = true;
 
-    microsoft-surface.kernelVersion = lib.mkForce "6.6.8";
+    microsoft-surface.kernelVersion = lib.mkForce "6.6.10";
   };
 }
