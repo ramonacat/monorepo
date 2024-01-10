@@ -13,7 +13,7 @@
         STRICT_DEVMEM n
       '';
     }];
-    boot.kernelPackages = lib.mkForce pkgsCross.linuxPackages_testing;
+    boot.kernelPackages = lib.mkForce pkgsCross.linuxPackages_latest;
     fileSystems."/" =
       {
         device = "/dev/disk/by-label/NIXOS_SD";
