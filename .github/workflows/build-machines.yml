@@ -3,12 +3,13 @@ runs-on: self-hosted
 on: [pull_request, push]
 jobs:
   build:
-    - name: Checkout the repo
-      uses: actions/checkout@v4
-      with:
-        fetch-depth: 1
+    steps:
+      - name: Checkout the repo
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
 
-    - name: nix flake check
-      run: nix flake check
+      - name: nix flake check
+        run: nix flake check
 
 # todo: nix build closures for all the hosts and host them somewhere
