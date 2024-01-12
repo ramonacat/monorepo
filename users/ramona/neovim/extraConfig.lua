@@ -86,7 +86,16 @@ vim.api.nvim_create_autocmd("LspAttach", {
     end,
 })
 
-require("neo-tree").setup({})
+require("neo-tree").setup({
+    filesystem = {
+        filtered_items = {
+            always_show = {
+                ".github",
+                ".gitignore"
+            }
+        }
+    }
+})
 
 require("auto-save").setup({})
 
