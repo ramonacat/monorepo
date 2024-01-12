@@ -1,0 +1,13 @@
+name: Build all the machines
+runs-on: self-hosted
+on: [pr, push]
+jobs:
+  - name: Checkout the repo
+    uses: actions/checkout@v4
+    with:
+      fetch-depth: 1
+
+  - name: nix flake check
+    run: nix flake check
+
+# todo: nix build closures for all the hosts and host them somewhere
