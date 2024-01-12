@@ -27,22 +27,24 @@
     boot.loader.systemd-boot.enable = true;
     boot.loader.efi.canTouchEfiVariables = true;
 
-    systemd.services.lte_modem_fix = let
+    systemd.services.lte_modem_fix =
+      let
         modemFixScript = pkgs.writeScriptBin "fix_lte_modem" ''
-                #!${pkgs.stdenv.shell}
+          #!${pkgs.stdenv.shell}
 
-                echo -n 16383 > /sys/bus/usb/devices/2-3:1.0/net/wwp0s20f0u3/cdc_ncm/rx_max
-                echo -n 16383 > /sys/bus/usb/devices/2-3:1.0/net/wwp0s20f0u3/cdc_ncm/tx_max
+          echo -n 16383 > /sys/bus/usb/devices/2-3:1.0/net/wwp0s20f0u3/cdc_ncm/rx_max
+          echo -n 16383 > /sys/bus/usb/devices/2-3:1.0/net/wwp0s20f0u3/cdc_ncm/tx_max
 
-                echo -n 16384 > /sys/bus/usb/devices/2-3:1.0/net/wwp0s20f0u3/cdc_ncm/rx_max
-                echo -n 16384 > /sys/bus/usb/devices/2-3:1.0/net/wwp0s20f0u3/cdc_ncm/tx_max
-            '';
-    in {
-        wantedBy = ["multi-user.target"];
+          echo -n 16384 > /sys/bus/usb/devices/2-3:1.0/net/wwp0s20f0u3/cdc_ncm/rx_max
+          echo -n 16384 > /sys/bus/usb/devices/2-3:1.0/net/wwp0s20f0u3/cdc_ncm/tx_max
+        '';
+      in
+      {
+        wantedBy = [ "multi-user.target" ];
         serviceConfig = {
-            Type = "oneshot";
-            ExecStart = "${modemFixScript}/bin/fix_lte_modem";
+          Type = "oneshot";
+          ExecStart = "${modemFixScript}/bin/fix_lte_modem";
         };
-    };
+      };
   };
 }

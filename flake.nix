@@ -112,6 +112,7 @@
             ./modules/bcachefs.nix
             ./modules/installed_base.nix
             ./modules/telegraf.nix
+            ./modules/syncthing.nix
             (import ./users/ramona.nix { inherit agenix; })
             ./machines/hallewell/hardware.nix
             ./machines/hallewell/networking.nix
@@ -137,6 +138,7 @@
             ./modules/nas-client.nix
             ./modules/telegraf.nix
             ./modules/terraform-tokens.nix
+            ./modules/syncthing.nix
             (import ./users/ramona.nix { inherit agenix; })
             (import ./users/ramona/gui.nix { inherit nix-vscode-extensions; })
             (import ./users/ramona/sway.nix { inherit barPackage; })
@@ -183,6 +185,7 @@
             ./modules/nas-client.nix
             ./modules/telegraf.nix
             ./modules/terraform-tokens.nix
+            ./modules/syncthing.nix
             (import ./users/ramona.nix { inherit agenix; })
             (import ./users/ramona/gui.nix { inherit nix-vscode-extensions; })
             (import ./users/ramona/sway.nix { inherit barPackage; })
@@ -224,6 +227,7 @@
             ./modules/workstation.nix
             ./modules/nas-client.nix
             ./modules/telegraf.nix
+            ./modules/syncthing.nix
             (import ./users/ramona.nix { inherit agenix; })
             (import ./users/ramona/gui.nix { inherit nix-vscode-extensions; })
             ./machines/evillian/hardware.nix
