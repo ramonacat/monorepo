@@ -1,6 +1,6 @@
 name: Build all the machines
 runs-on: self-hosted
-on: [pull-request, push]
+on: [pull_request, push]
 jobs:
   - name: Checkout the repo
     uses: actions/checkout@v4
