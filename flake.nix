@@ -36,53 +36,13 @@
       rustVersion = pkgs.rust-bin.stable.latest.default;
       rustVersionAarch64 = pkgsAarch64.rust-bin.stable.latest.default;
       craneLibAarch64 = (crane.mkLib pkgsAarch64).overrideToolchain rustVersionAarch64;
-      sourceFilter = path: type: craneLib.filterCargoSources path type || (builtins.match ".*/resources/.*" path != null);
-      packageArguments = {
-        src = pkgs.lib.cleanSourceWith {
-          src = craneLib.path ./apps/bar;
-          filter = sourceFilter;
-        };
-        buildInputs = with pkgs; [
-          pkg-config
-          pipewire
-          clang
-        ];
-        LIBCLANG_PATH = "${pkgs.libclang.lib}/lib";
-      };
-      cargoArtifacts = craneLib.buildDepsOnly packageArguments;
-      barPackage = craneLib.buildPackage (packageArguments // {
-        inherit cargoArtifacts;
-      });
-      homeAutomationPackageArguments = {
-        src = pkgs.lib.cleanSourceWith {
-          src = craneLib.path ./apps/home-automation;
-          filter = sourceFilter;
-        };
-      };
-      homeAutomationPackageCargoArtifacts = craneLib.buildDepsOnly homeAutomationPackageArguments;
-      homeAutomationPackage = craneLib.buildPackage (homeAutomationPackageArguments // {
-        cargoArtifacts = homeAutomationPackageCargoArtifacts;
-      });
-      ananasMusicControlPackageArguments = {
-        src = pkgs.lib.cleanSourceWith {
-          src = craneLib.path ./apps/ananas-music-control;
-          filter = sourceFilter;
-        };
-        buildInputs = with pkgsAarch64; [
-          pkg-config
-          alsaLib.dev
-        ];
-      };
-      ananasMusicControlPackageCargoArtifacts = craneLibAarch64.buildDepsOnly ananasMusicControlPackageArguments;
-      ananasMusicControlPackage = craneLibAarch64.buildPackage (ananasMusicControlPackageArguments // {
-        cargoArtifacts = ananasMusicControlPackageCargoArtifacts;
-      });
+      barPackage = import ./packages/bar.nix { inherit pkgs; inherit craneLib; };
+      homeAutomationPackage = import ./packages/home-automation.nix { inherit pkgs; inherit craneLib; };
+      ananasMusicControlPackage = import ./packages/music-control.nix { pkgs = pkgsAarch64; craneLib = craneLibAarch64; };
     in
     {
       formatter.x86_64-linux = pkgs.nixpkgs-fmt;
       devShells.x86_64-linux.default = pkgs.mkShell {
-        shellHook = ''
-        '';
         packages = with pkgs; [
           pkg-config
           pipewire
