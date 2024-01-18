@@ -22,10 +22,12 @@ cmp.setup({
 -- The nvim-cmp almost supports LSP's capabilities so You should advertise it to LSP servers..
 local capabilities = require("cmp_nvim_lsp").default_capabilities();
 
-(require("lspconfig")).rust_analyzer.setup({
+local lspconfig = require("lspconfig");
+
+lspconfig.rust_analyzer.setup({
     capabilities = capabilities,
 })
-require("lspconfig").lua_ls.setup({
+lspconfig.lua_ls.setup({
     capabilities = capabilities,
     on_init = function(client)
         local path = client.workspace_folders[1].name
@@ -50,6 +52,7 @@ require("lspconfig").lua_ls.setup({
         return true
     end,
 })
+lspconfig.nixd.setup({})
 
 vim.keymap.set("n", "<space>e", vim.diagnostic.open_float)
 vim.keymap.set("n", "[d", vim.diagnostic.goto_prev)
