@@ -2,7 +2,7 @@ use std::{
     error::Error,
     fmt::Debug,
     sync::mpsc::{Receiver, Sender},
-    time::Duration,
+    time::{Duration, SystemTime},
 };
 
 use embedded_graphics::{
@@ -171,6 +171,7 @@ impl<
             .register_command_channel(command_tx.clone());
         self.render();
 
+        let mut last_redraw = SystemTime::now();
         loop {
             self.handle_event(Event::Heartbeat);
 
@@ -183,6 +184,11 @@ impl<
             }
 
             let mut redraw = false;
+
+            if SystemTime::now().duration_since(last_redraw).unwrap().as_secs() > 3600 {
+                redraw = true;
+                last_redraw = SystemTime::now();
+            }
 
             while let Ok(command) = command_rx.try_recv() {
                 match command {
