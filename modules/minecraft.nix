@@ -55,16 +55,20 @@
           set -euo pipefail
           set -x
 
+          function cleanup {
+              ${pkgs.rcon}/bin/rcon -H localhost -p ${toString settings.rconPort} -P rcon <<EOS
+                save-on
+                say [§bNOTICE§r] server backup finished
+EOS
+          }
+          trap cleanup EXIT
+
           ${pkgs.rcon}/bin/rcon -H localhost -p ${toString settings.rconPort} -P rcon <<EOS
             say [§4WARNING§r] starting server backup
             save-off
             save-all
 EOS
           ${pkgs.gnutar}/bin/tar -cf /tmp/${name}.tar /srv/minecraft/${name}/
-          ${pkgs.rcon}/bin/rcon -H localhost -p ${toString settings.rconPort} -P rcon <<EOS
-            save-on
-            say [§bNOTICE§r] server backup finished
-EOS
           ${pkgs.rclone}/bin/rclone --config=${config.age.secrets.caligari-minecraft-rclone-config.path} --verbose copy /tmp/${name}.tar b2:ramona-minecraft-backups/
           rm /tmp/${name}.tar
         ";
