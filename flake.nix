@@ -207,6 +207,7 @@
             ./modules/bcachefs.nix
             ./modules/installed_base.nix
             ./modules/telegraf.nix
+            ./modules/minecraft.nix
             (import ./users/ramona.nix { inherit agenix; })
             ./machines/caligari/hardware.nix
             ./machines/caligari/networking.nix
