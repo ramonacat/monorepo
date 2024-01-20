@@ -48,7 +48,7 @@
 
           touch $out
         '';
-        fmt-lua = pkgs.runCommand "fmt-lua" {} ''
+        fmt-lua = pkgs.runCommand "fmt-lua" { } ''
           ${pkgs.stylua}/bin/stylua --check ${./.}
 
           touch $out
