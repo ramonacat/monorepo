@@ -12,4 +12,14 @@ jobs:
       - name: nix flake check
         run: nix flake check
 
+      - name: build all machines
+        run: |
+          nixos-rebuild build --flake .#ananas
+          nixos-rebuild build --flake .#angelsin
+          nixos-rebuild build --flake .#caligari
+          nixos-rebuild build --flake .#evillian
+          nixos-rebuild build --flake .#hallewell
+          nixos-rebuild build --flake .#moonfall
+          nixos-rebuild build --flake .#shadowmend
+
 # todo: nix build closures for all the hosts and host them somewhere
