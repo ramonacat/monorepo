@@ -1,6 +1,6 @@
 { config, pkgs, lib, ... }:
 {
-  config = { 
+  config = {
     services.fail2ban.enable = true;
   };
 }

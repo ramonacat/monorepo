@@ -42,6 +42,18 @@
     in
     {
       formatter.x86_64-linux = pkgs.nixpkgs-fmt;
+      checks.x86_64-linux = {
+        fmt-nix = pkgs.runCommand "fmt-nix" { } ''
+          ${pkgs.nixpkgs-fmt}/bin/nixpkgs-fmt --check ${./.}
+
+          touch $out
+        '';
+        fmt-lua = pkgs.runCommand "fmt-lua" { } ''
+          ${pkgs.stylua}/bin/stylua --check ${./.}
+
+          touch $out
+        '';
+      };
       devShells.x86_64-linux.default = pkgs.mkShell {
         packages = with pkgs; [
           pkg-config
