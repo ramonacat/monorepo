@@ -31,7 +31,7 @@
     };
 
     services.telegraf.extraConfig.inputs.postgresql = {
-        address = "postgres://telegraf:$DB_PASSWORD@hallewell/telegraf";
+      address = "postgres://telegraf:$DB_PASSWORD@hallewell/telegraf";
     };
   };
 }
