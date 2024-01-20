@@ -1,3 +1,5 @@
+mod debouncer;
+
 use std::{sync::Arc, time::Duration};
 
 use amqprs::{
@@ -11,10 +13,11 @@ use amqprs::{
 };
 use async_trait::async_trait;
 use chrono::{DateTime, Local};
+use debouncer::Debouncer;
 use serde_json::{json, Value};
 use tokio::{
     sync::{
-        mpsc::{unbounded_channel, UnboundedSender},
+        mpsc::{unbounded_channel, UnboundedSender, channel},
         Mutex,
     },
     time::sleep,
@@ -71,11 +74,24 @@ enum Event {
 
 struct MyConsumer {
     sender: UnboundedSender<Event>,
+    occupancy_debouncer: Debouncer,
 }
 
 impl MyConsumer {
     fn new(sender: UnboundedSender<Event>) -> Self {
-        Self { sender }
+        let (tx, mut rx) = channel(50);
+
+        let sender_ = sender.clone();
+        tokio::spawn(async move {
+            loop {
+                if let Some(_) = rx.recv().await {
+                    let _ = sender_.send(Event::OccupancyEnded);
+                }
+            }
+        });
+
+        let occupancy_debouncer = Debouncer::new(Duration::from_secs(600), tx);
+        Self { sender, occupancy_debouncer }
     }
 }
 
@@ -127,8 +143,9 @@ impl AsyncConsumer for MyConsumer {
                 if let Some(occupancy) = occupancy.as_bool() {
                     if occupancy {
                         self.sender.send(Event::OccupancyStarted).unwrap();
+                        self.occupancy_debouncer.reset().await;
                     } else {
-                        self.sender.send(Event::OccupancyEnded).unwrap();
+                        self.occupancy_debouncer.set().await;
                     }
                 }
             }
@@ -151,12 +168,16 @@ async fn connect_to_rabbitmq(password: &str) -> Connection {
             "ha",
             password,
         ))
-        .await {
+        .await
+        {
             Ok(connection) => return connection,
             Err(e) => {
-                warn!("Failed to connect to RabbitMQ({}), waiting and retrying...", e);
+                warn!(
+                    "Failed to connect to RabbitMQ({}), waiting and retrying...",
+                    e
+                );
                 sleep(Duration::from_secs(1)).await;
-            },
+            }
         }
     }
 }
@@ -165,7 +186,8 @@ async fn connect_to_rabbitmq(password: &str) -> Connection {
 async fn main() {
     tracing_subscriber::fmt().init();
 
-    let rabbit_password = std::fs::read_to_string("/run/agenix/rabbitmq-ha").expect("Failed to read the RabbitMQ password");
+    let rabbit_password = std::fs::read_to_string("/run/agenix/rabbitmq-ha")
+        .expect("Failed to read the RabbitMQ password");
 
     let connection = connect_to_rabbitmq(rabbit_password.trim()).await;
 
@@ -192,27 +214,6 @@ async fn main() {
         .await
         .unwrap();
 
-    let unoccupied_since: Arc<Mutex<Option<DateTime<Local>>>> = Arc::new(Mutex::new(None));
-
-    let unoccupied_since_ = unoccupied_since.clone();
-
-    tokio::spawn(async move {
-        loop {
-            if let Some(occupancy_since) = &*unoccupied_since_.lock().await {
-                if occupancy_since
-                    .signed_duration_since(Local::now())
-                    .abs()
-                    .num_minutes()
-                    > 5
-                {
-                    tx.send(Event::LightsOffRequested).unwrap();
-                }
-            }
-
-            sleep(Duration::from_secs(5)).await;
-        }
-    });
-
     while let Some(event) = rx.recv().await {
         match event {
             Event::LightsOnRequested => {
@@ -222,15 +223,11 @@ async fn main() {
                 lights_off(&channel).await;
             }
             Event::OccupancyEnded => {
-                let mut occupancy_since = unoccupied_since.lock().await;
-                if occupancy_since.is_none() {
-                    info!("Occupancy ended, countdown started...");
-                    *occupancy_since = Some(Local::now());
-                }
+                info!("Occupancy ended, lights off");
+                tx.send(Event::LightsOffRequested).unwrap();
             }
             Event::OccupancyStarted => {
-                info!("Occupancy started, stopping countdown...");
-                *unoccupied_since.lock().await = None;
+                info!("Occupancy started");
             }
         };
     }
