@@ -22,6 +22,8 @@
           wl-clipboard
           wtype
         ];
+        services.network-manager-applet.enable = true;
+        services.blueman-applet.enable = config.services.blueman.enable;
         services.swayidle = {
           enable = true;
           timeouts = [
