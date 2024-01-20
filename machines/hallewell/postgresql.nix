@@ -29,5 +29,9 @@
         "pg_stat_statements.track" = "all";
       };
     };
+
+    services.telegraf.extraConfig.inputs.postgresql = {
+        address = "postgres://telegraf:$DB_PASSWORD@hallewell/telegraf";
+    };
   };
 }
