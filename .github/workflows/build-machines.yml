@@ -14,12 +14,12 @@ jobs:
 
       - name: build all machines
         run: |
-          nixos-rebuild build --flake .#ananas
-          nixos-rebuild build --flake .#angelsin
-          nixos-rebuild build --flake .#caligari
-          nixos-rebuild build --flake .#evillian
-          nixos-rebuild build --flake .#hallewell
-          nixos-rebuild build --flake .#moonfall
-          nixos-rebuild build --flake .#shadowmend
+          nix build .#nixosConfigurations.ananas.config.system.build.toplevel
+          nix build .#nixosConfigurations.angelsin.config.system.build.toplevel
+          nix build .#nixosConfigurations.caligari.config.system.build.toplevel
+          nix build .#nixosConfigurations.evillian.config.system.build.toplevel
+          nix build .#nixosConfigurations.hallewell.config.system.build.toplevel
+          nix build .#nixosConfigurations.moonfall.config.system.build.toplevel
+          nix build .#nixosConfigurations.shadowmend.config.system.build.toplevel
 
 # todo: nix build closures for all the hosts and host them somewhere
