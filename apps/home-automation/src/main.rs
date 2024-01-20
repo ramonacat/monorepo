@@ -19,7 +19,7 @@ use tokio::{
     },
     time::sleep,
 };
-use tracing::{debug, info};
+use tracing::{debug, info, warn};
 
 const LIGHTBULB_IDS: [&str; 3] = [
     "0x001788010c030841",
@@ -143,20 +143,31 @@ impl AsyncConsumer for MyConsumer {
     }
 }
 
+async fn connect_to_rabbitmq(password: &str) -> Connection {
+    loop {
+        match Connection::open(&OpenConnectionArguments::new(
+            "shadowmend",
+            5672,
+            "ha",
+            password,
+        ))
+        .await {
+            Ok(connection) => return connection,
+            Err(e) => {
+                warn!("Failed to connect to RabbitMQ({}), waiting and retrying...", e);
+                sleep(Duration::from_secs(1)).await;
+            },
+        }
+    }
+}
+
 #[tokio::main]
 async fn main() {
     tracing_subscriber::fmt().init();
 
-    let rabbit_password = std::fs::read_to_string("/run/agenix/rabbitmq-ha").unwrap();
+    let rabbit_password = std::fs::read_to_string("/run/agenix/rabbitmq-ha").expect("Failed to read the RabbitMQ password");
 
-    let connection = Connection::open(&OpenConnectionArguments::new(
-        "shadowmend",
-        5672,
-        "ha",
-        rabbit_password.trim(),
-    ))
-    .await
-    .unwrap();
+    let connection = connect_to_rabbitmq(rabbit_password.trim()).await;
 
     let channel = connection.open_channel(None).await.unwrap();
 
