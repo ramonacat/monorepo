@@ -89,14 +89,15 @@
         vimdiffAlias = true;
 
         plugins = with pkgs.vimPlugins; [
-          nvim-lspconfig
+          auto-save-nvim
           cmp-git
           cmp-nvim-lsp
-          vim-vsnip
           cmp-vsnip
           neo-tree-nvim
-          auto-save-nvim
+          nvim-lspconfig
           telescope-nvim
+          vim-vsnip
+          which-key-nvim
 
           nvim-treesitter
           nvim-treesitter-parsers.terraform
