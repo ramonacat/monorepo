@@ -3,9 +3,16 @@ on:
   workflow_dispatch: # allows manual triggering
   schedule:
     - cron: '5 4 * * *' # daily at 04:05
+
+permissions:
+  pull-requests: write
+  contents: write
+
 jobs:
   lockfile:
     runs-on: ubuntu-latest
+    env:
+      GH_TOKEN: ${{ github.token }}
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
