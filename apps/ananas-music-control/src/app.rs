@@ -1,8 +1,7 @@
 use embedded_graphics::{draw_target::DrawTarget, pixelcolor::BinaryColor};
-use std::error::Error;
 use std::marker::PhantomData;
 use std::sync::mpsc::Sender;
-use std::{fmt::Debug, sync::Arc};
+use std::sync::Arc;
 
 use crate::gui::controls::button::Button;
 use crate::gui::controls::item_scroller::ItemScroller;
@@ -10,16 +9,15 @@ use crate::gui::controls::progress_bar::ProgressBar;
 use crate::gui::controls::stack_panel::StackPanel;
 use crate::gui::controls::text::Text;
 use crate::gui::fonts::FontKind;
-use crate::gui::{Control, GuiCommand, Orientation, Padding, StackUnitDimension};
+use crate::gui::{Control, GuiCommand, Orientation, Padding, StackUnitDimension, GuiError};
 use crate::library::Library;
 use crate::playback::{PlaybackStatus, Player};
 
-type BackCallback<TDrawTarget, TError> =
-    Option<Box<dyn FnMut(Sender<GuiCommand<TDrawTarget, TError>>)>>;
+type BackCallback<TDrawTarget> =
+    Option<Box<dyn FnMut(Sender<GuiCommand<TDrawTarget>>)>>;
 
 pub struct App<
-    TDrawTarget: DrawTarget<Color = BinaryColor, Error = TError> + 'static,
-    TError: Error + Debug + 'static,
+    TDrawTarget: DrawTarget<Color = BinaryColor, Error = GuiError> + 'static,
 > {
     library: Arc<Library>,
     player: Arc<Player>,
@@ -27,9 +25,8 @@ pub struct App<
 }
 
 impl<
-        TDrawTarget: DrawTarget<Color = BinaryColor, Error = TError> + 'static,
-        TError: Error + Debug + 'static,
-    > App<TDrawTarget, TError>
+        TDrawTarget: DrawTarget<Color = BinaryColor, Error = GuiError> + 'static,
+    > App<TDrawTarget>
 {
     pub fn new(library: Arc<Library>) -> Arc<Self> {
         let player = Player::new();
@@ -45,7 +42,7 @@ impl<
         self: Arc<Self>,
         artist: &str,
         album: &str,
-    ) -> Box<dyn Control<TDrawTarget, TError>> {
+    ) -> Box<dyn Control<TDrawTarget>> {
         for track in self.library.list_tracks(artist, album) {
             self.player.add_to_queue(track);
         }
@@ -89,7 +86,7 @@ impl<
 
         self.player.play();
 
-        let stack_panel_children: Vec<Box<dyn Control<_, _>>> = vec![
+        let stack_panel_children: Vec<Box<dyn Control<_>>> = vec![
             Box::new(artist_control),
             Box::new(album_title_control),
             Box::new(track_title),
@@ -147,8 +144,8 @@ impl<
         )
     }
 
-    fn artist_view(self: Arc<Self>, artist: &str) -> Box<dyn Control<TDrawTarget, TError>> {
-        let mut item_scroller_children: Vec<Box<dyn Control<_, _>>> = vec![];
+    fn artist_view(self: Arc<Self>, artist: &str) -> Box<dyn Control<TDrawTarget>> {
+        let mut item_scroller_children: Vec<Box<dyn Control<_>>> = vec![];
 
         for album in self.library.list_albums(artist) {
             let artist = artist.to_string();
@@ -177,8 +174,8 @@ impl<
         self.wrapping_view(scroller, None, vec![])
     }
 
-    pub fn initial_view(self: Arc<Self>) -> Box<dyn Control<TDrawTarget, TError>> {
-        let mut item_scroller_children: Vec<Box<dyn Control<_, _>>> = vec![];
+    pub fn initial_view(self: Arc<Self>) -> Box<dyn Control<TDrawTarget>> {
+        let mut item_scroller_children: Vec<Box<dyn Control<_>>> = vec![];
         let mut artists = self.library.list_artists();
 
         artists.sort();
@@ -212,11 +209,11 @@ impl<
 
     pub fn wrapping_view(
         self: Arc<Self>,
-        content: Box<dyn Control<TDrawTarget, TError>>,
-        back: BackCallback<TDrawTarget, TError>,
-        additional_buttons: Vec<Box<dyn Control<TDrawTarget, TError>>>,
-    ) -> Box<dyn Control<TDrawTarget, TError>> {
-        let mut navigation_buttons: Vec<Box<dyn Control<_, _>>> = vec![];
+        content: Box<dyn Control<TDrawTarget>>,
+        back: BackCallback<TDrawTarget>,
+        additional_buttons: Vec<Box<dyn Control<TDrawTarget>>>,
+    ) -> Box<dyn Control<TDrawTarget>> {
+        let mut navigation_buttons: Vec<Box<dyn Control<_>>> = vec![];
         let self_ = self.clone();
         navigation_buttons.push(Box::new(Button::new(
             Box::new(Text::new(

@@ -1,7 +1,6 @@
-use std::fmt::Debug;
 use std::sync::mpsc::Sender;
 use std::sync::Arc;
-use std::{cmp::min, error::Error};
+use std::cmp::min;
 
 use embedded_graphics::image::{Image, ImageRaw};
 use embedded_graphics::Drawable;
@@ -10,13 +9,13 @@ use fontdue::layout::{Layout, TextStyle};
 
 use crate::gui::fonts::{FontKind, Fonts};
 use crate::gui::reactivity::property::{ReactiveProperty, ReactivePropertyReceiver};
-use crate::gui::{Control, Dimensions, GuiCommand, Padding, Point};
+use crate::gui::{Control, Dimensions, GuiCommand, Padding, Point, GuiError};
 
-pub struct Text<TDrawTarget: DrawTarget<Color = BinaryColor, Error = TError>, TError: Error + Debug>
+pub struct Text<TDrawTarget: DrawTarget<Color = BinaryColor, Error = GuiError>>
 {
     text: String,
     font_size: usize,
-    command_channel: Option<Sender<GuiCommand<TDrawTarget, TError>>>,
+    command_channel: Option<Sender<GuiCommand<TDrawTarget>>>,
     padding: Padding,
     font_kind: FontKind,
 
@@ -27,8 +26,8 @@ pub struct Text<TDrawTarget: DrawTarget<Color = BinaryColor, Error = TError>, TE
     dimensions: Option<Dimensions>,
 }
 
-impl<TDrawTarget: DrawTarget<Color = BinaryColor, Error = TError>, TError: Error + Debug>
-    Text<TDrawTarget, TError>
+impl<TDrawTarget: DrawTarget<Color = BinaryColor, Error = GuiError>>
+    Text<TDrawTarget>
 {
     pub fn new(text: String, font_size: usize, font_kind: FontKind, padding: Padding) -> Self {
         let (text_property, text_property_receiver) = ReactiveProperty::new();
@@ -89,8 +88,8 @@ fn render_text(text: &str, font_size: f32, font_kind: FontKind, fonts: &Fonts) -
     }
 }
 
-impl<TDrawTarget: DrawTarget<Color = BinaryColor, Error = TError>, TError: Error + Debug>
-    Control<TDrawTarget, TError> for Text<TDrawTarget, TError>
+impl<TDrawTarget: DrawTarget<Color = BinaryColor, Error = GuiError>>
+    Control<TDrawTarget> for Text<TDrawTarget>
 {
     fn render(
         &mut self,
@@ -169,7 +168,7 @@ impl<TDrawTarget: DrawTarget<Color = BinaryColor, Error = TError>, TError: Error
 
     fn register_command_channel(
         &mut self,
-        tx: std::sync::mpsc::Sender<crate::gui::GuiCommand<TDrawTarget, TError>>,
+        tx: std::sync::mpsc::Sender<crate::gui::GuiCommand<TDrawTarget>>,
     ) {
         self.command_channel = Some(tx);
     }

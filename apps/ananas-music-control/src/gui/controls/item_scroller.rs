@@ -1,6 +1,4 @@
 use std::collections::BTreeMap;
-use std::error::Error;
-use std::fmt::Debug;
 use std::sync::mpsc::{channel, Receiver, Sender};
 
 use embedded_graphics::{draw_target::DrawTarget, pixelcolor::BinaryColor};
@@ -9,7 +7,7 @@ use crate::gui::fonts::{FontKind, Fonts};
 use crate::gui::geometry::Rectangle;
 use crate::gui::layouts::stack::render_stack;
 use crate::gui::{
-    Control, Dimensions, Event, GuiCommand, Orientation, Padding, Point, StackUnitDimension,
+    Control, Dimensions, Event, GuiCommand, Orientation, Padding, Point, StackUnitDimension, GuiError,
 };
 
 use super::button::Button;
@@ -22,35 +20,33 @@ enum ScrollRequest {
 }
 
 pub struct ItemScroller<
-    TDrawTarget: DrawTarget<Color = BinaryColor, Error = TError>,
-    TError: Error + Debug,
+    TDrawTarget: DrawTarget<Color = BinaryColor, Error = GuiError>,
 > {
-    children: Vec<Box<dyn Control<TDrawTarget, TError>>>,
+    children: Vec<Box<dyn Control<TDrawTarget>>>,
     show_items: usize,
-    buttons_stack_panel: StackPanel<TDrawTarget, TError>,
+    buttons_stack_panel: StackPanel<TDrawTarget>,
     buttons_stack_panel_bounding_box: Option<Rectangle>,
     scroll_index: usize,
     scroll_rx: Receiver<ScrollRequest>,
-    command_channel: Option<Sender<GuiCommand<TDrawTarget, TError>>>,
+    command_channel: Option<Sender<GuiCommand<TDrawTarget>>>,
     bounding_box: Option<Rectangle>,
     children_bounding_boxes: Option<BTreeMap<usize, Rectangle>>,
 }
 impl<
-        TDrawTarget: DrawTarget<Color = BinaryColor, Error = TError> + 'static,
-        TError: Error + Debug + 'static,
-    > ItemScroller<TDrawTarget, TError>
+        TDrawTarget: DrawTarget<Color = BinaryColor, Error = GuiError> + 'static,
+    > ItemScroller<TDrawTarget>
 {
     pub(crate) fn new(
-        children: Vec<Box<dyn Control<TDrawTarget, TError>>>,
+        children: Vec<Box<dyn Control<TDrawTarget>>>,
         show_items: usize,
     ) -> Self {
         let (scroll_tx, scroll_rx) = channel();
 
         let scroll_tx_ = scroll_tx.clone();
 
-        let buttons_stack_panel: StackPanel<TDrawTarget, TError> = StackPanel::new(
+        let buttons_stack_panel: StackPanel<TDrawTarget> = StackPanel::new(
             vec![
-                Box::new(Button::<TDrawTarget, TError>::new(
+                Box::new(Button::<TDrawTarget>::new(
                     Box::new(Text::new(
                         "⬆".to_string(),
                         20,
@@ -67,7 +63,7 @@ impl<
                         scroll_tx.send(ScrollRequest::Up).unwrap();
                     }),
                 )),
-                Box::new(Button::<TDrawTarget, TError>::new(
+                Box::new(Button::<TDrawTarget>::new(
                     Box::new(Text::new(
                         "⬇".to_string(),
                         20,
@@ -104,9 +100,8 @@ impl<
 }
 
 impl<
-        TDrawTarget: DrawTarget<Color = BinaryColor, Error = TError> + 'static,
-        TError: Error + Debug + 'static,
-    > Control<TDrawTarget, TError> for ItemScroller<TDrawTarget, TError>
+        TDrawTarget: DrawTarget<Color = BinaryColor, Error = GuiError> + 'static,
+    > Control<TDrawTarget> for ItemScroller<TDrawTarget>
 {
     fn render(
         &mut self,
@@ -198,7 +193,7 @@ impl<
 
     fn register_command_channel(
         &mut self,
-        tx: std::sync::mpsc::Sender<crate::gui::GuiCommand<TDrawTarget, TError>>,
+        tx: std::sync::mpsc::Sender<crate::gui::GuiCommand<TDrawTarget>>,
     ) {
         self.command_channel = Some(tx.clone());
         self.buttons_stack_panel

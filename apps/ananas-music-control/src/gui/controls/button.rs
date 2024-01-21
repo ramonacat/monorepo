@@ -4,30 +4,28 @@ use embedded_graphics::{
     pixelcolor::BinaryColor,
     primitives::{PrimitiveStyle, PrimitiveStyleBuilder, Rectangle, StyledDrawable},
 };
-use std::fmt::Debug;
-use std::{error::Error, sync::mpsc::Sender};
+use std::sync::mpsc::Sender;
 
-use crate::gui::{fonts::Fonts, Control, Dimensions, Event, GuiCommand, Padding, Point};
+use crate::gui::{fonts::Fonts, Control, Dimensions, Event, GuiCommand, Padding, Point, GuiError};
 
-type Callback<TDrawTarget, TError> = Box<dyn FnMut(Sender<GuiCommand<TDrawTarget, TError>>)>;
+type Callback<TDrawTarget> = Box<dyn FnMut(Sender<GuiCommand<TDrawTarget>>)>;
 
 pub struct Button<
-    TDrawTarget: DrawTarget<Color = BinaryColor, Error = TError>,
-    TError: Error + Debug,
+    TDrawTarget: DrawTarget<Color = BinaryColor, Error = GuiError>,
 > {
-    content: Box<dyn Control<TDrawTarget, TError>>,
-    action: Callback<TDrawTarget, TError>,
-    command_channel: Option<Sender<GuiCommand<TDrawTarget, TError>>>,
+    content: Box<dyn Control<TDrawTarget>>,
+    action: Callback<TDrawTarget>,
+    command_channel: Option<Sender<GuiCommand<TDrawTarget>>>,
     padding: Padding,
 }
 
-impl<TDrawTarget: DrawTarget<Color = BinaryColor, Error = TError>, TError: Error + Debug>
-    Button<TDrawTarget, TError>
+impl<TDrawTarget: DrawTarget<Color = BinaryColor, Error = GuiError>>
+    Button<TDrawTarget>
 {
     pub fn new(
-        content: Box<dyn Control<TDrawTarget, TError>>,
+        content: Box<dyn Control<TDrawTarget>>,
         padding: Padding,
-        action: Callback<TDrawTarget, TError>,
+        action: Callback<TDrawTarget>,
     ) -> Self {
         Self {
             content,
@@ -45,8 +43,8 @@ const BUTTON_STYLE: PrimitiveStyle<BinaryColor> = PrimitiveStyleBuilder::new()
     .fill_color(BinaryColor::Off)
     .build();
 
-impl<TDrawTarget: DrawTarget<Color = BinaryColor, Error = TError>, TError: Error + Debug>
-    Control<TDrawTarget, TError> for Button<TDrawTarget, TError>
+impl<TDrawTarget: DrawTarget<Color = BinaryColor, Error = GuiError>>
+    Control<TDrawTarget> for Button<TDrawTarget>
 {
     fn render(
         &mut self,
@@ -102,7 +100,7 @@ impl<TDrawTarget: DrawTarget<Color = BinaryColor, Error = TError>, TError: Error
 
     fn register_command_channel(
         &mut self,
-        tx: std::sync::mpsc::Sender<crate::gui::GuiCommand<TDrawTarget, TError>>,
+        tx: std::sync::mpsc::Sender<crate::gui::GuiCommand<TDrawTarget>>,
     ) {
         self.command_channel = Some(tx.clone());
         self.content.register_command_channel(tx);
