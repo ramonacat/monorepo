@@ -1,4 +1,4 @@
-name: Dependabot auto-merge
+name: auto-merge
 on: pull_request_target
 
 permissions:
@@ -8,13 +8,8 @@ permissions:
 jobs:
   dependabot:
     runs-on: ubuntu-latest
-    if: ${{ github.actor == 'dependabot[bot]' }}
+    if: ${{ github.actor == 'dependabot[bot]' || github.actor == 'github-actions[bot]' }}
     steps:
-      - name: Dependabot metadata
-        id: metadata
-        uses: dependabot/fetch-metadata@v1.6.0
-        with:
-          github-token: "${{ secrets.GITHUB_TOKEN }}"
       - name: Enable auto-merge for Dependabot PRs
         run: gh pr merge --auto --merge "$PR_URL"
         env:
