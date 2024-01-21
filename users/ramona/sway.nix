@@ -93,7 +93,7 @@
             bindsym XF86AudioMute exec 'pactl set-sink-mute @DEFAULT_SINK@ toggle'
             bindsym XF86MonBrightnessUp exec sudo light -A 10
             bindsym XF86MonBrightnessDown exec sudo light -U 10
-            bindsym Print exec '${pkgs.slurp}/bin/slurp | ${pkgs.grim}/bin/grim -g -'
+            bindsym Print exec '${pkgs.slurp}/bin/slurp | ${pkgs.grim}/bin/grim -g - - | ${pkgs.wl-clipboard}/bin/wl-copy'
 
             exec systemctl --user import-environment XDG_SESSION_TYPE XDG_CURRENT_DESKTOP
             exec dbus-update-activation-environment --systemd WAYLAND_DISPLAY XDG_CURRENT_DESKTOP=sway
