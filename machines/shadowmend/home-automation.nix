@@ -18,6 +18,8 @@
       DynamicUser = true;
       ExecStart = "${homeAutomationPackage}/bin/home-automation";
       SupplementaryGroups = "home-automation-secrets";
+      Restart = "always";
+      RestartSec = "5s";
     };
   };
 }
