@@ -89,6 +89,7 @@ dependencies = [
  "opentelemetry_sdk",
  "rodio",
  "rppal",
+ "thiserror",
  "tokio",
  "tracing",
  "tracing-opentelemetry",

@@ -1,18 +1,17 @@
-use std::{cmp::max, collections::BTreeMap, error::Error};
+use std::{cmp::max, collections::BTreeMap};
 
 use embedded_graphics::{draw_target::DrawTarget, pixelcolor::BinaryColor};
 
 use crate::gui::{
-    fonts::Fonts, geometry::Rectangle, Control, Dimensions, Orientation, Point, StackUnitDimension,
+    fonts::Fonts, geometry::Rectangle, Control, Dimensions, Orientation, Point, StackUnitDimension, GuiError,
 };
 
 pub fn render_stack<
     'a,
-    TDrawTarget: DrawTarget<Color = BinaryColor, Error = TError> + 'static,
-    TError: Error + 'static,
+    TDrawTarget: DrawTarget<Color = BinaryColor, Error = GuiError> + 'static,
 >(
     target: &mut TDrawTarget,
-    items: impl Iterator<Item = &'a mut Box<dyn Control<TDrawTarget, TError>>>,
+    items: impl Iterator<Item = &'a mut Box<dyn Control<TDrawTarget>>>,
     dimensions: Dimensions,
     position: Point,
     direction: Orientation,

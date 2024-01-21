@@ -1,32 +1,30 @@
 use std::cmp::max;
-use std::fmt::Debug;
 use std::sync::mpsc::Sender;
-use std::{collections::HashMap, error::Error};
+use std::collections::HashMap;
 
 use embedded_graphics::{draw_target::DrawTarget, pixelcolor::BinaryColor};
 
 use crate::gui::fonts::Fonts;
 use crate::gui::geometry::Rectangle;
 use crate::gui::layouts::stack::render_stack;
-use crate::gui::{Control, GuiCommand, Orientation, StackUnitDimension};
+use crate::gui::{Control, GuiCommand, Orientation, StackUnitDimension, GuiError};
 use crate::gui::{Dimensions, Point};
 
 pub struct StackPanel<
-    TDrawTarget: DrawTarget<Color = BinaryColor, Error = TError>,
-    TError: Error + Debug,
+    TDrawTarget: DrawTarget<Color = BinaryColor, Error = GuiError>,
 > {
-    children: Vec<Box<dyn Control<TDrawTarget, TError>>>,
+    children: Vec<Box<dyn Control<TDrawTarget>>>,
     bounding_boxes: HashMap<usize, Rectangle>,
     direction: Orientation,
-    command_channel: Option<Sender<GuiCommand<TDrawTarget, TError>>>,
+    command_channel: Option<Sender<GuiCommand<TDrawTarget>>>,
     unit_dimensions: Vec<StackUnitDimension>,
 }
 
-impl<TDrawTarget: DrawTarget<Color = BinaryColor, Error = TError>, TError: Error + Debug>
-    StackPanel<TDrawTarget, TError>
+impl<TDrawTarget: DrawTarget<Color = BinaryColor, Error = GuiError>>
+    StackPanel<TDrawTarget>
 {
     pub fn new(
-        children: Vec<Box<dyn Control<TDrawTarget, TError>>>,
+        children: Vec<Box<dyn Control<TDrawTarget>>>,
         direction: Orientation,
         unit_dimensions: Vec<StackUnitDimension>,
     ) -> Self {
@@ -41,9 +39,8 @@ impl<TDrawTarget: DrawTarget<Color = BinaryColor, Error = TError>, TError: Error
 }
 
 impl<
-        TDrawTarget: DrawTarget<Color = BinaryColor, Error = TError> + 'static,
-        TError: Error + Debug + 'static,
-    > Control<TDrawTarget, TError> for StackPanel<TDrawTarget, TError>
+        TDrawTarget: DrawTarget<Color = BinaryColor, Error = GuiError> + 'static,
+    > Control<TDrawTarget> for StackPanel<TDrawTarget>
 {
     fn render(
         &mut self,
@@ -99,7 +96,7 @@ impl<
 
     fn register_command_channel(
         &mut self,
-        tx: std::sync::mpsc::Sender<crate::gui::GuiCommand<TDrawTarget, TError>>,
+        tx: std::sync::mpsc::Sender<crate::gui::GuiCommand<TDrawTarget>>,
     ) {
         self.command_channel = Some(tx.clone());
 

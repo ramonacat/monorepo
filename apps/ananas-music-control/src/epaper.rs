@@ -1,5 +1,4 @@
 use std::{
-    convert::Infallible,
     thread::sleep,
     time::{Duration, SystemTime},
 };
@@ -14,6 +13,8 @@ use rppal::{
     gpio::{InputPin, Level, OutputPin},
     spi::Spi,
 };
+
+use crate::gui::GuiError;
 
 const EPAPER_WIDTH: u32 = 122;
 const EPAPER_HEIGHT: u32 = 250;
@@ -318,7 +319,7 @@ impl DrawTarget for BufferedDrawTarget {
     type Color = BinaryColor;
 
     // fixme: make this a real error type, instead of panicking
-    type Error = Infallible;
+    type Error = GuiError;
 
     fn draw_iter<I>(&mut self, pixels: I) -> Result<(), Self::Error>
     where
@@ -369,10 +370,9 @@ impl<T: DrawTarget + OriginDimensions + FlushableDrawTarget> RotatedDrawTarget<T
     }
 }
 
-impl<T: DrawTarget + OriginDimensions + FlushableDrawTarget> DrawTarget for RotatedDrawTarget<T> {
+impl<T: DrawTarget<Error = GuiError> + OriginDimensions + FlushableDrawTarget> DrawTarget for RotatedDrawTarget<T> {
     type Color = T::Color;
-
-    type Error = T::Error;
+    type Error = GuiError;
 
     fn draw_iter<I>(&mut self, pixels: I) -> Result<(), Self::Error>
     where
