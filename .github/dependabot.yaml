@@ -1,0 +1,20 @@
+version: 2
+updates:
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "daily"
+  - package-ecosystem: "cargo"
+    directory: "apps/ananas-music-control"
+    schedule:
+      interval: "daily"
+
+  - package-ecosystem: "cargo"
+    directory: "apps/bar"
+    schedule:
+      interval: "daily"
+
+  - package-ecosystem: "cargo"
+    directory: "apps/home-automation"
+    schedule:
+      interval: "daily"
