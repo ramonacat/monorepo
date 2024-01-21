@@ -10,14 +10,13 @@
         set -euo pipefail
         set -x
 
-        sudo nixos-rebuild switch --flake .#moonfall -L --show-trace
-
-        nixos-rebuild --build-host ramona@caligari --target-host ramona@ananas --use-remote-sudo switch --flake .#ananas -L --show-trace
-        nixos-rebuild --build-host ramona@caligari --target-host ramona@hallewell --use-remote-sudo switch --flake .#hallewell -L --show-trace
-        nixos-rebuild --build-host ramona@caligari --target-host ramona@shadowmend --use-remote-sudo switch --flake .#shadowmend -L --show-trace
-        nixos-rebuild --build-host ramona@caligari --target-host ramona@caligari --use-remote-sudo switch --flake .#caligari -L --show-trace
-        nixos-rebuild --build-host ramona@caligari --target-host ramona@angelsin --use-remote-sudo switch --flake .#angelsin -L --show-trace
-        nixos-rebuild --build-host ramona@caligari --target-host ramona@evillian --use-remote-sudo switch --flake .#evillian -L --show-trace
+        nixos-rebuild --build-host ramona@caligari --use-remote-sudo switch --flake .#moonfall --show-trace
+        nixos-rebuild --build-host ramona@caligari --target-host ramona@ananas --use-remote-sudo switch --flake .#ananas --show-trace
+        nixos-rebuild --build-host ramona@caligari --target-host ramona@hallewell --use-remote-sudo switch --flake .#hallewell --show-trace
+        nixos-rebuild --build-host ramona@caligari --target-host ramona@shadowmend --use-remote-sudo switch --flake .#shadowmend --show-trace
+        nixos-rebuild --build-host ramona@caligari --target-host ramona@caligari --use-remote-sudo switch --flake .#caligari --show-trace
+        nixos-rebuild --build-host ramona@caligari --target-host ramona@angelsin --use-remote-sudo switch --flake .#angelsin --show-trace
+        nixos-rebuild --build-host ramona@caligari --target-host ramona@evillian --use-remote-sudo switch --flake .#evillian --show-trace
       '')
     ];
   };
