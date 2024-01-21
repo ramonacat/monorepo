@@ -65,6 +65,7 @@
           terraform
           google-cloud-sdk
           stylua
+          terraform-ls
           (pkgs.rust-bin.stable.latest.default.override {
             extensions = [ "rust-src" ];
             targets = [ "aarch64-unknown-linux-gnu" ];
@@ -225,6 +226,7 @@
             ./machines/caligari/networking.nix
             ./machines/caligari/minecraft.nix
             ./machines/caligari/github-runner.nix
+            ./machines/caligari/nginx.nix
             ./machines/caligari.nix
           ];
         };
