@@ -1,3 +1,8 @@
+variable "caligari_ip_address" {
+    type = string
+    default = "85.10.199.138"
+}
+
 resource "google_dns_managed_zone" "ramona-fun" {
   name        = "ramona-fun"
   dns_name    = "ramona.fun."
@@ -10,5 +15,13 @@ resource "google_dns_record_set" "caligari-devices-ramona-fun" {
   ttl = "60"
   managed_zone = google_dns_managed_zone.ramona-fun.name
 
-  rrdatas = ["85.10.199.138"]
+  rrdatas = [ var.caligari_ip_address ]
+}
+
+resource "google_dns_record_set" "ramona-fun" {
+  name = "${google_dns_managed_zone.ramona-fun.dns_name}"
+  managed_zone = google_dns_managed_zone.ramona-fun.name
+
+  type = "A"
+  rrdatas = [ var.caligari_ip_address ]
 }
