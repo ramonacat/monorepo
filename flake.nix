@@ -226,6 +226,7 @@
             ./machines/caligari/networking.nix
             ./machines/caligari/minecraft.nix
             ./machines/caligari/github-runner.nix
+            ./machines/caligari/nginx.nix
             ./machines/caligari.nix
           ];
         };
