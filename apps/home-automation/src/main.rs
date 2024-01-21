@@ -17,7 +17,7 @@ use debouncer::Debouncer;
 use serde_json::{json, Value};
 use tokio::{
     sync::{
-        mpsc::{unbounded_channel, UnboundedSender, channel},
+        mpsc::{channel, unbounded_channel, UnboundedSender},
         Mutex,
     },
     time::sleep,
@@ -65,6 +65,7 @@ async fn lights_off(channel: &Channel) {
     }
 }
 
+#[derive(Debug)]
 enum Event {
     LightsOnRequested,
     LightsOffRequested,
@@ -91,7 +92,10 @@ impl MyConsumer {
         });
 
         let occupancy_debouncer = Debouncer::new(Duration::from_secs(600), tx);
-        Self { sender, occupancy_debouncer }
+        Self {
+            sender,
+            occupancy_debouncer,
+        }
     }
 }
 
@@ -215,6 +219,7 @@ async fn main() {
         .unwrap();
 
     while let Some(event) = rx.recv().await {
+        println!("{:?}", event);
         match event {
             Event::LightsOnRequested => {
                 lights_on(&channel).await;
@@ -223,12 +228,9 @@ async fn main() {
                 lights_off(&channel).await;
             }
             Event::OccupancyEnded => {
-                info!("Occupancy ended, lights off");
                 tx.send(Event::LightsOffRequested).unwrap();
             }
-            Event::OccupancyStarted => {
-                info!("Occupancy started");
-            }
+            Event::OccupancyStarted => {}
         };
     }
 }
