@@ -19,10 +19,16 @@ impl Debouncer {
 
         tokio::spawn(async move {
             loop {
-                if let Some(timer_now) = *timer_.lock().await {
+                let timer_now = {
+                    let lock = *timer_.lock().await;
+                    lock.clone()
+                };
+                if let Some(timer_now) = timer_now {
                     let duration_since_set = SystemTime::now().duration_since(timer_now).unwrap();
                     if duration_since_set > timeout {
-                        *timer_.lock().await = None;
+                        {
+                            *timer_.lock().await = None;
+                        }
                         let _ = tx.send(()).await;
                     } else {
                         sleep(timeout - duration_since_set).await;
