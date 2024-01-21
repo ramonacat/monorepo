@@ -65,6 +65,7 @@
           terraform
           google-cloud-sdk
           stylua
+          terraform-ls
           (pkgs.rust-bin.stable.latest.default.override {
             extensions = [ "rust-src" ];
             targets = [ "aarch64-unknown-linux-gnu" ];

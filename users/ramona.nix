@@ -97,6 +97,13 @@
           neo-tree-nvim
           auto-save-nvim
           telescope-nvim
+
+          nvim-treesitter
+          nvim-treesitter-parsers.terraform
+          nvim-treesitter-parsers.php
+          nvim-treesitter-parsers.rust
+          nvim-treesitter-parsers.nix
+          nvim-treesitter-parsers.lua
         ];
         extraLuaConfig = lib.readFile ./ramona/neovim/extraConfig.lua;
       };
