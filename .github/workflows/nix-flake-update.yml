@@ -21,6 +21,8 @@ jobs:
       - name: Update and create the PR
         run: |
           export BRANCH_NAME=update_$(date +%Y%m%d%H%M%S)
+          git config user.name "github-actions[bot]"
+          git config user.email "<>"
 
           git checkout -b $BRANCH_NAME
           nix flake update --commit-lock-file
