@@ -12,7 +12,8 @@ jobs:
   lockfile:
     runs-on: ubuntu-latest
     env:
-      GH_TOKEN: ${{ github.token }}
+      GITHUB_TOKEN: ${{ secrets.PAT }}
+      GH_TOKEN: ${{ secrets.PAT }}
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
