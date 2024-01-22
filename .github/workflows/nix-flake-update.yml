@@ -12,7 +12,8 @@ jobs:
   lockfile:
     runs-on: ubuntu-latest
     env:
-      GH_TOKEN: ${{ github.token }}
+      GITHUB_TOKEN: ${{ secrets.PAT }}
+      GH_TOKEN: ${{ secrets.PAT }}
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -21,8 +22,11 @@ jobs:
       - name: Update and create the PR
         run: |
           export BRANCH_NAME=update_$(date +%Y%m%d%H%M%S)
+          git config user.name "github-actions[bot]"
+          git config user.email "<>"
 
           git checkout -b $BRANCH_NAME
           nix flake update --commit-lock-file
           git push origin $BRANCH_NAME
-          gh pr create --title 'Update flake.lock' --body 'Update flake.lock'
+          pr_url="$(gh pr create --title 'Update flake.lock' --body 'Update flake.lock')"
+          gh pr merge --auto -r "$pr_url"
