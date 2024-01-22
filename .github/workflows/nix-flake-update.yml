@@ -27,4 +27,5 @@ jobs:
           git checkout -b $BRANCH_NAME
           nix flake update --commit-lock-file
           git push origin $BRANCH_NAME
-          gh pr create --title 'Update flake.lock' --body 'Update flake.lock'
+          pr_url="$(gh pr create --title 'Update flake.lock' --body 'Update flake.lock')"
+          gh pr merge --auto -r "$pr_url"
