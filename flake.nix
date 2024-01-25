@@ -82,20 +82,22 @@
             agenix.nixosModules.default
 
             (import ./modules/base.nix { inherit nixpkgs; })
+            (import ./users/ramona.nix { inherit agenix; })
+
+            ./machines/hallewell.nix
+            ./machines/hallewell/grafana.nix
+            ./machines/hallewell/hardware.nix
+            ./machines/hallewell/minio.nix
+            ./machines/hallewell/nas.nix
+            ./machines/hallewell/networking.nix
+            ./machines/hallewell/paperless.nix
+            ./machines/hallewell/postgresql.nix
+            ./machines/hallewell/tempo.nix
+            ./machines/hallewell/users/ramona.nix
             ./modules/bcachefs.nix
             ./modules/installed_base.nix
-            ./modules/telegraf.nix
             ./modules/syncthing.nix
-            (import ./users/ramona.nix { inherit agenix; })
-            ./machines/hallewell/hardware.nix
-            ./machines/hallewell/networking.nix
-            ./machines/hallewell/nas.nix
-            ./machines/hallewell/minio.nix
-            ./machines/hallewell/tempo.nix
-            ./machines/hallewell/grafana.nix
-            ./machines/hallewell/postgresql.nix
-            ./machines/hallewell/users/ramona.nix
-            ./machines/hallewell.nix
+            ./modules/telegraf.nix
           ];
         };
         moonfall = nixpkgs.lib.nixosSystem {
