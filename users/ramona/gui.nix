@@ -2,7 +2,6 @@
 { lib, modulesPath, pkgs, ... }:
 {
   # colors: https://coolors.co/ff1885-19323c-9da2ab-f3de8a-988f2a
-  # terminal colors: https://github.com/mbadolato/iTerm2-Color-Schemes/blob/master/alacritty/Jellybeans.yml
   config = {
     home-manager.users.ramona = {
       programs.firefox.enable = true;
@@ -12,36 +11,9 @@
           font = {
             size = 16;
           };
-          colors = {
-            primary = {
-              background = "#121212";
-              foreground = "#dedede";
-            };
-            selection = {
-              background = "#474e91";
-              text = "#f4f4f4";
-            };
-            normal = {
-              black = "#929292";
-              blue = "#97bedc";
-              cyan = "#00988e";
-              green = "#94b979";
-              magenta = "#e1c0fa";
-              red = "#e27373";
-              white = "#dedede";
-              yellow = "#ffba7b";
-            };
-            bright = {
-              black = "#bdbdbd";
-              blue = "#b1d8f6";
-              cyan = "#1ab2a8";
-              green = "#bddeab";
-              magenta = "#fbdaff";
-              red = "#ffa1a1";
-              white = "#ffffff";
-              yellow = "#ffdca0";
-            };
-          };
+          import = [
+            pkgs.alacritty-theme.kanagawa_dragon
+          ];
         };
       };
 

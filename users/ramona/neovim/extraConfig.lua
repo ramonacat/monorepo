@@ -108,6 +108,7 @@ vim.o.expandtab = true
 vim.o.softtabstop = 4
 vim.o.shiftwidth = 4
 vim.o.relativenumber = true
+vim.cmd("colorscheme kanagawa-dragon")
 
 -- Reload files when changed externaly (e.g. cargo fmt)
 vim.o.autoread = true
@@ -123,3 +124,4 @@ vim.keymap.set("n", "<leader>fh", builtin.help_tags, {})
 
 require("nvim-treesitter").setup({})
 require("which-key").register({})
+require("kanagawa").setup({})
