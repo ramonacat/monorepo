@@ -1,3 +1,3 @@
 #!/usr/bin/env bash
 
-nix build -L .#nixosConfigurations.iso.config.system.build.isoImage
+nix build --verbose --builders 'ssh://ramona@caligari' .#nixosConfigurations.iso.config.system.build.isoImage
