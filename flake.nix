@@ -41,7 +41,7 @@
       rustVersion = pkgs.rust-bin.stable.latest.default;
       rustVersionAarch64 = pkgsAarch64.rust-bin.stable.latest.default;
       craneLibAarch64 = (crane.mkLib pkgsAarch64).overrideToolchain rustVersionAarch64;
-      
+
       barPackage = import ./packages/bar.nix { inherit pkgs; inherit craneLib; };
       homeAutomationPackage = import ./packages/home-automation.nix { inherit pkgs; inherit craneLib; };
       ananasMusicControlPackage = import ./packages/music-control.nix { pkgs = pkgsAarch64; craneLib = craneLibAarch64; };

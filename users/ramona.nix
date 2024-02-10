@@ -1,13 +1,21 @@
 { agenix, ratPackage }:
-{ lib, modulesPath, pkgs, ... }:
+{ lib, modulesPath, pkgs, config, ... }:
 {
   config = {
-    home-manager.users.ramona = {
+    home-manager.users.ramona = let homeDirectory = "/home/ramona"; in {
+      imports = [
+        (import ../modules/home-manager/rat.nix { inherit ratPackage; })
+      ];
       nixpkgs.config.allowUnfree = true;
       home.username = "ramona";
-      home.homeDirectory = "/home/ramona";
+      home.homeDirectory = homeDirectory;
       home.stateVersion = "22.11";
       home.packages = with pkgs; [ pulseaudio unzip yt-dlp agenix.packages.x86_64-linux.default jq atop ripgrep nixd ratPackage ];
+
+      programs.rat = {
+        enable = true;
+        dataFile = homeDirectory + "/shared/todos.json";
+      };
 
       programs.gpg = {
         enable = true;
