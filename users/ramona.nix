@@ -1,4 +1,4 @@
-{ agenix }:
+{ agenix, ratPackage }:
 { lib, modulesPath, pkgs, ... }:
 {
   config = {
@@ -7,7 +7,7 @@
       home.username = "ramona";
       home.homeDirectory = "/home/ramona";
       home.stateVersion = "22.11";
-      home.packages = with pkgs; [ pulseaudio unzip yt-dlp agenix.packages.x86_64-linux.default jq atop ripgrep nixd ];
+      home.packages = with pkgs; [ pulseaudio unzip yt-dlp agenix.packages.x86_64-linux.default jq atop ripgrep nixd ratPackage ];
 
       programs.gpg = {
         enable = true;
