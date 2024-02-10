@@ -95,21 +95,25 @@ fn main() {
     let config_path = xdg_directories
         .place_config_file("config.json")
         .expect("Cannot find configuration file destination");
-    let data_path = xdg_directories
+    let default_data_path = xdg_directories
         .place_data_file("todos.json")
         .expect("Failed to place the data file");
 
     if !config_path.exists() {
         let mut config_file =
-            File::create(config_path).expect("Failed to create the configuration file");
+            File::create(&config_path).expect("Failed to create the configuration file");
         let configuration = serde_json::to_string_pretty(&Configuration {
-            storage_path: data_path.clone(),
+            storage_path: default_data_path.clone(),
         })
         .expect("Failed to serialize the configuration");
         config_file
             .write_all(configuration.as_bytes())
             .expect("Failed to write the configuration file");
     }
+
+    let configuration = std::fs::read_to_string(config_path).expect("Failed to read the configuration file");
+    let configuration:Configuration = serde_json::from_str(&configuration).expect("Failed to parse the configuration file");
+    let data_path = configuration.storage_path;
 
     if !data_path.exists() {
         let mut data_file = File::create(&data_path).expect("Data file could not be created");
@@ -139,11 +143,13 @@ fn main() {
                 id,
                 Todo {
                     id,
-                    title,
+                    title: title.clone(),
                     depends_on,
                     done: false,
                 },
             );
+
+            println!("Inserted a new TODO with title \"{title}\" and ID {id}");
         }
         Command::List => {
             let mut graph = DiGraph::<TodoId, ()>::new();
