@@ -139,11 +139,13 @@ fn main() {
                 id,
                 Todo {
                     id,
-                    title,
+                    title: title.clone(),
                     depends_on,
                     done: false,
                 },
             );
+
+            println!("Inserted a new TODO with title \"{title}\" and ID {id}");
         }
         Command::List => {
             let mut graph = DiGraph::<TodoId, ()>::new();
