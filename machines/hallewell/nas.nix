@@ -44,7 +44,7 @@
           writeable = "yes";
           "read only" = "no";
           "guest ok" = "yes";
-          "create mask" = "0644";
+          "create mask" = "0775";
           "directory mask" = "0755";
           "force user" = "nas";
           "force group" = "nas";
