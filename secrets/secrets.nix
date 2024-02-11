@@ -17,6 +17,7 @@ in
   "minio-tempo.age".publicKeys = users ++ [ hallewell ];
   "wal-g-config.env.age".publicKeys = users ++ [ hallewell ];
   "telegraf-database.age".publicKeys = users ++ [ hallewell ananas shadowmend moonfall angelsin evillian caligari ];
+  "universal-root.age".publicKeys = users ++ [ hallewell ananas shadowmend moonfall angelsin evillian caligari ];
   "minio-terraform-state.age".publicKeys = users ++ [ moonfall angelsin ];
   "terraform-tokens.age".publicKeys = users ++ [ moonfall angelsin ];
   "caligari-minecraft-rclone-config.age".publicKeys = users ++ [ caligari ];

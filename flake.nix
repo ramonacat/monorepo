@@ -102,6 +102,7 @@
             ./machines/hallewell/tempo.nix
             ./machines/hallewell/users/ramona.nix
             ./modules/bcachefs.nix
+            ./modules/updates.nix
             ./modules/installed_base.nix
             ./modules/syncthing.nix
             ./modules/telegraf.nix
@@ -125,6 +126,7 @@
             ./machines/moonfall/users/ramona_gui.nix
             ./machines/moonfall/virtualisation.nix
             ./modules/installed_base.nix
+            ./modules/updates.nix
             ./modules/nas-client.nix
             ./modules/syncthing.nix
             ./modules/telegraf.nix
@@ -150,6 +152,7 @@
             ./machines/shadowmend/users/ramona.nix
             ./machines/shadowmend/zigbee2mqtt.nix
             ./modules/bcachefs.nix
+            ./modules/updates.nix
             ./modules/installed_base.nix
             ./modules/nas-client.nix
             ./modules/telegraf.nix
@@ -173,6 +176,7 @@
             ./machines/angelsin/networking.nix
             ./machines/angelsin/users/ramona_gui.nix
             ./modules/installed_base.nix
+            ./modules/updates.nix
             ./modules/nas-client.nix
             ./modules/syncthing.nix
             ./modules/telegraf.nix
@@ -196,6 +200,7 @@
             ./machines/ananas.nix
             ./machines/ananas/networking.nix
             ./modules/installed_base.nix
+            ./modules/updates.nix
             ./modules/nas-client.nix
             ./modules/telegraf.nix
           ];
@@ -219,6 +224,7 @@
             ./modules/nas-client.nix
             ./modules/syncthing.nix
             ./modules/telegraf.nix
+            ./modules/updates.nix
             ./modules/workstation.nix
           ];
         };
@@ -240,6 +246,7 @@
             ./machines/caligari/networking.nix
             ./machines/caligari/nginx.nix
             ./modules/bcachefs.nix
+            ./modules/updates.nix
             ./modules/installed_base.nix
             ./modules/minecraft.nix
             ./modules/telegraf.nix
