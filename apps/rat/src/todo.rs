@@ -24,7 +24,7 @@ impl Display for TodoId {
     }
 }
 
-#[derive(Serialize, Deserialize, Debug, Clone, Copy)]
+#[derive(Serialize, Deserialize, Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord)]
 pub enum Priority {
     Low,
     Medium,
@@ -51,7 +51,7 @@ impl Default for Priority {
     }
 }
 
-#[derive(Debug, Deserialize, Serialize)]
+#[derive(Debug, Deserialize, Serialize, Clone)]
 pub(crate) struct Todo {
     id: TodoId,
     title: String,

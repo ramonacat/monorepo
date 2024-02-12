@@ -1,14 +1,16 @@
-use std::{collections::HashMap, fs::File, io::Write, path::PathBuf, process::exit};
+use std::{fs::File, io::Write, path::PathBuf};
 
 use clap::{Parser, Subcommand};
 use colored::{Color, Colorize};
-use petgraph::{adj::NodeIndex, algo::toposort, graph::DiGraph};
+use petgraph::adj::NodeIndex;
 use serde::{Deserialize, Serialize};
-use todo::{IdGenerator, Todo, TodoId};
+use store::TodoStore;
+use todo::TodoId;
 
 use crate::todo::Priority;
 
 mod todo;
+mod store;
 
 #[derive(Subcommand)]
 enum Command {
@@ -37,26 +39,6 @@ struct Cli {
     command: Command,
 }
 
-struct TodoStore {
-    path: PathBuf,
-}
-
-impl TodoStore {
-    pub fn new(path: PathBuf) -> Self {
-        Self { path }
-    }
-
-    fn read(&self) -> HashMap<TodoId, Todo> {
-        let raw_data = std::fs::read_to_string(&self.path).unwrap();
-        serde_json::from_str(&raw_data).unwrap()
-    }
-
-    fn write(&mut self, todos: HashMap<TodoId, Todo>) {
-        let serialized_data = serde_json::to_string_pretty(&todos).unwrap();
-
-        std::fs::write(&self.path, serialized_data).unwrap();
-    }
-}
 
 impl From<TodoId> for NodeIndex<usize> {
     fn from(value: TodoId) -> Self {
@@ -114,56 +96,22 @@ fn main() {
     }
 
     let mut todo_store = TodoStore::new(data_path);
-
-    let mut todos: HashMap<TodoId, Todo> = todo_store.read();
-    let mut id_generator = IdGenerator::new(todos.keys().map(|k| k.0).max().unwrap_or(0));
+    let mut todos = todo_store.read();
 
     match cli.command {
         Command::Add {
             title,
-            depends_on,
             priority,
+            depends_on,
         } => {
-            let id = id_generator.next();
-            let depends_on: Vec<_> = depends_on.into_iter().map(TodoId).collect();
-
-            for dependency_id in &depends_on {
-                if !todos.contains_key(dependency_id) {
-                    println!("Incorrect dependency - no note with ID: {dependency_id:?}");
-                    exit(1);
-                }
-            }
-
-            todos.insert(
-                id,
-                Todo::new(id, title.clone(), parse_priority(&priority), depends_on),
-            );
+            let id = todo_store.create(title.clone(), parse_priority(&priority), depends_on.iter().map(|x| TodoId(*x)).collect()).unwrap();
 
             println!("Inserted a new TODO with title \"{title}\" and ID {id}");
         }
         Command::List => {
-            let mut graph = DiGraph::<TodoId, ()>::new();
-            let mut todos_to_node_ids = HashMap::new();
+            let ready_to_do = todo_store.find_ready_to_do();
 
-            for (_, todo) in todos.iter() {
-                let node_id = graph.add_node(todo.id());
-                todos_to_node_ids.insert(todo.id(), node_id);
-            }
-
-            for (_, todo) in todos.iter() {
-                for r in todo.depends_on().iter() {
-                    graph.add_edge(todos_to_node_ids[r], todos_to_node_ids[&todo.id()], ());
-                }
-            }
-
-            let toposorted = toposort(&graph, None);
-            match toposorted {
-                Ok(sorted) => {
-                    let partitions = sorted
-                        .iter()
-                        .map(|idx| &todos[&graph[*idx]])
-                        .partition::<Vec<&Todo>, _>(|t| !t.done());
-                    for node in partitions.0.iter().chain(partitions.1.iter()) {
+                    for node in ready_to_do.iter() {
                         let mut depends_string = "deps: ".to_string();
                         for dependency_id in node.depends_on().iter() {
                             depends_string += &format!("{} ", dependency_id);
@@ -182,11 +130,6 @@ fn main() {
                             println!("{}", todo_descriptor);
                         }
                     }
-                }
-                Err(cycle) => {
-                    println!("{:?}", cycle);
-                }
-            }
         }
         Command::Done { id } => {
             if let Some(todo) = todos.get_mut(&TodoId(id)) {
@@ -194,6 +137,8 @@ fn main() {
             } else {
                 println!("There's no todo with ID {id}");
             }
+            
+            todo_store.write(todos);
         }
         Command::AddDependency { id, dependency_ids } => {
             if let Some(todo) = todos.get_mut(&TodoId(id)) {
@@ -203,6 +148,8 @@ fn main() {
             } else {
                 println!("There's no todo with ID {id}");
             }
+            
+            todo_store.write(todos);
         }
         Command::SetPriority { id, priority } => {
             if let Some(todo) = todos.get_mut(&TodoId(id)) {
@@ -210,8 +157,9 @@ fn main() {
             } else {
                 println!("There's no todo with ID {id}");
             }
+            
+            todo_store.write(todos);
         }
     }
 
-    todo_store.write(todos);
 }
