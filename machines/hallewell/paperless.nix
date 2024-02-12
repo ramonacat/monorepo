@@ -8,7 +8,7 @@
       mediaDir = "/mnt/nas3/paperless/media/";
       consumptionDir = "/mnt/nas3/data/paperless-import/";
       consumptionDirIsPublic = true;
-      extraConfig = {
+      settings = {
         PAPERLESS_OCR_LANGUAGE = "deu+eng+pol";
       };
     };
