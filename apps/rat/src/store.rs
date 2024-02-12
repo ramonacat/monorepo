@@ -11,7 +11,7 @@ pub struct TodoStore {
 #[derive(Debug, Error)]
 pub enum Error {
     #[error("A todo with id {0} does not exist")]
-    DoesNotExist(TodoId)
+    DoesNotExist(TodoId),
 }
 
 impl TodoStore {
@@ -19,20 +19,26 @@ impl TodoStore {
         Self { path }
     }
 
-    pub fn read(&self) -> HashMap<TodoId, Todo> {
+    fn read(&self) -> HashMap<TodoId, Todo> {
         let raw_data = std::fs::read_to_string(&self.path).unwrap();
         serde_json::from_str(&raw_data).unwrap()
     }
 
-    pub fn write(&mut self, todos: HashMap<TodoId, Todo>) {
+    fn write(&mut self, todos: HashMap<TodoId, Todo>) {
         let serialized_data = serde_json::to_string_pretty(&todos).unwrap();
 
         std::fs::write(&self.path, serialized_data).unwrap();
     }
 
-    pub fn create(&mut self, title: String, priority: Priority, depends_on: Vec<TodoId>) -> Result<TodoId, Error> {
+    pub fn create(
+        &mut self,
+        title: String,
+        priority: Priority,
+        depends_on: Vec<TodoId>,
+    ) -> Result<TodoId, Error> {
         let mut todos = self.read();
-        let mut id_generator = IdGenerator::new(todos.values().map(|x| x.id().0).max().unwrap_or(0));
+        let mut id_generator =
+            IdGenerator::new(todos.values().map(|x| x.id().0).max().unwrap_or(0));
 
         for dependency_id in &depends_on {
             if !todos.contains_key(dependency_id) {
@@ -56,11 +62,59 @@ impl TodoStore {
             .iter()
             .map(|(_, v)| v)
             .filter(|v| !v.done())
-            .filter(|v| v.depends_on().iter().filter(|x| all_todos.get(x).map(|y| !y.done()).unwrap_or(false)).count() == 0)
-            .cloned().collect::<Vec<_>>();
+            .filter(|v| {
+                v.depends_on()
+                    .iter()
+                    .filter(|x| all_todos.get(x).map(|y| !y.done()).unwrap_or(false))
+                    .count()
+                    == 0
+            })
+            .cloned()
+            .collect::<Vec<_>>();
 
-        todos_to_consider.sort_by(|a, b| { b.priority().cmp(&a.priority()) });
+        todos_to_consider.sort_by(|a, b| b.priority().cmp(&a.priority()));
 
         todos_to_consider
+    }
+
+    pub fn mark_as_done(&mut self, id: TodoId) -> Result<(), Error> {
+        let mut todos = self.read();
+        let Some(todo) = todos.get_mut(&id) else {
+            return Err(Error::DoesNotExist(id));
+        };
+
+        todo.mark_done();
+
+        self.write(todos);
+
+        Ok(())
+    }
+
+    pub fn add_dependency(&mut self, id: TodoId, dependencies: Vec<TodoId>) -> Result<(), Error> {
+        let mut todos = self.read();
+        let Some(todo) = todos.get_mut(&id) else {
+            return Err(Error::DoesNotExist(id));
+        };
+
+        for dependency_id in dependencies {
+            todo.add_dependency(dependency_id);
+        }
+
+        self.write(todos);
+
+        Ok(())
+    }
+
+    pub fn set_priority(&mut self, id: TodoId, priority: Priority) -> Result<(), Error> {
+        let mut todos = self.read();
+        let Some(todo) = todos.get_mut(&id) else {
+            return Err(Error::DoesNotExist(id));
+        };
+
+        todo.set_priority(priority);
+
+        self.write(todos);
+
+        Ok(())
     }
 }

@@ -9,8 +9,8 @@ use todo::TodoId;
 
 use crate::todo::Priority;
 
-mod todo;
 mod store;
+mod todo;
 
 #[derive(Subcommand)]
 enum Command {
@@ -38,7 +38,6 @@ struct Cli {
     #[command(subcommand)]
     command: Command,
 }
-
 
 impl From<TodoId> for NodeIndex<usize> {
     fn from(value: TodoId) -> Self {
@@ -96,7 +95,6 @@ fn main() {
     }
 
     let mut todo_store = TodoStore::new(data_path);
-    let mut todos = todo_store.read();
 
     match cli.command {
         Command::Add {
@@ -104,62 +102,51 @@ fn main() {
             priority,
             depends_on,
         } => {
-            let id = todo_store.create(title.clone(), parse_priority(&priority), depends_on.iter().map(|x| TodoId(*x)).collect()).unwrap();
+            let id = todo_store
+                .create(
+                    title.clone(),
+                    parse_priority(&priority),
+                    depends_on.iter().map(|x| TodoId(*x)).collect(),
+                )
+                .unwrap();
 
             println!("Inserted a new TODO with title \"{title}\" and ID {id}");
         }
         Command::List => {
             let ready_to_do = todo_store.find_ready_to_do();
 
-                    for node in ready_to_do.iter() {
-                        let mut depends_string = "deps: ".to_string();
-                        for dependency_id in node.depends_on().iter() {
-                            depends_string += &format!("{} ", dependency_id);
-                        }
+            for node in ready_to_do.iter() {
+                let mut depends_string = "deps: ".to_string();
+                for dependency_id in node.depends_on().iter() {
+                    depends_string += &format!("{} ", dependency_id);
+                }
 
-                        let todo_descriptor = format!(
-                            "{:>10} {:>10}     {} {}",
-                            node.id().to_string().color(Color::BrightBlack),
-                            node.priority().to_string(),
-                            node.title(),
-                            depends_string.color(Color::Blue)
-                        );
-                        if node.done() {
-                            println!("{}", todo_descriptor.strikethrough());
-                        } else {
-                            println!("{}", todo_descriptor);
-                        }
-                    }
+                let todo_descriptor = format!(
+                    "{:>10} {:>10}     {} {}",
+                    node.id().to_string().color(Color::BrightBlack),
+                    node.priority().to_string(),
+                    node.title(),
+                    depends_string.color(Color::Blue)
+                );
+                if node.done() {
+                    println!("{}", todo_descriptor.strikethrough());
+                } else {
+                    println!("{}", todo_descriptor);
+                }
+            }
         }
         Command::Done { id } => {
-            if let Some(todo) = todos.get_mut(&TodoId(id)) {
-                todo.mark_done();
-            } else {
-                println!("There's no todo with ID {id}");
-            }
-            
-            todo_store.write(todos);
+            todo_store.mark_as_done(TodoId(id)).unwrap();
         }
         Command::AddDependency { id, dependency_ids } => {
-            if let Some(todo) = todos.get_mut(&TodoId(id)) {
-                for dependency_id in dependency_ids {
-                    todo.add_dependency(TodoId(dependency_id));
-                }
-            } else {
-                println!("There's no todo with ID {id}");
-            }
-            
-            todo_store.write(todos);
+            todo_store
+                .add_dependency(TodoId(id), dependency_ids.into_iter().map(TodoId).collect())
+                .unwrap();
         }
         Command::SetPriority { id, priority } => {
-            if let Some(todo) = todos.get_mut(&TodoId(id)) {
-                todo.set_priority(parse_priority(&priority));
-            } else {
-                println!("There's no todo with ID {id}");
-            }
-            
-            todo_store.write(todos);
+            todo_store
+                .set_priority(TodoId(id), parse_priority(&priority))
+                .unwrap();
         }
     }
-
 }
