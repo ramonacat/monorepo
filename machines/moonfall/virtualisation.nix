@@ -5,6 +5,7 @@ let
     ${pkgs.ddcutil}/bin/ddcutil --sn HRJH2P3 setvcp x60 x1b || true
     ${pkgs.ddcutil}/bin/ddcutil --sn 6MMF1P3 setvcp x60 x0f || true
     ${pkgs.ddcutil}/bin/ddcutil --sn JKPQT83 setvcp x60 x0f || true
+    
     systemctl set-property system.slice AllowedCPUs=22-31
     systemctl set-property user.slice AllowedCPUs=22-31
     systemctl --user --machine ramona@ stop swayidle.service
@@ -13,6 +14,7 @@ let
     ${pkgs.ddcutil}/bin/ddcutil --sn HRJH2P3 setvcp x60 x0f || true
     ${pkgs.ddcutil}/bin/ddcutil --sn 6MMF1P3 setvcp x60 x11 || true
     ${pkgs.ddcutil}/bin/ddcutil --sn JKPQT83 setvcp x60 x11 || true
+
     systemctl set-property system.slice AllowedCPUs=0-31
     systemctl set-property user.slice AllowedCPUs=0-31
     systemctl --user --machine ramona@ start swayidle.service
@@ -52,9 +54,25 @@ in
       enable = true;
     };
 
+    systemd.services.windowsify = {
+      description = "make this machine windowsy";
+      serviceConfig = {
+        Type = "oneshot";
+        ExecStart = "${windowsify}";
+      };
+    };
+
+    systemd.services.dewindowsify = {
+      description = "make this machine not windowsy";
+      serviceConfig = {
+        Type = "oneshot";
+        ExecStart = "${dewindowsify}";
+      };
+    };
+
     services.udev.extraRules = ''
-      ACTION=="add", ENV{PRODUCT}=="1235/8210/645", RUN+="${dewindowsify}"
-      ACTION=="remove", ENV{PRODUCT}=="1235/8210/645", RUN+="${windowsify}"
+      ACTION=="add", ATTRS{idVendor}=="1532", ATTRS{idProduct}=="0067", RUN+="${pkgs.systemd}/bin/systemctl start dewindowsify"
+      ACTION=="remove", ATTRS{idVendor}=="1532", ATTRS{idProduct}=="0067", RUN+="${pkgs.systemd}/bin/systemctl start windowsify"
     '';
   };
 }
