@@ -9,16 +9,16 @@ impl IdGenerator {
         Self(seed)
     }
 
-    pub fn next(&mut self) -> TodoId {
+    pub fn next(&mut self) -> Id {
         self.0 += 1;
-        TodoId(self.0)
+        Id(self.0)
     }
 }
 
 #[derive(PartialEq, Eq, Hash, Copy, Clone, Debug, Deserialize, Serialize)]
-pub struct TodoId(pub usize);
+pub struct Id(pub usize);
 
-impl Display for TodoId {
+impl Display for Id {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         write!(f, "{}", self.0)
     }
@@ -53,16 +53,16 @@ impl Default for Priority {
 
 #[derive(Debug, Deserialize, Serialize, Clone)]
 pub(crate) struct Todo {
-    id: TodoId,
+    id: Id,
     title: String,
-    depends_on: Vec<TodoId>,
+    depends_on: Vec<Id>,
     #[serde(default)]
     priority: Priority,
     done: bool,
 }
 
 impl Todo {
-    pub fn new(id: TodoId, title: String, priority: Priority, depends_on: Vec<TodoId>) -> Self {
+    pub fn new(id: Id, title: String, priority: Priority, depends_on: Vec<Id>) -> Self {
         Self {
             id,
             title,
@@ -72,11 +72,11 @@ impl Todo {
         }
     }
 
-    pub fn id(&self) -> TodoId {
+    pub fn id(&self) -> Id {
         self.id
     }
 
-    pub fn depends_on(&self) -> &[TodoId] {
+    pub fn depends_on(&self) -> &[Id] {
         &self.depends_on
     }
 
@@ -96,7 +96,7 @@ impl Todo {
         self.done = true;
     }
 
-    pub fn add_dependency(&mut self, id: TodoId) {
+    pub fn add_dependency(&mut self, id: Id) {
         self.depends_on.push(id);
     }
 

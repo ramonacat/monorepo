@@ -1,11 +1,13 @@
+#![deny(clippy::pedantic)]
+
 use std::{fs::File, io::Write, path::PathBuf};
 
 use clap::{Parser, Subcommand};
 use colored::{Color, Colorize};
 use petgraph::adj::NodeIndex;
 use serde::{Deserialize, Serialize};
-use store::TodoStore;
-use todo::TodoId;
+use store::Store;
+use todo::Id;
 
 use crate::todo::Priority;
 
@@ -39,8 +41,8 @@ struct Cli {
     command: Command,
 }
 
-impl From<TodoId> for NodeIndex<usize> {
-    fn from(value: TodoId) -> Self {
+impl From<Id> for NodeIndex<usize> {
+    fn from(value: Id) -> Self {
         value.0
     }
 }
@@ -94,7 +96,7 @@ fn main() {
             .expect("Failed to write to the data file");
     }
 
-    let mut todo_store = TodoStore::new(data_path);
+    let mut todo_store = Store::new(data_path);
 
     match cli.command {
         Command::Add {
@@ -106,7 +108,7 @@ fn main() {
                 .create(
                     title.clone(),
                     parse_priority(&priority),
-                    depends_on.iter().map(|x| TodoId(*x)).collect(),
+                    depends_on.iter().map(|x| Id(*x)).collect(),
                 )
                 .unwrap();
 
@@ -115,10 +117,10 @@ fn main() {
         Command::List => {
             let ready_to_do = todo_store.find_ready_to_do();
 
-            for node in ready_to_do.iter() {
+            for node in ready_to_do {
                 let mut depends_string = "deps: ".to_string();
-                for dependency_id in node.depends_on().iter() {
-                    depends_string += &format!("{} ", dependency_id);
+                for dependency_id in node.depends_on() {
+                    depends_string += &format!("{dependency_id} ");
                 }
 
                 let todo_descriptor = format!(
@@ -126,30 +128,30 @@ fn main() {
                     node.id().to_string().color(Color::BrightBlack),
                     node.priority().to_string(),
                     node.title(),
-                    if node.depends_on().len() > 0 {
-                        depends_string.color(Color::Blue)
-                    } else {
+                    if node.depends_on().is_empty() {
                         "".color(Color::Blue)
+                    } else {
+                        depends_string.color(Color::Blue)
                     }
                 );
                 if node.done() {
                     println!("{}", todo_descriptor.strikethrough());
                 } else {
-                    println!("{}", todo_descriptor);
+                    println!("{todo_descriptor}");
                 }
             }
         }
         Command::Done { id } => {
-            todo_store.mark_as_done(TodoId(id)).unwrap();
+            todo_store.mark_as_done(Id(id)).unwrap();
         }
         Command::AddDependency { id, dependency_ids } => {
             todo_store
-                .add_dependency(TodoId(id), dependency_ids.into_iter().map(TodoId).collect())
+                .add_dependency(Id(id), dependency_ids.into_iter().map(Id).collect())
                 .unwrap();
         }
         Command::SetPriority { id, priority } => {
             todo_store
-                .set_priority(TodoId(id), parse_priority(&priority))
+                .set_priority(Id(id), parse_priority(&priority))
                 .unwrap();
         }
     }
