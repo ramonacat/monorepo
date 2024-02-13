@@ -126,7 +126,11 @@ fn main() {
                     node.id().to_string().color(Color::BrightBlack),
                     node.priority().to_string(),
                     node.title(),
-                    depends_string.color(Color::Blue)
+                    if node.depends_on().len() > 0 {
+                        depends_string.color(Color::Blue)
+                    } else {
+                        "".color(Color::Blue)
+                    }
                 );
                 if node.done() {
                     println!("{}", todo_descriptor.strikethrough());
