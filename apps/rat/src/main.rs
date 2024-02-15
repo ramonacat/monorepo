@@ -1,6 +1,6 @@
 #![deny(clippy::pedantic)]
 
-use std::{fs::File, io::Write, path::PathBuf};
+use std::{fs::File, io::Write, path::PathBuf, time::Duration};
 
 use clap::{Parser, Subcommand};
 use colored::{Color, Colorize};
@@ -19,6 +19,7 @@ enum Command {
     Add {
         title: String,
         priority: String,
+        estimate: u64,
         depends_on: Vec<usize>,
     },
     Done {
@@ -34,6 +35,10 @@ enum Command {
     SetPriority {
         id: usize,
         priority: String,
+    },
+    SetEstimate {
+        id: usize,
+        estimate: u64
     },
     List,
 }
@@ -105,12 +110,14 @@ fn main() {
         Command::Add {
             title,
             priority,
+            estimate,
             depends_on,
         } => {
             let id = todo_store
                 .create(
                     title.clone(),
                     parse_priority(&priority),
+                    Duration::from_secs(estimate*60),
                     depends_on.iter().map(|x| Id(*x)).collect(),
                 )
                 .unwrap();
@@ -125,7 +132,7 @@ fn main() {
                 }
 
                 format!(
-                    "{:>10} {:>10}     {} {}",
+                    "{:>10} {:>10}     {} {} {}",
                     todo.id().to_string().color(Color::BrightBlack),
                     todo.priority().to_string(),
                     todo.title(),
@@ -133,7 +140,8 @@ fn main() {
                         "".color(Color::Blue)
                     } else {
                         depends_string.color(Color::Blue)
-                    }
+                    },
+                    format!("{}min", todo.estimate().as_secs()/60).color(Color::BrightYellow)
                 )
             }
             
@@ -176,5 +184,10 @@ fn main() {
                 .set_priority(Id(id), parse_priority(&priority))
                 .unwrap();
         }
+        Command::SetEstimate { id, estimate } => {
+            todo_store
+                .set_estimate(Id(id), Duration::from_secs(estimate*60))
+                .unwrap();
+        },
     }
 }

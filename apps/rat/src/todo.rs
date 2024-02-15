@@ -1,4 +1,4 @@
-use std::fmt::Display;
+use std::{fmt::Display, time::Duration};
 
 use serde::{Deserialize, Serialize};
 
@@ -73,16 +73,25 @@ pub struct Todo {
     priority: Priority,
     #[serde(default)]
     status: Status,
+    #[serde(default)]
+    estimate: Duration
 }
 
 impl Todo {
-    pub fn new(id: Id, title: String, priority: Priority, depends_on: Vec<Id>) -> Self {
+    pub fn new(
+        id: Id,
+        title: String, 
+        priority: Priority, 
+        depends_on: Vec<Id>,
+        estimate: Duration
+    ) -> Self {
         Self {
             id,
             title,
             depends_on,
             priority,
             status: Status::New,
+            estimate
         }
     }
 
@@ -120,5 +129,13 @@ impl Todo {
 
     pub fn status(&self) -> Status {
         self.status
+    }
+
+    pub fn estimate(&self) -> Duration {
+        self.estimate
+    }
+
+    pub(crate) fn set_estimate(&mut self, estimate: Duration) {
+        self.estimate = estimate;
     }
 }

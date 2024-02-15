@@ -1,4 +1,4 @@
-use std::{collections::HashMap, path::PathBuf};
+use std::{collections::HashMap, path::PathBuf, time::Duration};
 
 use thiserror::Error;
 
@@ -34,6 +34,7 @@ impl Store {
         &mut self,
         title: String,
         priority: Priority,
+        estimate: Duration,
         depends_on: Vec<Id>,
     ) -> Result<Id, Error> {
         let mut todos = self.read();
@@ -48,7 +49,7 @@ impl Store {
 
         let id = id_generator.next();
 
-        let new_todo = Todo::new(id, title, priority, depends_on);
+        let new_todo = Todo::new(id, title, priority, depends_on, estimate);
         todos.insert(id, new_todo);
 
         self.write(&todos);
@@ -114,6 +115,14 @@ impl Store {
     pub fn set_priority(&mut self, id: Id, priority: Priority) -> Result<(), Error> {
         self.mutate(id, |todo| {
             todo.set_priority(priority);
+
+            Ok(())
+        })
+    }
+
+    pub(crate) fn set_estimate(&mut self, id: Id, estimate: Duration) -> Result<(), Error> {
+        self.mutate(id, |todo| {
+            todo.set_estimate(estimate);
 
             Ok(())
         })
