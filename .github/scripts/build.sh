@@ -8,7 +8,7 @@ function build_closure() {
     HOSTNAME=$1
 
     nix build ".#nixosConfigurations.${HOSTNAME}.config.system.build.toplevel"
-    readlink result > ${HOSTNAME}-closure
+    readlink result > "${HOSTNAME}-closure"
 }
 
 build_closure "ananas"
@@ -19,7 +19,7 @@ build_closure "hallewell"
 build_closure "moonfall"
 build_closure "shadowmend"
 
-echo "On branch: " $BRANCH_NAME
+echo "On branch: $BRANCH_NAME"
 if [[ "$BRANCH_NAME" == "main" ]]; then
-    scp -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -i ./id_ed25519 *-closure root@caligari:/var/www/ramona.fun/builds/
+    scp -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -i ./id_ed25519 -- *-closure root@caligari:/var/www/ramona.fun/builds/
 fi

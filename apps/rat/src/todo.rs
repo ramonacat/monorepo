@@ -51,14 +51,28 @@ impl Default for Priority {
     }
 }
 
+#[derive(Debug, Deserialize, Serialize, Clone, PartialEq, Eq, Copy)]
+pub enum Status {
+    New,
+    InProgress,
+    Done,
+}
+
+impl Default for Status {
+    fn default() -> Self {
+        Self::New
+    }
+}
+
 #[derive(Debug, Deserialize, Serialize, Clone)]
-pub(crate) struct Todo {
+pub struct Todo {
     id: Id,
     title: String,
     depends_on: Vec<Id>,
     #[serde(default)]
     priority: Priority,
-    done: bool,
+    #[serde(default)]
+    status: Status,
 }
 
 impl Todo {
@@ -68,7 +82,7 @@ impl Todo {
             title,
             depends_on,
             priority,
-            done: false,
+            status: Status::New,
         }
     }
 
@@ -80,10 +94,6 @@ impl Todo {
         &self.depends_on
     }
 
-    pub fn done(&self) -> bool {
-        self.done
-    }
-
     pub fn title(&self) -> &str {
         &self.title
     }
@@ -93,7 +103,7 @@ impl Todo {
     }
 
     pub fn mark_done(&mut self) {
-        self.done = true;
+        self.status = Status::Done;
     }
 
     pub fn add_dependency(&mut self, id: Id) {
@@ -102,5 +112,9 @@ impl Todo {
 
     pub fn set_priority(&mut self, priority: Priority) {
         self.priority = priority;
+    }
+
+    pub fn status(&self) -> Status {
+        self.status
     }
 }
