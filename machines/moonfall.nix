@@ -2,6 +2,7 @@
 {
   config = {
     boot.binfmt.emulatedSystems = [ "aarch64-linux" ];
+    programs.adb.enable = true;
 
     environment.systemPackages = [
       (pkgs.writeShellScriptBin "rebuild-all-machines" ''

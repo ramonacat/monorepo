@@ -24,19 +24,25 @@
   outputs = { self, nixpkgs, home-manager, rust-overlay, crane, nixos-hardware, agenix, nix-vscode-extensions, nix-minecraft, alacritty-theme }:
     let
       overlays = [ (import rust-overlay) nix-minecraft.overlay alacritty-theme.overlays.default ];
-      pkgs = import nixpkgs {
-        inherit overlays; system = "x86_64-linux";
-        config.allowUnfree = true;
-        # Dark magic for transcoding acceleration on hallewell
-        config.packageOverrides = pkgs: {
-          vaapiIntel = pkgs.vaapiIntel.override { enableHybridCodec = true; };
-        };
-        config.permittedInsecurePackages = [
-          "electron-25.9.0"
-        ];
+      pkgsConfig = {
+        allowUnfree = true;
+        android_sdk.accept_license = true;
       };
-      pkgsAarch64 = import nixpkgs { inherit overlays; system = "aarch64-linux"; };
-      pkgsCross = import nixpkgs { inherit overlays; localSystem = "x86_64-linux"; crossSystem = "aarch64-linux"; };
+      pkgs = import nixpkgs {
+        inherit overlays;
+        system = "x86_64-linux";
+        config = pkgsConfig // {
+          # Dark magic for transcoding acceleration on hallewell
+          packageOverrides = pkgs: {
+            vaapiIntel = pkgs.vaapiIntel.override { enableHybridCodec = true; };
+          };
+          permittedInsecurePackages = [
+            "electron-25.9.0"
+          ];
+        };
+      };
+      pkgsAarch64 = import nixpkgs { inherit overlays; system = "aarch64-linux"; config = pkgsConfig; };
+      pkgsCross = import nixpkgs { inherit overlays; localSystem = "x86_64-linux"; crossSystem = "aarch64-linux"; config = pkgsConfig; };
       craneLib = (crane.mkLib pkgs).overrideToolchain rustVersion;
       rustVersion = pkgs.rust-bin.stable.latest.default;
       rustVersionAarch64 = pkgsAarch64.rust-bin.stable.latest.default;
