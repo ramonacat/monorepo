@@ -52,6 +52,7 @@
       homeAutomationPackage = import ./packages/home-automation.nix { inherit pkgs; inherit craneLib; };
       ananasMusicControlPackage = import ./packages/music-control.nix { pkgs = pkgsAarch64; craneLib = craneLibAarch64; };
       ratPackage = import ./packages/rat.nix { inherit pkgs; inherit craneLib; };
+      shellScripts = builtins.concatStringsSep " " (builtins.filter (x: pkgs.lib.hasSuffix ".sh" x) (pkgs.lib.filesystem.listFilesRecursive ./.));
     in
     {
       formatter.x86_64-linux = pkgs.nixpkgs-fmt;
@@ -63,6 +64,11 @@
         '';
         fmt-lua = pkgs.runCommand "fmt-lua" { } ''
           ${pkgs.stylua}/bin/stylua --check ${./.}
+
+          touch $out
+        '';
+        shellcheck = pkgs.runCommand "shellcheck" { } ''
+          ${pkgs.shellcheck}/bin/shellcheck ${shellScripts}
 
           touch $out
         '';
