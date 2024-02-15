@@ -2,7 +2,7 @@ use std::{collections::HashMap, path::PathBuf};
 
 use thiserror::Error;
 
-use crate::todo::{IdGenerator, Priority, Todo, Id};
+use crate::todo::{Id, IdGenerator, Priority, Status, Todo};
 
 pub struct Store {
     path: PathBuf,
@@ -21,7 +21,7 @@ impl Store {
 
     fn read(&self) -> HashMap<Id, Todo> {
         let raw_data = std::fs::read_to_string(&self.path).unwrap();
-        serde_json::from_str(&raw_data).unwrap()
+        serde_json::from_str::<HashMap<Id, Todo>>(&raw_data).unwrap()
     }
 
     fn write(&mut self, todos: &HashMap<Id, Todo>) {
@@ -60,11 +60,11 @@ impl Store {
         let all_todos = self.read();
         let mut todos_to_consider = all_todos
             .values()
-            .filter(|v| !v.done())
+            .filter(|v| v.status() == crate::todo::Status::New)
             .filter(|v| {
                 v.depends_on()
                     .iter()
-                    .filter(|x| all_todos.get(x).is_some_and(|y| !y.done()))
+                    .filter(|x| all_todos.get(x).is_some_and(|y| y.status() == Status::New))
                     .count()
                     == 0
             })

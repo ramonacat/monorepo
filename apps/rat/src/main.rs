@@ -134,11 +134,7 @@ fn main() {
                         depends_string.color(Color::Blue)
                     }
                 );
-                if node.done() {
-                    println!("{}", todo_descriptor.strikethrough());
-                } else {
-                    println!("{todo_descriptor}");
-                }
+                println!("{todo_descriptor}");
             }
         }
         Command::Done { id } => {
