@@ -1,6 +1,6 @@
 #![deny(clippy::pedantic)]
 
-use std::{fs::File, io::Write, path::PathBuf};
+use std::{fs::File, io::Write, path::PathBuf, time::Duration};
 
 use clap::{Parser, Subcommand};
 use colored::{Color, Colorize};
@@ -9,7 +9,7 @@ use serde::{Deserialize, Serialize};
 use store::Store;
 use todo::Id;
 
-use crate::todo::Priority;
+use crate::todo::{Priority, Todo};
 
 mod store;
 mod todo;
@@ -19,9 +19,13 @@ enum Command {
     Add {
         title: String,
         priority: String,
+        estimate: u64,
         depends_on: Vec<usize>,
     },
     Done {
+        id: usize,
+    },
+    Doing {
         id: usize,
     },
     AddDependency {
@@ -31,6 +35,10 @@ enum Command {
     SetPriority {
         id: usize,
         priority: String,
+    },
+    SetEstimate {
+        id: usize,
+        estimate: u64
     },
     List,
 }
@@ -102,12 +110,14 @@ fn main() {
         Command::Add {
             title,
             priority,
+            estimate,
             depends_on,
         } => {
             let id = todo_store
                 .create(
                     title.clone(),
                     parse_priority(&priority),
+                    Duration::from_secs(estimate*60),
                     depends_on.iter().map(|x| Id(*x)).collect(),
                 )
                 .unwrap();
@@ -115,27 +125,51 @@ fn main() {
             println!("Inserted a new TODO with title \"{title}\" and ID {id}");
         }
         Command::List => {
-            let ready_to_do = todo_store.find_ready_to_do();
-
-            for node in ready_to_do {
+            fn render_todo(todo: &Todo) -> String {
                 let mut depends_string = "deps: ".to_string();
-                for dependency_id in node.depends_on() {
+                for dependency_id in todo.depends_on() {
                     depends_string += &format!("{dependency_id} ");
                 }
 
-                let todo_descriptor = format!(
-                    "{:>10} {:>10}     {} {}",
-                    node.id().to_string().color(Color::BrightBlack),
-                    node.priority().to_string(),
-                    node.title(),
-                    if node.depends_on().is_empty() {
+                format!(
+                    "{:>10} {:>10}     {} {} {}",
+                    todo.id().to_string().color(Color::BrightBlack),
+                    todo.priority().to_string(),
+                    todo.title(),
+                    if todo.depends_on().is_empty() {
                         "".color(Color::Blue)
                     } else {
                         depends_string.color(Color::Blue)
-                    }
-                );
-                println!("{todo_descriptor}");
+                    },
+                    format!("{}min", todo.estimate().as_secs()/60).color(Color::BrightYellow)
+                )
             }
+            
+            let doing = todo_store.find_doing();
+
+            if !doing.is_empty() {
+                println!("{}", "Doing: ".color(Color::Yellow).bold());
+
+                for todo in doing {
+                    let todo = render_todo(&todo);
+
+                    println!("{todo}");
+                }
+
+                println!();
+            }
+
+            println!("{}", "Todo: ".color(Color::Red).bold());
+            let ready_to_do = todo_store.find_ready_to_do();
+
+            for todo in ready_to_do {
+                let todo = render_todo(&todo);
+
+                println!("{todo}");
+            }
+        }
+        Command::Doing { id } => {
+            todo_store.mark_as_doing(Id(id)).unwrap();
         }
         Command::Done { id } => {
             todo_store.mark_as_done(Id(id)).unwrap();
@@ -150,5 +184,10 @@ fn main() {
                 .set_priority(Id(id), parse_priority(&priority))
                 .unwrap();
         }
+        Command::SetEstimate { id, estimate } => {
+            todo_store
+                .set_estimate(Id(id), Duration::from_secs(estimate*60))
+                .unwrap();
+        },
     }
 }
