@@ -106,6 +106,10 @@ impl Todo {
         self.status = Status::Done;
     }
 
+    pub fn mark_in_progress(&mut self) {
+        self.status = Status::InProgress;
+    }
+
     pub fn add_dependency(&mut self, id: Id) {
         self.depends_on.push(id);
     }
