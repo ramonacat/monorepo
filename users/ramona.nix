@@ -27,7 +27,7 @@
       ] else [ ]);
 
       programs.rat = {
-        enable = true;
+        enable = lib.attrsets.hasAttrByPath [ "services" "syncthing" "settings" "folders" "shared" ] config;
         dataFile = homeDirectory + "/shared/todos.json";
       };
 
