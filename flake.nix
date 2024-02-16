@@ -228,6 +228,7 @@
             (import ./modules/base.nix { inherit nixpkgs; })
             (import ./users/ramona.nix { inherit agenix ratPackage; })
             (import ./users/ramona/gui.nix { inherit nix-vscode-extensions; })
+            (import ./users/ramona/sway.nix { inherit barPackage; })
 
             ./machines/evillian.nix
             ./machines/evillian/hardware.nix
