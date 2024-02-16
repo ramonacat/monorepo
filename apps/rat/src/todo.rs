@@ -142,4 +142,8 @@ impl Todo {
     pub(crate) fn mark_todo(&mut self) {
         self.status = Status::New;
     }
+
+    pub(crate) fn set_title(&mut self, title: String) {
+        self.title = title;
+    }
 }

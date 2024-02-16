@@ -39,6 +39,8 @@ enum Command {
         set_priority: Option<String>,
         #[arg(short = 'e', long)]
         set_estimate: Option<u64>,
+        #[arg(short = 't', long)]
+        set_title: Option<String>,
     },
     List,
 }
@@ -70,49 +72,48 @@ fn parse_priority(priority: &str) -> Priority {
 }
 
 fn show_list(todo_store: &Store) {
-            fn render_todo(todo: &Todo) -> String {
-                let mut depends_string = "deps: ".to_string();
-                for dependency_id in todo.depends_on() {
-                    depends_string += &format!("{dependency_id} ");
-                }
+    fn render_todo(todo: &Todo) -> String {
+        let mut depends_string = "deps: ".to_string();
+        for dependency_id in todo.depends_on() {
+            depends_string += &format!("{dependency_id} ");
+        }
 
-                format!(
-                    "{:>10} {:>10}     {} {} {}",
-                    todo.id().to_string().color(Color::BrightBlack),
-                    todo.priority().to_string(),
-                    todo.title(),
-                    if todo.depends_on().is_empty() {
-                        "".color(Color::Blue)
-                    } else {
-                        depends_string.color(Color::Blue)
-                    },
-                    format!("{}min", todo.estimate().as_secs() / 60).color(Color::BrightYellow)
-                )
-            }
+        format!(
+            "{:>10} {:>10}     {} {} {}",
+            todo.id().to_string().color(Color::BrightBlack),
+            todo.priority().to_string(),
+            todo.title(),
+            if todo.depends_on().is_empty() {
+                "".color(Color::Blue)
+            } else {
+                depends_string.color(Color::Blue)
+            },
+            format!("{}min", todo.estimate().as_secs() / 60).color(Color::BrightYellow)
+        )
+    }
 
-            let doing = todo_store.find_doing();
+    let doing = todo_store.find_doing();
 
-            if !doing.is_empty() {
-                println!("{}", "Doing: ".color(Color::Yellow).bold());
+    if !doing.is_empty() {
+        println!("{}", "Doing: ".color(Color::Yellow).bold());
 
-                for todo in doing {
-                    let todo = render_todo(&todo);
+        for todo in doing {
+            let todo = render_todo(&todo);
 
-                    println!("{todo}");
-                }
+            println!("{todo}");
+        }
 
-                println!();
-            }
+        println!();
+    }
 
-            println!("{}", "Todo: ".color(Color::Red).bold());
-            let ready_to_do = todo_store.find_ready_to_do();
+    println!("{}", "Todo: ".color(Color::Red).bold());
+    let ready_to_do = todo_store.find_ready_to_do();
 
-            for todo in ready_to_do {
-                let todo = render_todo(&todo);
+    for todo in ready_to_do {
+        let todo = render_todo(&todo);
 
-                println!("{todo}");
-            }
-
+        println!("{todo}");
+    }
 }
 
 fn read_configuration() -> Configuration {
@@ -212,6 +213,7 @@ fn main() {
             add_dependencies,
             set_priority,
             set_estimate,
+            set_title,
         } => {
             let id = Id(id);
             let todo = todo_store.find_by_id(id);
@@ -229,6 +231,10 @@ fn main() {
 
                 if let Some(estimate) = set_estimate {
                     todo.set_estimate(Duration::from_secs(60 * estimate));
+                }
+
+                if let Some(title) = set_title {
+                    todo.set_title(title);
                 }
 
                 todo_store.save(todo);
