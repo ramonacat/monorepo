@@ -1,5 +1,5 @@
 { nixpkgs }:
-{ lib, modulesPath, pkgs, ... }:
+{ config, lib, modulesPath, pkgs, ... }:
 {
   imports = [
     (modulesPath + "/installer/scan/not-detected.nix")
@@ -45,6 +45,7 @@
         sysstat
         iotop
         tmux
+        config.boot.kernelPackages.perf
       ];
 
       networking.networkmanager.enable = true;
