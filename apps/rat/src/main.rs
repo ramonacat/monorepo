@@ -28,17 +28,19 @@ enum Command {
     Doing {
         id: usize,
     },
-    AddDependency {
+    Todo {
         id: usize,
-        dependency_ids: Vec<usize>,
     },
-    SetPriority {
+    Edit {
         id: usize,
-        priority: String,
-    },
-    SetEstimate {
-        id: usize,
-        estimate: u64
+        #[arg(short, long)]
+        add_dependencies: Option<Vec<usize>>,
+        #[arg(short = 'p', long)]
+        set_priority: Option<String>,
+        #[arg(short = 'e', long)]
+        set_estimate: Option<u64>,
+        #[arg(short = 't', long)]
+        set_title: Option<String>,
     },
     List,
 }
@@ -69,8 +71,52 @@ fn parse_priority(priority: &str) -> Priority {
     }
 }
 
-fn main() {
-    let cli = Cli::parse();
+fn show_list(todo_store: &Store) {
+    fn render_todo(todo: &Todo) -> String {
+        let mut depends_string = "deps: ".to_string();
+        for dependency_id in todo.depends_on() {
+            depends_string += &format!("{dependency_id} ");
+        }
+
+        format!(
+            "{:>10} {:>10}     {} {} {}",
+            todo.id().to_string().color(Color::BrightBlack),
+            todo.priority().to_string(),
+            todo.title(),
+            if todo.depends_on().is_empty() {
+                "".color(Color::Blue)
+            } else {
+                depends_string.color(Color::Blue)
+            },
+            format!("{}min", todo.estimate().as_secs() / 60).color(Color::BrightYellow)
+        )
+    }
+
+    let doing = todo_store.find_doing();
+
+    if !doing.is_empty() {
+        println!("{}", "Doing: ".color(Color::Yellow).bold());
+
+        for todo in doing {
+            let todo = render_todo(&todo);
+
+            println!("{todo}");
+        }
+
+        println!();
+    }
+
+    println!("{}", "Todo: ".color(Color::Red).bold());
+    let ready_to_do = todo_store.find_ready_to_do();
+
+    for todo in ready_to_do {
+        let todo = render_todo(&todo);
+
+        println!("{todo}");
+    }
+}
+
+fn read_configuration() -> Configuration {
     let xdg_directories = xdg::BaseDirectories::with_prefix("rat").unwrap();
     let config_path = xdg_directories
         .place_config_file("config.json")
@@ -93,8 +139,13 @@ fn main() {
 
     let configuration =
         std::fs::read_to_string(config_path).expect("Failed to read the configuration file");
-    let configuration: Configuration =
-        serde_json::from_str(&configuration).expect("Failed to parse the configuration file");
+
+    serde_json::from_str(&configuration).expect("Failed to parse the configuration file")
+}
+
+fn main() {
+    let cli = Cli::parse();
+    let configuration = read_configuration();
     let data_path = configuration.storage_path;
 
     if !data_path.exists() {
@@ -117,7 +168,7 @@ fn main() {
                 .create(
                     title.clone(),
                     parse_priority(&priority),
-                    Duration::from_secs(estimate*60),
+                    Duration::from_secs(estimate * 60),
                     depends_on.iter().map(|x| Id(*x)).collect(),
                 )
                 .unwrap();
@@ -125,69 +176,71 @@ fn main() {
             println!("Inserted a new TODO with title \"{title}\" and ID {id}");
         }
         Command::List => {
-            fn render_todo(todo: &Todo) -> String {
-                let mut depends_string = "deps: ".to_string();
-                for dependency_id in todo.depends_on() {
-                    depends_string += &format!("{dependency_id} ");
-                }
-
-                format!(
-                    "{:>10} {:>10}     {} {} {}",
-                    todo.id().to_string().color(Color::BrightBlack),
-                    todo.priority().to_string(),
-                    todo.title(),
-                    if todo.depends_on().is_empty() {
-                        "".color(Color::Blue)
-                    } else {
-                        depends_string.color(Color::Blue)
-                    },
-                    format!("{}min", todo.estimate().as_secs()/60).color(Color::BrightYellow)
-                )
-            }
-            
-            let doing = todo_store.find_doing();
-
-            if !doing.is_empty() {
-                println!("{}", "Doing: ".color(Color::Yellow).bold());
-
-                for todo in doing {
-                    let todo = render_todo(&todo);
-
-                    println!("{todo}");
-                }
-
-                println!();
-            }
-
-            println!("{}", "Todo: ".color(Color::Red).bold());
-            let ready_to_do = todo_store.find_ready_to_do();
-
-            for todo in ready_to_do {
-                let todo = render_todo(&todo);
-
-                println!("{todo}");
-            }
+            show_list(&todo_store);
         }
         Command::Doing { id } => {
-            todo_store.mark_as_doing(Id(id)).unwrap();
+            let id = Id(id);
+            let todo = todo_store.find_by_id(id);
+            if let Some(mut todo) = todo {
+                todo.mark_in_progress();
+                todo_store.save(todo);
+            } else {
+                println!("No todo with id {id}");
+            }
         }
         Command::Done { id } => {
-            todo_store.mark_as_done(Id(id)).unwrap();
+            let id = Id(id);
+            let todo = todo_store.find_by_id(id);
+            if let Some(mut todo) = todo {
+                todo.mark_done();
+                todo_store.save(todo);
+            } else {
+                println!("No todo with id {id}");
+            }
         }
-        Command::AddDependency { id, dependency_ids } => {
-            todo_store
-                .add_dependency(Id(id), dependency_ids.into_iter().map(Id).collect())
-                .unwrap();
+        Command::Todo { id } => {
+            let id = Id(id);
+            let todo = todo_store.find_by_id(id);
+            if let Some(mut todo) = todo {
+                todo.mark_todo();
+                todo_store.save(todo);
+            } else {
+                println!("No todo with id {id}");
+            }
         }
-        Command::SetPriority { id, priority } => {
-            todo_store
-                .set_priority(Id(id), parse_priority(&priority))
-                .unwrap();
+        Command::Edit {
+            id,
+            add_dependencies,
+            set_priority,
+            set_estimate,
+            set_title,
+        } => {
+            let id = Id(id);
+            let todo = todo_store.find_by_id(id);
+            if let Some(mut todo) = todo {
+                if let Some(dependencies) = add_dependencies {
+                    for dependency_id in dependencies {
+                        // TODO: verify that the dependency actually exists!
+                        todo.add_dependency(Id(dependency_id));
+                    }
+                }
+
+                if let Some(priority) = set_priority {
+                    todo.set_priority(parse_priority(&priority));
+                }
+
+                if let Some(estimate) = set_estimate {
+                    todo.set_estimate(Duration::from_secs(60 * estimate));
+                }
+
+                if let Some(title) = set_title {
+                    todo.set_title(title);
+                }
+
+                todo_store.save(todo);
+            } else {
+                println!("No todo with id {id}");
+            }
         }
-        Command::SetEstimate { id, estimate } => {
-            todo_store
-                .set_estimate(Id(id), Duration::from_secs(estimate*60))
-                .unwrap();
-        },
     }
 }

@@ -74,16 +74,16 @@ pub struct Todo {
     #[serde(default)]
     status: Status,
     #[serde(default)]
-    estimate: Duration
+    estimate: Duration,
 }
 
 impl Todo {
     pub fn new(
         id: Id,
-        title: String, 
-        priority: Priority, 
+        title: String,
+        priority: Priority,
         depends_on: Vec<Id>,
-        estimate: Duration
+        estimate: Duration,
     ) -> Self {
         Self {
             id,
@@ -91,7 +91,7 @@ impl Todo {
             depends_on,
             priority,
             status: Status::New,
-            estimate
+            estimate,
         }
     }
 
@@ -137,5 +137,13 @@ impl Todo {
 
     pub(crate) fn set_estimate(&mut self, estimate: Duration) {
         self.estimate = estimate;
+    }
+
+    pub(crate) fn mark_todo(&mut self) {
+        self.status = Status::New;
+    }
+
+    pub(crate) fn set_title(&mut self, title: String) {
+        self.title = title;
     }
 }
