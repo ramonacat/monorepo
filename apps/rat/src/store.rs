@@ -85,70 +85,19 @@ impl Store {
             .collect()
     }
 
-    pub fn mark_as_done(&mut self, id: Id) -> Result<(), Error> {
-        self.mutate(id, |todo| {
-            todo.mark_done();
+    pub fn find_by_id(&self, id: Id) -> Option<Todo> {
+        let all = self.read();
 
-            Ok(())
-        })
+        all.get(&id).cloned()
     }
 
-    pub fn mark_as_doing(&mut self, id: Id) -> Result<(), Error> {
-        self.mutate(id, |todo| {
-            todo.mark_in_progress();
+    pub fn save(&mut self, todo: Todo) -> Result<(), Error> {
+        let mut all_todos = self.read();
 
-            Ok(())
-        })
-    }
+        all_todos.insert(todo.id(), todo);
 
-    pub fn mark_as_todo(&mut self, id: Id) -> Result<(), Error> {
-        self.mutate(id, |todo| {
-            todo.mark_todo();
+        self.write(&all_todos);
 
-            Ok(())
-        })
-    }
-
-    pub fn add_dependency(&mut self, id: Id, dependencies: Vec<Id>) -> Result<(), Error> {
-        self.mutate(id, move |todo| {
-            for dependency_id in dependencies {
-                todo.add_dependency(dependency_id);
-            }
-
-            Ok(())
-        })
-    }
-
-    pub fn set_priority(&mut self, id: Id, priority: Priority) -> Result<(), Error> {
-        self.mutate(id, |todo| {
-            todo.set_priority(priority);
-
-            Ok(())
-        })
-    }
-
-    pub(crate) fn set_estimate(&mut self, id: Id, estimate: Duration) -> Result<(), Error> {
-        self.mutate(id, |todo| {
-            todo.set_estimate(estimate);
-
-            Ok(())
-        })
-    }
-
-    fn mutate(
-        &mut self,
-        id: Id,
-        action: impl FnOnce(&mut Todo) -> Result<(), Error>,
-    ) -> Result<(), Error> {
-        let mut todos = self.read();
-        let Some(todo) = todos.get_mut(&id) else {
-            return Err(Error::DoesNotExist(id));
-        };
-
-        let result = action(todo);
-
-        self.write(&todos);
-
-        result
+        Ok(())
     }
 }

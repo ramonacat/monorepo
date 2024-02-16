@@ -172,28 +172,67 @@ fn main() {
             }
         }
         Command::Doing { id } => {
-            todo_store.mark_as_doing(Id(id)).unwrap();
+            let id = Id(id);
+            let todo = todo_store.find_by_id(id);
+            if let Some(mut todo) = todo {
+                todo.mark_in_progress();
+                todo_store.save(todo).unwrap();
+            } else {
+                println!("No todo with id {id}")
+            }
         }
         Command::Done { id } => {
-            todo_store.mark_as_done(Id(id)).unwrap();
+            let id = Id(id);
+            let todo = todo_store.find_by_id(id);
+            if let Some(mut todo) = todo {
+                todo.mark_done();
+                todo_store.save(todo).unwrap();
+            } else {
+                println!("No todo with id {id}")
+            }
         }
         Command::Todo { id } => {
-            todo_store.mark_as_todo(Id(id)).unwrap();
+            let id = Id(id);
+            let todo = todo_store.find_by_id(id);
+            if let Some(mut todo) = todo {
+                todo.mark_todo();
+                todo_store.save(todo).unwrap();
+            } else {
+                println!("No todo with id {id}")
+            }
         }
         Command::AddDependency { id, dependency_ids } => {
-            todo_store
-                .add_dependency(Id(id), dependency_ids.into_iter().map(Id).collect())
-                .unwrap();
+            let id = Id(id);
+            let todo = todo_store.find_by_id(id);
+            if let Some(mut todo) = todo {
+                for dependency_id in dependency_ids {
+                    // todo we likely should verify if the deps actually exist here
+                    todo.add_dependency(Id(dependency_id));
+                }
+                todo_store.save(todo).unwrap();
+            } else {
+                println!("No todo with id {id}")
+            }
         }
         Command::SetPriority { id, priority } => {
-            todo_store
-                .set_priority(Id(id), parse_priority(&priority))
-                .unwrap();
+            let id = Id(id);
+            let todo = todo_store.find_by_id(id);
+            if let Some(mut todo) = todo {
+                todo.set_priority(parse_priority(&priority));
+                todo_store.save(todo).unwrap();
+            } else {
+                println!("No todo with id {id}")
+            }
         }
         Command::SetEstimate { id, estimate } => {
-            todo_store
-                .set_estimate(Id(id), Duration::from_secs(estimate * 60))
-                .unwrap();
+            let id = Id(id);
+            let todo = todo_store.find_by_id(id);
+            if let Some(mut todo) = todo {
+                todo.set_estimate(Duration::from_secs(estimate * 60));
+                todo_store.save(todo).unwrap();
+            } else {
+                println!("No todo with id {id}")
+            }
         }
     }
 }
