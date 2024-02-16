@@ -91,13 +91,11 @@ impl Store {
         all.get(&id).cloned()
     }
 
-    pub fn save(&mut self, todo: Todo) -> Result<(), Error> {
+    pub fn save(&mut self, todo: Todo) {
         let mut all_todos = self.read();
 
         all_todos.insert(todo.id(), todo);
 
         self.write(&all_todos);
-
-        Ok(())
     }
 }

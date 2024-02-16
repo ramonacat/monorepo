@@ -31,17 +31,14 @@ enum Command {
     Todo {
         id: usize,
     },
-    AddDependency {
+    Edit {
         id: usize,
-        dependency_ids: Vec<usize>,
-    },
-    SetPriority {
-        id: usize,
-        priority: String,
-    },
-    SetEstimate {
-        id: usize,
-        estimate: u64,
+        #[arg(short, long)]
+        add_dependencies: Option<Vec<usize>>,
+        #[arg(short = 'p', long)]
+        set_priority: Option<String>,
+        #[arg(short = 'e', long)]
+        set_estimate: Option<u64>,
     },
     List,
 }
@@ -72,62 +69,7 @@ fn parse_priority(priority: &str) -> Priority {
     }
 }
 
-fn main() {
-    let cli = Cli::parse();
-    let xdg_directories = xdg::BaseDirectories::with_prefix("rat").unwrap();
-    let config_path = xdg_directories
-        .place_config_file("config.json")
-        .expect("Cannot find configuration file destination");
-    let default_data_path = xdg_directories
-        .place_data_file("todos.json")
-        .expect("Failed to place the data file");
-
-    if !config_path.exists() {
-        let mut config_file =
-            File::create(&config_path).expect("Failed to create the configuration file");
-        let configuration = serde_json::to_string_pretty(&Configuration {
-            storage_path: default_data_path.clone(),
-        })
-        .expect("Failed to serialize the configuration");
-        config_file
-            .write_all(configuration.as_bytes())
-            .expect("Failed to write the configuration file");
-    }
-
-    let configuration =
-        std::fs::read_to_string(config_path).expect("Failed to read the configuration file");
-    let configuration: Configuration =
-        serde_json::from_str(&configuration).expect("Failed to parse the configuration file");
-    let data_path = configuration.storage_path;
-
-    if !data_path.exists() {
-        let mut data_file = File::create(&data_path).expect("Data file could not be created");
-        data_file
-            .write_all(b"{}")
-            .expect("Failed to write to the data file");
-    }
-
-    let mut todo_store = Store::new(data_path);
-
-    match cli.command {
-        Command::Add {
-            title,
-            priority,
-            estimate,
-            depends_on,
-        } => {
-            let id = todo_store
-                .create(
-                    title.clone(),
-                    parse_priority(&priority),
-                    Duration::from_secs(estimate * 60),
-                    depends_on.iter().map(|x| Id(*x)).collect(),
-                )
-                .unwrap();
-
-            println!("Inserted a new TODO with title \"{title}\" and ID {id}");
-        }
-        Command::List => {
+fn show_list(todo_store: &Store) {
             fn render_todo(todo: &Todo) -> String {
                 let mut depends_string = "deps: ".to_string();
                 for dependency_id in todo.depends_on() {
@@ -170,15 +112,79 @@ fn main() {
 
                 println!("{todo}");
             }
+
+}
+
+fn read_configuration() -> Configuration {
+    let xdg_directories = xdg::BaseDirectories::with_prefix("rat").unwrap();
+    let config_path = xdg_directories
+        .place_config_file("config.json")
+        .expect("Cannot find configuration file destination");
+    let default_data_path = xdg_directories
+        .place_data_file("todos.json")
+        .expect("Failed to place the data file");
+
+    if !config_path.exists() {
+        let mut config_file =
+            File::create(&config_path).expect("Failed to create the configuration file");
+        let configuration = serde_json::to_string_pretty(&Configuration {
+            storage_path: default_data_path.clone(),
+        })
+        .expect("Failed to serialize the configuration");
+        config_file
+            .write_all(configuration.as_bytes())
+            .expect("Failed to write the configuration file");
+    }
+
+    let configuration =
+        std::fs::read_to_string(config_path).expect("Failed to read the configuration file");
+
+    serde_json::from_str(&configuration).expect("Failed to parse the configuration file")
+}
+
+fn main() {
+    let cli = Cli::parse();
+    let configuration = read_configuration();
+    let data_path = configuration.storage_path;
+
+    if !data_path.exists() {
+        let mut data_file = File::create(&data_path).expect("Data file could not be created");
+        data_file
+            .write_all(b"{}")
+            .expect("Failed to write to the data file");
+    }
+
+    let mut todo_store = Store::new(data_path);
+
+    match cli.command {
+        Command::Add {
+            title,
+            priority,
+            estimate,
+            depends_on,
+        } => {
+            let id = todo_store
+                .create(
+                    title.clone(),
+                    parse_priority(&priority),
+                    Duration::from_secs(estimate * 60),
+                    depends_on.iter().map(|x| Id(*x)).collect(),
+                )
+                .unwrap();
+
+            println!("Inserted a new TODO with title \"{title}\" and ID {id}");
+        }
+        Command::List => {
+            show_list(&todo_store);
         }
         Command::Doing { id } => {
             let id = Id(id);
             let todo = todo_store.find_by_id(id);
             if let Some(mut todo) = todo {
                 todo.mark_in_progress();
-                todo_store.save(todo).unwrap();
+                todo_store.save(todo);
             } else {
-                println!("No todo with id {id}")
+                println!("No todo with id {id}");
             }
         }
         Command::Done { id } => {
@@ -186,9 +192,9 @@ fn main() {
             let todo = todo_store.find_by_id(id);
             if let Some(mut todo) = todo {
                 todo.mark_done();
-                todo_store.save(todo).unwrap();
+                todo_store.save(todo);
             } else {
-                println!("No todo with id {id}")
+                println!("No todo with id {id}");
             }
         }
         Command::Todo { id } => {
@@ -196,42 +202,38 @@ fn main() {
             let todo = todo_store.find_by_id(id);
             if let Some(mut todo) = todo {
                 todo.mark_todo();
-                todo_store.save(todo).unwrap();
+                todo_store.save(todo);
             } else {
-                println!("No todo with id {id}")
+                println!("No todo with id {id}");
             }
         }
-        Command::AddDependency { id, dependency_ids } => {
+        Command::Edit {
+            id,
+            add_dependencies,
+            set_priority,
+            set_estimate,
+        } => {
             let id = Id(id);
             let todo = todo_store.find_by_id(id);
             if let Some(mut todo) = todo {
-                for dependency_id in dependency_ids {
-                    // todo we likely should verify if the deps actually exist here
-                    todo.add_dependency(Id(dependency_id));
+                if let Some(dependencies) = add_dependencies {
+                    for dependency_id in dependencies {
+                        // TODO: verify that the dependency actually exists!
+                        todo.add_dependency(Id(dependency_id));
+                    }
                 }
-                todo_store.save(todo).unwrap();
+
+                if let Some(priority) = set_priority {
+                    todo.set_priority(parse_priority(&priority));
+                }
+
+                if let Some(estimate) = set_estimate {
+                    todo.set_estimate(Duration::from_secs(60 * estimate));
+                }
+
+                todo_store.save(todo);
             } else {
-                println!("No todo with id {id}")
-            }
-        }
-        Command::SetPriority { id, priority } => {
-            let id = Id(id);
-            let todo = todo_store.find_by_id(id);
-            if let Some(mut todo) = todo {
-                todo.set_priority(parse_priority(&priority));
-                todo_store.save(todo).unwrap();
-            } else {
-                println!("No todo with id {id}")
-            }
-        }
-        Command::SetEstimate { id, estimate } => {
-            let id = Id(id);
-            let todo = todo_store.find_by_id(id);
-            if let Some(mut todo) = todo {
-                todo.set_estimate(Duration::from_secs(estimate * 60));
-                todo_store.save(todo).unwrap();
-            } else {
-                println!("No todo with id {id}")
+                println!("No todo with id {id}");
             }
         }
     }
