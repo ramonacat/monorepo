@@ -28,6 +28,9 @@ enum Command {
     Doing {
         id: usize,
     },
+    Todo {
+        id: usize,
+    },
     AddDependency {
         id: usize,
         dependency_ids: Vec<usize>,
@@ -38,7 +41,7 @@ enum Command {
     },
     SetEstimate {
         id: usize,
-        estimate: u64
+        estimate: u64,
     },
     List,
 }
@@ -117,7 +120,7 @@ fn main() {
                 .create(
                     title.clone(),
                     parse_priority(&priority),
-                    Duration::from_secs(estimate*60),
+                    Duration::from_secs(estimate * 60),
                     depends_on.iter().map(|x| Id(*x)).collect(),
                 )
                 .unwrap();
@@ -141,10 +144,10 @@ fn main() {
                     } else {
                         depends_string.color(Color::Blue)
                     },
-                    format!("{}min", todo.estimate().as_secs()/60).color(Color::BrightYellow)
+                    format!("{}min", todo.estimate().as_secs() / 60).color(Color::BrightYellow)
                 )
             }
-            
+
             let doing = todo_store.find_doing();
 
             if !doing.is_empty() {
@@ -174,6 +177,9 @@ fn main() {
         Command::Done { id } => {
             todo_store.mark_as_done(Id(id)).unwrap();
         }
+        Command::Todo { id } => {
+            todo_store.mark_as_todo(Id(id)).unwrap();
+        }
         Command::AddDependency { id, dependency_ids } => {
             todo_store
                 .add_dependency(Id(id), dependency_ids.into_iter().map(Id).collect())
@@ -186,8 +192,8 @@ fn main() {
         }
         Command::SetEstimate { id, estimate } => {
             todo_store
-                .set_estimate(Id(id), Duration::from_secs(estimate*60))
+                .set_estimate(Id(id), Duration::from_secs(estimate * 60))
                 .unwrap();
-        },
+        }
     }
 }

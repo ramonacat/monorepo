@@ -80,8 +80,7 @@ impl Store {
     pub fn find_doing(&self) -> Vec<Todo> {
         let all = self.read();
 
-        all
-            .into_values()
+        all.into_values()
             .filter(|x| x.status() == Status::InProgress)
             .collect()
     }
@@ -97,7 +96,15 @@ impl Store {
     pub fn mark_as_doing(&mut self, id: Id) -> Result<(), Error> {
         self.mutate(id, |todo| {
             todo.mark_in_progress();
-            
+
+            Ok(())
+        })
+    }
+
+    pub fn mark_as_todo(&mut self, id: Id) -> Result<(), Error> {
+        self.mutate(id, |todo| {
+            todo.mark_todo();
+
             Ok(())
         })
     }
@@ -128,14 +135,18 @@ impl Store {
         })
     }
 
-    fn mutate(&mut self, id: Id, action: impl FnOnce(&mut Todo) -> Result<(), Error>) -> Result<(), Error> {
+    fn mutate(
+        &mut self,
+        id: Id,
+        action: impl FnOnce(&mut Todo) -> Result<(), Error>,
+    ) -> Result<(), Error> {
         let mut todos = self.read();
         let Some(todo) = todos.get_mut(&id) else {
             return Err(Error::DoesNotExist(id));
         };
 
         let result = action(todo);
-        
+
         self.write(&todos);
 
         result
