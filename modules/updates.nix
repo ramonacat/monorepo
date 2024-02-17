@@ -15,7 +15,7 @@
 
             CLOSURE=$(${pkgs.curl}/bin/curl "https://ramona.fun/builds/${config.networking.hostName}-closure")
             PATH="${pkgs.openssh}/bin:$PATH" NIX_SSHOPTS="-i ${config.age.secrets.universal-root.path} -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null" ${pkgs.nix}/bin/nix-copy-closure --from root@caligari "$CLOSURE"
-            nix-env --profile /nix/var/nix/profiles/system --set $CLOSURE
+            ${pkgs.nix}/bin/nix-env --profile /nix/var/nix/profiles/system --set $CLOSURE
             $CLOSURE/bin/switch-to-configuration switch
           '';
         in
