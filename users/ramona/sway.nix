@@ -94,8 +94,6 @@
             bindsym XF86MonBrightnessUp exec sudo light -A 10
             bindsym XF86MonBrightnessDown exec sudo light -U 10
             bindsym Print exec '${pkgs.slurp}/bin/slurp | ${pkgs.grim}/bin/grim -g - - | ${pkgs.wl-clipboard}/bin/wl-copy'
-
-            exec dbus-sway-environment
           '';
         };
       };
