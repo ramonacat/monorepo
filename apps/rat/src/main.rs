@@ -182,7 +182,7 @@ fn main() {
             let id = Id(id);
             let todo = todo_store.find_by_id(id);
             if let Some(mut todo) = todo {
-                todo.mark_in_progress();
+                todo.mark_doing();
                 todo_store.save(todo);
             } else {
                 println!("No todo with id {id}");

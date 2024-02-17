@@ -53,14 +53,14 @@ impl Default for Priority {
 
 #[derive(Debug, Deserialize, Serialize, Clone, PartialEq, Eq, Copy)]
 pub enum Status {
-    New,
-    InProgress,
+    Todo,
+    Doing,
     Done,
 }
 
 impl Default for Status {
     fn default() -> Self {
-        Self::New
+        Self::Todo
     }
 }
 
@@ -90,7 +90,7 @@ impl Todo {
             title,
             depends_on,
             priority,
-            status: Status::New,
+            status: Status::Todo,
             estimate,
         }
     }
@@ -115,8 +115,8 @@ impl Todo {
         self.status = Status::Done;
     }
 
-    pub fn mark_in_progress(&mut self) {
-        self.status = Status::InProgress;
+    pub fn mark_doing(&mut self) {
+        self.status = Status::Doing;
     }
 
     pub fn add_dependency(&mut self, id: Id) {
@@ -140,7 +140,7 @@ impl Todo {
     }
 
     pub(crate) fn mark_todo(&mut self) {
-        self.status = Status::New;
+        self.status = Status::Todo;
     }
 
     pub(crate) fn set_title(&mut self, title: String) {
