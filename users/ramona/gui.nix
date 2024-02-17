@@ -18,27 +18,28 @@
       };
 
       home.packages = with pkgs; [
-        keepassxc
-        discord
-        virt-manager
-        pavucontrol
-        pamixer
-        playerctl
-        xdg-utils
         dconf
-        moc
-        grip
+        discord
         flac
-        spotify
-        vlc
+        grip
         hunspell
         hunspellDicts.de_DE
         hunspellDicts.en_US
         hunspellDicts.pl_PL
-        obsidian
+        keepassxc
+        krita
         light
         loupe
+        moc
         obs-studio
+        obsidian
+        pamixer
+        pavucontrol
+        playerctl
+        spotify
+        virt-manager
+        vlc
+        xdg-utils
 
         factorio
         prismlauncher
