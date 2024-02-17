@@ -7,7 +7,7 @@ use colored::{Color, Colorize};
 use petgraph::adj::NodeIndex;
 use serde::{Deserialize, Serialize};
 use store::Store;
-use todo::Id;
+use todo::{Id, Status};
 
 use crate::todo::{Priority, Todo};
 
@@ -182,7 +182,7 @@ fn main() {
             let id = Id(id);
             let todo = todo_store.find_by_id(id);
             if let Some(mut todo) = todo {
-                todo.mark_doing();
+                todo.transition_to(Status::Doing);
                 todo_store.save(todo);
             } else {
                 println!("No todo with id {id}");
@@ -192,7 +192,7 @@ fn main() {
             let id = Id(id);
             let todo = todo_store.find_by_id(id);
             if let Some(mut todo) = todo {
-                todo.mark_done();
+                todo.transition_to(Status::Done);
                 todo_store.save(todo);
             } else {
                 println!("No todo with id {id}");
@@ -202,7 +202,7 @@ fn main() {
             let id = Id(id);
             let todo = todo_store.find_by_id(id);
             if let Some(mut todo) = todo {
-                todo.mark_todo();
+                todo.transition_to(Status::Todo);
                 todo_store.save(todo);
             } else {
                 println!("No todo with id {id}");
