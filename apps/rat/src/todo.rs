@@ -1,5 +1,6 @@
 use std::{fmt::Display, time::Duration};
 
+use chrono::{DateTime, Utc};
 use serde::{Deserialize, Serialize};
 
 pub struct IdGenerator(usize);
@@ -65,10 +66,25 @@ impl Default for Status {
 }
 
 #[derive(Debug, Deserialize, Serialize, Clone)]
+pub enum Requirement {
+    TodoDone(Id),
+    AfterDate(DateTime<Utc>),
+}
+
+impl Display for Requirement {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        match self {
+            Requirement::TodoDone(id) => write!(f, "done({id})"),
+            Requirement::AfterDate(when) => write!(f, "after({when})"),
+        }
+    }
+}
+
+#[derive(Debug, Deserialize, Serialize, Clone)]
 pub struct Todo {
     id: Id,
     title: String,
-    depends_on: Vec<Id>,
+    requirements: Vec<Requirement>,
     #[serde(default)]
     priority: Priority,
     #[serde(default)]
@@ -82,13 +98,13 @@ impl Todo {
         id: Id,
         title: String,
         priority: Priority,
-        depends_on: Vec<Id>,
+        requirements: Vec<Requirement>,
         estimate: Duration,
     ) -> Self {
         Self {
             id,
             title,
-            depends_on,
+            requirements,
             priority,
             status: Status::Todo,
             estimate,
@@ -99,8 +115,8 @@ impl Todo {
         self.id
     }
 
-    pub fn depends_on(&self) -> &[Id] {
-        &self.depends_on
+    pub fn requirements(&self) -> &[Requirement] {
+        &self.requirements
     }
 
     pub fn title(&self) -> &str {
@@ -111,8 +127,8 @@ impl Todo {
         self.priority
     }
 
-    pub fn add_dependency(&mut self, id: Id) {
-        self.depends_on.push(id);
+    pub fn add_requirement(&mut self, requirement: Requirement) {
+        self.requirements.push(requirement);
     }
 
     pub fn set_priority(&mut self, priority: Priority) {
