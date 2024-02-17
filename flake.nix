@@ -137,7 +137,7 @@
             ./machines/moonfall/virtualisation.nix
             ./modules/installed_base.nix
             ./modules/updates.nix
-            ./modules/sway.nix
+            ./modules/greetd.nix
             ./modules/nas-client.nix
             ./modules/syncthing.nix
             ./modules/telegraf.nix
@@ -188,7 +188,7 @@
             ./machines/angelsin/users/ramona_gui.nix
             ./modules/installed_base.nix
             ./modules/updates.nix
-            ./modules/sway.nix
+            ./modules/greetd.nix
             ./modules/nas-client.nix
             ./modules/syncthing.nix
             ./modules/telegraf.nix
@@ -236,7 +236,7 @@
             ./modules/syncthing.nix
             ./modules/telegraf.nix
             ./modules/updates.nix
-            ./modules/sway.nix
+            ./modules/greetd.nix
             ./modules/workstation.nix
           ];
         };
