@@ -2,7 +2,7 @@ use std::{collections::HashMap, path::PathBuf, time::Duration};
 
 use thiserror::Error;
 
-use crate::todo::{Id, IdGenerator, Priority, Status, Todo};
+use crate::todo::{Id, IdGenerator, Priority, Requirement, Status, Todo};
 
 pub struct Store {
     path: PathBuf,
@@ -57,18 +57,30 @@ impl Store {
         Ok(id)
     }
 
+    // TODO: This should really be its own struct...
+    fn evaluate_requirements(all_todos: &HashMap<Id, Todo>, requirements: &[Requirement]) -> bool {
+        for requirement in requirements {
+            match requirement {
+                Requirement::TodoDone(id) => {
+                    if !all_todos
+                        .get(id)
+                        .is_some_and(|x| x.status() == Status::Done)
+                    {
+                        return false;
+                    }
+                }
+            }
+        }
+
+        true
+    }
+
     pub fn find_ready_to_do(&self) -> Vec<Todo> {
         let all_todos = self.read();
         let mut todos_to_consider = all_todos
             .values()
             .filter(|v| v.status() == crate::todo::Status::Todo)
-            .filter(|v| {
-                v.depends_on()
-                    .iter()
-                    .filter(|x| all_todos.get(x).is_some_and(|y| y.status() == Status::Todo))
-                    .count()
-                    == 0
-            })
+            .filter(|v| Self::evaluate_requirements(&all_todos, v.requirements()))
             .cloned()
             .collect::<Vec<_>>();
 

@@ -65,10 +65,23 @@ impl Default for Status {
 }
 
 #[derive(Debug, Deserialize, Serialize, Clone)]
+pub enum Requirement {
+    TodoDone(Id),
+}
+
+impl Display for Requirement {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        match self {
+            Requirement::TodoDone(id) => write!(f, "done({id})"),
+        }
+    }
+}
+
+#[derive(Debug, Deserialize, Serialize, Clone)]
 pub struct Todo {
     id: Id,
     title: String,
-    depends_on: Vec<Id>,
+    requirements: Vec<Requirement>,
     #[serde(default)]
     priority: Priority,
     #[serde(default)]
@@ -88,7 +101,10 @@ impl Todo {
         Self {
             id,
             title,
-            depends_on,
+            requirements: depends_on
+                .iter()
+                .map(|x| Requirement::TodoDone(*x))
+                .collect(),
             priority,
             status: Status::Todo,
             estimate,
@@ -99,8 +115,8 @@ impl Todo {
         self.id
     }
 
-    pub fn depends_on(&self) -> &[Id] {
-        &self.depends_on
+    pub fn requirements(&self) -> &[Requirement] {
+        &self.requirements
     }
 
     pub fn title(&self) -> &str {
@@ -111,8 +127,8 @@ impl Todo {
         self.priority
     }
 
-    pub fn add_dependency(&mut self, id: Id) {
-        self.depends_on.push(id);
+    pub fn add_requirement(&mut self, requirement: Requirement) {
+        self.requirements.push(requirement);
     }
 
     pub fn set_priority(&mut self, priority: Priority) {

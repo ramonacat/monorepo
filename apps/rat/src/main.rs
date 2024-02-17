@@ -73,9 +73,9 @@ fn parse_priority(priority: &str) -> Priority {
 
 fn show_list(todo_store: &Store) {
     fn render_todo(todo: &Todo) -> String {
-        let mut depends_string = "deps: ".to_string();
-        for dependency_id in todo.depends_on() {
-            depends_string += &format!("{dependency_id} ");
+        let mut depends_string = "reqs: ".to_string();
+        for requirement in todo.requirements() {
+            depends_string += &format!("{requirement} ");
         }
 
         format!(
@@ -83,7 +83,7 @@ fn show_list(todo_store: &Store) {
             todo.id().to_string().color(Color::BrightBlack),
             todo.priority().to_string(),
             todo.title(),
-            if todo.depends_on().is_empty() {
+            if todo.requirements().is_empty() {
                 "".color(Color::Blue)
             } else {
                 depends_string.color(Color::Blue)
@@ -221,7 +221,7 @@ fn main() {
                 if let Some(dependencies) = add_dependencies {
                     for dependency_id in dependencies {
                         // TODO: verify that the dependency actually exists!
-                        todo.add_dependency(Id(dependency_id));
+                        todo.add_requirement(todo::Requirement::TodoDone(Id(dependency_id)));
                     }
                 }
 
