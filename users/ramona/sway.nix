@@ -95,8 +95,7 @@
             bindsym XF86MonBrightnessDown exec sudo light -U 10
             bindsym Print exec '${pkgs.slurp}/bin/slurp | ${pkgs.grim}/bin/grim -g - - | ${pkgs.wl-clipboard}/bin/wl-copy'
 
-            exec systemctl --user import-environment XDG_SESSION_TYPE XDG_CURRENT_DESKTOP
-            exec dbus-update-activation-environment --systemd WAYLAND_DISPLAY XDG_CURRENT_DESKTOP=sway
+            exec dbus-sway-environment
           '';
         };
       };
