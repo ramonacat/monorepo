@@ -112,7 +112,6 @@
             ./machines/hallewell/paperless.nix
             ./machines/hallewell/postgresql.nix
             ./machines/hallewell/tempo.nix
-            ./machines/hallewell/unbound.nix
             ./machines/hallewell/users/ramona.nix
             ./modules/bcachefs.nix
             ./modules/updates.nix
