@@ -21,5 +21,7 @@
       enable = true;
       wrapperFeatures.gtk = true;
     };
+    powerManagement.powertop.enable = true;
+    services.upower.enable = true;
   };
 }
