@@ -1,5 +1,6 @@
 use std::{fmt::Display, time::Duration};
 
+use chrono::{DateTime, Utc};
 use serde::{Deserialize, Serialize};
 
 pub struct IdGenerator(usize);
@@ -67,12 +68,14 @@ impl Default for Status {
 #[derive(Debug, Deserialize, Serialize, Clone)]
 pub enum Requirement {
     TodoDone(Id),
+    AfterDate(DateTime<Utc>),
 }
 
 impl Display for Requirement {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         match self {
             Requirement::TodoDone(id) => write!(f, "done({id})"),
+            Requirement::AfterDate(when) => write!(f, "after({when})"),
         }
     }
 }
@@ -95,16 +98,13 @@ impl Todo {
         id: Id,
         title: String,
         priority: Priority,
-        depends_on: Vec<Id>,
+        requirements: Vec<Requirement>,
         estimate: Duration,
     ) -> Self {
         Self {
             id,
             title,
-            requirements: depends_on
-                .iter()
-                .map(|x| Requirement::TodoDone(*x))
-                .collect(),
+            requirements,
             priority,
             status: Status::Todo,
             estimate,

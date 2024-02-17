@@ -2,9 +2,11 @@
 
 use std::{fs::File, io::Write, path::PathBuf, time::Duration};
 
+use chrono::{Local, NaiveDate, NaiveDateTime, TimeZone};
 use clap::{Parser, Subcommand};
 use colored::{Color, Colorize};
 use petgraph::adj::NodeIndex;
+use regex::Regex;
 use serde::{Deserialize, Serialize};
 use store::Store;
 use todo::{Id, Status};
@@ -20,7 +22,7 @@ enum Command {
         title: String,
         priority: String,
         estimate: u64,
-        depends_on: Vec<usize>,
+        requirements: Vec<String>,
     },
     Done {
         id: usize,
@@ -34,7 +36,7 @@ enum Command {
     Edit {
         id: usize,
         #[arg(short, long)]
-        add_dependencies: Option<Vec<usize>>,
+        add_requirements: Option<Vec<String>>,
         #[arg(short = 'p', long)]
         set_priority: Option<String>,
         #[arg(short = 'e', long)]
@@ -162,16 +164,17 @@ fn main() {
             title,
             priority,
             estimate,
-            depends_on,
+            requirements,
         } => {
-            let id = todo_store
-                .create(
-                    title.clone(),
-                    parse_priority(&priority),
-                    Duration::from_secs(estimate * 60),
-                    depends_on.iter().map(|x| Id(*x)).collect(),
-                )
-                .unwrap();
+            let id = todo_store.create(
+                title.clone(),
+                parse_priority(&priority),
+                Duration::from_secs(estimate * 60),
+                requirements
+                    .into_iter()
+                    .map(|x| parse_requirement(&x))
+                    .collect(),
+            );
 
             println!("Inserted a new TODO with title \"{title}\" and ID {id}");
         }
@@ -210,7 +213,7 @@ fn main() {
         }
         Command::Edit {
             id,
-            add_dependencies,
+            add_requirements,
             set_priority,
             set_estimate,
             set_title,
@@ -218,10 +221,10 @@ fn main() {
             let id = Id(id);
             let todo = todo_store.find_by_id(id);
             if let Some(mut todo) = todo {
-                if let Some(dependencies) = add_dependencies {
-                    for dependency_id in dependencies {
-                        // TODO: verify that the dependency actually exists!
-                        todo.add_requirement(todo::Requirement::TodoDone(Id(dependency_id)));
+                if let Some(requirements) = add_requirements {
+                    for requirement in requirements {
+                        let requirement = parse_requirement(&requirement);
+                        todo.add_requirement(requirement);
                     }
                 }
 
@@ -242,5 +245,27 @@ fn main() {
                 println!("No todo with id {id}");
             }
         }
+    }
+}
+
+fn parse_requirement(requirement: &str) -> todo::Requirement {
+    let after_date =
+        Regex::new(r"after\(([0-9]{4}\-[0-9]{2}\-[0-9]{2}(?: [0-9]{2}:[0-9]{2}:[0-9]{2})?)\)")
+            .unwrap();
+    if let Ok(id) = requirement.parse() {
+        todo::Requirement::TodoDone(Id(id))
+    } else if let Some(captures) = after_date.captures(requirement) {
+        let date = if let Ok(x) = NaiveDateTime::parse_from_str(&captures[1], "%Y-%m-%d %H:%M:%S") {
+            x
+        } else if let Ok(x) = NaiveDate::parse_from_str(&captures[1], "%Y-%m-%d") {
+            NaiveDateTime::from(x)
+        } else {
+            panic!("Invalid date/time");
+        };
+        let local_now = Local.from_local_datetime(&date).unwrap();
+
+        todo::Requirement::AfterDate(local_now.into())
+    } else {
+        panic!("Failed to parse: {requirement}");
     }
 }

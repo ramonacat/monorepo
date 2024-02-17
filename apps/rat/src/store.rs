@@ -1,5 +1,6 @@
 use std::{collections::HashMap, path::PathBuf, time::Duration};
 
+use chrono::Utc;
 use thiserror::Error;
 
 use crate::todo::{Id, IdGenerator, Priority, Requirement, Status, Todo};
@@ -9,10 +10,7 @@ pub struct Store {
 }
 
 #[derive(Debug, Error)]
-pub enum Error {
-    #[error("A todo with id {0} does not exist")]
-    DoesNotExist(Id),
-}
+pub enum Error {}
 
 impl Store {
     pub fn new(path: PathBuf) -> Self {
@@ -35,26 +33,20 @@ impl Store {
         title: String,
         priority: Priority,
         estimate: Duration,
-        depends_on: Vec<Id>,
-    ) -> Result<Id, Error> {
+        requirements: Vec<Requirement>,
+    ) -> Id {
         let mut todos = self.read();
         let mut id_generator =
             IdGenerator::new(todos.values().map(|x| x.id().0).max().unwrap_or(0));
 
-        for dependency_id in &depends_on {
-            if !todos.contains_key(dependency_id) {
-                return Err(Error::DoesNotExist(*dependency_id));
-            }
-        }
-
         let id = id_generator.next();
 
-        let new_todo = Todo::new(id, title, priority, depends_on, estimate);
+        let new_todo = Todo::new(id, title, priority, requirements, estimate);
         todos.insert(id, new_todo);
 
         self.write(&todos);
 
-        Ok(id)
+        id
     }
 
     // TODO: This should really be its own struct...
@@ -66,6 +58,11 @@ impl Store {
                         .get(id)
                         .is_some_and(|x| x.status() == Status::Done)
                     {
+                        return false;
+                    }
+                }
+                Requirement::AfterDate(when) => {
+                    if Utc::now() <= *when {
                         return false;
                     }
                 }
