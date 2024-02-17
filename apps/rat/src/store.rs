@@ -61,11 +61,11 @@ impl Store {
         let all_todos = self.read();
         let mut todos_to_consider = all_todos
             .values()
-            .filter(|v| v.status() == crate::todo::Status::New)
+            .filter(|v| v.status() == crate::todo::Status::Todo)
             .filter(|v| {
                 v.depends_on()
                     .iter()
-                    .filter(|x| all_todos.get(x).is_some_and(|y| y.status() == Status::New))
+                    .filter(|x| all_todos.get(x).is_some_and(|y| y.status() == Status::Todo))
                     .count()
                     == 0
             })
@@ -81,7 +81,7 @@ impl Store {
         let all = self.read();
 
         all.into_values()
-            .filter(|x| x.status() == Status::InProgress)
+            .filter(|x| x.status() == Status::Doing)
             .collect()
     }
 
