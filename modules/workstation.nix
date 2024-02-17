@@ -17,6 +17,10 @@
     };
 
     environment.etc."pipewire/pipewire.conf.d/scarlett.conf".source = ./scarlett.pipewire.conf;
+    boot.plymouth = {
+      enable = true;
+      theme = "breeze";
+    };
 
     programs.dconf.enable = true;
     programs.nix-ld.enable = true;
