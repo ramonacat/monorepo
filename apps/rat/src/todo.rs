@@ -111,14 +111,6 @@ impl Todo {
         self.priority
     }
 
-    pub fn mark_done(&mut self) {
-        self.status = Status::Done;
-    }
-
-    pub fn mark_doing(&mut self) {
-        self.status = Status::Doing;
-    }
-
     pub fn add_dependency(&mut self, id: Id) {
         self.depends_on.push(id);
     }
@@ -135,15 +127,15 @@ impl Todo {
         self.estimate
     }
 
-    pub(crate) fn set_estimate(&mut self, estimate: Duration) {
+    pub fn set_estimate(&mut self, estimate: Duration) {
         self.estimate = estimate;
     }
 
-    pub(crate) fn mark_todo(&mut self) {
-        self.status = Status::Todo;
+    pub fn set_title(&mut self, title: String) {
+        self.title = title;
     }
 
-    pub(crate) fn set_title(&mut self, title: String) {
-        self.title = title;
+    pub fn transition_to(&mut self, status: Status) {
+        self.status = status;
     }
 }
