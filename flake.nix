@@ -103,7 +103,6 @@
             (import ./modules/base.nix { inherit nixpkgs; })
             (import ./users/ramona.nix { inherit agenix ratPackage; })
 
-            ./machines/hallewell.nix
             ./machines/hallewell/grafana.nix
             ./machines/hallewell/hardware.nix
             ./machines/hallewell/minio.nix
@@ -132,13 +131,13 @@
             (import ./users/ramona/gui.nix { inherit nix-vscode-extensions; })
             (import ./users/ramona/sway.nix { inherit barPackage; })
 
-            ./machines/moonfall.nix
             ./machines/moonfall/hardware.nix
             ./machines/moonfall/networking.nix
             ./machines/moonfall/users/ramona_gui.nix
             ./machines/moonfall/virtualisation.nix
             ./modules/installed_base.nix
             ./modules/updates.nix
+            ./modules/sway.nix
             ./modules/nas-client.nix
             ./modules/syncthing.nix
             ./modules/telegraf.nix
@@ -157,7 +156,6 @@
             (import ./users/ramona.nix { inherit agenix ratPackage; })
             (import ./machines/shadowmend/home-automation.nix { inherit homeAutomationPackage; })
 
-            ./machines/shadowmend.nix
             ./machines/shadowmend/hardware.nix
             ./machines/shadowmend/networking.nix
             ./machines/shadowmend/rabbitmq.nix
@@ -183,12 +181,14 @@
             (import ./users/ramona/gui.nix { inherit nix-vscode-extensions; })
             (import ./users/ramona/sway.nix { inherit barPackage; })
 
-            ./machines/angelsin.nix
             ./machines/angelsin/hardware.nix
             ./machines/angelsin/networking.nix
+            ./machines/angelsin/steam.nix
+            ./machines/angelsin/virtual-screen.nix
             ./machines/angelsin/users/ramona_gui.nix
             ./modules/installed_base.nix
             ./modules/updates.nix
+            ./modules/sway.nix
             ./modules/nas-client.nix
             ./modules/syncthing.nix
             ./modules/telegraf.nix
@@ -209,7 +209,6 @@
             (import ./machines/ananas/hardware.nix { inherit pkgsCross; })
             (import ./machines/ananas/music-control.nix { inherit ananasMusicControlPackage; })
 
-            ./machines/ananas.nix
             ./machines/ananas/networking.nix
             ./modules/installed_base.nix
             ./modules/updates.nix
@@ -230,7 +229,6 @@
             (import ./users/ramona/gui.nix { inherit nix-vscode-extensions; })
             (import ./users/ramona/sway.nix { inherit barPackage; })
 
-            ./machines/evillian.nix
             ./machines/evillian/hardware.nix
             ./machines/evillian/networking.nix
             ./modules/installed_base.nix
@@ -238,6 +236,7 @@
             ./modules/syncthing.nix
             ./modules/telegraf.nix
             ./modules/updates.nix
+            ./modules/sway.nix
             ./modules/workstation.nix
           ];
         };
@@ -252,7 +251,6 @@
             (import ./modules/base.nix { inherit nixpkgs; })
             (import ./users/ramona.nix { inherit agenix ratPackage; })
 
-            ./machines/caligari.nix
             ./machines/caligari/github-runner.nix
             ./machines/caligari/hardware.nix
             ./machines/caligari/minecraft.nix

@@ -9,7 +9,7 @@
 
             let headlessOutput = (${pkgs.sway}/bin/swaymsg -t get_outputs | from json | filter {|x| $x.name starts-with 'HEADLESS-' } | last | get name);
             ${pkgs.sway}/bin/swaymsg output $headlessOutput mode 1920x1280 pos "1128 0" scale 1.5
-            ${pkgs.wayvnc}/bin/wayvnc $"--output=($headlessOutput)" -f 60 -g -r -Linfo 10.69.254.1 5900
+            ${pkgs.wayvnc}/bin/wayvnc $"--output=($headlessOutput)" -f 60 -g -r -Linfo 0.0.0.0 5900
           '';
           destroy_output = pkgs.writeScript "start_vnc" ''
             #!${pkgs.nushell}/bin/nu

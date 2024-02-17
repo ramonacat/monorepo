@@ -5,6 +5,8 @@
     boot.initrd.kernelModules = [ ];
     boot.kernelModules = [ "kvm-amd" ];
     boot.extraModulePackages = [ ];
+    services.fwupd.enable = false;
+    boot.binfmt.emulatedSystems = [ "aarch64-linux" ];
 
     nixpkgs.hostPlatform = lib.mkDefault "x86_64-linux";
     hardware.cpu.amd.updateMicrocode = true;
