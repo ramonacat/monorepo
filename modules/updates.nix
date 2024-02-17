@@ -18,7 +18,14 @@
                 exit;
             fi;
 
-            CLOSURE=$(${pkgs.curl}/bin/curl "https://ramona.fun/builds/${config.networking.hostName}-closure")
+            CURRENT_SYSTEM_CLOSURE=$(readlink -f /nix/var/nix/profiles/system)
+            CLOSURE=$(${pkgs.curl}/bin/curl "https://ramona.fun/builds/${config.networking.hostName}-closure" | tr -d '\n')
+
+            if [[ "$CLOSURE" == "$CURRENT_SYSTEM_CLOSURE" ]]; then
+                echo "System already running the latest closure, not rebuilding";
+                exit;
+            fi;
+
             PATH="${pkgs.openssh}/bin:$PATH" NIX_SSHOPTS="-i ${config.age.secrets.universal-root.path} -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null" ${pkgs.nix}/bin/nix-copy-closure --from root@caligari "$CLOSURE"
             ${pkgs.nix}/bin/nix-env --profile /nix/var/nix/profiles/system --set $CLOSURE
             $CLOSURE/bin/switch-to-configuration switch
