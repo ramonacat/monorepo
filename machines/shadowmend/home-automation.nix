@@ -7,6 +7,9 @@
     mode = "440";
   };
 
+  virtualisation.docker.enable = true;
+  environment.systemPackages = with pkgs; [ docker-compose ];
+
   users.groups.home-automation-secrets = { };
 
   systemd.services.home-automation = {

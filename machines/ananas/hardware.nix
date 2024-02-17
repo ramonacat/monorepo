@@ -112,5 +112,11 @@
       grub.enable = false;
       generic-extlinux-compatible.enable = true;
     };
+
+    sound.enable = true;
+    sound.extraConfig = ''
+      defaults.pcm.card 3
+      defaults.ctl.card 3
+    '';
   };
 }

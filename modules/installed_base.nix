@@ -14,5 +14,6 @@
       useRoutingFeatures = "both";
       extraUpFlags = [ "--advertise-exit-node" ];
     };
+    security.polkit.enable = true;
   };
 }
