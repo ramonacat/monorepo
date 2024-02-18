@@ -1,4 +1,3 @@
-{ barPackage }:
 { lib, modulesPath, pkgs, config, ... }:
 {
   # colors: https://coolors.co/ff1885-19323c-9da2ab-f3de8a-988f2a
@@ -34,6 +33,80 @@
 
         services.udiskie.enable = true;
 
+        programs.waybar = {
+          enable = true;
+          systemd.enable = true;
+          style = ''
+            * { font-size: 24px; }
+
+            #clock,
+            #battery,
+            #cpu,
+            #memory,
+            #disk,
+            #temperature,
+            #backlight,
+            #network,
+            #pulseaudio,
+            #wireplumber,
+            #custom-media,
+            #tray,
+            #mode,
+            #idle_inhibitor,
+            #scratchpad,
+            #mpd {
+                padding: 0 10px;
+            }
+
+            #workspaces button {
+                color: #ff1885;
+            }
+          '';
+
+          settings = [{
+            height = 30;
+            layer = "top";
+            position = "top";
+            tray = {
+              spacing = 10;
+            };
+            modules-left = [ "sway/workspaces" "sway/mode" ];
+            modules-right = (if config.services.upower.enable then [ "upower" ] else [ ]) ++ [
+              "sway/language"
+              "pulseaudio"
+              "cpu"
+              "clock"
+              "tray"
+            ];
+            "sway/language" = {
+              format = "{flag}";
+            };
+            pulseaudio = {
+              format = "{icon}  {volume}%";
+              format-bluetooth = "{icon}  {volume}%";
+              format-muted = "🔇";
+              "format-icons" = {
+                "headphone" = "";
+                "hands-free" = "";
+                "headset" = "";
+                "phone" = "";
+                "portable" = "";
+                "car" = "";
+                "default" = [ "🔊" ];
+              };
+            };
+            cpu = {
+              format = "🏋 {load}";
+            };
+            clock = {
+              format = "🕛 {:%Y-%m-%d %H:%M}";
+            };
+            tray = {
+              icon-size = 24;
+            };
+          }];
+        };
+
         wayland.windowManager.sway = {
           enable = true;
           wrapperFeatures.gtk = true;
@@ -49,28 +122,7 @@
                 "${modifier}+d" = "exec ${pkgs.fuzzel}/bin/fuzzel";
                 "${modifier}+e" = "exec BEMOJI_PICKER_CMD='${pkgs.fuzzel}/bin/fuzzel --dmenu' ${pkgs.bemoji}/bin/bemoji -t";
               };
-            bars = [
-              {
-                position = "top";
-                statusCommand = "${barPackage}/bin/bar";
-                fonts = {
-                  names = [ "Noto Sans" "Iosevka" ];
-                  size = 13.0;
-                };
-                colors = {
-                  activeWorkspace = {
-                    background = "#19323C";
-                    border = "#988F2A";
-                    text = "#9DA2AB";
-                  };
-                  focusedWorkspace = {
-                    background = "#19323C";
-                    border = "#988F2A";
-                    text = "#FF1885";
-                  };
-                };
-              }
-            ];
+            bars = [ ];
             colors = {
               focused = {
                 background = "#19323C";
