@@ -4,13 +4,14 @@ updates:
     directory: "/"
     schedule:
       interval: "daily"
+
   - package-ecosystem: "cargo"
     directory: "apps/ananas-music-control"
     schedule:
       interval: "daily"
 
   - package-ecosystem: "cargo"
-    directory: "apps/bar"
+    directory: "apps/rat"
     schedule:
       interval: "daily"
 

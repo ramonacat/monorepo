@@ -48,7 +48,6 @@
       rustVersionAarch64 = pkgsAarch64.rust-bin.stable.latest.default;
       craneLibAarch64 = (crane.mkLib pkgsAarch64).overrideToolchain rustVersionAarch64;
 
-      barPackage = import ./packages/bar.nix { inherit pkgs; inherit craneLib; };
       homeAutomationPackage = import ./packages/home-automation.nix { inherit pkgs; inherit craneLib; };
       ananasMusicControlPackage = import ./packages/music-control.nix { pkgs = pkgsAarch64; craneLib = craneLibAarch64; };
       ratPackage = import ./packages/rat.nix { inherit pkgs; inherit craneLib; };
@@ -129,20 +128,20 @@
             (import ./modules/base.nix { inherit nixpkgs; })
             (import ./users/ramona.nix { inherit agenix ratPackage; })
             (import ./users/ramona/gui.nix { inherit nix-vscode-extensions; })
-            (import ./users/ramona/sway.nix { inherit barPackage; })
 
             ./machines/moonfall/hardware.nix
             ./machines/moonfall/networking.nix
             ./machines/moonfall/users/ramona_gui.nix
             ./machines/moonfall/virtualisation.nix
-            ./modules/installed_base.nix
-            ./modules/updates.nix
             ./modules/greetd.nix
+            ./modules/installed_base.nix
             ./modules/nas-client.nix
             ./modules/syncthing.nix
             ./modules/telegraf.nix
             ./modules/terraform-tokens.nix
+            ./modules/updates.nix
             ./modules/workstation.nix
+            ./users/ramona/sway.nix
           ];
         };
         shadowmend = nixpkgs.lib.nixosSystem {
@@ -179,21 +178,21 @@
             (import ./modules/base.nix { inherit nixpkgs; })
             (import ./users/ramona.nix { inherit agenix ratPackage; })
             (import ./users/ramona/gui.nix { inherit nix-vscode-extensions; })
-            (import ./users/ramona/sway.nix { inherit barPackage; })
 
             ./machines/angelsin/hardware.nix
             ./machines/angelsin/networking.nix
             ./machines/angelsin/steam.nix
-            ./machines/angelsin/virtual-screen.nix
             ./machines/angelsin/users/ramona_gui.nix
-            ./modules/installed_base.nix
-            ./modules/updates.nix
+            ./machines/angelsin/virtual-screen.nix
             ./modules/greetd.nix
+            ./modules/installed_base.nix
             ./modules/nas-client.nix
             ./modules/syncthing.nix
             ./modules/telegraf.nix
             ./modules/terraform-tokens.nix
+            ./modules/updates.nix
             ./modules/workstation.nix
+            ./users/ramona/sway.nix
           ];
         };
         ananas = nixpkgs.lib.nixosSystem {
@@ -227,17 +226,17 @@
             (import ./modules/base.nix { inherit nixpkgs; })
             (import ./users/ramona.nix { inherit agenix ratPackage; })
             (import ./users/ramona/gui.nix { inherit nix-vscode-extensions; })
-            (import ./users/ramona/sway.nix { inherit barPackage; })
 
             ./machines/evillian/hardware.nix
             ./machines/evillian/networking.nix
+            ./modules/greetd.nix
             ./modules/installed_base.nix
             ./modules/nas-client.nix
             ./modules/syncthing.nix
             ./modules/telegraf.nix
             ./modules/updates.nix
-            ./modules/greetd.nix
             ./modules/workstation.nix
+            ./users/ramona/sway.nix
           ];
         };
         caligari = nixpkgs.lib.nixosSystem {
