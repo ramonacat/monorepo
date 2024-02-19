@@ -1,46 +1,102 @@
 #![deny(clippy::pedantic)]
 
-use std::{fs::File, io::Write, path::PathBuf, time::Duration};
+use std::{fs::File, io::Write, num::ParseIntError, path::PathBuf, time::Duration};
 
 use chrono::{Local, NaiveDate, NaiveDateTime, TimeZone};
 use clap::{Parser, Subcommand};
-use colored::{Color, Colorize};
-use petgraph::adj::NodeIndex;
+
 use regex::Regex;
 use serde::{Deserialize, Serialize};
 use store::Store;
-use todo::{Id, Status};
+use todo::{Id, Requirement, Status};
 
-use crate::todo::{Priority, Todo};
+use crate::todo::Priority;
 
+mod cli;
 mod store;
 mod todo;
+
+// TODO: convert to a func and value_parser it, so we can acutally error out
+impl From<&str> for Priority {
+    fn from(value: &str) -> Self {
+        // todo prolly should like throw an error for weird values
+        match value {
+            "high" => Priority::High,
+            "low" => Priority::Low,
+            _ => Priority::Medium,
+        }
+    }
+}
+
+// TODO: convert to a func and value_parser it, so we can acutally error out
+impl From<&str> for Requirement {
+    fn from(value: &str) -> Self {
+        let after_date =
+            Regex::new(r"after\(([0-9]{4}\-[0-9]{2}\-[0-9]{2}(?: [0-9]{2}:[0-9]{2}:[0-9]{2})?)\)")
+                .unwrap();
+
+        if let Ok(id) = value.parse() {
+            todo::Requirement::TodoDone(Id(id))
+        } else if let Some(captures) = after_date.captures(value) {
+            let date =
+                if let Ok(x) = NaiveDateTime::parse_from_str(&captures[1], "%Y-%m-%d %H:%M:%S") {
+                    x
+                } else if let Ok(x) = NaiveDate::parse_from_str(&captures[1], "%Y-%m-%d") {
+                    NaiveDateTime::from(x)
+                } else {
+                    panic!("Invalid date/time");
+                };
+            let local_now = Local.from_local_datetime(&date).unwrap();
+
+            todo::Requirement::AfterDate(local_now.into())
+        } else {
+            panic!("Failed to parse: {value}");
+        }
+    }
+}
+
+fn parse_minutes(minutes: &str) -> Result<Duration, ParseIntError> {
+    let minutes: u64 = minutes.parse()?;
+
+    Ok(Duration::from_secs(minutes * 60))
+}
+
+fn parse_id(id: &str) -> Result<Id, ParseIntError> {
+    let id = id.parse()?;
+
+    Ok(Id(id))
+}
 
 #[derive(Subcommand)]
 enum Command {
     Add {
         title: String,
-        priority: String,
-        estimate: u64,
-        requirements: Vec<String>,
+        priority: Priority,
+        #[arg(value_parser=parse_minutes)]
+        estimate: Duration,
+        requirements: Vec<Requirement>,
     },
     Done {
-        id: usize,
+        #[arg(value_parser=parse_id)]
+        id: Id,
     },
     Doing {
-        id: usize,
+        #[arg(value_parser=parse_id)]
+        id: Id,
     },
     Todo {
-        id: usize,
+        #[arg(value_parser=parse_id)]
+        id: Id,
     },
     Edit {
-        id: usize,
+        #[arg(value_parser=parse_id)]
+        id: Id,
         #[arg(short, long)]
-        add_requirements: Option<Vec<String>>,
+        add_requirements: Option<Vec<Requirement>>,
         #[arg(short = 'p', long)]
-        set_priority: Option<String>,
-        #[arg(short = 'e', long)]
-        set_estimate: Option<u64>,
+        set_priority: Option<Priority>,
+        #[arg(short = 'e', long, value_parser = parse_minutes)]
+        set_estimate: Option<Duration>,
         #[arg(short = 't', long)]
         set_title: Option<String>,
     },
@@ -53,69 +109,9 @@ struct Cli {
     command: Command,
 }
 
-impl From<Id> for NodeIndex<usize> {
-    fn from(value: Id) -> Self {
-        value.0
-    }
-}
-
 #[derive(Serialize, Deserialize)]
 struct Configuration {
     storage_path: PathBuf,
-}
-
-fn parse_priority(priority: &str) -> Priority {
-    // todo prolly should like throw an error for weird values
-    match priority {
-        "high" => Priority::High,
-        "low" => Priority::Low,
-        _ => Priority::Medium,
-    }
-}
-
-fn show_list(todo_store: &Store) {
-    fn render_todo(todo: &Todo) -> String {
-        let mut depends_string = "reqs: ".to_string();
-        for requirement in todo.requirements() {
-            depends_string += &format!("{requirement} ");
-        }
-
-        format!(
-            "{:>10} {:>10}     {} {} {}",
-            todo.id().to_string().color(Color::BrightBlack),
-            todo.priority().to_string(),
-            todo.title(),
-            if todo.requirements().is_empty() {
-                "".color(Color::Blue)
-            } else {
-                depends_string.color(Color::Blue)
-            },
-            format!("{}min", todo.estimate().as_secs() / 60).color(Color::BrightYellow)
-        )
-    }
-
-    let doing = todo_store.find_doing();
-
-    if !doing.is_empty() {
-        println!("{}", "Doing: ".color(Color::Yellow).bold());
-
-        for todo in doing {
-            let todo = render_todo(&todo);
-
-            println!("{todo}");
-        }
-
-        println!();
-    }
-
-    println!("{}", "Todo: ".color(Color::Red).bold());
-    let ready_to_do = todo_store.find_ready_to_do();
-
-    for todo in ready_to_do {
-        let todo = render_todo(&todo);
-
-        println!("{todo}");
-    }
 }
 
 fn read_configuration() -> Configuration {
@@ -166,50 +162,19 @@ fn main() {
             estimate,
             requirements,
         } => {
-            let id = todo_store.create(
-                title.clone(),
-                parse_priority(&priority),
-                Duration::from_secs(estimate * 60),
-                requirements
-                    .into_iter()
-                    .map(|x| parse_requirement(&x))
-                    .collect(),
-            );
-
-            println!("Inserted a new TODO with title \"{title}\" and ID {id}");
+            cli::add::execute(&mut todo_store, &title, priority, estimate, requirements);
         }
         Command::List => {
-            show_list(&todo_store);
+            cli::list::execute(&todo_store);
         }
         Command::Doing { id } => {
-            let id = Id(id);
-            let todo = todo_store.find_by_id(id);
-            if let Some(mut todo) = todo {
-                todo.transition_to(Status::Doing);
-                todo_store.save(todo);
-            } else {
-                println!("No todo with id {id}");
-            }
+            cli::state_transition::execute(&mut todo_store, id, Status::Doing);
         }
         Command::Done { id } => {
-            let id = Id(id);
-            let todo = todo_store.find_by_id(id);
-            if let Some(mut todo) = todo {
-                todo.transition_to(Status::Done);
-                todo_store.save(todo);
-            } else {
-                println!("No todo with id {id}");
-            }
+            cli::state_transition::execute(&mut todo_store, id, Status::Done);
         }
         Command::Todo { id } => {
-            let id = Id(id);
-            let todo = todo_store.find_by_id(id);
-            if let Some(mut todo) = todo {
-                todo.transition_to(Status::Todo);
-                todo_store.save(todo);
-            } else {
-                println!("No todo with id {id}");
-            }
+            cli::state_transition::execute(&mut todo_store, id, Status::Todo);
         }
         Command::Edit {
             id,
@@ -218,54 +183,14 @@ fn main() {
             set_estimate,
             set_title,
         } => {
-            let id = Id(id);
-            let todo = todo_store.find_by_id(id);
-            if let Some(mut todo) = todo {
-                if let Some(requirements) = add_requirements {
-                    for requirement in requirements {
-                        let requirement = parse_requirement(&requirement);
-                        todo.add_requirement(requirement);
-                    }
-                }
-
-                if let Some(priority) = set_priority {
-                    todo.set_priority(parse_priority(&priority));
-                }
-
-                if let Some(estimate) = set_estimate {
-                    todo.set_estimate(Duration::from_secs(60 * estimate));
-                }
-
-                if let Some(title) = set_title {
-                    todo.set_title(title);
-                }
-
-                todo_store.save(todo);
-            } else {
-                println!("No todo with id {id}");
-            }
+            cli::edit::execute(
+                &mut todo_store,
+                id,
+                add_requirements,
+                set_priority,
+                set_estimate,
+                set_title,
+            );
         }
-    }
-}
-
-fn parse_requirement(requirement: &str) -> todo::Requirement {
-    let after_date =
-        Regex::new(r"after\(([0-9]{4}\-[0-9]{2}\-[0-9]{2}(?: [0-9]{2}:[0-9]{2}:[0-9]{2})?)\)")
-            .unwrap();
-    if let Ok(id) = requirement.parse() {
-        todo::Requirement::TodoDone(Id(id))
-    } else if let Some(captures) = after_date.captures(requirement) {
-        let date = if let Ok(x) = NaiveDateTime::parse_from_str(&captures[1], "%Y-%m-%d %H:%M:%S") {
-            x
-        } else if let Ok(x) = NaiveDate::parse_from_str(&captures[1], "%Y-%m-%d") {
-            NaiveDateTime::from(x)
-        } else {
-            panic!("Invalid date/time");
-        };
-        let local_now = Local.from_local_datetime(&date).unwrap();
-
-        todo::Requirement::AfterDate(local_now.into())
-    } else {
-        panic!("Failed to parse: {requirement}");
     }
 }
