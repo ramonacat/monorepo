@@ -71,8 +71,8 @@ in
     };
 
     services.udev.extraRules = ''
-      ACTION=="add", ATTRS{idVendor}=="1532", ATTRS{idProduct}=="0067", RUN+="${pkgs.systemd}/bin/systemctl start dewindowsify"
-      ACTION=="remove", ATTRS{idVendor}=="1532", ATTRS{idProduct}=="0067", RUN+="${pkgs.systemd}/bin/systemctl start windowsify"
+      ACTION=="add", ATTRS{idVendor}=="1235", ATTRS{idProduct}=="8210", RUN+="${pkgs.systemd}/bin/systemctl start dewindowsify"
+      ACTION=="remove", ATTRS{idVendor}=="1235", ATTRS{idProduct}=="8210", RUN+="${pkgs.systemd}/bin/systemctl start windowsify"
     '';
   };
 }
