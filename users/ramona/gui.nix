@@ -26,6 +26,7 @@
         hunspellDicts.de_DE
         hunspellDicts.en_US
         hunspellDicts.pl_PL
+        ramona.lan-mouse
         keepassxc
         krita
         light

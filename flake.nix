@@ -23,7 +23,14 @@
 
   outputs = { self, nixpkgs, home-manager, rust-overlay, crane, nixos-hardware, agenix, nix-vscode-extensions, nix-minecraft, alacritty-theme }:
     let
-      overlays = [ (import rust-overlay) nix-minecraft.overlay alacritty-theme.overlays.default ];
+      overlays = [
+        (import rust-overlay)
+        nix-minecraft.overlay
+        alacritty-theme.overlays.default
+        (final: prev: {
+          ramona.lan-mouse = (import ./packages/lan-mouse.nix) { inherit pkgs craneLib; };
+        })
+      ];
       pkgsConfig = {
         allowUnfree = true;
         android_sdk.accept_license = true;
