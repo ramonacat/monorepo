@@ -1,5 +1,5 @@
 { nix-vscode-extensions }:
-{ lib, modulesPath, pkgs, ... }:
+{ config, lib, modulesPath, pkgs, ... }:
 {
   # colors: https://coolors.co/ff1885-19323c-9da2ab-f3de8a-988f2a
   config = {
@@ -56,6 +56,7 @@
         };
       };
 
+
       programs.vscode = {
         enable = true;
         mutableExtensionsDir = false;
@@ -106,6 +107,31 @@
       home.file.".moc/config".text = ''
         Theme = nightly_theme
       '';
-    };
+    } // (if (config.networking.hostName == "moonfall" || config.networking.hostName == "angelsin") then {
+      systemd.user.services.lan-mouse = {
+        Unit = {
+          Description = "LAN Mouse";
+        };
+        Install = {
+          WantedBy = [ "graphical-session.target" ];
+        };
+        Service = {
+          ExecStart = "${pkgs.ramona.lan-mouse}/bin/lan-mouse --daemon";
+        };
+      };
+      xdg.configFile."lan-mouse/config.toml".text =
+        if config.networking.hostName == "moonfall" then ''
+          [top]
+          hostname = "10.69.10.42"
+          activate_on_startup = true
+        '' else ''
+          [left]
+          hostname = "10.69.10.31"
+          activate_on_startup = true
+          [bottom]
+          hostname = "10.69.10.29"
+          activate_on_startup = true
+        '';
+    } else { });
   };
 }
