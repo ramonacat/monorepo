@@ -9,7 +9,7 @@ edition = "2021"
 amqprs = "1.5.3"
 async-trait = "0.1.74"
 chrono = "0.4.34"
-serde = "1.0.196"
+serde = "1.0.197"
 serde_json = "1.0.113"
 tokio = { version = "1.36.0", features = ["full"] }
 tracing = "0.1.40"
