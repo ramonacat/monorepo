@@ -123,7 +123,7 @@
       xdg.configFile."lan-mouse/config.toml".text =
         if config.networking.hostName == "moonfall" then ''
           [top]
-          hostname = "10.69.10.42"
+          hostname = "10.69.10.33"
           activate_on_startup = true
         '' else ''
           [left]
