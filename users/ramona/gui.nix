@@ -117,6 +117,7 @@
         };
         Service = {
           ExecStart = "${pkgs.ramona.lan-mouse}/bin/lan-mouse --daemon";
+          Restart = "always";
         };
       };
       xdg.configFile."lan-mouse/config.toml".text =
