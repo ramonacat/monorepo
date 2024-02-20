@@ -42,5 +42,7 @@
     services.power-profiles-daemon.enable = true;
     powerManagement.powertop.enable = true;
     services.upower.enable = true;
+
+    services.logind.lidSwitchDocked = "ignore";
   };
 }
