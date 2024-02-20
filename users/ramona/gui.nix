@@ -3,6 +3,12 @@
 {
   # colors: https://coolors.co/ff1885-19323c-9da2ab-f3de8a-988f2a
   config = {
+    # LANMouse
+    networking.firewall.allowedUDPPorts = [ 4242 ];
+
+    # pipewire over network
+    networking.firewall.allowedTCPPorts = [ 4656 ];
+
     home-manager.users.ramona = {
       programs.firefox.enable = true;
       programs.alacritty = {
@@ -116,7 +122,18 @@
           WantedBy = [ "graphical-session.target" ];
         };
         Service = {
-          ExecStart = "${pkgs.ramona.lan-mouse}/bin/lan-mouse --daemon";
+          ExecStart = pkgs.writeScript "lan-mouse-and-stuff" (''
+            #!${pkgs.stdenv.shell}
+
+          '' + (
+            if config.networking.hostName == "moonfall" then ''
+              ${pkgs.pulseaudio}/bin/pactl load-module module-native-protocol-tcp port=4656
+            '' else ''
+              ${pkgs.pulseaudio}/bin/pactl load-module module-tunnel-sink server=tcp:10.69.10.29:4656
+            ''
+          ) +
+          "${pkgs.ramona.lan-mouse}/bin/lan-mouse --daemon"
+          );
           Restart = "always";
         };
       };

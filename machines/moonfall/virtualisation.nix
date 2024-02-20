@@ -2,7 +2,7 @@
 
 let
   windowsify = pkgs.writeShellScript "windowsify" ''
-    ${pkgs.ddcutil}/bin/ddcutil --sn HRJH2P3 setvcp x60 x1b || true
+    ${pkgs.ddcutil}/bin/ddcutil --sn HRJH2P3 setvcp x60 x0f || true
     ${pkgs.ddcutil}/bin/ddcutil --sn 6MMF1P3 setvcp x60 x0f || true
     ${pkgs.ddcutil}/bin/ddcutil --sn JKPQT83 setvcp x60 x0f || true
     
@@ -13,7 +13,7 @@ let
   dewindowsify = pkgs.writeShellScript "dewindowsify" ''
     ${pkgs.ddcutil}/bin/ddcutil --sn HRJH2P3 setvcp x60 x0f || true
     ${pkgs.ddcutil}/bin/ddcutil --sn 6MMF1P3 setvcp x60 x11 || true
-    ${pkgs.ddcutil}/bin/ddcutil --sn JKPQT83 setvcp x60 x11 || true
+    ${pkgs.ddcutil}/bin/ddcutil --sn JKPQT83 setvcp x60 x1b || true
 
     systemctl set-property system.slice AllowedCPUs=0-31
     systemctl set-property user.slice AllowedCPUs=0-31
@@ -32,11 +32,12 @@ in
     boot.kernelParams = [
       "amd_iommu=on"
       # USB card & main GPU
-      "vfio-pci.ids=1912:0014,1002:744c,1002:ab30"
+      "vfio-pci.ids=1b21:2142,1002:744c,1002:ab30"
       "video=efifb:off,vesafb:off"
       "hugepagesz=1G"
       "hugepages=16"
       "amdgpu.sg_display=0"
+      "amdgpu.hw_i2c=1"
     ];
     security.polkit.enable = true;
     security.pam.loginLimits = [
@@ -72,7 +73,7 @@ in
 
     services.udev.extraRules = ''
       ACTION=="add", ATTRS{idVendor}=="1235", ATTRS{idProduct}=="8210", RUN+="${pkgs.systemd}/bin/systemctl start dewindowsify"
-      ACTION=="remove", ATTRS{idVendor}=="1235", ATTRS{idProduct}=="8210", RUN+="${pkgs.systemd}/bin/systemctl start windowsify"
+      ACTION=="remove", ENV{PRODUCT}=="1235/8210/645", RUN+="${pkgs.systemd}/bin/systemctl start windowsify"
     '';
   };
 }
