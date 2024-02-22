@@ -115,13 +115,38 @@ struct Configuration {
 }
 
 fn read_configuration() -> Configuration {
-    let xdg_directories = xdg::BaseDirectories::with_prefix("rat").unwrap();
-    let config_path = xdg_directories
-        .place_config_file("config.json")
-        .expect("Cannot find configuration file destination");
-    let default_data_path = xdg_directories
-        .place_data_file("todos.json")
-        .expect("Failed to place the data file");
+    let mut xdg_config_directory: PathBuf = std::env::var("XDG_CONFIG_HOME")
+        .map(PathBuf::from)
+        .or_else(|_| {
+            let mut path = PathBuf::from(std::env::var("HOME")?);
+            path.push(".config");
+            Ok::<PathBuf, std::env::VarError>(path)
+        })
+        .unwrap();
+
+    xdg_config_directory.push("rat/");
+
+    std::fs::create_dir_all(&xdg_config_directory).unwrap();
+
+    let mut config_path = xdg_config_directory.clone();
+    config_path.push("config.json");
+
+    let mut xdg_data_directory: PathBuf = std::env::var("XDG_DATA_HOME")
+        .map(PathBuf::from)
+        .or_else(|_| {
+            let mut path = PathBuf::from(std::env::var("HOME")?);
+            path.push(".local/share");
+
+            Ok::<PathBuf, std::env::VarError>(path)
+        })
+        .unwrap();
+
+    xdg_data_directory.push("rat/");
+
+    std::fs::create_dir_all(&xdg_data_directory).unwrap();
+
+    let mut default_data_path = xdg_data_directory.clone();
+    default_data_path.push("todos.json");
 
     if !config_path.exists() {
         let mut config_file =

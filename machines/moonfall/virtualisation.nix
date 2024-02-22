@@ -2,7 +2,7 @@
 
 let
   windowsify = pkgs.writeShellScript "windowsify" ''
-    ${pkgs.ddcutil}/bin/ddcutil --sn HRJH2P3 setvcp x60 x0f || true
+    ${pkgs.ddcutil}/bin/ddcutil --sn HRJH2P3 setvcp x60 x1b || true
     ${pkgs.ddcutil}/bin/ddcutil --sn 6MMF1P3 setvcp x60 x0f || true
     ${pkgs.ddcutil}/bin/ddcutil --sn JKPQT83 setvcp x60 x0f || true
     
