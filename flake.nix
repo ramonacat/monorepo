@@ -143,6 +143,7 @@
             ./modules/greetd.nix
             ./modules/installed_base.nix
             ./modules/nas-client.nix
+            ./modules/steam.nix
             ./modules/syncthing.nix
             ./modules/telegraf.nix
             ./modules/terraform-tokens.nix
@@ -188,12 +189,12 @@
 
             ./machines/angelsin/hardware.nix
             ./machines/angelsin/networking.nix
-            ./machines/angelsin/steam.nix
             ./machines/angelsin/users/ramona_gui.nix
             ./machines/angelsin/virtual-screen.nix
             ./modules/greetd.nix
             ./modules/installed_base.nix
             ./modules/nas-client.nix
+            ./modules/steam.nix
             ./modules/syncthing.nix
             ./modules/telegraf.nix
             ./modules/terraform-tokens.nix
