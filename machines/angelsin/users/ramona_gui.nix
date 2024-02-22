@@ -29,6 +29,47 @@
           };
         };
 
+      services.kanshi = {
+        enable = true;
+        profiles.standalone = {
+          outputs = [
+            {
+              criteria = "BOE 0x0BCA Unknown";
+              status = "enable";
+              position = "0,0";
+            }
+          ];
+          exec = "${pkgs.systemd}/bin/systemctl --user stop lan-mouse";
+        };
+        profiles.desk = {
+          outputs = [
+            {
+              criteria = "BOE 0x0BCA Unknown";
+              status = "disable";
+            }
+            {
+              criteria = "LG Electronics LG ULTRAFINE 302MAUAEEJ14";
+              status = "enable";
+              position = "1920,0";
+              scale = 1.5;
+            }
+            {
+              criteria = "Dell Inc. DELL U2415 XKV0P9C334FS";
+              status = "enable";
+              position = "4480,0";
+              scale = 1.0;
+            }
+            {
+              criteria = "Dell Inc. DELL U2415 7MT0186418CU";
+              status = "enable";
+              position = "0,0";
+              scale = 1.0;
+            }
+          ];
+          exec = "${pkgs.systemd}/bin/systemctl --user restart lan-mouse";
+        };
+      };
+
       wayland.windowManager.sway = {
         config = {
           input = {
