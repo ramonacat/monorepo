@@ -13,6 +13,7 @@ use todo::{Id, Requirement, Status};
 use crate::todo::Priority;
 
 mod cli;
+mod datafile;
 mod store;
 mod todo;
 
