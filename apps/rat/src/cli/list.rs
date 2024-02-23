@@ -1,6 +1,6 @@
 use colored::{Color, Colorize as _};
 
-use crate::{store::Store, todo::Todo};
+use crate::{todo::store::Store, todo::Todo};
 
 fn render_todo(todo: &Todo) -> String {
     let mut depends_string = "reqs: ".to_string();

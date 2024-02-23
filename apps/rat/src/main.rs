@@ -7,14 +7,13 @@ use clap::{Parser, Subcommand};
 
 use regex::Regex;
 use serde::{Deserialize, Serialize};
-use store::Store;
+use todo::store::Store;
 use todo::{Id, Requirement, Status};
 
 use crate::todo::Priority;
 
 mod cli;
 mod datafile;
-mod store;
 mod todo;
 
 // TODO: convert to a func and value_parser it, so we can acutally error out
