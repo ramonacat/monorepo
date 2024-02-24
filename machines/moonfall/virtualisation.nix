@@ -2,18 +2,18 @@
 
 let
   windowsify = pkgs.writeShellScript "windowsify" ''
-    ${pkgs.ddcutil}/bin/ddcutil --sn HRJH2P3 setvcp x60 x1b || true
-    ${pkgs.ddcutil}/bin/ddcutil --sn 6MMF1P3 setvcp x60 x0f || true
-    ${pkgs.ddcutil}/bin/ddcutil --sn JKPQT83 setvcp x60 x0f || true
+    # ${pkgs.ddcutil}/bin/ddcutil --sn HRJH2P3 setvcp x60 x1b || true
+    # ${pkgs.ddcutil}/bin/ddcutil --sn 6MMF1P3 setvcp x60 x0f || true
+    # ${pkgs.ddcutil}/bin/ddcutil --sn JKPQT83 setvcp x60 x0f || true
     
     systemctl set-property system.slice AllowedCPUs=22-31
     systemctl set-property user.slice AllowedCPUs=22-31
     systemctl --user --machine ramona@ stop swayidle.service
   '';
   dewindowsify = pkgs.writeShellScript "dewindowsify" ''
-    ${pkgs.ddcutil}/bin/ddcutil --sn HRJH2P3 setvcp x60 x0f || true
-    ${pkgs.ddcutil}/bin/ddcutil --sn 6MMF1P3 setvcp x60 x11 || true
-    ${pkgs.ddcutil}/bin/ddcutil --sn JKPQT83 setvcp x60 x1b || true
+    # ${pkgs.ddcutil}/bin/ddcutil --sn HRJH2P3 setvcp x60 x0f || true
+    # ${pkgs.ddcutil}/bin/ddcutil --sn 6MMF1P3 setvcp x60 x11 || true
+    # ${pkgs.ddcutil}/bin/ddcutil --sn JKPQT83 setvcp x60 x1b || true
 
     systemctl set-property system.slice AllowedCPUs=0-31
     systemctl set-property user.slice AllowedCPUs=0-31
@@ -75,5 +75,22 @@ in
       ACTION=="add", ATTRS{idVendor}=="1235", ATTRS{idProduct}=="8210", RUN+="${pkgs.systemd}/bin/systemctl start dewindowsify"
       ACTION=="remove", ENV{PRODUCT}=="1235/8210/645", RUN+="${pkgs.systemd}/bin/systemctl start windowsify"
     '';
+
+    systemd.services.permissions-looking-glass = {
+      description = "Set permissions for looking glass shm file";
+      serviceConfig = {
+        Type = "oneshot";
+        ExecStart = "${pkgs.coreutils}/bin/chown ramona:kvm /dev/shm/looking-glass";
+      };
+    };
+
+    systemd.timers.permissions-looking-glass = {
+      wantedBy = [ "timers.target" ];
+      timerConfig = {
+        OnBootSec = "1m";
+        OnUnitActiveSec = "1m";
+        Unit = "permissions-looking-glass.service";
+      };
+    };
   };
 }

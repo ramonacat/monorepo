@@ -7,6 +7,7 @@
     home-manager.users.ramona = {
       home.packages = with pkgs; [
         polychromatic
+        looking-glass-client
         (pkgs.writeShellScriptBin "rebuild-all-machines" ''
           #!/usr/bin/env bash
 
