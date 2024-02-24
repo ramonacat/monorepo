@@ -143,9 +143,6 @@
           hostname = "10.69.10.33"
           activate_on_startup = true
         '' else ''
-          [left]
-          hostname = "10.69.10.31"
-          activate_on_startup = true
           [bottom]
           hostname = "10.69.10.29"
           activate_on_startup = true
