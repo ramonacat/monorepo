@@ -3,7 +3,10 @@ use std::{collections::HashMap, path::PathBuf, time::Duration};
 use chrono::Utc;
 use thiserror::Error;
 
-use crate::todo::{Id, IdGenerator, Priority, Requirement, Status, Todo};
+use crate::{
+    datafile::DataFile,
+    todo::{Id, IdGenerator, Priority, Requirement, Status, Todo},
+};
 
 pub struct Store {
     path: PathBuf,
@@ -17,17 +20,6 @@ impl Store {
         Self { path }
     }
 
-    fn read(&self) -> HashMap<Id, Todo> {
-        let raw_data = std::fs::read_to_string(&self.path).unwrap();
-        serde_json::from_str::<HashMap<Id, Todo>>(&raw_data).unwrap()
-    }
-
-    fn write(&mut self, todos: &HashMap<Id, Todo>) {
-        let serialized_data = serde_json::to_string_pretty(&todos).unwrap();
-
-        std::fs::write(&self.path, serialized_data).unwrap();
-    }
-
     pub fn create(
         &mut self,
         title: String,
@@ -35,16 +27,16 @@ impl Store {
         estimate: Duration,
         requirements: Vec<Requirement>,
     ) -> Id {
-        let mut todos = self.read();
+        let mut datafile = DataFile::open_path(&self.path);
         let mut id_generator =
-            IdGenerator::new(todos.values().map(|x| x.id().0).max().unwrap_or(0));
+            IdGenerator::new(datafile.todos.values().map(|x| x.id().0).max().unwrap_or(0));
 
         let id = id_generator.next();
 
         let new_todo = Todo::new(id, title, priority, requirements, estimate);
-        todos.insert(id, new_todo);
+        datafile.todos.insert(id, new_todo);
 
-        self.write(&todos);
+        datafile.save(&self.path);
 
         id
     }
@@ -73,11 +65,12 @@ impl Store {
     }
 
     pub fn find_ready_to_do(&self) -> Vec<Todo> {
-        let all_todos = self.read();
-        let mut todos_to_consider = all_todos
+        let datafile = DataFile::open_path(&self.path);
+        let mut todos_to_consider = datafile
+            .todos
             .values()
             .filter(|v| v.status() == crate::todo::Status::Todo)
-            .filter(|v| Self::evaluate_requirements(&all_todos, v.requirements()))
+            .filter(|v| Self::evaluate_requirements(&datafile.todos, v.requirements()))
             .cloned()
             .collect::<Vec<_>>();
 
@@ -87,24 +80,26 @@ impl Store {
     }
 
     pub fn find_doing(&self) -> Vec<Todo> {
-        let all = self.read();
+        let datafile = DataFile::open_path(&self.path);
 
-        all.into_values()
+        datafile
+            .todos
+            .into_values()
             .filter(|x| x.status() == Status::Doing)
             .collect()
     }
 
     pub fn find_by_id(&self, id: Id) -> Option<Todo> {
-        let all = self.read();
+        let datafile = DataFile::open_path(&self.path);
 
-        all.get(&id).cloned()
+        datafile.todos.get(&id).cloned()
     }
 
     pub fn save(&mut self, todo: Todo) {
-        let mut all_todos = self.read();
+        let mut datafile = DataFile::open_path(&self.path);
 
-        all_todos.insert(todo.id(), todo);
+        datafile.todos.insert(todo.id(), todo);
 
-        self.write(&all_todos);
+        datafile.save(&self.path);
     }
 }
