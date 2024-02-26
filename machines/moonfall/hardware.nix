@@ -29,5 +29,6 @@
     boot.loader.efi.canTouchEfiVariables = true;
 
     hardware.openrazer.enable = true;
+    environment.etc."pipewire/pipewire.conf.d/roc-sink.conf".source = lib.mkForce ./roc-source.pipewire.conf;
   };
 }
