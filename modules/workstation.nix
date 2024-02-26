@@ -16,7 +16,9 @@
       };
     };
 
-    environment.etc."pipewire/pipewire.conf.d/scarlett.conf".source = ./scarlett.pipewire.conf;
+    environment.etc."pipewire/pipewire.conf.d/roc-sink.conf".source = ./roc-sink.pipewire.conf;
+    networking.firewall.allowedUDPPorts = [ 10001 10002 10003 ];
+    networking.firewall.allowedTCPPorts = [ 10001 10002 10003 ];
     boot.plymouth = {
       enable = true;
       theme = "breeze";
