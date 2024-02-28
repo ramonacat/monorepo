@@ -54,6 +54,7 @@ lspconfig.lua_ls.setup({
 })
 lspconfig.nixd.setup({})
 lspconfig.terraformls.setup({})
+lspconfig.csharp_ls.setup({})
 
 vim.keymap.set("n", "<space>e", vim.diagnostic.open_float)
 vim.keymap.set("n", "[d", vim.diagnostic.goto_prev)
