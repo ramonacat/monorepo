@@ -29,6 +29,26 @@
     boot.loader.efi.canTouchEfiVariables = true;
 
     hardware.openrazer.enable = true;
-    environment.etc."pipewire/pipewire.conf.d/roc-sink.conf".source = lib.mkForce ./roc-source.pipewire.conf;
+
+    services.pipewire.extraConfig.pipewire = {
+      "99-roc-sink" = lib.mkForce {
+        "context.modules" = [{
+          "name" = "libpipewire-module-roc-source";
+          "args" = {
+            "local.ip" = "0.0.0.0";
+            "resampler.profile" = "medium";
+            "fec.code" = "rs8m";
+            "ses.latency.msec" = 5000;
+            "local.source.port" = 10001;
+            "local.repair.port" = 10002;
+            "local.control.port" = 10003;
+            "source.name" = "ROC source";
+            "source.props" = {
+              "node.name" = "roc-source";
+            };
+          };
+        }];
+      };
+    };
   };
 }
