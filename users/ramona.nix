@@ -20,11 +20,7 @@
         ripgrep
         nixd
         ratPackage
-      ] ++ (if pkgs.system == "x86_64-linux" then [
-        android-studio
-        androidenv.androidPkgs_9_0.androidsdk
-        androidenv.androidPkgs_9_0.platform-tools
-      ] else [ ]);
+      ];
 
       programs.rat = {
         enable = lib.attrsets.hasAttrByPath [ "services" "syncthing" "settings" "folders" "shared" ] config;

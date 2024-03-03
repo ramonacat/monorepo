@@ -140,6 +140,7 @@
             ./machines/moonfall/networking.nix
             ./machines/moonfall/users/ramona_gui.nix
             ./machines/moonfall/virtualisation.nix
+            ./modules/android-dev.nix
             ./modules/greetd.nix
             ./modules/installed_base.nix
             ./modules/nas-client.nix
@@ -191,6 +192,7 @@
             ./machines/angelsin/networking.nix
             ./machines/angelsin/users/ramona_gui.nix
             ./machines/angelsin/virtual-screen.nix
+            ./modules/android-dev.nix
             ./modules/greetd.nix
             ./modules/installed_base.nix
             ./modules/nas-client.nix
