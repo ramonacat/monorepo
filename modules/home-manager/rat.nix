@@ -1,6 +1,10 @@
-{ ratPackage }:
-{ lib, modulesPath, pkgs, config, ... }:
-{
+{ratPackage}: {
+  lib,
+  modulesPath,
+  pkgs,
+  config,
+  ...
+}: {
   options = {
     programs.rat = {
       enable = lib.mkEnableOption "rat";
@@ -10,12 +14,14 @@
       };
     };
   };
-  config =
-    let
-      cfg = config.programs.rat;
-    in
+  config = let
+    cfg = config.programs.rat;
+  in
     lib.mkIf cfg.enable {
-      home.packages = [ ratPackage ];
-      xdg.configFile."rat/config.json".text = if cfg.dataFile != "" then (builtins.toJSON { storage_path = cfg.dataFile; }) else (builtins.toJSON { });
+      home.packages = [ratPackage];
+      xdg.configFile."rat/config.json".text =
+        if cfg.dataFile != ""
+        then (builtins.toJSON {storage_path = cfg.dataFile;})
+        else (builtins.toJSON {});
     };
 }

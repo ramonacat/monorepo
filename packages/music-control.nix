@@ -1,5 +1,7 @@
-{ pkgs, craneLib }:
-let
+{
+  pkgs,
+  craneLib,
+}: let
   sourceFilter = path: type: craneLib.filterCargoSources path type || (builtins.match ".*/resources/.*" path != null);
   packageArguments = {
     src = pkgs.lib.cleanSourceWith {
@@ -13,6 +15,7 @@ let
   };
   cargoArtifacts = craneLib.buildDepsOnly packageArguments;
 in
-craneLib.buildPackage (packageArguments // {
-  cargoArtifacts = cargoArtifacts;
-})
+  craneLib.buildPackage (packageArguments
+    // {
+      cargoArtifacts = cargoArtifacts;
+    })

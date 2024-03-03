@@ -1,5 +1,9 @@
-{ config, pkgs, lib, ... }:
 {
+  config,
+  pkgs,
+  lib,
+  ...
+}: {
   config = {
     age.secrets.minio-tempo = {
       file = ../../secrets/minio-tempo.age;
@@ -7,8 +11,8 @@
       mode = "440";
     };
 
-    users.groups.tempo-secrets = { };
-    users.groups.tempo = { };
+    users.groups.tempo-secrets = {};
+    users.groups.tempo = {};
     users.users.tempo = {
       group = "tempo";
       isSystemUser = true;
@@ -35,8 +39,8 @@
           receivers = {
             otlp = {
               protocols = {
-                "grpc" = { };
-                "http" = { };
+                "grpc" = {};
+                "http" = {};
               };
             };
           };

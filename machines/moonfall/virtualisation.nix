@@ -1,6 +1,9 @@
-{ config, pkgs, lib, ... }:
-
-let
+{
+  config,
+  pkgs,
+  lib,
+  ...
+}: let
   windowsify = pkgs.writeShellScript "windowsify" ''
     systemctl set-property system.slice AllowedCPUs=22-31
     systemctl set-property user.slice AllowedCPUs=22-31
@@ -13,13 +16,12 @@ let
   '';
   bindVfio = pkgs.writeShellScript "bind-vfio" ''
     echo -n "vfio-pci" > /sys/bus/pci/devices/0000:07:00.0/driver_override # USB controller
-    echo -n "vfio-pci" > /sys/bus/pci/devices/0000:03:00.0/driver_override # GPU 
+    echo -n "vfio-pci" > /sys/bus/pci/devices/0000:03:00.0/driver_override # GPU
     echo -n "vfio-pci" > /sys/bus/pci/devices/0000:03:00.1/driver_override # GPU
 
     modprobe -i vfio-pci
   '';
-in
-{
+in {
   config = {
     boot.kernelParams = [
       "amd_iommu=on"
@@ -32,7 +34,12 @@ in
     ];
     security.polkit.enable = true;
     security.pam.loginLimits = [
-      { domain = "*"; item = "memlock"; type = "-"; value = "unlimited"; }
+      {
+        domain = "*";
+        item = "memlock";
+        type = "-";
+        value = "unlimited";
+      }
     ];
     boot.kernel.sysctl = {
       "vm.nr_hugepages" = 9000;
@@ -76,7 +83,7 @@ in
     };
 
     systemd.timers.permissions-looking-glass = {
-      wantedBy = [ "timers.target" ];
+      wantedBy = ["timers.target"];
       timerConfig = {
         OnBootSec = "1m";
         OnUnitActiveSec = "1m";

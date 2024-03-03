@@ -1,5 +1,7 @@
-{ pkgs, craneLib }:
-let
+{
+  pkgs,
+  craneLib,
+}: let
   packageArguments = {
     src = pkgs.fetchFromGitHub {
       owner = "feschber";
@@ -18,7 +20,7 @@ let
   };
   cargoArtifacts = craneLib.buildDepsOnly packageArguments;
 in
-craneLib.buildPackage (packageArguments // {
-  cargoArtifacts = cargoArtifacts;
-})
-
+  craneLib.buildPackage (packageArguments
+    // {
+      cargoArtifacts = cargoArtifacts;
+    })

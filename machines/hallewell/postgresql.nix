@@ -1,5 +1,9 @@
-{ config, pkgs, lib, ... }:
 {
+  config,
+  pkgs,
+  lib,
+  ...
+}: {
   config = {
     age.secrets."wal-g-config.env" = {
       file = ../../secrets/wal-g-config.env.age;
@@ -19,7 +23,7 @@
 
       package = pkgs.postgresql_16;
       dataDir = "/mnt/nas3/postgresql/16/";
-      initdbArgs = [ "--data-checksums" ];
+      initdbArgs = ["--data-checksums"];
       enableTCPIP = true;
       settings = {
         wal_level = "replica";

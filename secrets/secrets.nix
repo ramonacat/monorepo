@@ -1,7 +1,7 @@
 let
   ramona = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIKK5e1b1wQLyZ0RByYmhlKj4Kksv4dvnwTowDPaGsq4D openpgp:0x7688871E";
 
-  users = [ ramona ];
+  users = [ramona];
 
   ananas = "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAACAQDQC6CRqzZNn6uGMQy5Oly22LoYS9cu2MIqt5zud/gSyatDjIQATa1/7CRKVIO8VSnGA/gX53SwbOUGA+/PPbLpkgP0aHiGLDwf4JfPYUCNFGLFQmKAf/PZYP2CRykgC81/KfsdytPpWtD3DYT9akFLvFkSJjz6uX9i4LnSAjdvaE1++XHalrK0bTvwZnhWUNOtJp4xdLCEYvzsZ5h9isz6U/tybf+hZH16+B4UKoNCNCS93CDgq2rBgYwiGu7Wac1SI0tzduRY+GO+r4pk2U/ljcUGhuSxypTun+W9VkLHPbdlWPYO0h+t5iOcA0LkuuJl4sKtB0Wnd5tNCd333kSNMoQmvimOdzrz4PprzVKrulc7nAoFE5S22FR8mSxuwuga+yctBHtnXV/8aqbfjvnklrAnk/EoxKVmYW2V5PAlXP2kirc/6S3CXye6CnqMqm5EKPAXOF9GWYypZqFf5/YUoVmifgLEBGkhxEYM2C4Xwh55ro9svvT+sx2b4p35loVAL7WqQF+wwHNap0CoTf4BqmiGHwkf/CBeDKbS+p7Paxf1Rb1uiNrQHqqya30BiVmQHiIAIpppEeNl4sI8V7KFjeNNWExSkKrm6RKr9IJeLMmQ1yrSCVxTqZuzF4Rw9/jW9Bm+BEf5k43ghAS4O0p4ZHOPCOfgOjDsQdrsseIw8Q==";
   shadowmend = "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAACAQDiWY5wJeGVrXM88JQtolgjMKDstficIf+feng/XQP7kVoAMbmGbq7+Qa1bkaP/ov0ib+GDtN0hhmn/GIo55BMGmuAXTooMp372hMX8VJRucmn4APrga5NBDhHCvc1V1icHShLtKvpXr5M/Yr6/MHsGrqLGhCdVkpiB3Zrtmc4bTVbmdg+pDfZUgrY8p/uSic/nKQEBGUsvOuqc6KZnHcIyoBRZjpe50R3w8mlCKXribTzDR4/JArYCZThwzZsUl6aTC5FyGFjcazQCjg8NS75wPbHUu4kXpnMVp0eepLrrJCS+QFV3psk4jvhjuhKu3ciVLqWYXZ2CHqkHsBTGQFm3EFlHY7LknsTsHKzJvbyyOMMTdiE88YqTGHTuui3iPFrCYNCGQAJIOSdWOjAKmv490E4/CjOnUQKsly9JMgk5Exaoz3Xcz6LGkvnJVarSI1ozD5iUvtQ/yLZC9QVK03HQBuLEO3aO1BLY9bJuaGskY8cDQTU0LUoELFTFcAJvoKHF/SZtyQbiAVH2WKx269bS+oXUYCVdn5o7uSIuFXh1VgVmejlXtZqZcTjDAOrxgEyN9YCav6YpN/MWgvPtl7rEY/JoSOLLPDxOyqUI2ngH2UrFEwBYUVHtBWlFD4N/uumz/t56XrF5d6GSu0+8FWko1kRCjcdUnZoQ1yFqdmwH5w==";
@@ -10,16 +10,15 @@ let
   angelsin = "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAACAQDD5aFk1GzydeSz09RrokKhqmtDpQLi4fw5T4UQ1sLiqjOqgK9Z0gwW4+97GMAmZtZWmQsIxZjunrvjypXFYD/HngF/PcGCtxVqMOb25qtJvE3jnOkMEjiVEg8uHCUIiALymn8ALay6el0MpRtCYNnPuJFdDjeLsSsKuiavn0i7GDj8jxgJ4lGpQf8043ZHVqENtip7trxDnTD/K81Oyb3hOv/LXqq550Q5r5zZCKVSSjyU9hQklGaCNNczCKZCiPI4gEmHx+TScC+Habmbw8CZCYy/rlrzW4QYZC49zrg26/A9bx9xNlYSGGS9MQUDpNcVA1fj+0WCsongryScNIn5Nb+reN8EiOyObSkR3vQXIlf2EmLdQghqiEwh2G6PVamDUEbeByCvHmrVrZ34Kgm9jyQYey62J3cJec0yD6MTBBujCwvigWiSI9VlV/Ty+hzOPrKhadpK4Wg+qyaa2rDUCEXeZKYL2JO9wsOzHCRv4DIdBmPm0rr3oKpebDxuOVhtpQrdqSJYKLvFAIvA57oRH2/Tlt78jVI3wjADJpR92rLL680OaA51HzkRYJciVjKOyi2rfW34dZQ6zVa16d2g6nI9UM9jM3SLof/iR1/35l6loDUoaV/7H1vFjRldCbFnsY7YlKDD9lLYIAqtFYTSnhMVYx67kmbpWLgyn578WQ==";
   evillian = "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAACAQCM95yB5QqRisvsdy0nqZA+eTDbs2iEPXi2nUY93XDStwAlg3Gekn2cImwospCjQoHB13x7M96y8YJZuqZ6V4EcdS4doHzNY4Q9tX9nLKFilyEoarfV/b4pUza4Q2RExxrQN59vN0PVUWvkVaxGuogUPKOwm89eGlD7ZmpMoLebZ+3r7vPCT98NK3TLmpk1FJeeoqjYkg7xIbAvK6VsH67jxrcyexQXJCsSy5rN5x3eUwJm+TtXaciqliGhC2/ITAb3+a0BwCMWqU+vyK9YAXjk18FyzPZTpYUn1nrQqq15DGuWxb9lOqTMDrpbefnovozUKyTfiFWD1UqfaMzan7GKfvlpFWdpzBPz392frRwB+0+71mm41m9h4fqiScz4XjdDZ0ls3zmCI8X9CIftvL3gI7mgNXVX4DM8qNZ2CfJTrgElpstrKzDyCUG49hqYSi7E8lXJ8rtCyiGrqefR4H/s7fx7zIiCimj1pMslyPhh6KuGkcoF+QjPE/4Xrm9WTjyG/7fgyGTJsAzk4+891q6kk6SumJjNmhUKo6uLyFbbgVZOgr6RrQbCExwcHT6bzsl2eYQg6V9D5nTnXaV9cG29SC2guwZxHUOSE7K73euWmxZtLqK3mRwO6dAd9Sa/4j5NFklk9ZtBdDKahXzjPhWOML7Xd1fsCVxs35j8CsU7jQ==";
   caligari = "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAACAQCv5LvTKJKnPm6rQ44/6Zs/xPcOiXWSj51bsg2/sZLvWx7tDWDzHwOJ0P56ThtEIpH7Pp2DTeX4aSQkfvWtSzv0ga6MFZ16VP9qfv+YJ2VVvuSoSQewt0IZDUBmXM9dH2K2Y07j0/DpUq+sHxkY9kg3iXpKR4jbgNfzAa6mDNK3o0kl4rQs1rjkbYYPmBQmT1APzJ5p72mBbTPx5BX14kbWZlhq9FM8kbaLBWJzl8efQVjkY7msDHF+XGY7qv715Oaz+0IdifYeDrsvWy0LhnuWRvPP5w8vewj7PDz6fsFEIgKvI/tHUuOG1h+gG3CPcNugiWN9R8wxxSUb9Nw8HJ9wznnwID3MHaMouNYth2bPFtargyni2aQkaooHVOU+1CJyIKh14rap0Tf23dT9RGxq8qPMXg+i4444FXCr7Cf8jpaz9jzGUvEbAfRiHBgmyozR26Hbnn+Q+Nc98YzaSXEi4DVoS03wKf7JWVCu4bbYohCT8kKrYhyLJ1vxW5MTfMvyYVlhkWipJvgJYAckPRe3lXGNon6rYNmlAcanmQ4/v40jEl1UHCwyi5DxRvEbu96qEZxaLII5UhHFyYEOJcno1vJhhPoBgXou+XKnPDaFDDco08i2V/7qSaHS/1GZpwGfbugWHYckJ+P4K3lzIYuWQ2dnIHGCq+nlnJVisL68dQ==";
-in
-{
-  "rabbitmq-ha.age".publicKeys = users ++ [ shadowmend ];
-  "minio-root.age".publicKeys = users ++ [ hallewell ];
-  "minio-tempo.age".publicKeys = users ++ [ hallewell ];
-  "wal-g-config.env.age".publicKeys = users ++ [ hallewell ];
-  "telegraf-database.age".publicKeys = users ++ [ hallewell ananas shadowmend moonfall angelsin evillian caligari ];
-  "universal-root.age".publicKeys = users ++ [ hallewell ananas shadowmend moonfall angelsin evillian caligari ];
-  "minio-terraform-state.age".publicKeys = users ++ [ moonfall angelsin ];
-  "terraform-tokens.age".publicKeys = users ++ [ moonfall angelsin ];
-  "caligari-minecraft-rclone-config.age".publicKeys = users ++ [ caligari ];
-  "caligari-github-pat-runner-registration.age".publicKeys = users ++ [ caligari ];
+in {
+  "rabbitmq-ha.age".publicKeys = users ++ [shadowmend];
+  "minio-root.age".publicKeys = users ++ [hallewell];
+  "minio-tempo.age".publicKeys = users ++ [hallewell];
+  "wal-g-config.env.age".publicKeys = users ++ [hallewell];
+  "telegraf-database.age".publicKeys = users ++ [hallewell ananas shadowmend moonfall angelsin evillian caligari];
+  "universal-root.age".publicKeys = users ++ [hallewell ananas shadowmend moonfall angelsin evillian caligari];
+  "minio-terraform-state.age".publicKeys = users ++ [moonfall angelsin];
+  "terraform-tokens.age".publicKeys = users ++ [moonfall angelsin];
+  "caligari-minecraft-rclone-config.age".publicKeys = users ++ [caligari];
+  "caligari-github-pat-runner-registration.age".publicKeys = users ++ [caligari];
 }

@@ -1,5 +1,9 @@
-{ config, pkgs, lib, ... }:
 {
+  config,
+  pkgs,
+  lib,
+  ...
+}: {
   config = {
     services.nginx = {
       enable = true;
@@ -18,6 +22,6 @@
       defaults.email = "ramona@luczkiewi.cz";
     };
 
-    networking.firewall.allowedTCPPorts = [ 80 443 ];
+    networking.firewall.allowedTCPPorts = [80 443];
   };
 }

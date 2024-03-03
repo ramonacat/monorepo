@@ -1,7 +1,12 @@
-{ config, pkgs, lib, ... }: {
+{
+  config,
+  pkgs,
+  lib,
+  ...
+}: {
   config = {
     networking.firewall.allowedTCPPorts = [
-      # For VNC 
+      # For VNC
       5900
     ];
   };
