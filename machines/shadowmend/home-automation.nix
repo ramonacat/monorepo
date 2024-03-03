@@ -1,6 +1,9 @@
-{ homeAutomationPackage }:
-{ config, pkgs, lib, ... }:
-{
+{homeAutomationPackage}: {
+  config,
+  pkgs,
+  lib,
+  ...
+}: {
   age.secrets.rabbitmq-ha = {
     file = ../../secrets/rabbitmq-ha.age;
     group = "home-automation-secrets";
@@ -8,13 +11,13 @@
   };
 
   virtualisation.docker.enable = true;
-  environment.systemPackages = with pkgs; [ docker-compose ];
+  environment.systemPackages = with pkgs; [docker-compose];
 
-  users.groups.home-automation-secrets = { };
+  users.groups.home-automation-secrets = {};
 
   systemd.services.home-automation = {
-    wantedBy = [ "multi-user.target" ];
-    after = [ "network.target" "rabbitmq.target" ];
+    wantedBy = ["multi-user.target"];
+    after = ["network.target" "rabbitmq.target"];
     description = "Home automation";
     serviceConfig = {
       Type = "simple";

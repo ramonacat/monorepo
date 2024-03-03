@@ -1,8 +1,12 @@
-{ config, pkgs, lib, ... }:
 {
+  config,
+  pkgs,
+  lib,
+  ...
+}: {
   config = {
     users.users.ramona = {
-      extraGroups = [ "libvirtd" "openrazer" ];
+      extraGroups = ["libvirtd" "openrazer"];
     };
     home-manager.users.ramona = {
       home.packages = with pkgs; [
@@ -25,7 +29,7 @@
       ];
       wayland.windowManager.sway = {
         extraConfigEarly = ''
-          	'';
+        '';
         config = {
           output = {
             "Dell Inc. DELL U2723QE HRJH2P3" = {

@@ -1,5 +1,9 @@
-{ config, pkgs, lib, ... }:
 {
+  config,
+  pkgs,
+  lib,
+  ...
+}: {
   config = {
     services.jellyfin = {
       enable = true;
@@ -10,12 +14,12 @@
       uid = 16969;
       group = "nas";
     };
-    users.groups.nas = { };
+    users.groups.nas = {};
     services.nfs.server.enable = true;
     services.nfs.server.exports = ''
       /mnt/nas3/data 10.69.10.0/24(rw,sync,all_squash,anonuid=16969,no_subtree_check,insecure) 100.0.0.0/8(rw,sync,all_squash,anonuid=16969,no_subtree_check,insecure)
     '';
-    networking.firewall.allowedTCPPorts = [ 20048 2049 111 ];
+    networking.firewall.allowedTCPPorts = [20048 2049 111];
 
     services.samba-wsdd.enable = true;
 
@@ -27,7 +31,7 @@
         workgroup = WORKGROUP
         server string = smbnix
         netbios name = smbnix
-        security = user 
+        security = user
         #use sendfile = yes
         #max protocol = smb2
         # note: localhost is the ipv6 localhost ::1
@@ -54,7 +58,7 @@
 
     # Backups
     systemd.services.backup = {
-      after = [ "network.target" ];
+      after = ["network.target"];
       description = "Backup the NAS";
       serviceConfig = {
         Type = "oneshot";
@@ -64,7 +68,7 @@
     };
 
     systemd.timers.backup = {
-      wantedBy = [ "timers.target" ];
+      wantedBy = ["timers.target"];
       timerConfig = {
         OnBootSec = "12h";
         OnUnitActiveSec = "12h";

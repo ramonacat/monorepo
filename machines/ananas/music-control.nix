@@ -1,8 +1,11 @@
-{ ananasMusicControlPackage }:
-{ config, pkgs, lib, ... }:
-{
+{ananasMusicControlPackage}: {
+  config,
+  pkgs,
+  lib,
+  ...
+}: {
   systemd.services.music-control = {
-    wantedBy = [ "multi-user.target" ];
+    wantedBy = ["multi-user.target"];
     description = "Music control";
     serviceConfig = {
       Type = "simple";

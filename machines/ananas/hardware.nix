@@ -1,36 +1,39 @@
-{ pkgsCross }:
-{ config, pkgs, lib, ... }:
-{
+{pkgsCross}: {
+  config,
+  pkgs,
+  lib,
+  ...
+}: {
   config = {
-    boot.initrd.availableKernelModules = [ "xhci_pci" "usbhid" "usb_storage" ];
-    boot.initrd.kernelModules = [ ];
-    boot.kernelModules = [ ];
-    boot.extraModulePackages = [ ];
-    boot.kernelPatches = [{
-      name = "allow-devmem";
-      patch = null;
-      extraConfig = ''
-        STRICT_DEVMEM n
-      '';
-    }];
+    boot.initrd.availableKernelModules = ["xhci_pci" "usbhid" "usb_storage"];
+    boot.initrd.kernelModules = [];
+    boot.kernelModules = [];
+    boot.extraModulePackages = [];
+    boot.kernelPatches = [
+      {
+        name = "allow-devmem";
+        patch = null;
+        extraConfig = ''
+          STRICT_DEVMEM n
+        '';
+      }
+    ];
     boot.kernelPackages = lib.mkForce pkgsCross.linuxPackages_latest;
-    fileSystems."/" =
-      {
-        device = "/dev/disk/by-label/NIXOS_SD";
-        fsType = "ext4";
-        options = [ "relatime" ];
-      };
+    fileSystems."/" = {
+      device = "/dev/disk/by-label/NIXOS_SD";
+      fsType = "ext4";
+      options = ["relatime"];
+    };
 
-    fileSystems."/boot/firmware" =
-      {
-        device = "/dev/disk/by-label/FIRMWARE";
-        fsType = "vfat";
-        options = [ "relatime" ];
-      };
+    fileSystems."/boot/firmware" = {
+      device = "/dev/disk/by-label/FIRMWARE";
+      fsType = "vfat";
+      options = ["relatime"];
+    };
 
     nixpkgs.hostPlatform = lib.mkDefault "aarch64-linux";
 
-    boot.kernelParams = [ ];
+    boot.kernelParams = [];
     hardware.opengl = {
       enable = true;
     };
@@ -96,8 +99,8 @@
       ];
     };
 
-    users.groups.spi = { };
-    users.groups.gpio = { };
+    users.groups.spi = {};
+    users.groups.gpio = {};
 
     services.udev.extraRules = ''
         SUBSYSTEM=="spidev", KERNEL=="spidev0.0", GROUP="spi", MODE="0660"
@@ -106,7 +109,6 @@
       SUBSYSTEM=="gpio", KERNEL=="gpiochip*", GROUP="gpio",MODE="0660", ACTION=="add", RUN+="${pkgs.bash}/bin/bash -c 'chown root:gpio  /sys/class/gpio/export /sys/class/gpio/unexport ; chmod 220 /sys/class/gpio/export /sys/class/gpio/unexport'"
       SUBSYSTEM=="gpio", KERNEL=="gpio*", ACTION=="add",RUN+="${pkgs.bash}/bin/bash -c 'chown root:gpio /sys%p/active_low /sys%p/direction /sys%p/edge /sys%p/value ; chmod 660 /sys%p/active_low /sys%p/direction /sys%p/edge /sys%p/value'"
     '';
-
 
     boot.loader = {
       grub.enable = false;

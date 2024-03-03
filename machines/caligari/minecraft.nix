@@ -1,5 +1,9 @@
-{ config, pkgs, lib, ... }:
 {
+  config,
+  pkgs,
+  lib,
+  ...
+}: {
   config = {
     age.secrets.caligari-minecraft-rclone-config = {
       file = ../../secrets/caligari-minecraft-rclone-config.age;

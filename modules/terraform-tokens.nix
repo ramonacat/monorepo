@@ -1,5 +1,9 @@
-{ config, pkgs, lib, ... }:
 {
+  config,
+  pkgs,
+  lib,
+  ...
+}: {
   config = {
     age.secrets.minio-terraform-state = {
       file = ../secrets/minio-terraform-state.age;
