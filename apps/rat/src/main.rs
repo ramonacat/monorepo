@@ -2,16 +2,20 @@
 
 use std::{fs::File, io::Write, num::ParseIntError, path::PathBuf, time::Duration};
 
-use chrono::{Local, NaiveDate, NaiveDateTime, TimeZone};
+use chrono::{DateTime, Local, NaiveDate, NaiveDateTime, ParseError, TimeZone};
+use chrono_tz::Europe::Berlin;
+use chrono_tz::Tz;
 use clap::{Parser, Subcommand};
 
 use regex::Regex;
 use serde::{Deserialize, Serialize};
+use thiserror::Error;
 use todo::store::Store;
 use todo::{Id, Requirement, Status};
 
 use crate::todo::Priority;
 
+mod calendar;
 mod cli;
 mod datafile;
 mod todo;
@@ -67,6 +71,32 @@ fn parse_id(id: &str) -> Result<Id, ParseIntError> {
     Ok(Id(id))
 }
 
+#[derive(Error, Debug)]
+enum TimespecError {
+    #[error("parse error: {0}")]
+    Parse(#[from] ParseError),
+}
+
+fn parse_timespec(timespec: &str) -> Result<DateTime<Tz>, TimespecError> {
+    let result = NaiveDateTime::parse_from_str(timespec, "%Y-%m-%d %H:%M:%S")
+        .or_else(|_| NaiveDateTime::parse_from_str(timespec, "%Y-%m-%d %H:%M"))?;
+
+    // todo pull the default TZ from the OS
+    Ok(Berlin.from_local_datetime(&result).unwrap())
+}
+
+#[derive(Subcommand)]
+enum CalendarAction {
+    Today,
+    Add {
+        #[arg(value_parser=parse_timespec)]
+        when: DateTime<Tz>,
+        #[arg(value_parser=parse_minutes)]
+        duration: Duration,
+        title: String,
+    },
+}
+
 #[derive(Subcommand)]
 enum Command {
     Add {
@@ -101,6 +131,10 @@ enum Command {
         set_title: Option<String>,
     },
     List,
+    Calendar {
+        #[command(subcommand)]
+        action: CalendarAction,
+    },
 }
 
 #[derive(Parser)]
@@ -178,7 +212,8 @@ fn main() {
             .expect("Failed to write to the data file");
     }
 
-    let mut todo_store = Store::new(data_path);
+    let mut todo_store = Store::new(data_path.clone());
+    let event_store = crate::calendar::store::Store::new(data_path);
 
     match cli.command {
         Command::Add {
@@ -216,6 +251,9 @@ fn main() {
                 set_estimate,
                 set_title,
             );
+        }
+        Command::Calendar { action } => {
+            cli::calendar::execute(&event_store, &todo_store, action);
         }
     }
 }

@@ -1,12 +1,14 @@
-use std::{collections::HashMap, path::PathBuf, time::Duration};
+use std::{collections::HashMap, ops::Add, path::PathBuf, time::Duration};
 
-use chrono::Utc;
+use chrono::{DateTime, DurationRound, TimeDelta, Utc};
 use thiserror::Error;
 
 use crate::{
     datafile::DataFile,
-    todo::{Id, IdGenerator, Priority, Requirement, Status, Todo},
+    todo::{Id, Priority, Requirement, Status, Todo},
 };
+
+use super::IdGenerator;
 
 pub struct Store {
     path: PathBuf,
@@ -42,7 +44,11 @@ impl Store {
     }
 
     // TODO: This should really be its own struct...
-    fn evaluate_requirements(all_todos: &HashMap<Id, Todo>, requirements: &[Requirement]) -> bool {
+    fn evaluate_requirements(
+        all_todos: &HashMap<Id, Todo>,
+        requirements: &[Requirement],
+        as_of: DateTime<Utc>,
+    ) -> bool {
         for requirement in requirements {
             match requirement {
                 Requirement::TodoDone(id) => {
@@ -54,7 +60,7 @@ impl Store {
                     }
                 }
                 Requirement::AfterDate(when) => {
-                    if Utc::now() <= *when {
+                    if as_of <= *when {
                         return false;
                     }
                 }
@@ -70,7 +76,47 @@ impl Store {
             .todos
             .values()
             .filter(|v| v.status() == crate::todo::Status::Todo)
-            .filter(|v| Self::evaluate_requirements(&datafile.todos, v.requirements()))
+            .filter(|v| Self::evaluate_requirements(&datafile.todos, v.requirements(), Utc::now()))
+            .cloned()
+            .collect::<Vec<_>>();
+
+        todos_to_consider.sort_by_key(|b| std::cmp::Reverse(b.priority()));
+
+        todos_to_consider
+    }
+
+    pub(crate) fn find_becoming_valid_on(&self, day: chrono::prelude::NaiveDate) -> Vec<Todo> {
+        let datafile = DataFile::open_path(&self.path);
+        let mut todos_to_consider = datafile
+            .todos
+            .values()
+            .filter(|v| v.status() == crate::todo::Status::Todo)
+            .filter(|v| {
+                Self::evaluate_requirements(
+                    &datafile.todos,
+                    v.requirements(),
+                    Utc::now()
+                        .add(TimeDelta::days(1))
+                        .duration_trunc(TimeDelta::days(1))
+                        .unwrap(),
+                )
+            })
+            .filter(|v| {
+                let mut should_display = false;
+
+                for req in v.requirements() {
+                    match req {
+                        Requirement::TodoDone(_) => {}
+                        Requirement::AfterDate(d) => {
+                            if d.to_utc().date_naive() == day {
+                                should_display = true;
+                            }
+                        }
+                    }
+                }
+
+                should_display
+            })
             .cloned()
             .collect::<Vec<_>>();
 
