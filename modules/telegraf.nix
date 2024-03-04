@@ -49,6 +49,12 @@
         inputs.syslog = {
           server = "tcp4://:6514";
         };
+        inputs.exec = {
+          commands = ["readlink -f /nix/var/nix/profiles/system"];
+          name_override = "current_closure_version";
+          data_format = "value";
+          data_type = "string";
+        };
       };
     };
 
