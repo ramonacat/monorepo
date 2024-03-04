@@ -293,11 +293,12 @@
           ./machines/caligari/minecraft.nix
           ./machines/caligari/networking.nix
           ./machines/caligari/nginx.nix
+          ./machines/caligari/telegraf.nix
           ./modules/bcachefs.nix
-          ./modules/updates.nix
           ./modules/installed_base.nix
           ./modules/minecraft.nix
           ./modules/telegraf.nix
+          ./modules/updates.nix
         ];
       };
       iso = nixpkgs.lib.nixosSystem {
