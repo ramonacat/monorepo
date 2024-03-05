@@ -19,5 +19,8 @@
       extraUpFlags = ["--advertise-exit-node"];
     };
     security.polkit.enable = true;
+
+    nix.optimise.automatic = true;
+    nix.gc.automatic = true;
   };
 }
