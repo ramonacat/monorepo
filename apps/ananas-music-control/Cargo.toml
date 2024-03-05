@@ -7,7 +7,7 @@ edition = "2021"
 
 [dependencies]
 bitvec = "1.0.1"
-cpal = "0.15.2"
+cpal = "0.15.3"
 embedded-graphics = "0.8.1"
 flac = "0.5.0"
 fontdue = "0.8.0"
