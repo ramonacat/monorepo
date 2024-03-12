@@ -14,4 +14,4 @@ petgraph = "0.6.4"
 regex = "1.10.3"
 serde = { version = "1.0.197", features = ["derive"] }
 serde_json = "1.0.114"
-thiserror = "1.0.57"
+thiserror = "1.0.58"
