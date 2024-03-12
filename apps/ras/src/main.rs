@@ -20,8 +20,7 @@ async fn main() -> Result<(), Box<dyn Error>> {
             opentelemetry_sdk::trace::config()
                 .with_resource(Resource::new(vec![KeyValue::new("service.name", "ras")])),
         )
-        .install_batch(Tokio)
-        .unwrap();
+        .install_batch(Tokio)?;
 
     let tracing_layer = tracing_opentelemetry::layer().with_tracer(tracer);
 

@@ -1,46 +1,35 @@
 #![deny(clippy::pedantic)]
 
-use std::{fs::File, io::Write, num::ParseIntError, path::PathBuf, time::Duration};
+use std::{convert::Infallible, fs::File, io::Write, num::ParseIntError, path::PathBuf, time::Duration};
 
 use chrono::{DateTime, Local, NaiveDate, NaiveDateTime, ParseError, TimeZone};
 use chrono_tz::Europe::Berlin;
 use chrono_tz::Tz;
 use clap::{Parser, Subcommand};
-
+use ratlib::{calendar, todo::{self, store::Store, Id, Priority, Requirement, Status}};
 use regex::Regex;
 use serde::{Deserialize, Serialize};
 use thiserror::Error;
-use todo::store::Store;
-use todo::{Id, Requirement, Status};
 
-use crate::todo::Priority;
-
-mod calendar;
 mod cli;
-mod datafile;
-mod todo;
 
-// TODO: convert to a func and value_parser it, so we can acutally error out
-impl From<&str> for Priority {
-    fn from(value: &str) -> Self {
+fn parse_priority(value: &str) -> Result<Priority, Infallible> {
         // todo prolly should like throw an error for weird values
         match value {
-            "high" => Priority::High,
-            "low" => Priority::Low,
-            _ => Priority::Medium,
+            "high" => Ok(Priority::High),
+            "low" => Ok(Priority::Low),
+            _ => Ok(Priority::Medium),
         }
-    }
 }
 
-// TODO: convert to a func and value_parser it, so we can acutally error out
-impl From<&str> for Requirement {
-    fn from(value: &str) -> Self {
+// TODO: Actually hanlde errors...
+fn parse_requirement(value: &str) -> Result<Requirement, Infallible> {
         let after_date =
             Regex::new(r"after\(([0-9]{4}\-[0-9]{2}\-[0-9]{2}(?: [0-9]{2}:[0-9]{2}:[0-9]{2})?)\)")
                 .unwrap();
 
         if let Ok(id) = value.parse() {
-            todo::Requirement::TodoDone(Id(id))
+            Ok(todo::Requirement::TodoDone(Id(id)))
         } else if let Some(captures) = after_date.captures(value) {
             let date =
                 if let Ok(x) = NaiveDateTime::parse_from_str(&captures[1], "%Y-%m-%d %H:%M:%S") {
@@ -52,11 +41,10 @@ impl From<&str> for Requirement {
                 };
             let local_now = Local.from_local_datetime(&date).unwrap();
 
-            todo::Requirement::AfterDate(local_now.into())
+            Ok(todo::Requirement::AfterDate(local_now.into()))
         } else {
             panic!("Failed to parse: {value}");
         }
-    }
 }
 
 fn parse_minutes(minutes: &str) -> Result<Duration, ParseIntError> {
@@ -101,9 +89,11 @@ enum CalendarAction {
 enum Command {
     Add {
         title: String,
+        #[arg(value_parser=parse_priority)]
         priority: Priority,
         #[arg(value_parser=parse_minutes)]
         estimate: Duration,
+        #[arg(value_parser=parse_requirement)]
         requirements: Vec<Requirement>,
     },
     Done {
@@ -121,9 +111,9 @@ enum Command {
     Edit {
         #[arg(value_parser=parse_id)]
         id: Id,
-        #[arg(short, long)]
+        #[arg(short, long, value_parser = parse_requirement)]
         add_requirements: Option<Vec<Requirement>>,
-        #[arg(short = 'p', long)]
+        #[arg(short = 'p', long, value_parser = parse_priority)]
         set_priority: Option<Priority>,
         #[arg(short = 'e', long, value_parser = parse_minutes)]
         set_estimate: Option<Duration>,
@@ -213,7 +203,7 @@ fn main() {
     }
 
     let mut todo_store = Store::new(data_path.clone());
-    let event_store = crate::calendar::store::Store::new(data_path);
+    let event_store = calendar::store::Store::new(data_path);
 
     match cli.command {
         Command::Add {

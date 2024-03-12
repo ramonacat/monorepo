@@ -30,7 +30,7 @@ impl Store {
         id
     }
 
-    pub(crate) fn find_by_date(&self, day: chrono::prelude::NaiveDate) -> Vec<Event> {
+    pub fn find_by_date(&self, day: chrono::prelude::NaiveDate) -> Vec<Event> {
         let datafile = DataFile::open_path(&self.path);
         let mut today: Vec<_> = datafile
             .events

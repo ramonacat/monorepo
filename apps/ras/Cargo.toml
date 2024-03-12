@@ -13,3 +13,4 @@ tokio = { version = "1.36.0", features = ["full"] }
 tracing = "0.1.40"
 tracing-opentelemetry = "0.23.0"
 tracing-subscriber = { version = "0.3.18", features = ["env-filter"] }
+ratlib = { path = "../../libs/rust/ratlib/" }

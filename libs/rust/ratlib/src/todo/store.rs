@@ -85,7 +85,7 @@ impl Store {
         todos_to_consider
     }
 
-    pub(crate) fn find_becoming_valid_on(&self, day: chrono::prelude::NaiveDate) -> Vec<Todo> {
+    pub fn find_becoming_valid_on(&self, day: chrono::prelude::NaiveDate) -> Vec<Todo> {
         let datafile = DataFile::open_path(&self.path);
         let mut todos_to_consider = datafile
             .todos
@@ -96,8 +96,8 @@ impl Store {
                     &datafile.todos,
                     v.requirements(),
                     Utc::now()
-                        .add(TimeDelta::days(1))
-                        .duration_trunc(TimeDelta::days(1))
+                        .add(TimeDelta::try_days(1).unwrap())
+                        .duration_trunc(TimeDelta::try_days(1).unwrap())
                         .unwrap(),
                 )
             })
