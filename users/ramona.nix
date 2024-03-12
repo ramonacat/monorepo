@@ -63,7 +63,7 @@
 
       services.gpg-agent = {
         enable = true;
-        pinentryFlavor = "tty";
+        pinentryFlavor = "curses";
         enableSshSupport = true;
         sshKeys = ["682AC8D9096D4E08" "E9C995FE5B1BCC62"];
       };

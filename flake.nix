@@ -43,6 +43,9 @@
     pkgsConfig = {
       allowUnfree = true;
       android_sdk.accept_license = true;
+      permittedInsecurePackages = [
+        "nix-2.16.2"
+      ];
     };
     pkgs = import nixpkgs {
       inherit overlays;
@@ -54,9 +57,6 @@
           packageOverrides = pkgs: {
             vaapiIntel = pkgs.vaapiIntel.override {enableHybridCodec = true;};
           };
-          permittedInsecurePackages = [
-            "nix-2.16.2"
-          ];
         };
     };
     pkgsAarch64 = import nixpkgs {
