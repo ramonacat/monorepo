@@ -8,10 +8,7 @@ use chrono::{DateTime, Local, NaiveDate, NaiveDateTime, ParseError, TimeZone};
 use chrono_tz::Europe::Berlin;
 use chrono_tz::Tz;
 use clap::{Parser, Subcommand};
-use ratlib::{
-    calendar,
-    todo::{self, store::Store, Id, Priority, Requirement, Status},
-};
+use ratlib::todo::{self, Id, Priority, Requirement, Status};
 use regex::Regex;
 use serde::{Deserialize, Serialize};
 use thiserror::Error;
@@ -206,9 +203,6 @@ fn main() {
             .expect("Failed to write to the data file");
     }
 
-    let todo_store = Store::new(data_path.clone());
-    let event_store = calendar::store::Store::new(data_path);
-
     match cli.command {
         Command::Add {
             title,
@@ -219,7 +213,7 @@ fn main() {
             cli::add::execute(&title, priority, estimate, requirements);
         }
         Command::List => {
-            cli::list::execute(&todo_store);
+            cli::list::execute();
         }
         Command::Doing { id } => {
             cli::state_transition::execute(id, Status::Doing);
@@ -240,7 +234,7 @@ fn main() {
             cli::edit::execute(id, add_requirements, set_priority, set_estimate, set_title);
         }
         Command::Calendar { action } => {
-            cli::calendar::execute(&event_store, &todo_store, action);
+            cli::calendar::execute(action);
         }
     }
 }

@@ -23,11 +23,11 @@ pub fn render_todo(todo: &Todo) -> String {
     )
 }
 
-pub fn execute(todo_store: &Store) {
+pub fn execute() {
     let client = reqwest::blocking::Client::new();
 
     let doing: Vec<Todo> = client
-        .get(format!("{}todos", SERVER_URL))
+        .get(format!("{}todos?status=Doing", SERVER_URL))
         .send()
         .unwrap()
         .json()
@@ -46,7 +46,12 @@ pub fn execute(todo_store: &Store) {
     }
 
     println!("{}", "Todo: ".color(Color::Red).bold());
-    let ready_to_do = todo_store.find_ready_to_do();
+    let ready_to_do: Vec<Todo> = client
+        .get(format!("{}todos", SERVER_URL))
+        .send()
+        .unwrap()
+        .json()
+        .unwrap();
 
     for todo in ready_to_do {
         let todo = render_todo(&todo);

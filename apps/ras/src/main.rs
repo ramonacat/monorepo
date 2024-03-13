@@ -1,6 +1,6 @@
 mod app;
 
-use std::{error::Error, net::SocketAddr, sync::Arc};
+use std::{error::Error, net::SocketAddr, path::PathBuf, sync::Arc};
 
 use app::AppState;
 use axum::{
@@ -39,14 +39,20 @@ async fn main() -> Result<(), Box<dyn Error>> {
         .with(tracing_layer)
         .init();
 
+    let datafile_path: PathBuf = "/home/ramona/shared/todos.json".into();
+
     let router = Router::new()
         .route("/", get(app::index))
         .route("/todos", get(app::todos::get_todos))
         .route("/todos", post(app::todos::post_todos))
         .route("/todos/:id", post(app::todos::post_todos_with_id))
+        .route("/events", get(app::events::get).post(app::events::post))
         .with_state(AppState {
             todo_store: Arc::new(Mutex::new(ratlib::todo::store::Store::new(
-                "/home/ramona/shared/todos.json".into(),
+                datafile_path.clone(),
+            ))),
+            event_store: Arc::new(Mutex::new(ratlib::calendar::store::Store::new(
+                datafile_path,
             ))),
         })
         .layer(OtelInResponseLayer)

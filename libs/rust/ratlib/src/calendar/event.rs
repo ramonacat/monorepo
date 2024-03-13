@@ -61,7 +61,7 @@ where
     tuple.end()
 }
 
-fn deserialize_date_time_tz<'de, D>(de: D) -> Result<DateTime<Tz>, D::Error>
+pub fn deserialize_date_time_tz<'de, D>(de: D) -> Result<DateTime<Tz>, D::Error>
 where
     D: Deserializer<'de>,
 {

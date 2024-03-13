@@ -1,6 +1,7 @@
 use std::{collections::HashMap, ops::Add, path::PathBuf, time::Duration};
 
-use chrono::{DateTime, DurationRound, TimeDelta, Utc};
+use chrono::{DateTime, NaiveTime, TimeDelta, TimeZone, Utc};
+use chrono_tz::Europe::Berlin;
 use thiserror::Error;
 
 use crate::{
@@ -95,10 +96,11 @@ impl Store {
                 Self::evaluate_requirements(
                     &datafile.todos,
                     v.requirements(),
-                    Utc::now()
-                        .add(TimeDelta::try_days(1).unwrap())
-                        .duration_trunc(TimeDelta::try_days(1).unwrap())
-                        .unwrap(),
+                    Berlin.from_utc_datetime(
+                        &day
+                            .add(TimeDelta::try_days(1).unwrap())
+                            .and_time(NaiveTime::from_num_seconds_from_midnight_opt(0, 0).unwrap())
+                    ).to_utc()
                 )
             })
             .filter(|v| {

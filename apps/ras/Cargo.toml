@@ -15,3 +15,4 @@ tracing-opentelemetry = "0.23.0"
 tracing-subscriber = { version = "0.3.18", features = ["env-filter"] }
 ratlib = { path = "../../libs/rust/ratlib/" }
 serde = { version = "1.0.197", features = ["derive"] }
+chrono = { version = "0.4.35", features = ["serde"] }

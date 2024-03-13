@@ -1,19 +1,41 @@
 use crate::app::AppState;
 use axum::{
-    extract::{Path, State},
+    extract::{Path, Query, State},
     Json,
 };
+use chrono::NaiveDate;
 use ratlib::{
-    todo::{Id, Todo},
+    todo::{Id, Status, Todo},
     PostTodo, PostTodoWithId,
 };
+use serde::Deserialize;
 use std::borrow::BorrowMut;
 
-pub async fn get_todos(State(app_state): State<AppState>) -> Json<Vec<Todo>> {
+#[derive(Deserialize)]
+pub struct TodosQuery {
+    becoming_ready_on: Option<NaiveDate>,
+    status: Option<Status>,
+}
+
+pub async fn get_todos(
+    State(app_state): State<AppState>,
+    Query(query): Query<TodosQuery>,
+) -> Json<Vec<Todo>> {
     let mut store_mutex_guard = app_state.todo_store.lock().await;
     let store = store_mutex_guard.borrow_mut();
 
-    Json(store.find_ready_to_do())
+    let result;
+
+    if query.status.is_some() {
+        // FIXME this should really be find_by_status...
+        result = store.find_doing();
+    } else if let Some(becoming_ready_on) = query.becoming_ready_on {
+        result = store.find_becoming_valid_on(becoming_ready_on);
+    } else {
+        result = store.find_ready_to_do();
+    }
+
+    Json(result)
 }
 
 pub async fn post_todos(
