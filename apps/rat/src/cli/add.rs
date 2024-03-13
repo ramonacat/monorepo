@@ -1,18 +1,30 @@
 use std::time::Duration;
 
-use crate::{
-    todo::store::Store,
-    todo::{Priority, Requirement},
-};
+use ratlib::{todo::Id, PostTodo, SERVER_URL};
+
+use crate::todo::{Priority, Requirement};
 
 pub fn execute(
-    todo_store: &mut Store,
     title: &str,
     priority: Priority,
     estimate: Duration,
     requirements: Vec<Requirement>,
 ) {
-    let id = todo_store.create(title.to_string(), priority, estimate, requirements);
+    let client = reqwest::blocking::Client::new();
 
+    let id: Id = client
+        .post(format!("{}todos", SERVER_URL))
+        .json(&PostTodo::Add {
+            title: title.to_string(),
+            priority,
+            estimate,
+            requirements,
+        })
+        .send()
+        .unwrap()
+        .json()
+        .unwrap();
+
+    // TODO: Get the ID from the webservice here!
     println!("Inserted a new TODO with title \"{title}\" and ID {id}");
 }

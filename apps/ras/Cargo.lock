@@ -1093,6 +1093,7 @@ dependencies = [
  "opentelemetry-otlp",
  "opentelemetry_sdk",
  "ratlib",
+ "serde",
  "tokio",
  "tracing",
  "tracing-opentelemetry",

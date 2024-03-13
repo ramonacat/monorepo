@@ -1,12 +1,17 @@
 #![deny(clippy::pedantic)]
 
-use std::{convert::Infallible, fs::File, io::Write, num::ParseIntError, path::PathBuf, time::Duration};
+use std::{
+    convert::Infallible, fs::File, io::Write, num::ParseIntError, path::PathBuf, time::Duration,
+};
 
 use chrono::{DateTime, Local, NaiveDate, NaiveDateTime, ParseError, TimeZone};
 use chrono_tz::Europe::Berlin;
 use chrono_tz::Tz;
 use clap::{Parser, Subcommand};
-use ratlib::{calendar, todo::{self, store::Store, Id, Priority, Requirement, Status}};
+use ratlib::{
+    calendar,
+    todo::{self, store::Store, Id, Priority, Requirement, Status},
+};
 use regex::Regex;
 use serde::{Deserialize, Serialize};
 use thiserror::Error;
@@ -14,37 +19,36 @@ use thiserror::Error;
 mod cli;
 
 fn parse_priority(value: &str) -> Result<Priority, Infallible> {
-        // todo prolly should like throw an error for weird values
-        match value {
-            "high" => Ok(Priority::High),
-            "low" => Ok(Priority::Low),
-            _ => Ok(Priority::Medium),
-        }
+    // todo prolly should like throw an error for weird values
+    match value {
+        "high" => Ok(Priority::High),
+        "low" => Ok(Priority::Low),
+        _ => Ok(Priority::Medium),
+    }
 }
 
 // TODO: Actually hanlde errors...
 fn parse_requirement(value: &str) -> Result<Requirement, Infallible> {
-        let after_date =
-            Regex::new(r"after\(([0-9]{4}\-[0-9]{2}\-[0-9]{2}(?: [0-9]{2}:[0-9]{2}:[0-9]{2})?)\)")
-                .unwrap();
+    let after_date =
+        Regex::new(r"after\(([0-9]{4}\-[0-9]{2}\-[0-9]{2}(?: [0-9]{2}:[0-9]{2}:[0-9]{2})?)\)")
+            .unwrap();
 
-        if let Ok(id) = value.parse() {
-            Ok(todo::Requirement::TodoDone(Id(id)))
-        } else if let Some(captures) = after_date.captures(value) {
-            let date =
-                if let Ok(x) = NaiveDateTime::parse_from_str(&captures[1], "%Y-%m-%d %H:%M:%S") {
-                    x
-                } else if let Ok(x) = NaiveDate::parse_from_str(&captures[1], "%Y-%m-%d") {
-                    NaiveDateTime::from(x)
-                } else {
-                    panic!("Invalid date/time");
-                };
-            let local_now = Local.from_local_datetime(&date).unwrap();
-
-            Ok(todo::Requirement::AfterDate(local_now.into()))
+    if let Ok(id) = value.parse() {
+        Ok(todo::Requirement::TodoDone(Id(id)))
+    } else if let Some(captures) = after_date.captures(value) {
+        let date = if let Ok(x) = NaiveDateTime::parse_from_str(&captures[1], "%Y-%m-%d %H:%M:%S") {
+            x
+        } else if let Ok(x) = NaiveDate::parse_from_str(&captures[1], "%Y-%m-%d") {
+            NaiveDateTime::from(x)
         } else {
-            panic!("Failed to parse: {value}");
-        }
+            panic!("Invalid date/time");
+        };
+        let local_now = Local.from_local_datetime(&date).unwrap();
+
+        Ok(todo::Requirement::AfterDate(local_now.into()))
+    } else {
+        panic!("Failed to parse: {value}");
+    }
 }
 
 fn parse_minutes(minutes: &str) -> Result<Duration, ParseIntError> {
@@ -202,7 +206,7 @@ fn main() {
             .expect("Failed to write to the data file");
     }
 
-    let mut todo_store = Store::new(data_path.clone());
+    let todo_store = Store::new(data_path.clone());
     let event_store = calendar::store::Store::new(data_path);
 
     match cli.command {
@@ -212,19 +216,19 @@ fn main() {
             estimate,
             requirements,
         } => {
-            cli::add::execute(&mut todo_store, &title, priority, estimate, requirements);
+            cli::add::execute(&title, priority, estimate, requirements);
         }
         Command::List => {
             cli::list::execute(&todo_store);
         }
         Command::Doing { id } => {
-            cli::state_transition::execute(&mut todo_store, id, Status::Doing);
+            cli::state_transition::execute(id, Status::Doing);
         }
         Command::Done { id } => {
-            cli::state_transition::execute(&mut todo_store, id, Status::Done);
+            cli::state_transition::execute(id, Status::Done);
         }
         Command::Todo { id } => {
-            cli::state_transition::execute(&mut todo_store, id, Status::Todo);
+            cli::state_transition::execute(id, Status::Todo);
         }
         Command::Edit {
             id,
@@ -233,14 +237,7 @@ fn main() {
             set_estimate,
             set_title,
         } => {
-            cli::edit::execute(
-                &mut todo_store,
-                id,
-                add_requirements,
-                set_priority,
-                set_estimate,
-                set_title,
-            );
+            cli::edit::execute(id, add_requirements, set_priority, set_estimate, set_title);
         }
         Command::Calendar { action } => {
             cli::calendar::execute(&event_store, &todo_store, action);
