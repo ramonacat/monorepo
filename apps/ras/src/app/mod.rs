@@ -8,8 +8,8 @@ pub mod todos;
 
 #[derive(Clone)]
 pub struct AppState {
-    pub todo_store: Arc<Mutex<ratlib::todo::store::Store>>,
-    pub event_store: Arc<Mutex<ratlib::calendar::store::Store>>,
+    pub todo_store: Arc<Mutex<crate::todo::store::Store>>,
+    pub event_store: Arc<Mutex<crate::calendar::store::Store>>,
 }
 
 pub async fn index() -> Json<String> {

@@ -1,4 +1,7 @@
 mod app;
+mod calendar;
+mod datafile;
+mod todo;
 
 use std::{error::Error, net::SocketAddr, path::PathBuf, sync::Arc};
 
@@ -48,12 +51,8 @@ async fn main() -> Result<(), Box<dyn Error>> {
         .route("/todos/:id", post(app::todos::post_todos_with_id))
         .route("/events", get(app::events::get).post(app::events::post))
         .with_state(AppState {
-            todo_store: Arc::new(Mutex::new(ratlib::todo::store::Store::new(
-                datafile_path.clone(),
-            ))),
-            event_store: Arc::new(Mutex::new(ratlib::calendar::store::Store::new(
-                datafile_path,
-            ))),
+            todo_store: Arc::new(Mutex::new(todo::store::Store::new(datafile_path.clone()))),
+            event_store: Arc::new(Mutex::new(calendar::store::Store::new(datafile_path))),
         })
         .layer(OtelInResponseLayer)
         .layer(OtelAxumLayer::default());

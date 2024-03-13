@@ -2,10 +2,9 @@ use std::{path::PathBuf, time::Duration};
 
 use chrono::{DateTime, TimeZone};
 use chrono_tz::{Europe::Berlin, Tz};
+use ratlib::calendar::event::{Event, Id};
 
 use crate::datafile::DataFile;
-
-use super::event::{Event, Id};
 
 pub struct Store {
     path: PathBuf,

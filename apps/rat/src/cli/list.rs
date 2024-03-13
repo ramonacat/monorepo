@@ -1,7 +1,7 @@
 use colored::{Color, Colorize as _};
 use ratlib::SERVER_URL;
 
-use crate::{todo::store::Store, todo::Todo};
+use crate::todo::Todo;
 
 pub fn render_todo(todo: &Todo) -> String {
     let mut depends_string = "reqs: ".to_string();

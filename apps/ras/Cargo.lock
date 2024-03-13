@@ -279,6 +279,7 @@ dependencies = [
  "chrono",
  "chrono-tz-build",
  "phf",
+ "serde",
 ]
 
 [[package]]
@@ -1090,11 +1091,14 @@ dependencies = [
  "axum 0.7.4",
  "axum-tracing-opentelemetry",
  "chrono",
+ "chrono-tz",
  "opentelemetry",
  "opentelemetry-otlp",
  "opentelemetry_sdk",
  "ratlib",
  "serde",
+ "serde_json",
+ "thiserror",
  "tokio",
  "tracing",
  "tracing-opentelemetry",
