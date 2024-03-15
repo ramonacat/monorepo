@@ -24,7 +24,9 @@ if [[ "$BRANCH_NAME" == "main" ]]; then
     scp -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -i ./id_ed25519 -- *-closure root@caligari:/var/www/ramona.fun/builds/
     for filename in *-closure; do
         CLOSURE=$(tr -d "\n" < "$filename")
-        ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -i ./id_ed25519 root@caligari -- "ln -s $CLOSURE /nix/var/nix/gcroots/$filename"
+        GCROOT="/nix/var/nix/gcroots/$filename"
+
+        ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -i ./id_ed25519 root@caligari -- "rm $GCROOT; ln -s $CLOSURE $GCROOT"
     done
 fi
 
