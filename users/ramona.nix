@@ -27,7 +27,6 @@
         jq
         atop
         ripgrep
-        nixd
         ratPackage
       ];
 
