@@ -112,8 +112,6 @@
           platformTheme = "gtk3";
         };
 
-        services.gpg-agent.pinentryFlavor = lib.mkForce "qt";
-
         home.file.".moc/config".text = ''
           Theme = nightly_theme
         '';
