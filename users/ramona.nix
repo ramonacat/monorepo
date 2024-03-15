@@ -29,6 +29,7 @@
         ripgrep
         ratPackage
       ];
+      services.gpg-agent.pinentryPackage = lib.mkDefault pkgs.pinentry-curses;
 
       programs.rat = {
         enable = lib.attrsets.hasAttrByPath ["services" "syncthing" "settings" "folders" "shared"] config;
