@@ -27,6 +27,7 @@
             ];
           };
         };
+        services.gpg-agent.pinentryPackage = pkgs.pinentry-qt;
 
         home.packages = with pkgs; [
           dconf
