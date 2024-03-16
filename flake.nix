@@ -38,6 +38,7 @@
       alacritty-theme.overlays.default
       (final: prev: {
         ramona.lan-mouse = (import ./packages/lan-mouse.nix) {inherit pkgs craneLib;};
+        ramona.ras = (import ./packages/ras.nix) {inherit pkgs craneLib;};
       })
     ];
     pkgsConfig = {
@@ -144,13 +145,15 @@
           ./machines/hallewell/networking.nix
           ./machines/hallewell/paperless.nix
           ./machines/hallewell/postgresql.nix
+          ./machines/hallewell/ras.nix
           ./machines/hallewell/tempo.nix
           ./machines/hallewell/users/ramona.nix
           ./modules/bcachefs.nix
-          ./modules/updates.nix
           ./modules/installed_base.nix
+          ./modules/ras.nix
           ./modules/syncthing.nix
           ./modules/telegraf.nix
+          ./modules/updates.nix
         ];
       };
       moonfall = nixpkgs.lib.nixosSystem {

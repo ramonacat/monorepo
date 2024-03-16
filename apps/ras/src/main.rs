@@ -42,7 +42,7 @@ async fn main() -> Result<(), Box<dyn Error>> {
         .with(tracing_layer)
         .init();
 
-    let datafile_path: PathBuf = "/home/ramona/shared/todos.json".into();
+    let datafile_path: PathBuf = std::env::args().nth(1).unwrap().into();
 
     let router = Router::new()
         .route("/", get(app::index))

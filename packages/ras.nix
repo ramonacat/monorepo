@@ -9,9 +9,9 @@
   };
   packageArguments = {
     inherit src;
-    sourceRoot = "${src.name}/apps/rat/";
-    cargoToml = "${src}/apps/rat/Cargo.toml";
-    cargoLock = "${src}/apps/rat/Cargo.lock";
+    sourceRoot = "${src.name}/apps/ras/";
+    cargoToml = "${src}/apps/ras/Cargo.toml";
+    cargoLock = "${src}/apps/ras/Cargo.lock";
   };
   cargoArtifacts = craneLib.buildDepsOnly packageArguments;
 in
