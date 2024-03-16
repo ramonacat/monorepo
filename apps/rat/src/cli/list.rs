@@ -1,6 +1,6 @@
 use colored::{Color, Colorize as _};
 
-use crate::{todo::store::Store, todo::Todo};
+use crate::todo::Todo;
 
 pub fn render_todo(todo: &Todo) -> String {
     let mut depends_string = "reqs: ".to_string();
@@ -22,8 +22,15 @@ pub fn render_todo(todo: &Todo) -> String {
     )
 }
 
-pub fn execute(todo_store: &Store) {
-    let doing = todo_store.find_doing();
+pub fn execute(server_url: String) {
+    let client = reqwest::blocking::Client::new();
+
+    let doing: Vec<Todo> = client
+        .get(format!("{}todos?status=Doing", server_url))
+        .send()
+        .unwrap()
+        .json()
+        .unwrap();
 
     if !doing.is_empty() {
         println!("{}", "Doing: ".color(Color::Yellow).bold());
@@ -38,7 +45,12 @@ pub fn execute(todo_store: &Store) {
     }
 
     println!("{}", "Todo: ".color(Color::Red).bold());
-    let ready_to_do = todo_store.find_ready_to_do();
+    let ready_to_do: Vec<Todo> = client
+        .get(format!("{}todos", server_url))
+        .send()
+        .unwrap()
+        .json()
+        .unwrap();
 
     for todo in ready_to_do {
         let todo = render_todo(&todo);

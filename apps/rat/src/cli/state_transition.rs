@@ -1,14 +1,13 @@
-use crate::{
-    todo::store::Store,
-    todo::{Id, Status},
-};
+use ratlib::PostTodoWithId;
 
-pub fn execute(todo_store: &mut Store, id: Id, status: Status) {
-    let todo = todo_store.find_by_id(id);
-    if let Some(mut todo) = todo {
-        todo.transition_to(status);
-        todo_store.save(todo);
-    } else {
-        println!("No todo with id {id}");
-    }
+use crate::todo::{Id, Status};
+
+pub fn execute(server_url: String, id: Id, status: Status) {
+    let client = reqwest::blocking::Client::new();
+
+    client
+        .post(format!("{}todos/{}", server_url, id.0))
+        .json(&PostTodoWithId::MoveToStatus(status))
+        .send()
+        .unwrap();
 }

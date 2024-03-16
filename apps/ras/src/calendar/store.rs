@@ -2,10 +2,9 @@ use std::{path::PathBuf, time::Duration};
 
 use chrono::{DateTime, TimeZone};
 use chrono_tz::{Europe::Berlin, Tz};
+use ratlib::calendar::event::{Event, Id};
 
 use crate::datafile::DataFile;
-
-use super::event::{Event, Id};
 
 pub struct Store {
     path: PathBuf,
@@ -30,7 +29,7 @@ impl Store {
         id
     }
 
-    pub(crate) fn find_by_date(&self, day: chrono::prelude::NaiveDate) -> Vec<Event> {
+    pub fn find_by_date(&self, day: chrono::prelude::NaiveDate) -> Vec<Event> {
         let datafile = DataFile::open_path(&self.path);
         let mut today: Vec<_> = datafile
             .events

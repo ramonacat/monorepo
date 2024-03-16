@@ -33,7 +33,7 @@
 
       programs.rat = {
         enable = lib.attrsets.hasAttrByPath ["services" "syncthing" "settings" "folders" "shared"] config;
-        dataFile = homeDirectory + "/shared/todos.json";
+        serverAddress = "http://hallewell:8438/";
       };
 
       programs.gpg = {

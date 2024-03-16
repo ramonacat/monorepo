@@ -1,14 +1,10 @@
 use std::{collections::HashMap, ops::Add, path::PathBuf, time::Duration};
 
-use chrono::{DateTime, DurationRound, TimeDelta, Utc};
+use crate::datafile::DataFile;
+use chrono::{DateTime, NaiveTime, TimeDelta, TimeZone, Utc};
+use chrono_tz::Europe::Berlin;
+use ratlib::todo::{Id, IdGenerator, Priority, Requirement, Status, Todo};
 use thiserror::Error;
-
-use crate::{
-    datafile::DataFile,
-    todo::{Id, Priority, Requirement, Status, Todo},
-};
-
-use super::IdGenerator;
 
 pub struct Store {
     path: PathBuf,
@@ -75,7 +71,7 @@ impl Store {
         let mut todos_to_consider = datafile
             .todos
             .values()
-            .filter(|v| v.status() == crate::todo::Status::Todo)
+            .filter(|v| v.status() == Status::Todo)
             .filter(|v| Self::evaluate_requirements(&datafile.todos, v.requirements(), Utc::now()))
             .cloned()
             .collect::<Vec<_>>();
@@ -85,40 +81,42 @@ impl Store {
         todos_to_consider
     }
 
-    pub(crate) fn find_becoming_valid_on(&self, day: chrono::prelude::NaiveDate) -> Vec<Todo> {
+    pub fn find_becoming_valid_on(&self, day: chrono::prelude::NaiveDate) -> Vec<Todo> {
         let datafile = DataFile::open_path(&self.path);
-        let mut todos_to_consider = datafile
-            .todos
-            .values()
-            .filter(|v| v.status() == crate::todo::Status::Todo)
-            .filter(|v| {
-                Self::evaluate_requirements(
-                    &datafile.todos,
-                    v.requirements(),
-                    Utc::now()
-                        .add(TimeDelta::days(1))
-                        .duration_trunc(TimeDelta::days(1))
-                        .unwrap(),
-                )
-            })
-            .filter(|v| {
-                let mut should_display = false;
+        let mut todos_to_consider =
+            datafile
+                .todos
+                .values()
+                .filter(|v| v.status() == Status::Todo)
+                .filter(|v| {
+                    Self::evaluate_requirements(
+                        &datafile.todos,
+                        v.requirements(),
+                        Berlin
+                            .from_utc_datetime(&day.add(TimeDelta::try_days(1).unwrap()).and_time(
+                                NaiveTime::from_num_seconds_from_midnight_opt(0, 0).unwrap(),
+                            ))
+                            .to_utc(),
+                    )
+                })
+                .filter(|v| {
+                    let mut should_display = false;
 
-                for req in v.requirements() {
-                    match req {
-                        Requirement::TodoDone(_) => {}
-                        Requirement::AfterDate(d) => {
-                            if d.to_utc().date_naive() == day {
-                                should_display = true;
+                    for req in v.requirements() {
+                        match req {
+                            Requirement::TodoDone(_) => {}
+                            Requirement::AfterDate(d) => {
+                                if d.to_utc().date_naive() == day {
+                                    should_display = true;
+                                }
                             }
                         }
                     }
-                }
 
-                should_display
-            })
-            .cloned()
-            .collect::<Vec<_>>();
+                    should_display
+                })
+                .cloned()
+                .collect::<Vec<_>>();
 
         todos_to_consider.sort_by_key(|b| std::cmp::Reverse(b.priority()));
 

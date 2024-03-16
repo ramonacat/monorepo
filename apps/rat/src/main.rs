@@ -1,61 +1,50 @@
 #![deny(clippy::pedantic)]
 
-use std::{fs::File, io::Write, num::ParseIntError, path::PathBuf, time::Duration};
+use std::{
+    convert::Infallible, num::ParseIntError, path::PathBuf, time::Duration,
+};
 
 use chrono::{DateTime, Local, NaiveDate, NaiveDateTime, ParseError, TimeZone};
 use chrono_tz::Europe::Berlin;
 use chrono_tz::Tz;
 use clap::{Parser, Subcommand};
-
+use ratlib::todo::{self, Id, Priority, Requirement, Status};
 use regex::Regex;
 use serde::{Deserialize, Serialize};
 use thiserror::Error;
-use todo::store::Store;
-use todo::{Id, Requirement, Status};
 
-use crate::todo::Priority;
-
-mod calendar;
 mod cli;
-mod datafile;
-mod todo;
 
-// TODO: convert to a func and value_parser it, so we can acutally error out
-impl From<&str> for Priority {
-    fn from(value: &str) -> Self {
-        // todo prolly should like throw an error for weird values
-        match value {
-            "high" => Priority::High,
-            "low" => Priority::Low,
-            _ => Priority::Medium,
-        }
+fn parse_priority(value: &str) -> Result<Priority, Infallible> {
+    // todo prolly should like throw an error for weird values
+    match value {
+        "high" => Ok(Priority::High),
+        "low" => Ok(Priority::Low),
+        _ => Ok(Priority::Medium),
     }
 }
 
-// TODO: convert to a func and value_parser it, so we can acutally error out
-impl From<&str> for Requirement {
-    fn from(value: &str) -> Self {
-        let after_date =
-            Regex::new(r"after\(([0-9]{4}\-[0-9]{2}\-[0-9]{2}(?: [0-9]{2}:[0-9]{2}:[0-9]{2})?)\)")
-                .unwrap();
+// TODO: Actually hanlde errors...
+fn parse_requirement(value: &str) -> Result<Requirement, Infallible> {
+    let after_date =
+        Regex::new(r"after\(([0-9]{4}\-[0-9]{2}\-[0-9]{2}(?: [0-9]{2}:[0-9]{2}:[0-9]{2})?)\)")
+            .unwrap();
 
-        if let Ok(id) = value.parse() {
-            todo::Requirement::TodoDone(Id(id))
-        } else if let Some(captures) = after_date.captures(value) {
-            let date =
-                if let Ok(x) = NaiveDateTime::parse_from_str(&captures[1], "%Y-%m-%d %H:%M:%S") {
-                    x
-                } else if let Ok(x) = NaiveDate::parse_from_str(&captures[1], "%Y-%m-%d") {
-                    NaiveDateTime::from(x)
-                } else {
-                    panic!("Invalid date/time");
-                };
-            let local_now = Local.from_local_datetime(&date).unwrap();
-
-            todo::Requirement::AfterDate(local_now.into())
+    if let Ok(id) = value.parse() {
+        Ok(todo::Requirement::TodoDone(Id(id)))
+    } else if let Some(captures) = after_date.captures(value) {
+        let date = if let Ok(x) = NaiveDateTime::parse_from_str(&captures[1], "%Y-%m-%d %H:%M:%S") {
+            x
+        } else if let Ok(x) = NaiveDate::parse_from_str(&captures[1], "%Y-%m-%d") {
+            NaiveDateTime::from(x)
         } else {
-            panic!("Failed to parse: {value}");
-        }
+            panic!("Invalid date/time");
+        };
+        let local_now = Local.from_local_datetime(&date).unwrap();
+
+        Ok(todo::Requirement::AfterDate(local_now.into()))
+    } else {
+        panic!("Failed to parse: {value}");
     }
 }
 
@@ -101,9 +90,11 @@ enum CalendarAction {
 enum Command {
     Add {
         title: String,
+        #[arg(value_parser=parse_priority)]
         priority: Priority,
         #[arg(value_parser=parse_minutes)]
         estimate: Duration,
+        #[arg(value_parser=parse_requirement)]
         requirements: Vec<Requirement>,
     },
     Done {
@@ -121,9 +112,9 @@ enum Command {
     Edit {
         #[arg(value_parser=parse_id)]
         id: Id,
-        #[arg(short, long)]
+        #[arg(short, long, value_parser = parse_requirement)]
         add_requirements: Option<Vec<Requirement>>,
-        #[arg(short = 'p', long)]
+        #[arg(short = 'p', long, value_parser = parse_priority)]
         set_priority: Option<Priority>,
         #[arg(short = 'e', long, value_parser = parse_minutes)]
         set_estimate: Option<Duration>,
@@ -145,7 +136,7 @@ struct Cli {
 
 #[derive(Serialize, Deserialize)]
 struct Configuration {
-    storage_path: PathBuf,
+    server_address: String
 }
 
 fn read_configuration() -> Configuration {
@@ -183,15 +174,7 @@ fn read_configuration() -> Configuration {
     default_data_path.push("todos.json");
 
     if !config_path.exists() {
-        let mut config_file =
-            File::create(&config_path).expect("Failed to create the configuration file");
-        let configuration = serde_json::to_string_pretty(&Configuration {
-            storage_path: default_data_path.clone(),
-        })
-        .expect("Failed to serialize the configuration");
-        config_file
-            .write_all(configuration.as_bytes())
-            .expect("Failed to write the configuration file");
+        panic!("Missing configuration file!");
     }
 
     let configuration =
@@ -203,17 +186,6 @@ fn read_configuration() -> Configuration {
 fn main() {
     let cli = Cli::parse();
     let configuration = read_configuration();
-    let data_path = configuration.storage_path;
-
-    if !data_path.exists() {
-        let mut data_file = File::create(&data_path).expect("Data file could not be created");
-        data_file
-            .write_all(b"{}")
-            .expect("Failed to write to the data file");
-    }
-
-    let mut todo_store = Store::new(data_path.clone());
-    let event_store = crate::calendar::store::Store::new(data_path);
 
     match cli.command {
         Command::Add {
@@ -222,19 +194,19 @@ fn main() {
             estimate,
             requirements,
         } => {
-            cli::add::execute(&mut todo_store, &title, priority, estimate, requirements);
+            cli::add::execute(configuration.server_address.clone(), &title, priority, estimate, requirements);
         }
         Command::List => {
-            cli::list::execute(&todo_store);
+            cli::list::execute(configuration.server_address.clone());
         }
         Command::Doing { id } => {
-            cli::state_transition::execute(&mut todo_store, id, Status::Doing);
+            cli::state_transition::execute(configuration.server_address.clone(), id, Status::Doing);
         }
         Command::Done { id } => {
-            cli::state_transition::execute(&mut todo_store, id, Status::Done);
+            cli::state_transition::execute(configuration.server_address.clone(), id, Status::Done);
         }
         Command::Todo { id } => {
-            cli::state_transition::execute(&mut todo_store, id, Status::Todo);
+            cli::state_transition::execute(configuration.server_address.clone(), id, Status::Todo);
         }
         Command::Edit {
             id,
@@ -243,17 +215,10 @@ fn main() {
             set_estimate,
             set_title,
         } => {
-            cli::edit::execute(
-                &mut todo_store,
-                id,
-                add_requirements,
-                set_priority,
-                set_estimate,
-                set_title,
-            );
+            cli::edit::execute(configuration.server_address.clone(), id, add_requirements, set_priority, set_estimate, set_title);
         }
         Command::Calendar { action } => {
-            cli::calendar::execute(&event_store, &todo_store, action);
+            cli::calendar::execute(configuration.server_address.clone(), action);
         }
     }
 }

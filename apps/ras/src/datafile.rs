@@ -2,13 +2,11 @@ use std::{collections::HashMap, path::Path};
 
 use serde::{Deserialize, Serialize};
 
-use crate::todo::{Id, Todo};
-
 #[derive(Serialize, Deserialize)]
 pub struct DataFile {
-    pub todos: HashMap<Id, Todo>,
+    pub todos: HashMap<ratlib::todo::Id, ratlib::todo::Todo>,
     #[serde(default)]
-    pub events: HashMap<crate::calendar::event::Id, crate::calendar::event::Event>,
+    pub events: HashMap<ratlib::calendar::event::Id, ratlib::calendar::event::Event>,
 }
 
 impl DataFile {
@@ -17,8 +15,11 @@ impl DataFile {
 
         if let Ok(datafile) = serde_json::from_str(&contents) {
             datafile
-        } else if let Ok(todos) = serde_json::from_str::<HashMap<Id, Todo>>(&contents) {
-            // Legacy data format - todos only
+        } else if let Ok(todos) =
+            serde_json::from_str::<HashMap<ratlib::todo::Id, ratlib::todo::Todo>>(&contents)
+        {
+            // FIXME Legacy data format - todos only. Remove this - we don't have the legacy data
+            // format anywhere anymore.
             DataFile {
                 todos,
                 events: HashMap::new(),
