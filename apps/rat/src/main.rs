@@ -1,7 +1,7 @@
 #![deny(clippy::pedantic)]
 
 use std::{
-    convert::Infallible, fs::File, io::Write, num::ParseIntError, path::PathBuf, time::Duration,
+    convert::Infallible, num::ParseIntError, path::PathBuf, time::Duration,
 };
 
 use chrono::{DateTime, Local, NaiveDate, NaiveDateTime, ParseError, TimeZone};
@@ -136,7 +136,7 @@ struct Cli {
 
 #[derive(Serialize, Deserialize)]
 struct Configuration {
-    storage_path: PathBuf,
+    server_address: String
 }
 
 fn read_configuration() -> Configuration {
@@ -174,15 +174,7 @@ fn read_configuration() -> Configuration {
     default_data_path.push("todos.json");
 
     if !config_path.exists() {
-        let mut config_file =
-            File::create(&config_path).expect("Failed to create the configuration file");
-        let configuration = serde_json::to_string_pretty(&Configuration {
-            storage_path: default_data_path.clone(),
-        })
-        .expect("Failed to serialize the configuration");
-        config_file
-            .write_all(configuration.as_bytes())
-            .expect("Failed to write the configuration file");
+        panic!("Missing configuration file!");
     }
 
     let configuration =
@@ -194,14 +186,6 @@ fn read_configuration() -> Configuration {
 fn main() {
     let cli = Cli::parse();
     let configuration = read_configuration();
-    let data_path = configuration.storage_path;
-
-    if !data_path.exists() {
-        let mut data_file = File::create(&data_path).expect("Data file could not be created");
-        data_file
-            .write_all(b"{}")
-            .expect("Failed to write to the data file");
-    }
 
     match cli.command {
         Command::Add {
@@ -210,19 +194,19 @@ fn main() {
             estimate,
             requirements,
         } => {
-            cli::add::execute(&title, priority, estimate, requirements);
+            cli::add::execute(configuration.server_address.clone(), &title, priority, estimate, requirements);
         }
         Command::List => {
-            cli::list::execute();
+            cli::list::execute(configuration.server_address.clone());
         }
         Command::Doing { id } => {
-            cli::state_transition::execute(id, Status::Doing);
+            cli::state_transition::execute(configuration.server_address.clone(), id, Status::Doing);
         }
         Command::Done { id } => {
-            cli::state_transition::execute(id, Status::Done);
+            cli::state_transition::execute(configuration.server_address.clone(), id, Status::Done);
         }
         Command::Todo { id } => {
-            cli::state_transition::execute(id, Status::Todo);
+            cli::state_transition::execute(configuration.server_address.clone(), id, Status::Todo);
         }
         Command::Edit {
             id,
@@ -231,10 +215,10 @@ fn main() {
             set_estimate,
             set_title,
         } => {
-            cli::edit::execute(id, add_requirements, set_priority, set_estimate, set_title);
+            cli::edit::execute(configuration.server_address.clone(), id, add_requirements, set_priority, set_estimate, set_title);
         }
         Command::Calendar { action } => {
-            cli::calendar::execute(action);
+            cli::calendar::execute(configuration.server_address.clone(), action);
         }
     }
 }

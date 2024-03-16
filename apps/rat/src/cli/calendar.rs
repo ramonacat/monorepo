@@ -1,11 +1,11 @@
 use chrono::{Datelike, TimeZone, Utc};
 use chrono_tz::Europe::Berlin;
 use colored::{Color, Colorize};
-use ratlib::{calendar::event::Event, todo::Todo, PostEvent, SERVER_URL};
+use ratlib::{calendar::event::Event, todo::Todo, PostEvent};
 
 use crate::cli::list::render_todo;
 
-pub(crate) fn execute(action: crate::CalendarAction) {
+pub(crate) fn execute(server_url: String, action: crate::CalendarAction) {
     let client = reqwest::blocking::Client::new();
 
     match action {
@@ -15,7 +15,7 @@ pub(crate) fn execute(action: crate::CalendarAction) {
             let todos_becoming_valid: Vec<Todo> = client
                 .get(format!(
                     "{}todos?becoming_ready_on={}",
-                    SERVER_URL,
+                    server_url,
                     berlin_now.date_naive()
                 ))
                 .send()
@@ -26,7 +26,7 @@ pub(crate) fn execute(action: crate::CalendarAction) {
             let events_today: Vec<Event> = client
                 .get(format!(
                     "{}events?date={}",
-                    SERVER_URL,
+                    server_url,
                     berlin_now.date_naive()
                 ))
                 .send()
@@ -59,7 +59,7 @@ pub(crate) fn execute(action: crate::CalendarAction) {
             title,
         } => {
             client
-                .post(format!("{}events", SERVER_URL))
+                .post(format!("{}events", server_url))
                 .json(&PostEvent::Add {
                     date: when,
                     duration,

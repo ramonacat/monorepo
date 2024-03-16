@@ -8,9 +8,6 @@ use todo::{Priority, Requirement, Status};
 pub mod calendar;
 pub mod todo;
 
-// TODO: This should be read from the config...
-pub const SERVER_URL: &str = "http://localhost:8438/";
-
 #[derive(Debug, Deserialize, Serialize)]
 pub enum PostTodo {
     Add {

@@ -1,5 +1,4 @@
 use colored::{Color, Colorize as _};
-use ratlib::SERVER_URL;
 
 use crate::todo::Todo;
 
@@ -23,11 +22,11 @@ pub fn render_todo(todo: &Todo) -> String {
     )
 }
 
-pub fn execute() {
+pub fn execute(server_url: String) {
     let client = reqwest::blocking::Client::new();
 
     let doing: Vec<Todo> = client
-        .get(format!("{}todos?status=Doing", SERVER_URL))
+        .get(format!("{}todos?status=Doing", server_url))
         .send()
         .unwrap()
         .json()
@@ -47,7 +46,7 @@ pub fn execute() {
 
     println!("{}", "Todo: ".color(Color::Red).bold());
     let ready_to_do: Vec<Todo> = client
-        .get(format!("{}todos", SERVER_URL))
+        .get(format!("{}todos", server_url))
         .send()
         .unwrap()
         .json()

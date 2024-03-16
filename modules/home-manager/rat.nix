@@ -8,9 +8,8 @@
   options = {
     programs.rat = {
       enable = lib.mkEnableOption "rat";
-      dataFile = lib.mkOption {
-        type = lib.types.path;
-        default = "";
+      serverAddress = lib.mkOption {
+        type = lib.types.str;
       };
     };
   };
@@ -20,8 +19,8 @@
     lib.mkIf cfg.enable {
       home.packages = [ratPackage];
       xdg.configFile."rat/config.json".text =
-        if cfg.dataFile != ""
-        then (builtins.toJSON {storage_path = cfg.dataFile;})
+        if cfg.serverAddress != ""
+        then (builtins.toJSON {server_address = cfg.serverAddress;})
         else (builtins.toJSON {});
     };
 }

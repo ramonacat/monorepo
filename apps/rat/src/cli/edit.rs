@@ -1,10 +1,11 @@
 use std::time::Duration;
 
-use ratlib::{PostTodoWithId, SERVER_URL};
+use ratlib::PostTodoWithId;
 
 use crate::todo::{Id, Priority, Requirement};
 
 pub fn execute(
+    server_url: String,
     id: Id,
     add_requirements: Option<Vec<Requirement>>,
     set_priority: Option<Priority>,
@@ -14,7 +15,7 @@ pub fn execute(
     let client = reqwest::blocking::Client::new();
 
     client
-        .post(format!("{}todos/{}", SERVER_URL, id.0))
+        .post(format!("{}todos/{}", server_url, id.0))
         .json(&PostTodoWithId::Edit {
             set_title,
             set_estimate,
