@@ -19,6 +19,7 @@
       extraUpFlags = ["--advertise-exit-node"];
     };
     security.polkit.enable = true;
+    programs.nix-ld.enable = true;
 
     nix.optimise.automatic = true;
     nix.gc.automatic = true;
