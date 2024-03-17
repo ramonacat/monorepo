@@ -5,7 +5,7 @@ use ratlib::{calendar::event::Event, todo::Todo, PostEvent};
 
 use crate::cli::list::render_todo;
 
-pub(crate) fn execute(server_url: String, action: crate::CalendarAction) {
+pub(crate) fn execute(server_url: &str, action: crate::CalendarAction) {
     let client = reqwest::blocking::Client::new();
 
     match action {
@@ -59,7 +59,7 @@ pub(crate) fn execute(server_url: String, action: crate::CalendarAction) {
             title,
         } => {
             client
-                .post(format!("{}events", server_url))
+                .post(format!("{server_url}events"))
                 .json(&PostEvent::Add {
                     date: when,
                     duration,

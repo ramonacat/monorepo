@@ -1,6 +1,6 @@
+use std::cmp::min;
 use std::sync::mpsc::Sender;
 use std::sync::Arc;
-use std::cmp::min;
 
 use embedded_graphics::image::{Image, ImageRaw};
 use embedded_graphics::Drawable;
@@ -9,10 +9,9 @@ use fontdue::layout::{Layout, TextStyle};
 
 use crate::gui::fonts::{FontKind, Fonts};
 use crate::gui::reactivity::property::{ReactiveProperty, ReactivePropertyReceiver};
-use crate::gui::{Control, Dimensions, GuiCommand, Padding, Point, GuiError};
+use crate::gui::{Control, Dimensions, GuiCommand, GuiError, Padding, Point};
 
-pub struct Text<TDrawTarget: DrawTarget<Color = BinaryColor, Error = GuiError>>
-{
+pub struct Text<TDrawTarget: DrawTarget<Color = BinaryColor, Error = GuiError>> {
     text: String,
     font_size: usize,
     command_channel: Option<Sender<GuiCommand<TDrawTarget>>>,
@@ -26,9 +25,7 @@ pub struct Text<TDrawTarget: DrawTarget<Color = BinaryColor, Error = GuiError>>
     dimensions: Option<Dimensions>,
 }
 
-impl<TDrawTarget: DrawTarget<Color = BinaryColor, Error = GuiError>>
-    Text<TDrawTarget>
-{
+impl<TDrawTarget: DrawTarget<Color = BinaryColor, Error = GuiError>> Text<TDrawTarget> {
     pub fn new(text: String, font_size: usize, font_kind: FontKind, padding: Padding) -> Self {
         let (text_property, text_property_receiver) = ReactiveProperty::new();
 
@@ -88,8 +85,8 @@ fn render_text(text: &str, font_size: f32, font_kind: FontKind, fonts: &Fonts) -
     }
 }
 
-impl<TDrawTarget: DrawTarget<Color = BinaryColor, Error = GuiError>>
-    Control<TDrawTarget> for Text<TDrawTarget>
+impl<TDrawTarget: DrawTarget<Color = BinaryColor, Error = GuiError>> Control<TDrawTarget>
+    for Text<TDrawTarget>
 {
     fn render(
         &mut self,

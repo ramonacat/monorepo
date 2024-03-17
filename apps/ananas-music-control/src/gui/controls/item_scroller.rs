@@ -7,7 +7,8 @@ use crate::gui::fonts::{FontKind, Fonts};
 use crate::gui::geometry::Rectangle;
 use crate::gui::layouts::stack::render_stack;
 use crate::gui::{
-    Control, Dimensions, Event, GuiCommand, Orientation, Padding, Point, StackUnitDimension, GuiError,
+    Control, Dimensions, Event, GuiCommand, GuiError, Orientation, Padding, Point,
+    StackUnitDimension,
 };
 
 use super::button::Button;
@@ -19,9 +20,7 @@ enum ScrollRequest {
     Down,
 }
 
-pub struct ItemScroller<
-    TDrawTarget: DrawTarget<Color = BinaryColor, Error = GuiError>,
-> {
+pub struct ItemScroller<TDrawTarget: DrawTarget<Color = BinaryColor, Error = GuiError>> {
     children: Vec<Box<dyn Control<TDrawTarget>>>,
     show_items: usize,
     buttons_stack_panel: StackPanel<TDrawTarget>,
@@ -32,14 +31,10 @@ pub struct ItemScroller<
     bounding_box: Option<Rectangle>,
     children_bounding_boxes: Option<BTreeMap<usize, Rectangle>>,
 }
-impl<
-        TDrawTarget: DrawTarget<Color = BinaryColor, Error = GuiError> + 'static,
-    > ItemScroller<TDrawTarget>
+impl<TDrawTarget: DrawTarget<Color = BinaryColor, Error = GuiError> + 'static>
+    ItemScroller<TDrawTarget>
 {
-    pub(crate) fn new(
-        children: Vec<Box<dyn Control<TDrawTarget>>>,
-        show_items: usize,
-    ) -> Self {
+    pub(crate) fn new(children: Vec<Box<dyn Control<TDrawTarget>>>, show_items: usize) -> Self {
         let (scroll_tx, scroll_rx) = channel();
 
         let scroll_tx_ = scroll_tx.clone();
@@ -99,9 +94,8 @@ impl<
     }
 }
 
-impl<
-        TDrawTarget: DrawTarget<Color = BinaryColor, Error = GuiError> + 'static,
-    > Control<TDrawTarget> for ItemScroller<TDrawTarget>
+impl<TDrawTarget: DrawTarget<Color = BinaryColor, Error = GuiError> + 'static> Control<TDrawTarget>
+    for ItemScroller<TDrawTarget>
 {
     fn render(
         &mut self,

@@ -1,8 +1,6 @@
 #![deny(clippy::pedantic)]
 
-use std::{
-    convert::Infallible, num::ParseIntError, path::PathBuf, time::Duration,
-};
+use std::{num::ParseIntError, path::PathBuf, time::Duration};
 
 use chrono::{DateTime, Local, NaiveDate, NaiveDateTime, ParseError, TimeZone};
 use chrono_tz::Europe::Berlin;
@@ -15,17 +13,30 @@ use thiserror::Error;
 
 mod cli;
 
-fn parse_priority(value: &str) -> Result<Priority, Infallible> {
+#[derive(Debug, Error)]
+enum PriorityError {
+    #[error("Invalid priority: \"{0}\"")]
+    InvalidValue(String),
+}
+
+fn parse_priority(value: &str) -> Result<Priority, PriorityError> {
     // todo prolly should like throw an error for weird values
     match value {
         "high" => Ok(Priority::High),
         "low" => Ok(Priority::Low),
-        _ => Ok(Priority::Medium),
+        "med" => Ok(Priority::Medium),
+        _ => Err(PriorityError::InvalidValue(value.to_string())),
     }
 }
 
+#[derive(Debug, Error)]
+enum RequirementError {
+    #[error("Failed to parse \"{0}\" as a requirement")]
+    FailedToParse(String),
+}
+
 // TODO: Actually hanlde errors...
-fn parse_requirement(value: &str) -> Result<Requirement, Infallible> {
+fn parse_requirement(value: &str) -> Result<Requirement, RequirementError> {
     let after_date =
         Regex::new(r"after\(([0-9]{4}\-[0-9]{2}\-[0-9]{2}(?: [0-9]{2}:[0-9]{2}:[0-9]{2})?)\)")
             .unwrap();
@@ -44,7 +55,7 @@ fn parse_requirement(value: &str) -> Result<Requirement, Infallible> {
 
         Ok(todo::Requirement::AfterDate(local_now.into()))
     } else {
-        panic!("Failed to parse: {value}");
+        Err(RequirementError::FailedToParse(value.to_string()))
     }
 }
 
@@ -136,7 +147,7 @@ struct Cli {
 
 #[derive(Serialize, Deserialize)]
 struct Configuration {
-    server_address: String
+    server_address: String,
 }
 
 fn read_configuration() -> Configuration {
@@ -173,9 +184,7 @@ fn read_configuration() -> Configuration {
     let mut default_data_path = xdg_data_directory.clone();
     default_data_path.push("todos.json");
 
-    if !config_path.exists() {
-        panic!("Missing configuration file!");
-    }
+    assert!(config_path.exists(), "Missing configuration file!");
 
     let configuration =
         std::fs::read_to_string(config_path).expect("Failed to read the configuration file");
@@ -194,19 +203,25 @@ fn main() {
             estimate,
             requirements,
         } => {
-            cli::add::execute(configuration.server_address.clone(), &title, priority, estimate, requirements);
+            cli::add::execute(
+                &configuration.server_address,
+                &title,
+                priority,
+                estimate,
+                requirements,
+            );
         }
         Command::List => {
-            cli::list::execute(configuration.server_address.clone());
+            cli::list::execute(&configuration.server_address);
         }
         Command::Doing { id } => {
-            cli::state_transition::execute(configuration.server_address.clone(), id, Status::Doing);
+            cli::state_transition::execute(&configuration.server_address, id, Status::Doing);
         }
         Command::Done { id } => {
-            cli::state_transition::execute(configuration.server_address.clone(), id, Status::Done);
+            cli::state_transition::execute(&configuration.server_address, id, Status::Done);
         }
         Command::Todo { id } => {
-            cli::state_transition::execute(configuration.server_address.clone(), id, Status::Todo);
+            cli::state_transition::execute(&configuration.server_address, id, Status::Todo);
         }
         Command::Edit {
             id,
@@ -215,10 +230,17 @@ fn main() {
             set_estimate,
             set_title,
         } => {
-            cli::edit::execute(configuration.server_address.clone(), id, add_requirements, set_priority, set_estimate, set_title);
+            cli::edit::execute(
+                &configuration.server_address,
+                id,
+                add_requirements,
+                set_priority,
+                set_estimate,
+                set_title,
+            );
         }
         Command::Calendar { action } => {
-            cli::calendar::execute(configuration.server_address.clone(), action);
+            cli::calendar::execute(&configuration.server_address, action);
         }
     }
 }

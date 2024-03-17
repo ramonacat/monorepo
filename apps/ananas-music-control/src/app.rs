@@ -9,25 +9,19 @@ use crate::gui::controls::progress_bar::ProgressBar;
 use crate::gui::controls::stack_panel::StackPanel;
 use crate::gui::controls::text::Text;
 use crate::gui::fonts::FontKind;
-use crate::gui::{Control, GuiCommand, Orientation, Padding, StackUnitDimension, GuiError};
+use crate::gui::{Control, GuiCommand, GuiError, Orientation, Padding, StackUnitDimension};
 use crate::library::Library;
 use crate::playback::{PlaybackStatus, Player};
 
-type BackCallback<TDrawTarget> =
-    Option<Box<dyn FnMut(Sender<GuiCommand<TDrawTarget>>)>>;
+type BackCallback<TDrawTarget> = Option<Box<dyn FnMut(Sender<GuiCommand<TDrawTarget>>)>>;
 
-pub struct App<
-    TDrawTarget: DrawTarget<Color = BinaryColor, Error = GuiError> + 'static,
-> {
+pub struct App<TDrawTarget: DrawTarget<Color = BinaryColor, Error = GuiError> + 'static> {
     library: Arc<Library>,
     player: Arc<Player>,
     draw_target: PhantomData<TDrawTarget>,
 }
 
-impl<
-        TDrawTarget: DrawTarget<Color = BinaryColor, Error = GuiError> + 'static,
-    > App<TDrawTarget>
-{
+impl<TDrawTarget: DrawTarget<Color = BinaryColor, Error = GuiError> + 'static> App<TDrawTarget> {
     pub fn new(library: Arc<Library>) -> Arc<Self> {
         let player = Player::new();
 
@@ -38,11 +32,7 @@ impl<
         })
     }
 
-    fn playback_view(
-        self: Arc<Self>,
-        artist: &str,
-        album: &str,
-    ) -> Box<dyn Control<TDrawTarget>> {
+    fn playback_view(self: Arc<Self>, artist: &str, album: &str) -> Box<dyn Control<TDrawTarget>> {
         for track in self.library.list_tracks(artist, album) {
             self.player.add_to_queue(track);
         }

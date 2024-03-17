@@ -1,6 +1,4 @@
-use std::
-    sync::{mpsc::Sender, Arc}
-;
+use std::sync::{mpsc::Sender, Arc};
 
 use embedded_graphics::{
     draw_target::DrawTarget,
@@ -13,12 +11,10 @@ use crate::gui::{
     fonts::Fonts,
     geometry::Dimensions,
     reactivity::property::{ReactiveProperty, ReactivePropertyReceiver},
-    Control, Event, GuiCommand, Padding, GuiError,
+    Control, Event, GuiCommand, GuiError, Padding,
 };
 
-pub struct ProgressBar<
-    TDrawTarget: DrawTarget<Color = BinaryColor, Error = GuiError>,
-> {
+pub struct ProgressBar<TDrawTarget: DrawTarget<Color = BinaryColor, Error = GuiError>> {
     command_channel: Option<Sender<GuiCommand<TDrawTarget>>>,
     padding: Padding,
     progress: u32,
@@ -35,9 +31,7 @@ pub struct ProgressBar<
     progress_max_property_receiver: ReactivePropertyReceiver<u32>,
 }
 
-impl<TDrawTarget: DrawTarget<Color = BinaryColor, Error = GuiError>>
-    ProgressBar<TDrawTarget>
-{
+impl<TDrawTarget: DrawTarget<Color = BinaryColor, Error = GuiError>> ProgressBar<TDrawTarget> {
     pub fn new(progress: u32, progress_max: u32, height: u32, padding: Padding) -> Self {
         let (progress_property, progress_property_receiver) = ReactiveProperty::new();
         let (progress_max_property, progress_max_property_receiver) = ReactiveProperty::new();
@@ -65,8 +59,8 @@ impl<TDrawTarget: DrawTarget<Color = BinaryColor, Error = GuiError>>
     }
 }
 
-impl<TDrawTarget: DrawTarget<Color = BinaryColor, Error = GuiError>>
-    Control<TDrawTarget> for ProgressBar<TDrawTarget>
+impl<TDrawTarget: DrawTarget<Color = BinaryColor, Error = GuiError>> Control<TDrawTarget>
+    for ProgressBar<TDrawTarget>
 {
     fn register_command_channel(&mut self, tx: Sender<GuiCommand<TDrawTarget>>) {
         self.command_channel = Some(tx);

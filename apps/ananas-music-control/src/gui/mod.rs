@@ -26,8 +26,7 @@ mod layouts;
 pub mod reactivity;
 
 #[derive(Debug, Error)]
-pub enum GuiError {
-}
+pub enum GuiError {}
 
 pub struct Padding {
     top: u32,
@@ -106,8 +105,7 @@ pub enum StackUnitDimension {
     Pixel(u32),
 }
 
-pub struct Gui<TDrawTarget: DrawTarget<Color = BinaryColor, Error = GuiError>>
-{
+pub struct Gui<TDrawTarget: DrawTarget<Color = BinaryColor, Error = GuiError>> {
     fonts: Fonts,
     draw_target: TDrawTarget,
     root_control: Box<dyn Control<TDrawTarget>>,
@@ -187,7 +185,12 @@ impl<
 
             let mut redraw = false;
 
-            if SystemTime::now().duration_since(last_redraw).unwrap().as_secs() > 3600 {
+            if SystemTime::now()
+                .duration_since(last_redraw)
+                .unwrap()
+                .as_secs()
+                > 3600
+            {
                 redraw = true;
                 last_redraw = SystemTime::now();
             }
@@ -223,10 +226,7 @@ pub enum GuiCommand<TDrawTarget: DrawTarget> {
     ReplaceRoot(Box<dyn Control<TDrawTarget>>),
 }
 
-pub trait Control<
-    TDrawTarget: DrawTarget<Color = BinaryColor, Error = GuiError>
->
-{
+pub trait Control<TDrawTarget: DrawTarget<Color = BinaryColor, Error = GuiError>> {
     fn register_command_channel(&mut self, tx: Sender<GuiCommand<TDrawTarget>>);
     fn compute_natural_dimensions(&mut self, fonts: &Fonts) -> Dimensions;
 

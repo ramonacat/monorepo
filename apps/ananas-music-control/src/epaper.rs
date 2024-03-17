@@ -370,7 +370,9 @@ impl<T: DrawTarget + OriginDimensions + FlushableDrawTarget> RotatedDrawTarget<T
     }
 }
 
-impl<T: DrawTarget<Error = GuiError> + OriginDimensions + FlushableDrawTarget> DrawTarget for RotatedDrawTarget<T> {
+impl<T: DrawTarget<Error = GuiError> + OriginDimensions + FlushableDrawTarget> DrawTarget
+    for RotatedDrawTarget<T>
+{
     type Color = T::Color;
     type Error = GuiError;
 

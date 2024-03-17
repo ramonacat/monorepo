@@ -2,14 +2,9 @@
   pkgs,
   craneLib,
 }: let
-  homeAutomationPackageArguments = {
-    src = pkgs.lib.cleanSourceWith {
-      src = craneLib.path ../apps/home-automation;
-    };
-  };
-  homeAutomationPackageCargoArtifacts = craneLib.buildDepsOnly homeAutomationPackageArguments;
+  mkRustPackage = import ../libs/nix/mkRustPackage.nix;
 in
-  craneLib.buildPackage (homeAutomationPackageArguments
-    // {
-      cargoArtifacts = homeAutomationPackageCargoArtifacts;
-    })
+  mkRustPackage {
+    inherit pkgs craneLib;
+    srcPath = ../apps/home-automation;
+  }

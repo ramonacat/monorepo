@@ -2,7 +2,7 @@ use ratlib::PostTodoWithId;
 
 use crate::todo::{Id, Status};
 
-pub fn execute(server_url: String, id: Id, status: Status) {
+pub fn execute(server_url: &str, id: Id, status: Status) {
     let client = reqwest::blocking::Client::new();
 
     client

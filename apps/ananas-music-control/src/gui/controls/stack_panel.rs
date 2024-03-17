@@ -1,18 +1,16 @@
 use std::cmp::max;
-use std::sync::mpsc::Sender;
 use std::collections::HashMap;
+use std::sync::mpsc::Sender;
 
 use embedded_graphics::{draw_target::DrawTarget, pixelcolor::BinaryColor};
 
 use crate::gui::fonts::Fonts;
 use crate::gui::geometry::Rectangle;
 use crate::gui::layouts::stack::render_stack;
-use crate::gui::{Control, GuiCommand, Orientation, StackUnitDimension, GuiError};
+use crate::gui::{Control, GuiCommand, GuiError, Orientation, StackUnitDimension};
 use crate::gui::{Dimensions, Point};
 
-pub struct StackPanel<
-    TDrawTarget: DrawTarget<Color = BinaryColor, Error = GuiError>,
-> {
+pub struct StackPanel<TDrawTarget: DrawTarget<Color = BinaryColor, Error = GuiError>> {
     children: Vec<Box<dyn Control<TDrawTarget>>>,
     bounding_boxes: HashMap<usize, Rectangle>,
     direction: Orientation,
@@ -20,9 +18,7 @@ pub struct StackPanel<
     unit_dimensions: Vec<StackUnitDimension>,
 }
 
-impl<TDrawTarget: DrawTarget<Color = BinaryColor, Error = GuiError>>
-    StackPanel<TDrawTarget>
-{
+impl<TDrawTarget: DrawTarget<Color = BinaryColor, Error = GuiError>> StackPanel<TDrawTarget> {
     pub fn new(
         children: Vec<Box<dyn Control<TDrawTarget>>>,
         direction: Orientation,
@@ -38,9 +34,8 @@ impl<TDrawTarget: DrawTarget<Color = BinaryColor, Error = GuiError>>
     }
 }
 
-impl<
-        TDrawTarget: DrawTarget<Color = BinaryColor, Error = GuiError> + 'static,
-    > Control<TDrawTarget> for StackPanel<TDrawTarget>
+impl<TDrawTarget: DrawTarget<Color = BinaryColor, Error = GuiError> + 'static> Control<TDrawTarget>
+    for StackPanel<TDrawTarget>
 {
     fn render(
         &mut self,

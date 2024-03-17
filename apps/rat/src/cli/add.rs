@@ -5,7 +5,7 @@ use ratlib::{todo::Id, PostTodo};
 use crate::todo::{Priority, Requirement};
 
 pub fn execute(
-    server_url: String,
+    server_url: &str,
     title: &str,
     priority: Priority,
     estimate: Duration,
@@ -14,7 +14,7 @@ pub fn execute(
     let client = reqwest::blocking::Client::new();
 
     let id: Id = client
-        .post(format!("{}todos", server_url))
+        .post(format!("{server_url}todos"))
         .json(&PostTodo::Add {
             title: title.to_string(),
             priority,

@@ -32,22 +32,32 @@
     nix-minecraft,
     alacritty-theme,
   }: let
+    packages = {
+      home-automation = import ./packages/home-automation.nix {inherit pkgs craneLib;};
+      music-control = import ./packages/music-control.nix {
+        pkgs = pkgsAarch64;
+        craneLib = craneLibAarch64;
+      };
+      ras = import ./packages/ras.nix {inherit pkgs craneLib;};
+      rat = import ./packages/rat.nix {
+        inherit pkgs;
+        inherit craneLib;
+      };
+    };
     overlays = [
       (import rust-overlay)
       nix-minecraft.overlay
       alacritty-theme.overlays.default
       (final: prev: {
-        ramona.lan-mouse = (import ./packages/lan-mouse.nix) {inherit pkgs craneLib;};
-        ramona.ras = (import ./packages/ras.nix) {inherit pkgs craneLib;};
-        ramona.home-automation = import ./packages/home-automation.nix {inherit pkgs craneLib;};
-        ramona.music-control = import ./packages/music-control.nix {
-          pkgs = pkgsAarch64;
-          craneLib = craneLibAarch64;
-        };
-        ramona.rat = import ./packages/rat.nix {
-          inherit pkgs;
-          inherit craneLib;
-        };
+        ramona =
+          {
+            lan-mouse = (import ./packages/lan-mouse.nix) {inherit pkgs craneLib;};
+          }
+          // prev.lib.mapAttrs' (name: value: {
+            name = "${name}";
+            value = value.package;
+          })
+          packages;
       })
     ];
     pkgsConfig = {
@@ -88,23 +98,25 @@
     shellScripts = builtins.concatStringsSep " " (builtins.filter (x: pkgs.lib.hasSuffix ".sh" x) (pkgs.lib.filesystem.listFilesRecursive (pkgs.lib.cleanSource ./.)));
   in {
     formatter.x86_64-linux = pkgs.alejandra;
-    checks.x86_64-linux = {
-      fmt-nix = pkgs.runCommand "fmt-nix" {} ''
-        ${pkgs.alejandra}/bin/alejandra --check ${./.}
+    checks.x86_64-linux =
+      {
+        fmt-nix = pkgs.runCommand "fmt-nix" {} ''
+          ${pkgs.alejandra}/bin/alejandra --check ${./.}
 
-        touch $out
-      '';
-      fmt-lua = pkgs.runCommand "fmt-lua" {} ''
-        ${pkgs.stylua}/bin/stylua --check ${./.}
+          touch $out
+        '';
+        fmt-lua = pkgs.runCommand "fmt-lua" {} ''
+          ${pkgs.stylua}/bin/stylua --check ${./.}
 
-        touch $out
-      '';
-      shellcheck = pkgs.runCommand "shellcheck" {} ''
-        ${pkgs.shellcheck}/bin/shellcheck ${shellScripts}
+          touch $out
+        '';
+        shellcheck = pkgs.runCommand "shellcheck" {} ''
+          ${pkgs.shellcheck}/bin/shellcheck ${shellScripts}
 
-        touch $out
-      '';
-    };
+          touch $out
+        '';
+      }
+      // (pkgs.lib.mergeAttrsList (pkgs.lib.mapAttrsToList (name: value: value.checks) packages));
     devShells.x86_64-linux.default = pkgs.mkShell {
       packages = with pkgs; [
         alsaLib.dev
