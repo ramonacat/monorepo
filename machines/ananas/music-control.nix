@@ -1,4 +1,4 @@
-{ananasMusicControlPackage}: {
+{
   config,
   pkgs,
   lib,
@@ -9,7 +9,7 @@
     description = "Music control";
     serviceConfig = {
       Type = "simple";
-      ExecStart = "${ananasMusicControlPackage}/bin/ananas-music-control";
+      ExecStart = "${pkgs.ramona.music-control}/bin/ananas-music-control";
     };
   };
 }

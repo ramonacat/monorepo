@@ -6,22 +6,18 @@ use embedded_graphics::{
 };
 use std::sync::mpsc::Sender;
 
-use crate::gui::{fonts::Fonts, Control, Dimensions, Event, GuiCommand, Padding, Point, GuiError};
+use crate::gui::{fonts::Fonts, Control, Dimensions, Event, GuiCommand, GuiError, Padding, Point};
 
 type Callback<TDrawTarget> = Box<dyn FnMut(Sender<GuiCommand<TDrawTarget>>)>;
 
-pub struct Button<
-    TDrawTarget: DrawTarget<Color = BinaryColor, Error = GuiError>,
-> {
+pub struct Button<TDrawTarget: DrawTarget<Color = BinaryColor, Error = GuiError>> {
     content: Box<dyn Control<TDrawTarget>>,
     action: Callback<TDrawTarget>,
     command_channel: Option<Sender<GuiCommand<TDrawTarget>>>,
     padding: Padding,
 }
 
-impl<TDrawTarget: DrawTarget<Color = BinaryColor, Error = GuiError>>
-    Button<TDrawTarget>
-{
+impl<TDrawTarget: DrawTarget<Color = BinaryColor, Error = GuiError>> Button<TDrawTarget> {
     pub fn new(
         content: Box<dyn Control<TDrawTarget>>,
         padding: Padding,
@@ -43,8 +39,8 @@ const BUTTON_STYLE: PrimitiveStyle<BinaryColor> = PrimitiveStyleBuilder::new()
     .fill_color(BinaryColor::Off)
     .build();
 
-impl<TDrawTarget: DrawTarget<Color = BinaryColor, Error = GuiError>>
-    Control<TDrawTarget> for Button<TDrawTarget>
+impl<TDrawTarget: DrawTarget<Color = BinaryColor, Error = GuiError>> Control<TDrawTarget>
+    for Button<TDrawTarget>
 {
     fn render(
         &mut self,

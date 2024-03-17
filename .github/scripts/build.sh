@@ -31,3 +31,4 @@ if [[ "$BRANCH_NAME" == "main" ]]; then
 fi
 
 cat ./*-closure
+

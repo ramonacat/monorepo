@@ -155,3 +155,16 @@ impl Todo {
         self.status = status;
     }
 }
+
+#[cfg(test)]
+mod test {
+    use super::IdGenerator;
+
+    #[test]
+    pub fn generate_next_id() {
+        let mut generator = IdGenerator::new(12);
+
+        assert_eq!(13, generator.next().0);
+        assert_eq!(14, generator.next().0);
+    }
+}

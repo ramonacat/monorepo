@@ -2,20 +2,13 @@
   pkgs,
   craneLib,
 }: let
-  sourceFilter = path: type: craneLib.filterCargoSources path type || (builtins.match ".*/resources/.*" path != null);
-  packageArguments = {
-    src = pkgs.lib.cleanSourceWith {
-      src = craneLib.path ../apps/ananas-music-control;
-      filter = sourceFilter;
-    };
-    buildInputs = with pkgs; [
-      pkg-config
-      alsaLib.dev
-    ];
-  };
-  cargoArtifacts = craneLib.buildDepsOnly packageArguments;
+  mkRustPackage = import ../libs/nix/mkRustPackage.nix;
 in
-  craneLib.buildPackage (packageArguments
-    // {
-      cargoArtifacts = cargoArtifacts;
-    })
+  mkRustPackage {
+    inherit pkgs craneLib;
+    srcPath = ../apps/ananas-music-control;
+    sourceFilter = path: type: craneLib.filterCargoSources path type || (builtins.match ".*/resources/.*" path != null);
+    additionalPackageArguments = {
+      buildInputs = with pkgs; [pkg-config alsaLib.dev];
+    };
+  }

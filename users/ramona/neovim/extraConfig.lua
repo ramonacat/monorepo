@@ -52,7 +52,7 @@ lspconfig.lua_ls.setup({
 		return true
 	end,
 })
-lspconfig.nixd.setup({})
+lspconfig.nil_ls.setup({})
 lspconfig.terraformls.setup({})
 lspconfig.csharp_ls.setup({})
 

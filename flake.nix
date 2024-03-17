@@ -32,13 +32,35 @@
     nix-minecraft,
     alacritty-theme,
   }: let
+    packages = {
+      home-automation = import ./packages/home-automation.nix {inherit pkgs craneLib;};
+      music-control = import ./packages/music-control.nix {
+        pkgs = pkgsAarch64;
+        craneLib = craneLibAarch64;
+      };
+      ras = import ./packages/ras.nix {inherit pkgs craneLib;};
+      rat = import ./packages/rat.nix {
+        inherit pkgs;
+        inherit craneLib;
+      };
+    };
+    libraries = {
+      ratlib = import ./packages/libraries/ratlib.nix {inherit pkgs craneLib;};
+    };
     overlays = [
       (import rust-overlay)
       nix-minecraft.overlay
       alacritty-theme.overlays.default
       (final: prev: {
-        ramona.lan-mouse = (import ./packages/lan-mouse.nix) {inherit pkgs craneLib;};
-        ramona.ras = (import ./packages/ras.nix) {inherit pkgs craneLib;};
+        ramona =
+          {
+            lan-mouse = (import ./packages/lan-mouse.nix) {inherit pkgs craneLib;};
+          }
+          // prev.lib.mapAttrs' (name: value: {
+            name = "${name}";
+            value = value.package;
+          })
+          packages;
       })
     ];
     pkgsConfig = {
@@ -72,56 +94,56 @@
       config = pkgsConfig;
     };
     craneLib = (crane.mkLib pkgs).overrideToolchain rustVersion;
-    rustVersion = pkgs.rust-bin.stable.latest.default;
-    rustVersionAarch64 = pkgsAarch64.rust-bin.stable.latest.default;
+    rustVersion = pkgs.rust-bin.stable.latest.default.override {extensions = ["llvm-tools-preview"];};
+    rustVersionAarch64 = pkgsAarch64.rust-bin.stable.latest.default.override {extensions = ["llvm-tools-preview"];};
     craneLibAarch64 = (crane.mkLib pkgsAarch64).overrideToolchain rustVersionAarch64;
 
-    homeAutomationPackage = import ./packages/home-automation.nix {
-      inherit pkgs;
-      inherit craneLib;
-    };
-    ananasMusicControlPackage = import ./packages/music-control.nix {
-      pkgs = pkgsAarch64;
-      craneLib = craneLibAarch64;
-    };
-    ratPackage = import ./packages/rat.nix {
-      inherit pkgs;
-      inherit craneLib;
-    };
     shellScripts = builtins.concatStringsSep " " (builtins.filter (x: pkgs.lib.hasSuffix ".sh" x) (pkgs.lib.filesystem.listFilesRecursive (pkgs.lib.cleanSource ./.)));
   in {
     formatter.x86_64-linux = pkgs.alejandra;
-    checks.x86_64-linux = {
-      fmt-nix = pkgs.runCommand "fmt-nix" {} ''
-        ${pkgs.alejandra}/bin/alejandra --check ${./.}
+    checks.x86_64-linux =
+      {
+        fmt-nix = pkgs.runCommand "fmt-nix" {} ''
+          ${pkgs.alejandra}/bin/alejandra --check ${./.}
 
-        touch $out
-      '';
-      fmt-lua = pkgs.runCommand "fmt-lua" {} ''
-        ${pkgs.stylua}/bin/stylua --check ${./.}
+          touch $out
+        '';
+        fmt-lua = pkgs.runCommand "fmt-lua" {} ''
+          ${pkgs.stylua}/bin/stylua --check ${./.}
 
-        touch $out
-      '';
-      shellcheck = pkgs.runCommand "shellcheck" {} ''
-        ${pkgs.shellcheck}/bin/shellcheck ${shellScripts}
+          touch $out
+        '';
+        shellcheck = pkgs.runCommand "shellcheck" {} ''
+          ${pkgs.shellcheck}/bin/shellcheck ${shellScripts}
 
-        touch $out
-      '';
+          touch $out
+        '';
+      }
+      // (pkgs.lib.mergeAttrsList (pkgs.lib.mapAttrsToList (name: value: value.checks) libraries))
+      // (pkgs.lib.mergeAttrsList (pkgs.lib.mapAttrsToList (name: value: value.checks) packages));
+    packages.x86_64-linux = rec {
+      coverage = let
+        paths = pkgs.lib.mapAttrsToList (name: value: value.coverage) (libraries // packages);
+      in
+        pkgs.runCommand "coverage" {} ("mkdir $out\n" + (pkgs.lib.concatStringsSep "\n" (builtins.map (p: "ln -s ${p} $out/${p.name}") paths)) + "\n");
+      default = coverage;
     };
     devShells.x86_64-linux.default = pkgs.mkShell {
       packages = with pkgs; [
-        pkg-config
-        pipewire
-        clang
         alsaLib.dev
-        rust-analyzer
-        lua-language-server
-        terraform
+        clang
         google-cloud-sdk
+        lua-language-server
+        nil
+        pipewire
+        pkg-config
+        rust-analyzer
         stylua
+        terraform
         terraform-ls
+
         (pkgs.rust-bin.stable.latest.default.override {
-          extensions = ["rust-src"];
+          extensions = ["rust-src" "llvm-tools-preview"];
           targets = ["aarch64-unknown-linux-gnu"];
         })
       ];
@@ -136,7 +158,7 @@
           agenix.nixosModules.default
 
           (import ./modules/base.nix {inherit nixpkgs;})
-          (import ./users/ramona.nix {inherit agenix ratPackage;})
+          (import ./users/ramona.nix {inherit agenix;})
 
           ./machines/hallewell/grafana.nix
           ./machines/hallewell/hardware.nix
@@ -164,7 +186,7 @@
           agenix.nixosModules.default
 
           (import ./modules/base.nix {inherit nixpkgs;})
-          (import ./users/ramona.nix {inherit agenix ratPackage;})
+          (import ./users/ramona.nix {inherit agenix;})
           (import ./users/ramona/gui.nix {inherit nix-vscode-extensions;})
 
           ./machines/moonfall/hardware.nix
@@ -192,19 +214,19 @@
           agenix.nixosModules.default
 
           (import ./modules/base.nix {inherit nixpkgs;})
-          (import ./users/ramona.nix {inherit agenix ratPackage;})
-          (import ./machines/shadowmend/home-automation.nix {inherit homeAutomationPackage;})
+          (import ./users/ramona.nix {inherit agenix;})
 
           ./machines/shadowmend/hardware.nix
+          ./machines/shadowmend/home-automation.nix
           ./machines/shadowmend/networking.nix
           ./machines/shadowmend/rabbitmq.nix
           ./machines/shadowmend/users/ramona.nix
           ./machines/shadowmend/zigbee2mqtt.nix
           ./modules/bcachefs.nix
-          ./modules/updates.nix
           ./modules/installed_base.nix
           ./modules/nas-client.nix
           ./modules/telegraf.nix
+          ./modules/updates.nix
         ];
       };
       angelsin = nixpkgs.lib.nixosSystem {
@@ -216,7 +238,7 @@
           nixos-hardware.nixosModules.framework-13-7040-amd
 
           (import ./modules/base.nix {inherit nixpkgs;})
-          (import ./users/ramona.nix {inherit agenix ratPackage;})
+          (import ./users/ramona.nix {inherit agenix;})
           (import ./users/ramona/gui.nix {inherit nix-vscode-extensions;})
 
           ./machines/angelsin/hardware.nix
@@ -245,15 +267,15 @@
           nixos-hardware.nixosModules.raspberry-pi-4
 
           (import ./modules/base.nix {inherit nixpkgs;})
-          (import ./users/ramona.nix {inherit agenix ratPackage;})
+          (import ./users/ramona.nix {inherit agenix;})
           (import ./machines/ananas/hardware.nix {inherit pkgsCross;})
-          (import ./machines/ananas/music-control.nix {inherit ananasMusicControlPackage;})
 
+          ./machines/ananas/music-control.nix
           ./machines/ananas/networking.nix
           ./modules/installed_base.nix
-          ./modules/updates.nix
           ./modules/nas-client.nix
           ./modules/telegraf.nix
+          ./modules/updates.nix
         ];
       };
       evillian = nixpkgs.lib.nixosSystem {
@@ -265,7 +287,7 @@
           nixos-hardware.nixosModules.microsoft-surface-go
 
           (import ./modules/base.nix {inherit nixpkgs;})
-          (import ./users/ramona.nix {inherit agenix ratPackage;})
+          (import ./users/ramona.nix {inherit agenix;})
           (import ./users/ramona/gui.nix {inherit nix-vscode-extensions;})
 
           ./machines/evillian/hardware.nix
@@ -289,7 +311,7 @@
           nix-minecraft.nixosModules.minecraft-servers
 
           (import ./modules/base.nix {inherit nixpkgs;})
-          (import ./users/ramona.nix {inherit agenix ratPackage;})
+          (import ./users/ramona.nix {inherit agenix;})
 
           ./machines/caligari/github-runner.nix
           ./machines/caligari/hardware.nix
@@ -314,7 +336,7 @@
           "${nixpkgs}/nixos/modules/installer/cd-dvd/installation-cd-minimal.nix"
 
           (import ./modules/base.nix {inherit nixpkgs;})
-          (import ./users/ramona.nix {inherit agenix ratPackage;})
+          (import ./users/ramona.nix {inherit agenix;})
 
           ./modules/bcachefs.nix
           ./modules/iso.nix

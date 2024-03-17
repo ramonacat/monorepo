@@ -2,20 +2,14 @@
   pkgs,
   craneLib,
 }: let
-  sourceFilter = path: type: craneLib.filterCargoSources path type;
-  src = pkgs.lib.cleanSourceWith {
-    src = craneLib.path ../.;
-    filter = sourceFilter;
-  };
-  packageArguments = {
-    inherit src;
-    sourceRoot = "${src.name}/apps/ras/";
-    cargoToml = "${src}/apps/ras/Cargo.toml";
-    cargoLock = "${src}/apps/ras/Cargo.lock";
-  };
-  cargoArtifacts = craneLib.buildDepsOnly packageArguments;
+  mkRustPackage = import ../libs/nix/mkRustPackage.nix;
 in
-  craneLib.buildPackage (packageArguments
-    // {
-      inherit cargoArtifacts;
-    })
+  mkRustPackage {
+    inherit pkgs craneLib;
+    srcPath = ../.;
+    additionalPackageArguments = {src}: {
+      sourceRoot = "${src.name}/apps/ras/";
+      cargoToml = "${src}/apps/ras/Cargo.toml";
+      cargoLock = "${src}/apps/ras/Cargo.lock";
+    };
+  }

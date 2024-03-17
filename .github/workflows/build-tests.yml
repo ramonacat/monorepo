@@ -1,0 +1,52 @@
+name: Build coverage reports
+on: 
+  pull_request: ~
+  push:
+    branches:
+      - 'main'
+
+jobs:
+  build:
+    runs-on: self-hosted
+    steps:
+      - name: Checkout the repo
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+
+      - name: build code coverage
+        run: ./.github/scripts/build_coverage.sh
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: coverage
+          path: result
+
+  upload-coverage:
+    needs: build
+    runs-on: ubuntu-22.04
+    steps:
+      - name: Checkout the repo
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+
+      - uses: actions/download-artifact@v4
+        with:
+          name: coverage
+          path: result
+
+      - name: Give coverage files codecov-friendly names
+        run: for f in result/*; do mv "$f" "$f.lcov"; done
+
+      - name: List coverage files
+        run: echo "files=$(find result/* | tr \\\"\\n\\\" \\\",\\\" | head -c -1)" >> $GITHUB_OUTPUT
+        id: coverage_files
+
+      - name: Upload to codecov
+        uses: codecov/codecov-action@v4.0.1
+        with:
+          files: "${{ steps.coverage_files.outputs.files }}"
+          token: ${{ secrets.CODECOV_TOKEN }}
+          slug: ramonacat/nix-configs
+          fail_ci_if_error: true

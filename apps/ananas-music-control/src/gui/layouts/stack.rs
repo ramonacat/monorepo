@@ -3,7 +3,8 @@ use std::{cmp::max, collections::BTreeMap};
 use embedded_graphics::{draw_target::DrawTarget, pixelcolor::BinaryColor};
 
 use crate::gui::{
-    fonts::Fonts, geometry::Rectangle, Control, Dimensions, Orientation, Point, StackUnitDimension, GuiError,
+    fonts::Fonts, geometry::Rectangle, Control, Dimensions, GuiError, Orientation, Point,
+    StackUnitDimension,
 };
 
 pub fn render_stack<
