@@ -16,3 +16,9 @@ jobs:
 
       - name: build code coverage
         run: ./.github/scripts/build_coverage.sh
+
+      - name: Upload coverage reports to Codecov
+        uses: codecov/codecov-action@v4.0.1
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+          slug: ramonacat/nix-configs
