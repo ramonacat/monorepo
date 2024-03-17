@@ -1,4 +1,4 @@
-{homeAutomationPackage}: {
+{
   config,
   pkgs,
   lib,
@@ -22,7 +22,7 @@
     serviceConfig = {
       Type = "simple";
       DynamicUser = true;
-      ExecStart = "${homeAutomationPackage}/bin/home-automation";
+      ExecStart = "${pkgs.ramona.home-automation}/bin/home-automation";
       SupplementaryGroups = "home-automation-secrets";
       Restart = "always";
       RestartSec = "5s";

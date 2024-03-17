@@ -39,6 +39,15 @@
       (final: prev: {
         ramona.lan-mouse = (import ./packages/lan-mouse.nix) {inherit pkgs craneLib;};
         ramona.ras = (import ./packages/ras.nix) {inherit pkgs craneLib;};
+        ramona.home-automation = import ./packages/home-automation.nix {inherit pkgs craneLib;};
+        ramona.music-control = import ./packages/music-control.nix {
+          pkgs = pkgsAarch64;
+          craneLib = craneLibAarch64;
+        };
+        ramona.rat = import ./packages/rat.nix {
+          inherit pkgs;
+          inherit craneLib;
+        };
       })
     ];
     pkgsConfig = {
@@ -76,18 +85,6 @@
     rustVersionAarch64 = pkgsAarch64.rust-bin.stable.latest.default;
     craneLibAarch64 = (crane.mkLib pkgsAarch64).overrideToolchain rustVersionAarch64;
 
-    homeAutomationPackage = import ./packages/home-automation.nix {
-      inherit pkgs;
-      inherit craneLib;
-    };
-    ananasMusicControlPackage = import ./packages/music-control.nix {
-      pkgs = pkgsAarch64;
-      craneLib = craneLibAarch64;
-    };
-    ratPackage = import ./packages/rat.nix {
-      inherit pkgs;
-      inherit craneLib;
-    };
     shellScripts = builtins.concatStringsSep " " (builtins.filter (x: pkgs.lib.hasSuffix ".sh" x) (pkgs.lib.filesystem.listFilesRecursive (pkgs.lib.cleanSource ./.)));
   in {
     formatter.x86_64-linux = pkgs.alejandra;
@@ -136,7 +133,7 @@
           agenix.nixosModules.default
 
           (import ./modules/base.nix {inherit nixpkgs;})
-          (import ./users/ramona.nix {inherit agenix ratPackage;})
+          (import ./users/ramona.nix {inherit agenix;})
 
           ./machines/hallewell/grafana.nix
           ./machines/hallewell/hardware.nix
@@ -164,7 +161,7 @@
           agenix.nixosModules.default
 
           (import ./modules/base.nix {inherit nixpkgs;})
-          (import ./users/ramona.nix {inherit agenix ratPackage;})
+          (import ./users/ramona.nix {inherit agenix;})
           (import ./users/ramona/gui.nix {inherit nix-vscode-extensions;})
 
           ./machines/moonfall/hardware.nix
@@ -192,19 +189,19 @@
           agenix.nixosModules.default
 
           (import ./modules/base.nix {inherit nixpkgs;})
-          (import ./users/ramona.nix {inherit agenix ratPackage;})
-          (import ./machines/shadowmend/home-automation.nix {inherit homeAutomationPackage;})
+          (import ./users/ramona.nix {inherit agenix;})
 
           ./machines/shadowmend/hardware.nix
+          ./machines/shadowmend/home-automation.nix
           ./machines/shadowmend/networking.nix
           ./machines/shadowmend/rabbitmq.nix
           ./machines/shadowmend/users/ramona.nix
           ./machines/shadowmend/zigbee2mqtt.nix
           ./modules/bcachefs.nix
-          ./modules/updates.nix
           ./modules/installed_base.nix
           ./modules/nas-client.nix
           ./modules/telegraf.nix
+          ./modules/updates.nix
         ];
       };
       angelsin = nixpkgs.lib.nixosSystem {
@@ -216,7 +213,7 @@
           nixos-hardware.nixosModules.framework-13-7040-amd
 
           (import ./modules/base.nix {inherit nixpkgs;})
-          (import ./users/ramona.nix {inherit agenix ratPackage;})
+          (import ./users/ramona.nix {inherit agenix;})
           (import ./users/ramona/gui.nix {inherit nix-vscode-extensions;})
 
           ./machines/angelsin/hardware.nix
@@ -245,15 +242,15 @@
           nixos-hardware.nixosModules.raspberry-pi-4
 
           (import ./modules/base.nix {inherit nixpkgs;})
-          (import ./users/ramona.nix {inherit agenix ratPackage;})
+          (import ./users/ramona.nix {inherit agenix;})
           (import ./machines/ananas/hardware.nix {inherit pkgsCross;})
-          (import ./machines/ananas/music-control.nix {inherit ananasMusicControlPackage;})
 
+          ./machines/ananas/music-control.nix
           ./machines/ananas/networking.nix
           ./modules/installed_base.nix
-          ./modules/updates.nix
           ./modules/nas-client.nix
           ./modules/telegraf.nix
+          ./modules/updates.nix
         ];
       };
       evillian = nixpkgs.lib.nixosSystem {
@@ -265,7 +262,7 @@
           nixos-hardware.nixosModules.microsoft-surface-go
 
           (import ./modules/base.nix {inherit nixpkgs;})
-          (import ./users/ramona.nix {inherit agenix ratPackage;})
+          (import ./users/ramona.nix {inherit agenix;})
           (import ./users/ramona/gui.nix {inherit nix-vscode-extensions;})
 
           ./machines/evillian/hardware.nix
@@ -289,7 +286,7 @@
           nix-minecraft.nixosModules.minecraft-servers
 
           (import ./modules/base.nix {inherit nixpkgs;})
-          (import ./users/ramona.nix {inherit agenix ratPackage;})
+          (import ./users/ramona.nix {inherit agenix;})
 
           ./machines/caligari/github-runner.nix
           ./machines/caligari/hardware.nix
@@ -314,7 +311,7 @@
           "${nixpkgs}/nixos/modules/installer/cd-dvd/installation-cd-minimal.nix"
 
           (import ./modules/base.nix {inherit nixpkgs;})
-          (import ./users/ramona.nix {inherit agenix ratPackage;})
+          (import ./users/ramona.nix {inherit agenix;})
 
           ./modules/bcachefs.nix
           ./modules/iso.nix

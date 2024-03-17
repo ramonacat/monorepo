@@ -1,7 +1,4 @@
-{
-  agenix,
-  ratPackage,
-}: {
+{agenix}: {
   lib,
   modulesPath,
   pkgs,
@@ -9,25 +6,25 @@
   ...
 }: {
   config = {
+    home-manager.useGlobalPkgs = true;
     home-manager.users.ramona = let
       homeDirectory = "/home/ramona";
     in {
       imports = [
-        (import ../modules/home-manager/rat.nix {inherit ratPackage;})
+        ../modules/home-manager/rat.nix
       ];
       nixpkgs.config.allowUnfree = true;
       home.username = "ramona";
       home.homeDirectory = homeDirectory;
       home.stateVersion = "22.11";
       home.packages = with pkgs; [
+        agenix.packages.x86_64-linux.default
+        atop
+        jq
         pulseaudio
+        ripgrep
         unzip
         yt-dlp
-        agenix.packages.x86_64-linux.default
-        jq
-        atop
-        ripgrep
-        ratPackage
       ];
       services.gpg-agent.pinentryPackage = lib.mkDefault pkgs.pinentry-curses;
 

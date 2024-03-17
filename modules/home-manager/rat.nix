@@ -1,4 +1,4 @@
-{ratPackage}: {
+{
   lib,
   modulesPath,
   pkgs,
@@ -17,7 +17,7 @@
     cfg = config.programs.rat;
   in
     lib.mkIf cfg.enable {
-      home.packages = [ratPackage];
+      home.packages = [pkgs.ramona.rat];
       xdg.configFile."rat/config.json".text =
         if cfg.serverAddress != ""
         then (builtins.toJSON {server_address = cfg.serverAddress;})
