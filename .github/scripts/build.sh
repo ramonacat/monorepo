@@ -32,4 +32,3 @@ fi
 
 cat ./*-closure
 
-nix build .
