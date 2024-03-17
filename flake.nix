@@ -94,8 +94,8 @@
       config = pkgsConfig;
     };
     craneLib = (crane.mkLib pkgs).overrideToolchain rustVersion;
-    rustVersion = pkgs.rust-bin.stable.latest.default;
-    rustVersionAarch64 = pkgsAarch64.rust-bin.stable.latest.default;
+    rustVersion = pkgs.rust-bin.stable.latest.default.override {extensions = ["llvm-tools-preview"];};
+    rustVersionAarch64 = pkgsAarch64.rust-bin.stable.latest.default.override {extensions = ["llvm-tools-preview"];};
     craneLibAarch64 = (crane.mkLib pkgsAarch64).overrideToolchain rustVersionAarch64;
 
     shellScripts = builtins.concatStringsSep " " (builtins.filter (x: pkgs.lib.hasSuffix ".sh" x) (pkgs.lib.filesystem.listFilesRecursive (pkgs.lib.cleanSource ./.)));
@@ -121,6 +121,13 @@
       }
       // (pkgs.lib.mergeAttrsList (pkgs.lib.mapAttrsToList (name: value: value.checks) libraries))
       // (pkgs.lib.mergeAttrsList (pkgs.lib.mapAttrsToList (name: value: value.checks) packages));
+    packages.x86_64-linux = rec {
+      coverage = let
+        paths = pkgs.lib.mapAttrsToList (name: value: value.coverage) (libraries // packages);
+      in
+        pkgs.runCommand "coverage" {} ("mkdir $out\n" + (pkgs.lib.concatStringsSep "\n" (builtins.map (p: "ln -s ${p} $out/${p.name}") paths)) + "\n");
+      default = coverage;
+    };
     devShells.x86_64-linux.default = pkgs.mkShell {
       packages = with pkgs; [
         alsaLib.dev
@@ -136,7 +143,7 @@
         terraform-ls
 
         (pkgs.rust-bin.stable.latest.default.override {
-          extensions = ["rust-src"];
+          extensions = ["rust-src" "llvm-tools-preview"];
           targets = ["aarch64-unknown-linux-gnu"];
         })
       ];

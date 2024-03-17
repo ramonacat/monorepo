@@ -29,4 +29,5 @@ in rec {
     "${package.name}--fmt" = craneLib.cargoFmt packageArguments;
     "${package.name}--clippy" = craneLib.cargoClippy packageArgumentsWithArtifacts;
   };
+  coverage = craneLib.cargoLlvmCov packageArgumentsWithArtifacts;
 }
