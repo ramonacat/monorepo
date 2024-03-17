@@ -88,7 +88,7 @@
       inherit pkgs;
       inherit craneLib;
     };
-    shellScripts = builtins.concatStringsSep " " (builtins.filter (x: pkgs.lib.hasSuffix ".sh" x) (pkgs.lib.filesystem.listFilesRecursive ./.));
+    shellScripts = builtins.concatStringsSep " " (builtins.filter (x: pkgs.lib.hasSuffix ".sh" x) (pkgs.lib.filesystem.listFilesRecursive (pkgs.lib.cleanSource ./.)));
   in {
     formatter.x86_64-linux = pkgs.alejandra;
     checks.x86_64-linux = {
