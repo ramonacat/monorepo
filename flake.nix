@@ -107,16 +107,18 @@
     };
     devShells.x86_64-linux.default = pkgs.mkShell {
       packages = with pkgs; [
-        pkg-config
-        pipewire
-        clang
         alsaLib.dev
-        rust-analyzer
-        lua-language-server
-        terraform
+        clang
         google-cloud-sdk
+        lua-language-server
+        nil
+        pipewire
+        pkg-config
+        rust-analyzer
         stylua
+        terraform
         terraform-ls
+
         (pkgs.rust-bin.stable.latest.default.override {
           extensions = ["rust-src"];
           targets = ["aarch64-unknown-linux-gnu"];
