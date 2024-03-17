@@ -21,6 +21,7 @@
         serviceConfig = {
           DynamicUser = true;
           ExecStart = "${pkgs.ramona.ras}/bin/ras ${rasConfig.dataFile}";
+          ReadWritePaths = "${rasConfig.dataFile}";
         };
       };
     };
