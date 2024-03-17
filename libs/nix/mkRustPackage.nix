@@ -29,5 +29,11 @@ in rec {
     "${package.name}--fmt" = craneLib.cargoFmt packageArguments;
     "${package.name}--clippy" = craneLib.cargoClippy packageArgumentsWithArtifacts;
   };
-  coverage = craneLib.cargoLlvmCov packageArgumentsWithArtifacts;
+
+  coverage = let
+    rawCoverage = craneLib.cargoLlvmCov ({cargoLlvmCovExtraArgs = "--lcov --output-path $out";} // packageArgumentsWithArtifacts);
+  in
+    pkgs.runCommand "${package.name}--coverage" {} ''
+      cat ${rawCoverage} | sed "s#/build/source#${builtins.replaceStrings [((builtins.toString ../../.) + "/")] [""] (builtins.toString srcPath)}#g" > $out
+    '';
 }
