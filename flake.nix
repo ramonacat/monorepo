@@ -44,6 +44,9 @@
         inherit craneLib;
       };
     };
+    libraries = {
+      ratlib = import ./packages/libraries/ratlib.nix {inherit pkgs craneLib;};
+    };
     overlays = [
       (import rust-overlay)
       nix-minecraft.overlay
@@ -116,6 +119,7 @@
           touch $out
         '';
       }
+      // (pkgs.lib.mergeAttrsList (pkgs.lib.mapAttrsToList (name: value: value.checks) libraries))
       // (pkgs.lib.mergeAttrsList (pkgs.lib.mapAttrsToList (name: value: value.checks) packages));
     devShells.x86_64-linux.default = pkgs.mkShell {
       packages = with pkgs; [
