@@ -94,6 +94,7 @@
         };
         aliases = {
           st = "status -sb";
+          cleanbr = "! git branch -d `git branch --merged | grep -v '^*\\|main\\|master\\|staging\\|devel'`";
         };
         extraConfig = {
           push = {
