@@ -4,6 +4,7 @@
   srcPath,
   additionalPackageArguments ? {},
   sourceFilter ? path: type: craneLib.filterCargoSources path type,
+  buildAdditionalPackageArguments ? {},
 }: let
   src = pkgs.lib.cleanSourceWith {
     src = craneLib.path srcPath;
@@ -18,10 +19,15 @@
       then additionalPackageArguments
       else (additionalPackageArguments {inherit src;})
     );
+  buildAdditionalPackageArgumentsRealised =
+    if builtins.isAttrs buildAdditionalPackageArguments
+    then buildAdditionalPackageArguments
+    else (buildAdditionalPackageArguments {inherit src;});
   cargoArtifacts = craneLib.buildDepsOnly packageArguments;
   packageArgumentsWithArtifacts = packageArguments // {inherit cargoArtifacts;};
 in rec {
   package = craneLib.buildPackage (packageArguments
+    // buildAdditionalPackageArgumentsRealised
     // {
       inherit cargoArtifacts;
     });

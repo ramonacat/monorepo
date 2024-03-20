@@ -43,6 +43,10 @@
         inherit pkgs;
         inherit craneLib;
       };
+      ratweb = import ./packages/ratweb.nix {
+        inherit pkgs;
+        inherit craneLib;
+      };
     };
     libraries = {
       ratlib = import ./packages/libraries/ratlib.nix {inherit pkgs craneLib;};
@@ -94,7 +98,10 @@
       config = pkgsConfig;
     };
     craneLib = (crane.mkLib pkgs).overrideToolchain rustVersion;
-    rustVersion = pkgs.rust-bin.stable.latest.default.override {extensions = ["llvm-tools-preview"];};
+    rustVersion = pkgs.rust-bin.stable.latest.default.override {
+      extensions = ["llvm-tools-preview"];
+      targets = ["wasm32-unknown-unknown"];
+    };
     rustVersionAarch64 = pkgsAarch64.rust-bin.stable.latest.default.override {extensions = ["llvm-tools-preview"];};
     craneLibAarch64 = (crane.mkLib pkgsAarch64).overrideToolchain rustVersionAarch64;
 
@@ -127,10 +134,12 @@
       in
         pkgs.runCommand "coverage" {} ("mkdir $out\n" + (pkgs.lib.concatStringsSep "\n" (builtins.map (p: "ln -s ${p} $out/${p.name}") paths)) + "\n");
       default = coverage;
+      ratweb = packages.ratweb.package;
     };
     devShells.x86_64-linux.default = pkgs.mkShell {
       packages = with pkgs; [
         alsaLib.dev
+        cargo-leptos
         clang
         google-cloud-sdk
         lua-language-server
@@ -141,10 +150,12 @@
         stylua
         terraform
         terraform-ls
+        trunk
+        wasm-bindgen-cli
 
         (pkgs.rust-bin.stable.latest.default.override {
           extensions = ["rust-src" "llvm-tools-preview"];
-          targets = ["aarch64-unknown-linux-gnu"];
+          targets = ["aarch64-unknown-linux-gnu" "wasm32-unknown-unknown"];
         })
       ];
       LIBCLANG_PATH = "${pkgs.libclang.lib}/lib";
@@ -168,6 +179,7 @@
           ./machines/hallewell/paperless.nix
           ./machines/hallewell/postgresql.nix
           ./machines/hallewell/ras.nix
+          ./machines/hallewell/ratweb.nix
           ./machines/hallewell/tempo.nix
           ./machines/hallewell/users/ramona.nix
           ./modules/bcachefs.nix
