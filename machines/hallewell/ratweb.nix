@@ -10,5 +10,6 @@
         WorkingDirectory = "${pkgs.ramona.ratweb}/bin/";
       };
     };
+    networking.firewall.allowedTCPPorts = [8087];
   };
 }
