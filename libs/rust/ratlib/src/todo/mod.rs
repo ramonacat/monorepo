@@ -2,6 +2,9 @@ use std::{fmt::Display, time::Duration};
 
 use chrono::{DateTime, Utc};
 use serde::{Deserialize, Serialize};
+use strum::EnumIter;
+
+pub mod client;
 
 pub struct IdGenerator(usize);
 
@@ -25,7 +28,7 @@ impl Display for Id {
     }
 }
 
-#[derive(Serialize, Deserialize, Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord)]
+#[derive(Serialize, Deserialize, Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, EnumIter)]
 pub enum Priority {
     Low,
     Medium,
@@ -38,9 +41,9 @@ impl Display for Priority {
             f,
             "{}",
             match self {
-                Priority::Low => "low",
-                Priority::Medium => "medium",
-                Priority::High => "high",
+                Priority::Low => "Low",
+                Priority::Medium => "Medium",
+                Priority::High => "High",
             }
         )
     }
@@ -158,7 +161,7 @@ impl Todo {
 
 #[cfg(test)]
 mod test {
-    use super::IdGenerator;
+    use super::*;
 
     #[test]
     pub fn generate_next_id() {
@@ -166,5 +169,12 @@ mod test {
 
         assert_eq!(13, generator.next().0);
         assert_eq!(14, generator.next().0);
+    }
+
+    #[test]
+    pub fn display_todo_priority() {
+        assert_eq!("Low", Priority::Low.to_string());
+        assert_eq!("Medium", Priority::Medium.to_string());
+        assert_eq!("High", Priority::High.to_string());
     }
 }
