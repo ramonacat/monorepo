@@ -2,6 +2,9 @@ use std::{fmt::Display, time::Duration};
 
 use chrono::{DateTime, Utc};
 use serde::{Deserialize, Serialize};
+use strum::EnumIter;
+
+pub mod client;
 
 pub struct IdGenerator(usize);
 
@@ -25,7 +28,7 @@ impl Display for Id {
     }
 }
 
-#[derive(Serialize, Deserialize, Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord)]
+#[derive(Serialize, Deserialize, Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, EnumIter)]
 pub enum Priority {
     Low,
     Medium,
@@ -38,9 +41,9 @@ impl Display for Priority {
             f,
             "{}",
             match self {
-                Priority::Low => "low",
-                Priority::Medium => "medium",
-                Priority::High => "high",
+                Priority::Low => "Low",
+                Priority::Medium => "Medium",
+                Priority::High => "High",
             }
         )
     }

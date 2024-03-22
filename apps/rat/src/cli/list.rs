@@ -22,15 +22,10 @@ pub fn render_todo(todo: &Todo) -> String {
     )
 }
 
-pub fn execute(server_url: &str) {
-    let client = reqwest::blocking::Client::new();
+pub async fn execute(server_url: &str) {
+    let todo_client = ratlib::todo::client::Client::new(server_url);
 
-    let doing: Vec<Todo> = client
-        .get(format!("{server_url}todos?status=Doing"))
-        .send()
-        .unwrap()
-        .json()
-        .unwrap();
+    let doing: Vec<Todo> = todo_client.find_doing().await;
 
     if !doing.is_empty() {
         println!("{}", "Doing: ".color(Color::Yellow).bold());
@@ -45,12 +40,7 @@ pub fn execute(server_url: &str) {
     }
 
     println!("{}", "Todo: ".color(Color::Red).bold());
-    let ready_to_do: Vec<Todo> = client
-        .get(format!("{server_url}todos"))
-        .send()
-        .unwrap()
-        .json()
-        .unwrap();
+    let ready_to_do: Vec<Todo> = todo_client.find_ready_to_do().await;
 
     for todo in ready_to_do {
         let todo = render_todo(&todo);

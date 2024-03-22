@@ -20,6 +20,9 @@ wasm-bindgen = "=0.2.92"
 thiserror = "1"
 tracing = { version = "0.1", optional = true }
 http = "1"
+ratlib = { path = "../../libs/rust/ratlib/" }
+strum = { version = "0.26.2", features = ["derive"] }
+web-sys = "0.3.69"
 
 [features]
 hydrate = ["leptos/hydrate", "leptos_meta/hydrate", "leptos_router/hydrate"]

@@ -1,30 +1,16 @@
 use std::time::Duration;
 
-use ratlib::{todo::Id, PostTodo};
-
 use crate::todo::{Priority, Requirement};
 
-pub fn execute(
+pub async fn execute(
     server_url: &str,
     title: &str,
     priority: Priority,
     estimate: Duration,
     requirements: Vec<Requirement>,
 ) {
-    let client = reqwest::blocking::Client::new();
-
-    let id: Id = client
-        .post(format!("{server_url}todos"))
-        .json(&PostTodo::Add {
-            title: title.to_string(),
-            priority,
-            estimate,
-            requirements,
-        })
-        .send()
-        .unwrap()
-        .json()
-        .unwrap();
+    let client = ratlib::todo::client::Client::new(server_url);
+    let id = client.create(title, priority, estimate, requirements).await;
 
     // TODO: Get the ID from the webservice here!
     println!("Inserted a new TODO with title \"{title}\" and ID {id}");

@@ -192,7 +192,8 @@ fn read_configuration() -> Configuration {
     serde_json::from_str(&configuration).expect("Failed to parse the configuration file")
 }
 
-fn main() {
+#[tokio::main]
+async fn main() {
     let cli = Cli::parse();
     let configuration = read_configuration();
 
@@ -209,10 +210,11 @@ fn main() {
                 priority,
                 estimate,
                 requirements,
-            );
+            )
+            .await;
         }
         Command::List => {
-            cli::list::execute(&configuration.server_address);
+            cli::list::execute(&configuration.server_address).await;
         }
         Command::Doing { id } => {
             cli::state_transition::execute(&configuration.server_address, id, Status::Doing);
