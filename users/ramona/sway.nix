@@ -89,10 +89,10 @@
 
           #workspaces button {
               color: white;
-          } 
+          }
 
           #workspaces button.focused {
-              color: #ff1885; 
+              color: #ff1885;
           }
         '';
 
