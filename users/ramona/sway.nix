@@ -1,6 +1,5 @@
 {
   lib,
-  modulesPath,
   pkgs,
   config,
   ...
@@ -51,6 +50,17 @@
         style = ''
           * { font-size: 24px; }
 
+          window#waybar {
+            background-color: transparent;
+          }
+
+          #workspaces button:hover {
+              box-shadow: none; /* Remove predefined box-shadow */
+              text-shadow: none; /* Remove predefined text-shadow */
+              background: none; /* Remove predefined background color (white) */
+              transition: none; /* Disable predefined animations */
+          }
+
           #clock,
           #battery,
           #cpu,
@@ -66,11 +76,22 @@
           #mode,
           #idle_inhibitor,
           #scratchpad,
-          #mpd {
-              padding: 0 10px;
+          #mpd,
+          #upower,
+          #language {
+              padding: 3px 10px;
+              margin: 3px 10px;
+
+              border: 1px solid #070c17;
+              border-radius: 15px;
+              background-color: #20242e;
           }
 
           #workspaces button {
+              color: white;
+          }
+
+          #workspaces button.focused {
               color: #ff1885;
           }
         '';

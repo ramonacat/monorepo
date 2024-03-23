@@ -1,9 +1,4 @@
-{
-  config,
-  pkgs,
-  lib,
-  ...
-}: {
+{pkgs, ...}: {
   config = {
     users.users.ramona = {
       extraGroups = ["libvirtd" "openrazer"];
@@ -31,24 +26,26 @@
         extraConfigEarly = ''
         '';
         config = {
-          output = {
+          output = let
+            wallpaper = ./wallpaper.jpg;
+          in {
             "Dell Inc. DELL U2723QE HRJH2P3" = {
               scale = "1.5";
               pos = "0 0";
-              bg = "/dev/null fill #000000";
-              render_bit_depth = "10";
+              bg = "${wallpaper} fill #000000";
+              render_bit_depth = "8";
             };
             "Dell Inc. DELL U2720Q JKPQT83" = {
               scale = "1.5";
               pos = "2560 0";
-              bg = "/dev/null fill #000000";
-              render_bit_depth = "10";
+              bg = "${wallpaper} fill #000000";
+              render_bit_depth = "8";
             };
             "Dell Inc. DELL U2723QE 6MMF1P3" = {
               scale = "1.5";
               pos = "5120 0";
-              bg = "/dev/null fill #000000";
-              render_bit_depth = "10";
+              bg = "${wallpaper} fill #000000";
+              render_bit_depth = "8";
             };
           };
         };
