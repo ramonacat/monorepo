@@ -10,6 +10,7 @@
     systemd.services.updater = {
       after = ["network.target"];
       description = "Download the latest system closure";
+      restartIfChanged = false;
       serviceConfig = let
         updaterScript = pkgs.writeScript "updater" ''
           #!${pkgs.stdenv.shell}
