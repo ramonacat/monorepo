@@ -1,5 +1,4 @@
 {
-  config,
   pkgs,
   lib,
   ...
@@ -48,5 +47,6 @@
         ExecStart = "${modemFixScript}/bin/fix_lte_modem";
       };
     };
+    systemd.services.ModemManager.wantedBy = ["multi-user.target"];
   };
 }
