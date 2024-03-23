@@ -6,6 +6,5 @@
 }: {
   config = {
     networking.hostName = "ananas";
-    networking.enableIPv6 = false;
   };
 }
