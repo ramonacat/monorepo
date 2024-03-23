@@ -22,6 +22,7 @@
             font = {
               size = 16;
             };
+            window.opacity = 0.8;
             import = [
               pkgs.alacritty-theme.kanagawa_dragon
             ];

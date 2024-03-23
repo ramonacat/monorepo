@@ -111,6 +111,10 @@ vim.o.softtabstop = 4
 vim.o.shiftwidth = 4
 vim.o.relativenumber = true
 vim.cmd("colorscheme kanagawa-dragon")
+vim.cmd("highlight Normal guibg=none")
+vim.cmd("highlight NonText guibg=none")
+vim.cmd("highlight Normal ctermbg=none")
+vim.cmd("highlight NonText ctermbg=none")
 
 -- Reload files when changed externaly (e.g. cargo fmt)
 vim.o.autoread = true
