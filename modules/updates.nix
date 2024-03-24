@@ -8,7 +8,6 @@
       file = ../secrets/universal-root.age;
     };
     systemd.services.updater = {
-      after = ["network.target"];
       description = "Download the latest system closure";
       restartIfChanged = false;
       serviceConfig = let
