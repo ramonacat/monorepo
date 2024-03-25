@@ -7,7 +7,7 @@ edition = "2021"
 
 [dependencies]
 amqprs = "1.5.3"
-async-trait = "0.1.78"
+async-trait = "0.1.79"
 chrono = "0.4.35"
 serde = "1.0.197"
 serde_json = "1.0.114"
