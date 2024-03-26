@@ -17,7 +17,7 @@
   };
 in rec {
   package = poetry2nix.mkPoetryApplication packageArguments;
-  coverage = pkgs.runCommand "empty-coverage" {} "true";
+  coverage = pkgs.runCommand "empty-coverage" {} "touch $out";
   checks = let
     environment = poetry2nix.mkPoetryEnv packageArguments;
   in {
