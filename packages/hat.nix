@@ -3,7 +3,18 @@
   poetry2nix,
 }: let
   src = ../apps/hat;
-  packageArguments = {projectDir = src;};
+  packageArguments = {
+    projectDir = src;
+    overrides = poetry2nix.defaultPoetryOverrides.extend
+        (self: super: {
+          asyncio = super.asyncio.overridePythonAttrs
+          (
+            old: {
+              buildInputs = (old.buildInputs or [ ]) ++ [ super.setuptools ];
+            }
+          );
+        });
+  };
 in rec {
   package = poetry2nix.mkPoetryApplication packageArguments;
   coverage = pkgs.runCommand "empty-coverage" {} "true";
