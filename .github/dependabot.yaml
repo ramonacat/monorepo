@@ -21,7 +21,7 @@ updates:
         dependency-type: "development"
 
   - package-ecosystem: "cargo"
-    directory: "apps/rat"
+    directory: "apps/hat"
     schedule:
       interval: "daily"
     groups:
@@ -39,3 +39,35 @@ updates:
         dependency-type: "production"
       development-dependencies:
         dependency-type: "development"
+
+  - package-ecosystem: "cargo"
+    directory: "apps/ras"
+    schedule:
+      interval: "daily"
+    groups:
+      production-dependencies:
+        dependency-type: "production"
+      development-dependencies:
+        dependency-type: "development"
+
+
+  - package-ecosystem: "cargo"
+    directory: "apps/rat"
+    schedule:
+      interval: "daily"
+    groups:
+      production-dependencies:
+        dependency-type: "production"
+      development-dependencies:
+        dependency-type: "development"
+
+  - package-ecosystem: "cargo"
+    directory: "apps/ratweb"
+    schedule:
+      interval: "daily"
+    groups:
+      production-dependencies:
+        dependency-type: "production"
+      development-dependencies:
+        dependency-type: "development"
+
