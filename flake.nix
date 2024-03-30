@@ -47,6 +47,10 @@
         inherit pkgs;
         inherit craneLib;
       };
+      hat = import ./packages/hat.nix {
+        inherit pkgs;
+        inherit craneLib;
+      };
     };
     libraries = {
       ratlib = import ./packages/libraries/ratlib.nix {inherit pkgs craneLib;};
@@ -152,6 +156,7 @@
         terraform-ls
         trunk
         wasm-bindgen-cli
+        udev.dev
 
         (pkgs.rust-bin.stable.latest.default.override {
           extensions = ["rust-src" "llvm-tools-preview"];
