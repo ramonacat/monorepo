@@ -59,7 +59,7 @@ in {
       backupPrepareCommand = ''
         mkdir ${backupPath}
         chown postgres:postgres ${backupPath}
-        ${pkgs.sudo}/bin/sudo -u postgres ${postgresPackage}/bin/pg_basebackup -Ft -Zzstd -Xstream -D${backupPath}
+        ${pkgs.sudo}/bin/sudo -u postgres ${postgresPackage}/bin/pg_basebackup -Xstream -D${backupPath}
       '';
       backupCleanupCommand = ''
         rm -r ${backupPath} || true
