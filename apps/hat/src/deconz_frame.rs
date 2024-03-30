@@ -7,8 +7,8 @@ fn calculate_crc(input: &[u8]) -> [u8; 2] {
         crc += (*byte) as u16;
     }
 
-    let crc0: u8 = ((!crc + 1) & 0xFF) as u8;
-    let crc1: u8 = (((!crc + 1) >> 8) & 0xFF) as u8;
+    let crc0: u8 = ((!crc.wrapping_add(1)) & 0xFF) as u8;
+    let crc1: u8 = (((!crc.wrapping_add(1)) >> 8) & 0xFF) as u8;
 
     [crc0, crc1]
 }
@@ -107,5 +107,27 @@ impl FrameReader {
         self.cursor += 8;
 
         result
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    pub fn can_caluclate_crc() {
+        assert_eq!([254, 255], calculate_crc(&[]));
+        assert_eq!([254, 255], calculate_crc(&[0, 0, 0, 0, 0, 0, 0, 0, 0]));
+        assert_eq!([244, 255], calculate_crc(&[0, 1, 2, 3, 4]));
+        assert_eq!([0, 254], calculate_crc(&[0xFF, 0xFF]));
+        assert_eq!([127, 254], calculate_crc(&[0xFF, 0x80]));
+    }
+
+    #[test]
+    pub fn framebuilder_can_build_empty_frame() {
+        let builder = FrameBuilder::new();
+        let bytes = builder.to_raw_bytes();
+
+        assert_eq!(&[254, 255], &bytes[..]);
     }
 }
