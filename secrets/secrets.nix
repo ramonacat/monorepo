@@ -14,11 +14,13 @@ in {
   "rabbitmq-ha.age".publicKeys = users ++ [shadowmend];
   "minio-root.age".publicKeys = users ++ [hallewell];
   "minio-tempo.age".publicKeys = users ++ [hallewell];
-  "wal-g-config.env.age".publicKeys = users ++ [hallewell];
   "telegraf-database.age".publicKeys = users ++ [hallewell ananas shadowmend moonfall angelsin evillian caligari];
   "universal-root.age".publicKeys = users ++ [hallewell ananas shadowmend moonfall angelsin evillian caligari];
   "minio-terraform-state.age".publicKeys = users ++ [moonfall angelsin];
   "terraform-tokens.age".publicKeys = users ++ [moonfall angelsin];
   "caligari-minecraft-rclone-config.age".publicKeys = users ++ [caligari];
   "caligari-github-pat-runner-registration.age".publicKeys = users ++ [caligari];
+  "hallewell-postgres-backups-rclone.age".publicKeys = users ++ [hallewell];
+  "hallewell-postgres-backups-env.age".publicKeys = users ++ [hallewell];
+  "restic-repository-password.age".publicKeys = users ++ [hallewell ananas shadowmend moonfall angelsin evillian caligari];
 }
