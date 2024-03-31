@@ -30,12 +30,11 @@ impl MonitoringMaintainer {
 
     #[tracing::instrument]
     pub async fn execute(&self) -> Result<(), Error> {
-        if let Err(_) = self.maintenance_in_progress.compare_exchange(
-            false,
-            true,
-            Ordering::Acquire,
-            Ordering::Relaxed,
-        ) {
+        if self
+            .maintenance_in_progress
+            .compare_exchange(false, true, Ordering::Acquire, Ordering::Relaxed)
+            .is_err()
+        {
             return Err(Error::AlreadyInProgress);
         }
 
