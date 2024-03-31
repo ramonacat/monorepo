@@ -1,9 +1,4 @@
-{
-  config,
-  pkgs,
-  lib,
-  ...
-}: {
+{...}: {
   config = {
     services.epmd.listenStream = "0.0.0.0:4369";
     services.rabbitmq = {

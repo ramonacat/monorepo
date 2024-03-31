@@ -1,9 +1,4 @@
-{
-  config,
-  pkgs,
-  lib,
-  ...
-}: {
+{lib, ...}: {
   config = {
     boot.initrd.availableKernelModules = ["xhci_pci" "ahci" "nvme" "usbhid"];
     boot.initrd.kernelModules = [];

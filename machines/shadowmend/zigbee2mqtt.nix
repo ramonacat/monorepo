@@ -1,9 +1,4 @@
-{
-  config,
-  pkgs,
-  lib,
-  ...
-}: {
+{...}: {
   config = {
     services.zigbee2mqtt = {
       enable = true;

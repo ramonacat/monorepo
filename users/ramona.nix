@@ -1,6 +1,5 @@
 {agenix}: {
   lib,
-  modulesPath,
   pkgs,
   config,
   ...

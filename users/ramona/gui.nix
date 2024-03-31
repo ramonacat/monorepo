@@ -1,7 +1,5 @@
 {nix-vscode-extensions}: {
   config,
-  lib,
-  modulesPath,
   pkgs,
   ...
 }: {

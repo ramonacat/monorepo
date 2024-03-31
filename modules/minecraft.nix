@@ -1,6 +1,5 @@
 {
   lib,
-  modulesPath,
   pkgs,
   config,
   ...
@@ -33,7 +32,7 @@
 
       servers =
         lib.mapAttrs
-        (name: settings: {
+        (_: settings: {
           enable = true;
           openFirewall = false;
           whitelist = settings.whitelist;
@@ -92,7 +91,7 @@ EOS
 
     systemd.timers =
       lib.mapAttrs'
-      (name: settings: {
+      (name: _: {
         name = "backup-minecraft-${name}";
         value = {
           wantedBy = ["timers.target"];
@@ -105,6 +104,6 @@ EOS
       })
       servers;
 
-    networking.firewall.allowedTCPPorts = lib.mapAttrsToList (name: settings: settings.port) servers;
+    networking.firewall.allowedTCPPorts = lib.mapAttrsToList (_: settings: settings.port) servers;
   };
 }

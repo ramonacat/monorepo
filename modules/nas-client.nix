@@ -1,9 +1,4 @@
-{
-  lib,
-  modulesPath,
-  pkgs,
-  ...
-}: {
+{...}: {
   config = {
     fileSystems."/mnt/nas" = {
       device = "hallewell:/mnt/nas3/data";

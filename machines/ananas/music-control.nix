@@ -1,9 +1,4 @@
-{
-  config,
-  pkgs,
-  lib,
-  ...
-}: {
+{pkgs, ...}: {
   systemd.services.music-control = {
     wantedBy = ["multi-user.target"];
     description = "Music control";

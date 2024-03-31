@@ -1,10 +1,4 @@
-args @ {
-  pkgs,
-  craneLib,
-  srcPath,
-  additionalPackageArguments ? {},
-  sourceFilter ? path: type: craneLib.filterCargoSources path type,
-}: let
+args: let
   mkRustPackage = import ./mkRustPackage.nix;
   package = mkRustPackage args;
 in {

@@ -1,10 +1,4 @@
-{
-  config,
-  pkgs,
-  lib,
-  modulesPath,
-  ...
-}: {
+{pkgs, ...}: {
   config = {
     virtualisation.docker.enable = true;
 

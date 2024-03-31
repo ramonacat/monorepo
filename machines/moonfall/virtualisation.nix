@@ -1,9 +1,4 @@
-{
-  config,
-  pkgs,
-  lib,
-  ...
-}: let
+{pkgs, ...}: let
   windowsify = pkgs.writeShellScript "windowsify" ''
     systemctl set-property system.slice AllowedCPUs=22-31
     systemctl set-property user.slice AllowedCPUs=22-31

@@ -1,6 +1,5 @@
 {
   config,
-  pkgs,
   lib,
   ...
 }: {
@@ -14,14 +13,14 @@
     configDir = "/home/ramona/.config/syncthing";
 
     settings = let
-      otherMachineIds = lib.attrsets.filterAttrs (key: value: key != config.networking.hostName) (import ../data/syncthing-devices-ids.nix);
+      otherMachineIds = lib.attrsets.filterAttrs (key: _: key != config.networking.hostName) (import ../data/syncthing-devices-ids.nix);
     in {
-      devices = lib.attrsets.mapAttrs (key: value: {id = value;}) otherMachineIds;
+      devices = lib.attrsets.mapAttrs (_: value: {id = value;}) otherMachineIds;
 
       folders = {
         "shared" = {
           path = "/home/ramona/shared/";
-          devices = lib.attrsets.mapAttrsToList (name: value: name) otherMachineIds;
+          devices = lib.attrsets.mapAttrsToList (name: _: name) otherMachineIds;
         };
       };
     };

@@ -1,9 +1,4 @@
-{
-  config,
-  pkgs,
-  lib,
-  ...
-}: {
+{config, ...}: {
   config = {
     age.secrets.minio-tempo = {
       file = ../../secrets/minio-tempo.age;

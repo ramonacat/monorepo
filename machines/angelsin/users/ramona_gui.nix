@@ -1,9 +1,4 @@
-{
-  config,
-  pkgs,
-  lib,
-  ...
-}: {
+{pkgs, ...}: {
   config = {
     home-manager.users.ramona = {
       systemd.user.services.virtual-monitor = let

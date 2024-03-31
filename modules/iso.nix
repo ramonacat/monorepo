@@ -1,10 +1,4 @@
-{
-  lib,
-  modulesPath,
-  pkgs,
-  config,
-  ...
-}: {
+{lib, ...}: {
   config = {
     boot.supportedFilesystems = lib.mkForce [
       "btrfs"

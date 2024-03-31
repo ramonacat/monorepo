@@ -21,7 +21,6 @@
   };
 
   outputs = {
-    self,
     nixpkgs,
     home-manager,
     rust-overlay,
@@ -31,6 +30,7 @@
     nix-vscode-extensions,
     nix-minecraft,
     alacritty-theme,
+    ...
   }: let
     packages = {
       home-automation = import ./packages/home-automation.nix {inherit pkgs craneLib;};
@@ -59,7 +59,7 @@
       (import rust-overlay)
       nix-minecraft.overlay
       alacritty-theme.overlays.default
-      (final: prev: {
+      (_: prev: {
         ramona =
           {
             lan-mouse = (import ./packages/lan-mouse.nix) {inherit pkgs craneLib;};
@@ -124,17 +124,22 @@
 
           touch $out
         '';
+        deadnix = pkgs.runCommand "deadnix" {} ''
+          ${pkgs.deadnix}/bin/deadnix --fail ${./.}
+
+          touch $out
+        '';
         shellcheck = pkgs.runCommand "shellcheck" {} ''
           ${pkgs.shellcheck}/bin/shellcheck ${shellScripts}
 
           touch $out
         '';
       }
-      // (pkgs.lib.mergeAttrsList (pkgs.lib.mapAttrsToList (name: value: value.checks) libraries))
-      // (pkgs.lib.mergeAttrsList (pkgs.lib.mapAttrsToList (name: value: value.checks) packages));
+      // (pkgs.lib.mergeAttrsList (pkgs.lib.mapAttrsToList (_: value: value.checks) libraries))
+      // (pkgs.lib.mergeAttrsList (pkgs.lib.mapAttrsToList (_: value: value.checks) packages));
     packages.x86_64-linux = rec {
       coverage = let
-        paths = pkgs.lib.mapAttrsToList (name: value: value.coverage) (libraries // packages);
+        paths = pkgs.lib.mapAttrsToList (_: value: value.coverage) (libraries // packages);
       in
         pkgs.runCommand "coverage" {} ("mkdir $out\n" + (pkgs.lib.concatStringsSep "\n" (builtins.map (p: "ln -s ${p} $out/${p.name}") paths)) + "\n");
       default = coverage;

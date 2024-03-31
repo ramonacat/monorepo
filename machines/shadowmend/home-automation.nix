@@ -1,9 +1,4 @@
-{
-  config,
-  pkgs,
-  lib,
-  ...
-}: {
+{pkgs, ...}: {
   age.secrets.rabbitmq-ha = {
     file = ../../secrets/rabbitmq-ha.age;
     group = "home-automation-secrets";
