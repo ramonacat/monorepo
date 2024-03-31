@@ -41,6 +41,8 @@ in {
       };
     };
 
+    networking.firewall.interfaces.tailscale0.allowedTCPPorts = [5432];
+
     services.telegraf.extraConfig.inputs.postgresql = {
       address = "postgres://telegraf:$DB_PASSWORD@hallewell/telegraf";
     };
