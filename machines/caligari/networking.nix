@@ -1,9 +1,4 @@
-{
-  config,
-  pkgs,
-  lib,
-  ...
-}: {
+{...}: {
   config = {
     networking.hostName = "caligari";
     services.fail2ban = {
@@ -13,5 +8,8 @@
         "100.0.0.0/8"
       ];
     };
+    networking.firewall.extraInputRules = ''
+      iifname enp41s0 tcp dport 22 drop
+    '';
   };
 }
