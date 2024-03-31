@@ -5,7 +5,7 @@ use crate::{
     slip::SlipStream,
 };
 
-#[derive(Debug)]
+#[derive(Debug, PartialEq, Eq)]
 pub struct SequenceNumber(u8);
 impl SequenceNumber {
     pub(crate) fn new(arg: u8) -> SequenceNumber {
@@ -13,6 +13,7 @@ impl SequenceNumber {
     }
 }
 
+#[derive(PartialEq, Eq)]
 pub struct Version(u32);
 
 impl std::fmt::Debug for Version {
@@ -29,7 +30,7 @@ impl std::fmt::Debug for Version {
     }
 }
 
-#[derive(Debug)]
+#[derive(Debug, PartialEq, Eq)]
 pub enum Status {
     Success = 0x00,
     Failure = 0x01,
@@ -41,7 +42,7 @@ pub enum Status {
     InvalidValue = 0x07,
 }
 
-#[derive(Debug)]
+#[derive(Debug, PartialEq, Eq)]
 pub enum NetworkState {
     Offline,
     Joining,
@@ -49,7 +50,7 @@ pub enum NetworkState {
     Leaving,
 }
 
-#[derive(Debug)]
+#[derive(Debug, PartialEq, Eq)]
 pub enum DeviceState {
     NetworkState,
     APSDEDataConfirm,
@@ -58,7 +59,7 @@ pub enum DeviceState {
     APSDEDataRequest,
 }
 
-#[derive(Debug)]
+#[derive(Debug, PartialEq, Eq)]
 pub enum NetworkParameterId {
     MACAddress,
     NetworkPANID,
@@ -80,6 +81,7 @@ pub enum NetworkParameterId {
     AppZDPResponseHandling,
 }
 
+#[derive(Eq, PartialEq)]
 pub struct MACAddress(u64);
 
 impl std::fmt::Debug for MACAddress {
@@ -88,6 +90,7 @@ impl std::fmt::Debug for MACAddress {
     }
 }
 
+#[derive(Eq, PartialEq)]
 pub struct PANID(u16);
 
 impl PANID {
@@ -102,13 +105,13 @@ impl std::fmt::Debug for PANID {
     }
 }
 
-#[derive(Debug)]
+#[derive(Debug, PartialEq, Eq)]
 pub struct ExtendedPANID(u64);
 
-#[derive(Debug)]
+#[derive(Debug, PartialEq, Eq)]
 pub struct NetworkAddress(u16);
 
-#[derive(Debug)]
+#[derive(Debug, PartialEq, Eq)]
 enum SecurityMode {
     NoSecurity,
     PreconfiguredNetworkKey,
@@ -116,10 +119,10 @@ enum SecurityMode {
     NoMasterWithTrustCenterLinkKey,
 }
 
-#[derive(Debug)]
+#[derive(Debug, PartialEq, Eq)]
 pub struct EncryptionKey([u8; 16]);
 
-#[derive(Debug)]
+#[derive(Debug, PartialEq, Eq)]
 pub enum NetworkParameter {
     MACAddress(MACAddress),
     NetworkPANID(PANID),
@@ -148,7 +151,7 @@ pub enum Request {
     ReadDeviceState(SequenceNumber),
 }
 
-#[derive(Debug)]
+#[derive(Debug, PartialEq, Eq)]
 pub enum Message {
     Version(SequenceNumber, Status, Version),
     DeviceStateChanged(SequenceNumber, Status, Vec<DeviceState>, NetworkState),
@@ -391,5 +394,152 @@ impl DeconzStream {
         }
 
         (device_states, network_state)
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use serialport::SerialPort;
+
+    use crate::slip::SlipStream;
+
+    use super::DeconzStream;
+
+    struct MockSerialPort(Vec<u8>);
+
+    impl std::io::Read for MockSerialPort {
+        fn read(&mut self, buf: &mut [u8]) -> std::io::Result<usize> {
+            let len = std::cmp::min(buf.len(), self.0.len());
+            for (i, byte) in self.0.drain(0..len).enumerate() {
+                buf[i] = byte;
+            }
+
+            Ok(len)
+        }
+    }
+
+    impl std::io::Write for MockSerialPort {
+        fn write(&mut self, buf: &[u8]) -> std::io::Result<usize> {
+            todo!()
+        }
+
+        fn flush(&mut self) -> std::io::Result<()> {
+            todo!()
+        }
+    }
+
+    impl SerialPort for MockSerialPort {
+        fn name(&self) -> Option<String> {
+            todo!()
+        }
+
+        fn baud_rate(&self) -> serialport::Result<u32> {
+            todo!()
+        }
+
+        fn data_bits(&self) -> serialport::Result<serialport::DataBits> {
+            todo!()
+        }
+
+        fn flow_control(&self) -> serialport::Result<serialport::FlowControl> {
+            todo!()
+        }
+
+        fn parity(&self) -> serialport::Result<serialport::Parity> {
+            todo!()
+        }
+
+        fn stop_bits(&self) -> serialport::Result<serialport::StopBits> {
+            todo!()
+        }
+
+        fn timeout(&self) -> std::time::Duration {
+            todo!()
+        }
+
+        fn set_baud_rate(&mut self, baud_rate: u32) -> serialport::Result<()> {
+            todo!()
+        }
+
+        fn set_data_bits(&mut self, data_bits: serialport::DataBits) -> serialport::Result<()> {
+            todo!()
+        }
+
+        fn set_flow_control(
+            &mut self,
+            flow_control: serialport::FlowControl,
+        ) -> serialport::Result<()> {
+            todo!()
+        }
+
+        fn set_parity(&mut self, parity: serialport::Parity) -> serialport::Result<()> {
+            todo!()
+        }
+
+        fn set_stop_bits(&mut self, stop_bits: serialport::StopBits) -> serialport::Result<()> {
+            todo!()
+        }
+
+        fn set_timeout(&mut self, timeout: std::time::Duration) -> serialport::Result<()> {
+            todo!()
+        }
+
+        fn write_request_to_send(&mut self, level: bool) -> serialport::Result<()> {
+            todo!()
+        }
+
+        fn write_data_terminal_ready(&mut self, level: bool) -> serialport::Result<()> {
+            todo!()
+        }
+
+        fn read_clear_to_send(&mut self) -> serialport::Result<bool> {
+            todo!()
+        }
+
+        fn read_data_set_ready(&mut self) -> serialport::Result<bool> {
+            todo!()
+        }
+
+        fn read_ring_indicator(&mut self) -> serialport::Result<bool> {
+            todo!()
+        }
+
+        fn read_carrier_detect(&mut self) -> serialport::Result<bool> {
+            todo!()
+        }
+
+        fn bytes_to_read(&self) -> serialport::Result<u32> {
+            todo!()
+        }
+
+        fn bytes_to_write(&self) -> serialport::Result<u32> {
+            todo!()
+        }
+
+        fn clear(&self, buffer_to_clear: serialport::ClearBuffer) -> serialport::Result<()> {
+            todo!()
+        }
+
+        fn try_clone(&self) -> serialport::Result<Box<dyn SerialPort>> {
+            todo!()
+        }
+
+        fn set_break(&self) -> serialport::Result<()> {
+            todo!()
+        }
+
+        fn clear_break(&self) -> serialport::Result<()> {
+            todo!()
+        }
+    }
+    // 0x81 | 0x22
+    //
+    #[test]
+    pub fn stream_receive_returns_none_on_unknown_frame() {
+        let mut stream = DeconzStream::new(SlipStream::new(Box::new(MockSerialPort(vec![
+            0x81, 125, 255, 0o300,
+        ]))));
+
+        assert_eq!(None, stream.receive());
     }
 }
