@@ -52,6 +52,7 @@
 
     networking.networkmanager.enable = true;
     networking.wireless.enable = false;
+    networking.nftables.enable = true;
 
     programs.zsh.enable = true;
 
