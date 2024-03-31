@@ -4,7 +4,7 @@ use ratlib::PostTodoWithId;
 
 use crate::todo::{Id, Priority, Requirement};
 
-pub fn execute(
+pub async fn execute(
     server_url: &str,
     id: Id,
     add_requirements: Option<Vec<Requirement>>,
@@ -12,7 +12,7 @@ pub fn execute(
     set_estimate: Option<Duration>,
     set_title: Option<String>,
 ) {
-    let client = reqwest::blocking::Client::new();
+    let client = reqwest::Client::new();
 
     client
         .post(format!("{server_url}todos/{}", id.0))
@@ -23,5 +23,6 @@ pub fn execute(
             set_priority,
         })
         .send()
+        .await
         .unwrap();
 }

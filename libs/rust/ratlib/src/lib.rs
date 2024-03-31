@@ -6,6 +6,7 @@ use serde::{Deserialize, Serialize};
 use todo::{Priority, Requirement, Status};
 
 pub mod calendar;
+pub mod secrets;
 pub mod todo;
 
 #[derive(Debug, Deserialize, Serialize)]

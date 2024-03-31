@@ -98,6 +98,11 @@ enum CalendarAction {
 }
 
 #[derive(Subcommand)]
+enum MaintenanceAction {
+    Monitoring,
+}
+
+#[derive(Subcommand)]
 enum Command {
     Add {
         title: String,
@@ -136,6 +141,10 @@ enum Command {
     Calendar {
         #[command(subcommand)]
         action: CalendarAction,
+    },
+    Maintenance {
+        #[command(subcommand)]
+        action: MaintenanceAction,
     },
 }
 
@@ -239,10 +248,14 @@ async fn main() {
                 set_priority,
                 set_estimate,
                 set_title,
-            );
+            )
+            .await;
         }
         Command::Calendar { action } => {
             cli::calendar::execute(&configuration.server_address, action);
+        }
+        Command::Maintenance { action } => {
+            cli::maintenance::execute(&configuration.server_address, action).await;
         }
     }
 }
