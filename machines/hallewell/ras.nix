@@ -10,6 +10,7 @@
     systemd.services.rat-monitoring-maintenance = {
       serviceConfig = {
         Type = "oneshot";
+        User = "ramona";
         ExecStart = "${pkgs.ramona.rat}/bin/rat maintenance monitoring";
       };
     };

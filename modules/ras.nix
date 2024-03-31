@@ -19,10 +19,17 @@
       systemd.services.ras = {
         wantedBy = ["multi-user.target"];
         serviceConfig = {
-          DynamicUser = true;
+          User = "ras";
           ExecStart = "${pkgs.ramona.ras}/bin/ras ${rasConfig.dataFile}";
           ReadWritePaths = "${rasConfig.dataFile}";
         };
+      };
+
+      users.groups.ras = {};
+      users.users.ras = {
+        isSystemUser = true;
+        group = "ras";
+        extraGroups = ["telegraf"];
       };
     };
 }
