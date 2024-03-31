@@ -37,22 +37,24 @@
           timestamp_column_type = "timestamp with time zone";
           tag_cache_size = 100000;
         };
-        inputs.cpu = {};
-        inputs.disk = {};
-        inputs.diskio = {};
-        inputs.ethtool = {};
-        inputs.smart = {
-          path_smartctl = "$SMARTCTL_PATH";
-          path_nvme = "$NVME_PATH";
-        };
-        inputs.syslog = {
-          server = "tcp4://:6514";
-        };
-        inputs.exec = {
-          commands = ["readlink -f /nix/var/nix/profiles/system"];
-          name_override = "current_closure_version";
-          data_format = "value";
-          data_type = "string";
+        inputs = {
+          cpu = {};
+          disk = {};
+          diskio = {};
+          ethtool = {};
+          smart = {
+            path_smartctl = "$SMARTCTL_PATH";
+            path_nvme = "$NVME_PATH";
+          };
+          syslog = {
+            server = "tcp4://:6514";
+          };
+          exec = {
+            commands = ["readlink -f /nix/var/nix/profiles/system"];
+            name_override = "current_closure_version";
+            data_format = "value";
+            data_type = "string";
+          };
         };
       };
     };

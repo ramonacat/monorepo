@@ -6,10 +6,14 @@
   config = {
     powerManagement.powertop.enable = true;
     services.upower.enable = true;
-    boot.initrd.availableKernelModules = ["xhci_pci" "nvme" "usbhid" "usb_storage" "sd_mod" "rtsx_pci_sdmmc"];
-    boot.initrd.kernelModules = [];
-    boot.kernelModules = ["kvm-intel"];
-    boot.extraModulePackages = [];
+    boot = {
+      initrd.availableKernelModules = ["xhci_pci" "nvme" "usbhid" "usb_storage" "sd_mod" "rtsx_pci_sdmmc"];
+      initrd.kernelModules = [];
+      kernelModules = ["kvm-intel"];
+      extraModulePackages = [];
+      loader.systemd-boot.enable = true;
+      loader.efi.canTouchEfiVariables = true;
+    };
     fileSystems."/" = {
       device = "/dev/disk/by-uuid/d991d608-ce53-4995-9414-3c981c0e550e";
       fsType = "ext4";
@@ -22,13 +26,13 @@
     swapDevices = [{device = "/dev/disk/by-uuid/b616878a-7677-4844-b81c-b11f7ae1421c";}];
 
     nixpkgs.hostPlatform = lib.mkDefault "x86_64-linux";
-    hardware.cpu.intel.updateMicrocode = true;
-    hardware.opengl = {
-      enable = true;
+    hardware = {
+      cpu.intel.updateMicrocode = true;
+      opengl = {
+        enable = true;
+      };
+      pulseaudio.enable = false;
     };
-    hardware.pulseaudio.enable = false;
-    boot.loader.systemd-boot.enable = true;
-    boot.loader.efi.canTouchEfiVariables = true;
 
     systemd.services.lte_modem_fix = let
       modemFixScript = pkgs.writeScriptBin "fix_lte_modem" ''

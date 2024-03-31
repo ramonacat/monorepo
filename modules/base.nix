@@ -21,9 +21,7 @@
     ];
     boot.kernelPackages = lib.mkDefault pkgs.linuxPackages_latest;
     security.sudo.wheelNeedsPassword = false;
-    nix.settings.trusted-users = ["@wheel"];
 
-    networking.useDHCP = false;
     time.timeZone = "Europe/Berlin";
     i18n.defaultLocale = "en_GB.UTF-8";
 
@@ -50,22 +48,26 @@
       config.boot.kernelPackages.perf
     ];
 
-    networking.networkmanager.enable = true;
-    networking.wireless.enable = false;
-    networking.nftables.enable = true;
+    networking = {
+      useDHCP = false;
+      networkmanager.enable = true;
+      wireless.enable = false;
+      nftables.enable = true;
+    };
 
     programs.zsh.enable = true;
 
     console.keyMap = "pl";
-    nix.settings.experimental-features = ["nix-command flakes"];
     system.stateVersion = "22.11";
 
-    nix.registry.nixpkgs.flake = nixpkgs;
-
-    # alter nixPath so legacy commands like nix-shell can find nixpkgs.
-    nix.nixPath = [
-      "nixpkgs=${nixpkgsPath}"
-    ];
+    nix = {
+      registry.nixpkgs.flake = nixpkgs;
+      settings.trusted-users = ["@wheel"];
+      settings.experimental-features = ["nix-command flakes"];
+      nixPath = [
+        "nixpkgs=${nixpkgsPath}"
+      ];
+    };
     systemd.tmpfiles.rules = [
       "L+ ${nixpkgsPath}  - - - - ${nixpkgs}"
     ];

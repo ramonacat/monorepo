@@ -5,20 +5,23 @@
   ...
 }: {
   config = {
-    boot.initrd.availableKernelModules = ["xhci_pci" "usbhid" "usb_storage"];
-    boot.initrd.kernelModules = [];
-    boot.kernelModules = [];
-    boot.extraModulePackages = [];
-    boot.kernelPatches = [
-      {
-        name = "allow-devmem";
-        patch = null;
-        extraConfig = ''
-          STRICT_DEVMEM n
-        '';
-      }
-    ];
-    boot.kernelPackages = lib.mkForce pkgsCross.linuxPackages_latest;
+    boot = {
+      initrd.availableKernelModules = ["xhci_pci" "usbhid" "usb_storage"];
+      initrd.kernelModules = [];
+      kernelModules = [];
+      extraModulePackages = [];
+      kernelPatches = [
+        {
+          name = "allow-devmem";
+          patch = null;
+          extraConfig = ''
+            STRICT_DEVMEM n
+          '';
+        }
+      ];
+      kernelPackages = lib.mkForce pkgsCross.linuxPackages_latest;
+      kernelParams = [];
+    };
     fileSystems."/" = {
       device = "/dev/disk/by-label/NIXOS_SD";
       fsType = "ext4";
@@ -33,20 +36,20 @@
 
     nixpkgs.hostPlatform = lib.mkDefault "aarch64-linux";
 
-    boot.kernelParams = [];
-    hardware.opengl = {
-      enable = true;
-    };
-    hardware.bluetooth.enable = true;
+    hardware = {
+      opengl = {
+        enable = true;
+      };
+      bluetooth.enable = true;
 
-    hardware.enableRedistributableFirmware = true;
-    hardware.deviceTree = {
-      enable = true;
-      overlays = [
-        {
-          name = "spi0-0cs.dtbo";
-          # this is from https://www.evolware.org/2021/02/21/using-spidev-with-mainline-linux-kernel-on-the-raspberry-pi-4/z, but with patched "compatible"
-          dtsText = "
+      enableRedistributableFirmware = true;
+      deviceTree = {
+        enable = true;
+        overlays = [
+          {
+            name = "spi0-0cs.dtbo";
+            # this is from https://www.evolware.org/2021/02/21/using-spidev-with-mainline-linux-kernel-on-the-raspberry-pi-4/z, but with patched "compatible"
+            dtsText = "
 /dts-v1/;
 /plugin/;
 
@@ -95,8 +98,9 @@
         };
 };
             ";
-        }
-      ];
+          }
+        ];
+      };
     };
 
     users.groups.spi = {};

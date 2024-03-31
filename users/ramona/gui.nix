@@ -1,7 +1,5 @@
-{nix-vscode-extensions}: {
+{
   config,
-  lib,
-  modulesPath,
   pkgs,
   ...
 }: {
@@ -15,88 +13,61 @@
 
     home-manager.users.ramona =
       {
-        programs.firefox.enable = true;
-        programs.alacritty = {
-          enable = true;
-          settings = {
-            font = {
-              size = 16;
-            };
-            window.opacity = 0.8;
-            import = [
-              pkgs.alacritty-theme.kanagawa_dragon
-            ];
-          };
-        };
         services.gpg-agent.pinentryPackage = pkgs.pinentry-qt;
 
-        home.packages = with pkgs; [
-          dconf
-          discord
-          flac
-          grip
-          hunspell
-          hunspellDicts.de_DE
-          hunspellDicts.en_US
-          hunspellDicts.pl_PL
-          ramona.lan-mouse
-          keepassxc
-          krita
-          light
-          loupe
-          moc
-          obs-studio
-          obsidian
-          pamixer
-          pavucontrol
-          playerctl
-          spotify
-          virt-manager
-          vlc
-          xdg-utils
+        home = {
+          packages = with pkgs; [
+            dconf
+            discord
+            flac
+            grip
+            hunspell
+            hunspellDicts.de_DE
+            hunspellDicts.en_US
+            hunspellDicts.pl_PL
+            ramona.lan-mouse
+            keepassxc
+            krita
+            light
+            loupe
+            moc
+            obs-studio
+            obsidian
+            pamixer
+            pavucontrol
+            playerctl
+            spotify
+            virt-manager
+            vlc
+            xdg-utils
 
-          factorio
-          prismlauncher
-        ];
+            factorio
+            prismlauncher
+          ];
 
-        home.pointerCursor = {
-          name = "Adwaita";
-          package = pkgs.gnome.adwaita-icon-theme;
-          size = 36;
-          x11 = {
-            enable = true;
-            defaultCursor = "Adwaita";
+          pointerCursor = {
+            name = "Adwaita";
+            package = pkgs.gnome.adwaita-icon-theme;
+            size = 36;
+            x11 = {
+              enable = true;
+              defaultCursor = "Adwaita";
+            };
           };
         };
-
-        programs.vscode = {
-          enable = true;
-          mutableExtensionsDir = false;
-          extensions = with nix-vscode-extensions.extensions.x86_64-linux.vscode-marketplace; [
-            panicbit.cargo
-            devsense.composer-php-vscode
-            ms-azuretools.vscode-docker
-            tamasfe.even-better-toml
-            github.vscode-github-actions
-            ms-kubernetes-tools.vscode-kubernetes-tools
-            bbenoist.nix
-            jnoortheen.nix-ide
-            ms-ossdata.vscode-postgresql
-            arrterian.nix-env-selector
-            rust-lang.rust-analyzer
-            bbenoist.nix
-            arrterian.nix-env-selector
-            thenuprojectcontributors.vscode-nushell-lang
-            hashicorp.terraform
-          ];
-          userSettings = {
-            "workbench.colorTheme" = "Visual Studio Dark";
-            "window.zoomLevel" = 1;
-            "editor.fontFamily" = "'Iosevka', 'monospace', monospace";
-            "files.autoSave" = "onFocusChange";
-            "editor.cursorBlinking" = "smooth";
-            "editor.fontLigatures" = true;
-            "editor.mouseWheelZoom" = true;
+        programs = {
+          firefox.enable = true;
+          alacritty = {
+            enable = true;
+            settings = {
+              font = {
+                size = 16;
+              };
+              window.opacity = 0.8;
+              import = [
+                pkgs.alacritty-theme.kanagawa_dragon
+              ];
+            };
           };
         };
 

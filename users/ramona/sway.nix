@@ -24,25 +24,26 @@
         wl-clipboard
         wtype
       ];
-      services.network-manager-applet.enable = true;
-      services.blueman-applet.enable = config.services.blueman.enable;
-      services.swayidle = {
-        enable = true;
-        timeouts = [
-          {
-            timeout = 540;
-            command = "${pkgs.sway}/bin/swaymsg \"output * dpms off\"";
-            resumeCommand = "${pkgs.sway}/bin/swaymsg \"output * dpms on\"";
-          }
-          {
-            timeout = 600;
-            command = "${pkgs.systemd}/bin/systemctl suspend";
-            resumeCommand = "${pkgs.sway}/bin/swaymsg \"output * dpms on\"";
-          }
-        ];
+      services = {
+        network-manager-applet.enable = true;
+        blueman-applet.enable = config.services.blueman.enable;
+        swayidle = {
+          enable = true;
+          timeouts = [
+            {
+              timeout = 540;
+              command = "${pkgs.sway}/bin/swaymsg \"output * dpms off\"";
+              resumeCommand = "${pkgs.sway}/bin/swaymsg \"output * dpms on\"";
+            }
+            {
+              timeout = 600;
+              command = "${pkgs.systemd}/bin/systemctl suspend";
+              resumeCommand = "${pkgs.sway}/bin/swaymsg \"output * dpms on\"";
+            }
+          ];
+        };
+        udiskie.enable = true;
       };
-
-      services.udiskie.enable = true;
 
       programs.waybar = {
         enable = true;
@@ -156,7 +157,7 @@
           terminal = "alacritty";
           modifier = "Mod4";
           keybindings = let
-            modifier = config.home-manager.users.ramona.wayland.windowManager.sway.config.modifier;
+            inherit (config.home-manager.users.ramona.wayland.windowManager.sway.config) modifier;
           in
             lib.mkOptionDefault {
               "${modifier}+d" = "exec ${pkgs.fuzzel}/bin/fuzzel";

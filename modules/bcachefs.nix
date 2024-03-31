@@ -1,12 +1,13 @@
 {
   lib,
-  modulesPath,
   pkgs,
   ...
 }: {
   config = {
-    boot.kernelPackages = lib.mkForce pkgs.linuxPackages_latest;
-    boot.supportedFilesystems = ["bcachefs"];
-    boot.initrd.supportedFilesystems = ["bcachefs"];
+    boot = {
+      kernelPackages = lib.mkForce pkgs.linuxPackages_latest;
+      supportedFilesystems = ["bcachefs"];
+      initrd.supportedFilesystems = ["bcachefs"];
+    };
   };
 }

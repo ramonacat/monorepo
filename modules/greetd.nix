@@ -1,9 +1,4 @@
-{
-  config,
-  pkgs,
-  lib,
-  ...
-}: {
+{pkgs, ...}: {
   config = let
     swayConfig = pkgs.writeText "greetd-sway-config" ''
       # `-l` activates layer-shell mode. Notice that `swaymsg exit` will run after gtkgreet.

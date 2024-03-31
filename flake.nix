@@ -14,23 +14,21 @@
     agenix.url = "github:ryantm/agenix";
     alacritty-theme.url = "github:alexghr/alacritty-theme.nix";
     nix-minecraft.url = "github:Infinidoge/nix-minecraft";
-    nix-vscode-extensions.url = "github:nix-community/nix-vscode-extensions";
     nixos-hardware.url = "github:NixOS/nixos-hardware/master";
     nixpkgs.url = "nixpkgs/nixos-unstable-small";
     rust-overlay.url = "github:oxalica/rust-overlay";
   };
 
   outputs = {
-    self,
     nixpkgs,
     home-manager,
     rust-overlay,
     crane,
     nixos-hardware,
     agenix,
-    nix-vscode-extensions,
     nix-minecraft,
     alacritty-theme,
+    ...
   }: let
     packages = {
       home-automation = import ./packages/home-automation.nix {inherit pkgs craneLib;};
@@ -59,7 +57,8 @@
       (import rust-overlay)
       nix-minecraft.overlay
       alacritty-theme.overlays.default
-      (final: prev: {
+      (_: prev: {
+        agenix = agenix.packages.x86_64-linux.default;
         ramona =
           {
             lan-mouse = (import ./packages/lan-mouse.nix) {inherit pkgs craneLib;};
@@ -124,17 +123,27 @@
 
           touch $out
         '';
+        deadnix = pkgs.runCommand "deadnix" {} ''
+          ${pkgs.deadnix}/bin/deadnix --fail ${./.}
+
+          touch $out
+        '';
+        statix = pkgs.runCommand "statix" {} ''
+          ${pkgs.statix}/bin/statix check ${./.}
+
+          touch $out
+        '';
         shellcheck = pkgs.runCommand "shellcheck" {} ''
           ${pkgs.shellcheck}/bin/shellcheck ${shellScripts}
 
           touch $out
         '';
       }
-      // (pkgs.lib.mergeAttrsList (pkgs.lib.mapAttrsToList (name: value: value.checks) libraries))
-      // (pkgs.lib.mergeAttrsList (pkgs.lib.mapAttrsToList (name: value: value.checks) packages));
+      // (pkgs.lib.mergeAttrsList (pkgs.lib.mapAttrsToList (_: value: value.checks) libraries))
+      // (pkgs.lib.mergeAttrsList (pkgs.lib.mapAttrsToList (_: value: value.checks) packages));
     packages.x86_64-linux = rec {
       coverage = let
-        paths = pkgs.lib.mapAttrsToList (name: value: value.coverage) (libraries // packages);
+        paths = pkgs.lib.mapAttrsToList (_: value: value.coverage) (libraries // packages);
       in
         pkgs.runCommand "coverage" {} ("mkdir $out\n" + (pkgs.lib.concatStringsSep "\n" (builtins.map (p: "ln -s ${p} $out/${p.name}") paths)) + "\n");
       default = coverage;
@@ -174,8 +183,8 @@
           agenix.nixosModules.default
 
           (import ./modules/base.nix {inherit nixpkgs;})
-          (import ./users/ramona.nix {inherit agenix;})
 
+          ./users/ramona.nix
           ./machines/hallewell/grafana.nix
           ./machines/hallewell/hardware.nix
           ./machines/hallewell/minio.nix
@@ -203,9 +212,9 @@
           agenix.nixosModules.default
 
           (import ./modules/base.nix {inherit nixpkgs;})
-          (import ./users/ramona.nix {inherit agenix;})
-          (import ./users/ramona/gui.nix {inherit nix-vscode-extensions;})
 
+          ./users/ramona/gui.nix
+          ./users/ramona.nix
           ./machines/moonfall/hardware.nix
           ./machines/moonfall/networking.nix
           ./machines/moonfall/users/ramona_gui.nix
@@ -231,8 +240,8 @@
           agenix.nixosModules.default
 
           (import ./modules/base.nix {inherit nixpkgs;})
-          (import ./users/ramona.nix {inherit agenix;})
 
+          ./users/ramona.nix
           ./machines/shadowmend/hardware.nix
           ./machines/shadowmend/home-automation.nix
           ./machines/shadowmend/networking.nix
@@ -255,9 +264,9 @@
           nixos-hardware.nixosModules.framework-13-7040-amd
 
           (import ./modules/base.nix {inherit nixpkgs;})
-          (import ./users/ramona.nix {inherit agenix;})
-          (import ./users/ramona/gui.nix {inherit nix-vscode-extensions;})
 
+          ./users/ramona/gui.nix
+          ./users/ramona.nix
           ./machines/angelsin/hardware.nix
           ./machines/angelsin/networking.nix
           ./machines/angelsin/users/ramona_gui.nix
@@ -284,9 +293,9 @@
           nixos-hardware.nixosModules.raspberry-pi-4
 
           (import ./modules/base.nix {inherit nixpkgs;})
-          (import ./users/ramona.nix {inherit agenix;})
           (import ./machines/ananas/hardware.nix {inherit pkgsCross;})
 
+          ./users/ramona.nix
           ./machines/ananas/music-control.nix
           ./machines/ananas/networking.nix
           ./modules/installed_base.nix
@@ -304,9 +313,9 @@
           nixos-hardware.nixosModules.microsoft-surface-go
 
           (import ./modules/base.nix {inherit nixpkgs;})
-          (import ./users/ramona.nix {inherit agenix;})
-          (import ./users/ramona/gui.nix {inherit nix-vscode-extensions;})
 
+          ./users/ramona/gui.nix
+          ./users/ramona.nix
           ./machines/evillian/hardware.nix
           ./machines/evillian/networking.nix
           ./modules/greetd.nix
@@ -328,8 +337,8 @@
           nix-minecraft.nixosModules.minecraft-servers
 
           (import ./modules/base.nix {inherit nixpkgs;})
-          (import ./users/ramona.nix {inherit agenix;})
 
+          ./users/ramona.nix
           ./machines/caligari/github-runner.nix
           ./machines/caligari/hardware.nix
           ./machines/caligari/minecraft.nix
@@ -353,8 +362,8 @@
           "${nixpkgs}/nixos/modules/installer/cd-dvd/installation-cd-minimal.nix"
 
           (import ./modules/base.nix {inherit nixpkgs;})
-          (import ./users/ramona.nix {inherit agenix;})
 
+          ./users/ramona.nix
           ./modules/bcachefs.nix
           ./modules/iso.nix
         ];

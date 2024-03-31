@@ -1,6 +1,5 @@
-{agenix}: {
+{
   lib,
-  modulesPath,
   pkgs,
   config,
   ...
@@ -14,48 +13,52 @@
         ../modules/home-manager/rat.nix
       ];
       nixpkgs.config.allowUnfree = true;
-      home.username = "ramona";
-      home.homeDirectory = homeDirectory;
-      home.stateVersion = "22.11";
-      home.packages = with pkgs; [
-        agenix.packages.x86_64-linux.default
-        atop
-        jq
-        pulseaudio
-        ripgrep
-        unzip
-        yt-dlp
-      ];
+      home = {
+        inherit homeDirectory;
+        username = "ramona";
+        stateVersion = "22.11";
+        packages = with pkgs; [
+          agenix
+          atop
+          jq
+          pulseaudio
+          ripgrep
+          unzip
+          yt-dlp
+        ];
+      };
       services.gpg-agent.pinentryPackage = lib.mkDefault pkgs.pinentry-curses;
 
-      programs.rat = {
-        enable = lib.attrsets.hasAttrByPath ["services" "syncthing" "settings" "folders" "shared"] config;
-        serverAddress = "http://hallewell:8438/";
-      };
+      programs = {
+        rat = {
+          enable = lib.attrsets.hasAttrByPath ["services" "syncthing" "settings" "folders" "shared"] config;
+          serverAddress = "http://hallewell:8438/";
+        };
 
-      programs.gpg = {
-        enable = true;
-        publicKeys = [
-          {
-            source = ./ramona.pgp;
-            trust = "ultimate";
-          }
-          {
-            source = ./ramona2.pgp;
-            trust = "ultimate";
-          }
-        ];
-        mutableTrust = false;
-        mutableKeys = false;
-      };
+        gpg = {
+          enable = true;
+          publicKeys = [
+            {
+              source = ./ramona.pgp;
+              trust = "ultimate";
+            }
+            {
+              source = ./ramona2.pgp;
+              trust = "ultimate";
+            }
+          ];
+          mutableTrust = false;
+          mutableKeys = false;
+        };
 
-      programs.tmux = {
-        enable = true;
-        clock24 = true;
-        newSession = true;
-        plugins = with pkgs.tmuxPlugins; [
-          sensible
-        ];
+        tmux = {
+          enable = true;
+          clock24 = true;
+          newSession = true;
+          plugins = with pkgs.tmuxPlugins; [
+            sensible
+          ];
+        };
       };
 
       services.gpg-agent = {

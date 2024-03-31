@@ -1,4 +1,4 @@
-{...}: {
+_: {
   config = let
     port = 3000;
   in {

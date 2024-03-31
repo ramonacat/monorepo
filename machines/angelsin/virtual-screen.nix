@@ -1,9 +1,4 @@
-{
-  config,
-  pkgs,
-  lib,
-  ...
-}: {
+_: {
   config = {
     networking.firewall.allowedTCPPorts = [
       # For VNC

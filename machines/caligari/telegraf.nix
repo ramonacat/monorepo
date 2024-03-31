@@ -1,4 +1,4 @@
-{...}: {
+_: {
   config = {
     services.telegraf.extraConfig.inputs.file = {
       files = ["/var/www/ramona.fun/builds/*-closure"];

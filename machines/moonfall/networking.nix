@@ -1,16 +1,13 @@
-{
-  config,
-  pkgs,
-  lib,
-  ...
-}: {
+{lib, ...}: {
   config = {
-    networking.hostName = "moonfall";
+    networking = {
+      hostName = "moonfall";
 
-    networking.useDHCP = lib.mkForce false;
-    networking.interfaces.eno1.useDHCP = lib.mkForce true;
-    networking.interfaces.eno1.wakeOnLan = {
-      enable = true;
+      useDHCP = lib.mkForce false;
+      interfaces.eno1.useDHCP = lib.mkForce true;
+      interfaces.eno1.wakeOnLan = {
+        enable = true;
+      };
     };
   };
 }

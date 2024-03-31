@@ -1,15 +1,14 @@
-{
-  config,
-  pkgs,
-  lib,
-  ...
-}: {
+{lib, ...}: {
   config = {
-    boot.initrd.availableKernelModules = ["xhci_pci" "ahci" "nvme" "usbhid" "usb_storage" "sd_mod" "sr_mod" "bcache" "amdgpu"];
-    boot.initrd.kernelModules = ["vfio_pci "];
-    boot.kernelModules = ["kvm-amd" "vfio" "vfio_pci" "vfio_iommu_type1" "vfio_virqfd" "amdgpu" "i2c-dev"];
-    boot.extraModulePackages = [];
-    boot.binfmt.emulatedSystems = ["aarch64-linux"];
+    boot = {
+      initrd.availableKernelModules = ["xhci_pci" "ahci" "nvme" "usbhid" "usb_storage" "sd_mod" "sr_mod" "bcache" "amdgpu"];
+      initrd.kernelModules = ["vfio_pci "];
+      kernelModules = ["kvm-amd" "vfio" "vfio_pci" "vfio_iommu_type1" "vfio_virqfd" "amdgpu" "i2c-dev"];
+      extraModulePackages = [];
+      binfmt.emulatedSystems = ["aarch64-linux"];
+      loader.systemd-boot.enable = true;
+      loader.efi.canTouchEfiVariables = true;
+    };
     programs.adb.enable = true;
     fileSystems."/" = {
       device = "/dev/disk/by-uuid/aed4868d-65c0-446e-8d2b-22929c9ee46b";
@@ -23,14 +22,13 @@
 
     nixpkgs.hostPlatform = lib.mkDefault "x86_64-linux";
     powerManagement.cpuFreqGovernor = lib.mkDefault "performance";
-    hardware.cpu.amd.updateMicrocode = true;
-    hardware.opengl = {
-      enable = true;
+    hardware = {
+      cpu.amd.updateMicrocode = true;
+      opengl = {
+        enable = true;
+      };
+      openrazer.enable = true;
     };
-    boot.loader.systemd-boot.enable = true;
-    boot.loader.efi.canTouchEfiVariables = true;
-
-    hardware.openrazer.enable = true;
 
     services.pipewire.extraConfig.pipewire = {
       "99-roc-sink" = lib.mkForce {

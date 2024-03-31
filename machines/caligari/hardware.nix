@@ -1,17 +1,18 @@
-{
-  config,
-  pkgs,
-  lib,
-  ...
-}: {
+{lib, ...}: {
   config = {
-    boot.initrd.availableKernelModules = ["xhci_pci" "ahci" "nvme" "usbhid"];
-    boot.initrd.kernelModules = [];
-    boot.kernelModules = ["kvm-amd"];
-    boot.extraModulePackages = [];
-    services.fwupd.enable = false;
-    boot.binfmt.emulatedSystems = ["aarch64-linux"];
+    boot = {
+      initrd.availableKernelModules = ["xhci_pci" "ahci" "nvme" "usbhid"];
+      initrd.kernelModules = [];
+      kernelModules = ["kvm-amd"];
+      extraModulePackages = [];
+      binfmt.emulatedSystems = ["aarch64-linux"];
 
+      loader.grub = {
+        enable = true;
+        devices = ["/dev/nvme0n1"];
+      };
+    };
+    services.fwupd.enable = false;
     nixpkgs.hostPlatform = lib.mkDefault "x86_64-linux";
     hardware.cpu.amd.updateMicrocode = true;
 
@@ -23,11 +24,6 @@
     fileSystems."/boot" = {
       device = "/dev/disk/by-label/boot";
       fsType = "ext2";
-    };
-
-    boot.loader.grub = {
-      enable = true;
-      devices = ["/dev/nvme0n1"];
     };
   };
 }

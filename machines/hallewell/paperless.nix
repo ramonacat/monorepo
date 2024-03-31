@@ -1,4 +1,4 @@
-{...}: {
+_: {
   config = {
     services.paperless = {
       enable = true;
