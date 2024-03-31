@@ -8,8 +8,5 @@
         "100.0.0.0/8"
       ];
     };
-    networking.firewall.extraInputRules = ''
-      iifname enp41s0 tcp dport 22 drop
-    '';
   };
 }
