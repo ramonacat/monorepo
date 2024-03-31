@@ -129,6 +129,11 @@
 
           touch $out
         '';
+        statix = pkgs.runCommand "statix" {} ''
+          ${pkgs.statix}/bin/statix check ${./.}
+
+          touch $out
+        '';
         shellcheck = pkgs.runCommand "shellcheck" {} ''
           ${pkgs.shellcheck}/bin/shellcheck ${shellScripts}
 

@@ -1,9 +1,14 @@
 {lib, ...}: {
   config = {
-    boot.initrd.availableKernelModules = ["nvme" "xhci_pci" "thunderbolt" "usb_storage" "sd_mod"];
-    boot.initrd.kernelModules = [];
-    boot.kernelModules = ["kvm-amd"];
-    boot.extraModulePackages = [];
+    boot = {
+      initrd.availableKernelModules = ["nvme" "xhci_pci" "thunderbolt" "usb_storage" "sd_mod"];
+      initrd.kernelModules = [];
+      kernelModules = ["kvm-amd"];
+      extraModulePackages = [];
+      kernelParams = ["amd_pstate=active"];
+      loader.systemd-boot.enable = true;
+      loader.efi.canTouchEfiVariables = true;
+    };
     fileSystems."/" = {
       device = "/dev/disk/by-uuid/08243e9b-e1e5-494d-8c9b-0b1675541061";
       fsType = "ext4";
@@ -15,30 +20,30 @@
     };
 
     nixpkgs.hostPlatform = lib.mkDefault "x86_64-linux";
-    hardware.cpu.amd.updateMicrocode = true;
-    powerManagement.cpuFreqGovernor = lib.mkDefault "powersave";
-    hardware.sensor.iio.enable = true;
+    hardware = {
+      cpu.amd.updateMicrocode = true;
+      sensor.iio.enable = true;
+      opengl = {
+        enable = true;
+      };
+      bluetooth.enable = true;
 
-    boot.kernelParams = ["amd_pstate=active"];
-    hardware.opengl = {
-      enable = true;
-    };
-    hardware.bluetooth.enable = true;
-
-    hardware.bluetooth.settings = {
-      General = {
-        Enable = "Source,Sink,Media,Socket";
+      bluetooth.settings = {
+        General = {
+          Enable = "Source,Sink,Media,Socket";
+        };
       };
     };
-    services.blueman.enable = true;
-    services.fprintd.enable = true;
+    powerManagement.cpuFreqGovernor = lib.mkDefault "powersave";
 
-    boot.loader.systemd-boot.enable = true;
-    boot.loader.efi.canTouchEfiVariables = true;
+    services = {
+      blueman.enable = true;
+      fprintd.enable = true;
+      power-profiles-daemon.enable = true;
+      upower.enable = true;
+    };
 
-    services.power-profiles-daemon.enable = true;
     powerManagement.powertop.enable = true;
-    services.upower.enable = true;
 
     services.logind.lidSwitchDocked = "ignore";
   };

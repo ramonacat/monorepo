@@ -4,22 +4,24 @@
   ...
 }: {
   config = {
-    services.openssh = {
-      enable = true;
-      openFirewall = false;
-      settings.X11Forwarding = true;
+    services = {
+      openssh = {
+        enable = true;
+        openFirewall = false;
+        settings.X11Forwarding = true;
+      };
+      fwupd.enable = lib.mkDefault true;
+      tailscale = {
+        enable = true;
+        useRoutingFeatures = "both";
+        extraUpFlags = ["--advertise-exit-node"];
+      };
     };
     users.users.root.openssh.authorizedKeys.keys = [
       "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIHW4PIqcucwZdFj5u9aMhLj/ernBFV24PyHuspHwh3LT ramona@moonfall"
     ];
     networking.firewall.interfaces.tailscale0.allowedTCPPorts = [22];
-    services.fwupd.enable = lib.mkDefault true;
     environment.systemPackages = with pkgs; [pciutils tailscale];
-    services.tailscale = {
-      enable = true;
-      useRoutingFeatures = "both";
-      extraUpFlags = ["--advertise-exit-node"];
-    };
     security.polkit.enable = true;
     programs.nix-ld.enable = true;
 

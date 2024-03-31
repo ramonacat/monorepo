@@ -1,4 +1,4 @@
-{...}: {
+_: {
   config = {
     networking.firewall.allowedTCPPorts = [
       # For VNC

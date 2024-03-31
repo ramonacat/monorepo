@@ -1,4 +1,4 @@
-{...}: {
+_: {
   config = {
     networking.hostName = "caligari";
     services.fail2ban = {

@@ -1,10 +1,14 @@
 {lib, ...}: {
   config = {
-    boot.initrd.availableKernelModules = ["xhci_pci" "ehci_pci" "ahci" "usbhid" "usb_storage" "sd_mod" "rtsx_usb_sdmmc" "bcache"];
+    boot = {
+      initrd.availableKernelModules = ["xhci_pci" "ehci_pci" "ahci" "usbhid" "usb_storage" "sd_mod" "rtsx_usb_sdmmc" "bcache"];
+      initrd.kernelModules = [];
+      kernelModules = ["kvm-intel" "i2c-dev"];
+      extraModulePackages = [];
+      loader.systemd-boot.enable = true;
+      loader.efi.canTouchEfiVariables = true;
+    };
     services.logind.lidSwitch = "ignore";
-    boot.initrd.kernelModules = [];
-    boot.kernelModules = ["kvm-intel" "i2c-dev"];
-    boot.extraModulePackages = [];
     fileSystems."/" = {
       device = "/dev/sdb1:/dev/sda1";
       fsType = "bcachefs";
@@ -17,13 +21,12 @@
 
     nixpkgs.hostPlatform = lib.mkDefault "x86_64-linux";
     powerManagement.cpuFreqGovernor = lib.mkDefault "performance";
-    hardware.cpu.intel.updateMicrocode = true;
-    hardware.opengl = {
-      enable = true;
+    hardware = {
+      cpu.intel.updateMicrocode = true;
+      opengl = {
+        enable = true;
+      };
+      bluetooth.enable = true;
     };
-    boot.loader.systemd-boot.enable = true;
-    boot.loader.efi.canTouchEfiVariables = true;
-
-    hardware.bluetooth.enable = true;
   };
 }

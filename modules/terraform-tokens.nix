@@ -1,4 +1,4 @@
-{...}: {
+_: {
   config = {
     age.secrets.minio-terraform-state = {
       file = ../secrets/minio-terraform-state.age;

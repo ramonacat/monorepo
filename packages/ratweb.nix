@@ -13,7 +13,7 @@ in
       cargoLock = "${src}/apps/ratweb/Cargo.lock";
     };
     sourceFilter = path: type: craneLib.filterCargoSources path type || (builtins.match ".*\\.scss$" path != null);
-    buildAdditionalPackageArguments = {...}: {
+    buildAdditionalPackageArguments = _: {
       buildInputs = with pkgs; [
         cargo-leptos
         binaryen

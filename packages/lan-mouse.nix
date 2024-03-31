@@ -22,5 +22,5 @@
 in
   craneLib.buildPackage (packageArguments
     // {
-      cargoArtifacts = cargoArtifacts;
+      inherit cargoArtifacts;
     })

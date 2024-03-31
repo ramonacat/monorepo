@@ -6,21 +6,26 @@
       mode = "440";
     };
 
-    users.groups.tempo-secrets = {};
-    users.groups.tempo = {};
-    users.users.tempo = {
-      group = "tempo";
-      isSystemUser = true;
+    users = {
+      groups.tempo-secrets = {};
+      groups.tempo = {};
+      users.tempo = {
+        group = "tempo";
+        isSystemUser = true;
+      };
     };
 
-    systemd.tmpfiles.rules = [
-      "d '/var/tempo' - tempo tempo - -"
-    ];
+    systemd = {
+      tmpfiles.rules = [
+        "d '/var/tempo' - tempo tempo - -"
+      ];
 
-    systemd.services.tempo.serviceConfig.EnvironmentFile = config.age.secrets.minio-tempo.path;
-    systemd.services.tempo.serviceConfig.BindPaths = "/var/tempo";
-    systemd.services.tempo.serviceConfig.User = "tempo";
-
+      services.tempo.serviceConfig = {
+        EnvironmentFile = config.age.secrets.minio-tempo.path;
+        BindPaths = "/var/tempo";
+        User = "tempo";
+      };
+    };
     services.tempo = {
       enable = true;
 

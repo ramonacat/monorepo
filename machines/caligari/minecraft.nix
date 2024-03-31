@@ -1,4 +1,4 @@
-{...}: {
+_: {
   config = {
     age.secrets.caligari-minecraft-rclone-config = {
       file = ../../secrets/caligari-minecraft-rclone-config.age;

@@ -1,52 +1,54 @@
 {pkgs, ...}: {
   config = {
-    services.jellyfin = {
-      enable = true;
-      openFirewall = true;
-    };
     users.users.nas = {
       isSystemUser = true;
       uid = 16969;
       group = "nas";
     };
     users.groups.nas = {};
-    services.nfs.server.enable = true;
-    services.nfs.server.exports = ''
-      /mnt/nas3/data 10.69.10.0/24(rw,sync,all_squash,anonuid=16969,no_subtree_check,insecure) 100.0.0.0/8(rw,sync,all_squash,anonuid=16969,no_subtree_check,insecure)
-    '';
     networking.firewall.allowedTCPPorts = [20048 2049 111];
-
-    services.samba-wsdd.enable = true;
-
-    services.samba = {
-      enable = true;
-      openFirewall = true;
-      securityType = "user";
-      extraConfig = ''
-        workgroup = WORKGROUP
-        server string = smbnix
-        netbios name = smbnix
-        security = user
-        #use sendfile = yes
-        #max protocol = smb2
-        # note: localhost is the ipv6 localhost ::1
-        hosts allow = 100. 10.69.10. 127.0.0.1 localhost
-        hosts deny = 0.0.0.0/0
-        guest account = nas
-        map to guest = bad user
-        acl allow execute always = True
+    services = {
+      nfs.server.enable = true;
+      nfs.server.exports = ''
+        /mnt/nas3/data 10.69.10.0/24(rw,sync,all_squash,anonuid=16969,no_subtree_check,insecure) 100.0.0.0/8(rw,sync,all_squash,anonuid=16969,no_subtree_check,insecure)
       '';
-      shares = {
-        public = {
-          path = "/mnt/nas3/data";
-          browseable = "yes";
-          writeable = "yes";
-          "read only" = "no";
-          "guest ok" = "yes";
-          "create mask" = "0775";
-          "directory mask" = "0755";
-          "force user" = "nas";
-          "force group" = "nas";
+
+      jellyfin = {
+        enable = true;
+        openFirewall = true;
+      };
+      samba-wsdd.enable = true;
+
+      samba = {
+        enable = true;
+        openFirewall = true;
+        securityType = "user";
+        extraConfig = ''
+          workgroup = WORKGROUP
+          server string = smbnix
+          netbios name = smbnix
+          security = user
+          #use sendfile = yes
+          #max protocol = smb2
+          # note: localhost is the ipv6 localhost ::1
+          hosts allow = 100. 10.69.10. 127.0.0.1 localhost
+          hosts deny = 0.0.0.0/0
+          guest account = nas
+          map to guest = bad user
+          acl allow execute always = True
+        '';
+        shares = {
+          public = {
+            path = "/mnt/nas3/data";
+            browseable = "yes";
+            writeable = "yes";
+            "read only" = "no";
+            "guest ok" = "yes";
+            "create mask" = "0775";
+            "directory mask" = "0755";
+            "force user" = "nas";
+            "force group" = "nas";
+          };
         };
       };
     };

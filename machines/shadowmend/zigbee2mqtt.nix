@@ -1,4 +1,4 @@
-{...}: {
+_: {
   config = {
     services.zigbee2mqtt = {
       enable = true;

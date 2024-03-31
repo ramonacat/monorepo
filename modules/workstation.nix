@@ -3,36 +3,38 @@
     virtualisation.docker.enable = true;
 
     security.rtkit.enable = true;
-    services.udisks2.enable = true;
-    services.pipewire = {
-      enable = true;
-      alsa = {
+    services = {
+      udisks2.enable = true;
+      pipewire = {
         enable = true;
-        support32Bit = true;
+        alsa = {
+          enable = true;
+          support32Bit = true;
+        };
+        pulse = {
+          enable = true;
+        };
       };
-      pulse = {
-        enable = true;
-      };
-    };
 
-    services.pipewire.extraConfig.pipewire = {
-      "99-roc-sink" = {
-        "context.modules" = [
-          {
-            name = "libpipewire-module-roc-sink";
-            args = {
-              "fec.code" = "rs8m";
-              "remote.ip" = "10.69.10.29";
-              "remote.source.port" = 10001;
-              "remote.repair.port" = 10002;
-              "remote.control.port" = 10003;
-              "sink.name" = "moonfall";
-              "sink.props" = {
-                "node.name" = "moonfall-sink";
+      pipewire.extraConfig.pipewire = {
+        "99-roc-sink" = {
+          "context.modules" = [
+            {
+              name = "libpipewire-module-roc-sink";
+              args = {
+                "fec.code" = "rs8m";
+                "remote.ip" = "10.69.10.29";
+                "remote.source.port" = 10001;
+                "remote.repair.port" = 10002;
+                "remote.control.port" = 10003;
+                "sink.name" = "moonfall";
+                "sink.props" = {
+                  "node.name" = "moonfall-sink";
+                };
               };
-            };
-          }
-        ];
+            }
+          ];
+        };
       };
     };
     networking.firewall.allowedUDPPorts = [10001 10002 10003];
