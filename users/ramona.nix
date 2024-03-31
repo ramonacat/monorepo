@@ -1,4 +1,4 @@
-{agenix}: {
+{
   lib,
   pkgs,
   config,
@@ -18,7 +18,7 @@
         username = "ramona";
         stateVersion = "22.11";
         packages = with pkgs; [
-          agenix.packages.x86_64-linux.default
+          agenix
           atop
           jq
           pulseaudio

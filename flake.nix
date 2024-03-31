@@ -60,6 +60,7 @@
       nix-minecraft.overlay
       alacritty-theme.overlays.default
       (_: prev: {
+        agenix = agenix.packages.x86_64-linux.default;
         ramona =
           {
             lan-mouse = (import ./packages/lan-mouse.nix) {inherit pkgs craneLib;};
@@ -184,8 +185,8 @@
           agenix.nixosModules.default
 
           (import ./modules/base.nix {inherit nixpkgs;})
-          (import ./users/ramona.nix {inherit agenix;})
 
+          ./users/ramona.nix
           ./machines/hallewell/grafana.nix
           ./machines/hallewell/hardware.nix
           ./machines/hallewell/minio.nix
@@ -213,9 +214,9 @@
           agenix.nixosModules.default
 
           (import ./modules/base.nix {inherit nixpkgs;})
-          (import ./users/ramona.nix {inherit agenix;})
           (import ./users/ramona/gui.nix {inherit nix-vscode-extensions;})
 
+          ./users/ramona.nix
           ./machines/moonfall/hardware.nix
           ./machines/moonfall/networking.nix
           ./machines/moonfall/users/ramona_gui.nix
@@ -241,8 +242,8 @@
           agenix.nixosModules.default
 
           (import ./modules/base.nix {inherit nixpkgs;})
-          (import ./users/ramona.nix {inherit agenix;})
 
+          ./users/ramona.nix
           ./machines/shadowmend/hardware.nix
           ./machines/shadowmend/home-automation.nix
           ./machines/shadowmend/networking.nix
@@ -265,9 +266,9 @@
           nixos-hardware.nixosModules.framework-13-7040-amd
 
           (import ./modules/base.nix {inherit nixpkgs;})
-          (import ./users/ramona.nix {inherit agenix;})
           (import ./users/ramona/gui.nix {inherit nix-vscode-extensions;})
 
+          ./users/ramona.nix
           ./machines/angelsin/hardware.nix
           ./machines/angelsin/networking.nix
           ./machines/angelsin/users/ramona_gui.nix
@@ -294,9 +295,9 @@
           nixos-hardware.nixosModules.raspberry-pi-4
 
           (import ./modules/base.nix {inherit nixpkgs;})
-          (import ./users/ramona.nix {inherit agenix;})
           (import ./machines/ananas/hardware.nix {inherit pkgsCross;})
 
+          ./users/ramona.nix
           ./machines/ananas/music-control.nix
           ./machines/ananas/networking.nix
           ./modules/installed_base.nix
@@ -314,9 +315,9 @@
           nixos-hardware.nixosModules.microsoft-surface-go
 
           (import ./modules/base.nix {inherit nixpkgs;})
-          (import ./users/ramona.nix {inherit agenix;})
           (import ./users/ramona/gui.nix {inherit nix-vscode-extensions;})
 
+          ./users/ramona.nix
           ./machines/evillian/hardware.nix
           ./machines/evillian/networking.nix
           ./modules/greetd.nix
@@ -338,8 +339,8 @@
           nix-minecraft.nixosModules.minecraft-servers
 
           (import ./modules/base.nix {inherit nixpkgs;})
-          (import ./users/ramona.nix {inherit agenix;})
 
+          ./users/ramona.nix
           ./machines/caligari/github-runner.nix
           ./machines/caligari/hardware.nix
           ./machines/caligari/minecraft.nix
@@ -363,8 +364,8 @@
           "${nixpkgs}/nixos/modules/installer/cd-dvd/installation-cd-minimal.nix"
 
           (import ./modules/base.nix {inherit nixpkgs;})
-          (import ./users/ramona.nix {inherit agenix;})
 
+          ./users/ramona.nix
           ./modules/bcachefs.nix
           ./modules/iso.nix
         ];
