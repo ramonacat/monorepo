@@ -14,7 +14,6 @@
     agenix.url = "github:ryantm/agenix";
     alacritty-theme.url = "github:alexghr/alacritty-theme.nix";
     nix-minecraft.url = "github:Infinidoge/nix-minecraft";
-    nix-vscode-extensions.url = "github:nix-community/nix-vscode-extensions";
     nixos-hardware.url = "github:NixOS/nixos-hardware/master";
     nixpkgs.url = "nixpkgs/nixos-unstable-small";
     rust-overlay.url = "github:oxalica/rust-overlay";
@@ -27,7 +26,6 @@
     crane,
     nixos-hardware,
     agenix,
-    nix-vscode-extensions,
     nix-minecraft,
     alacritty-theme,
     ...
@@ -214,8 +212,8 @@
           agenix.nixosModules.default
 
           (import ./modules/base.nix {inherit nixpkgs;})
-          (import ./users/ramona/gui.nix {inherit nix-vscode-extensions;})
 
+          ./users/ramona/gui.nix
           ./users/ramona.nix
           ./machines/moonfall/hardware.nix
           ./machines/moonfall/networking.nix
@@ -266,8 +264,8 @@
           nixos-hardware.nixosModules.framework-13-7040-amd
 
           (import ./modules/base.nix {inherit nixpkgs;})
-          (import ./users/ramona/gui.nix {inherit nix-vscode-extensions;})
 
+          ./users/ramona/gui.nix
           ./users/ramona.nix
           ./machines/angelsin/hardware.nix
           ./machines/angelsin/networking.nix
@@ -315,8 +313,8 @@
           nixos-hardware.nixosModules.microsoft-surface-go
 
           (import ./modules/base.nix {inherit nixpkgs;})
-          (import ./users/ramona/gui.nix {inherit nix-vscode-extensions;})
 
+          ./users/ramona/gui.nix
           ./users/ramona.nix
           ./machines/evillian/hardware.nix
           ./machines/evillian/networking.nix

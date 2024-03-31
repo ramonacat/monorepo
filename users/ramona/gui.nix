@@ -1,4 +1,4 @@
-{nix-vscode-extensions}: {
+{
   config,
   pkgs,
   ...
@@ -56,36 +56,6 @@
           };
         };
         programs = {
-          vscode = {
-            enable = true;
-            mutableExtensionsDir = false;
-            extensions = with nix-vscode-extensions.extensions.x86_64-linux.vscode-marketplace; [
-              panicbit.cargo
-              devsense.composer-php-vscode
-              ms-azuretools.vscode-docker
-              tamasfe.even-better-toml
-              github.vscode-github-actions
-              ms-kubernetes-tools.vscode-kubernetes-tools
-              bbenoist.nix
-              jnoortheen.nix-ide
-              ms-ossdata.vscode-postgresql
-              arrterian.nix-env-selector
-              rust-lang.rust-analyzer
-              bbenoist.nix
-              arrterian.nix-env-selector
-              thenuprojectcontributors.vscode-nushell-lang
-              hashicorp.terraform
-            ];
-            userSettings = {
-              "workbench.colorTheme" = "Visual Studio Dark";
-              "window.zoomLevel" = 1;
-              "editor.fontFamily" = "'Iosevka', 'monospace', monospace";
-              "files.autoSave" = "onFocusChange";
-              "editor.cursorBlinking" = "smooth";
-              "editor.fontLigatures" = true;
-              "editor.mouseWheelZoom" = true;
-            };
-          };
           firefox.enable = true;
           alacritty = {
             enable = true;
