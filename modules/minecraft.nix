@@ -16,6 +16,10 @@
             whitelist = lib.mkOption {
               type = attrsOf str;
             };
+            resticRcloneConfigFile = lib.mkOption {type = path;};
+            resticEnvironmentFile = lib.mkOption {type = path;};
+            resticPasswordFile = lib.mkOption {type = path;};
+            resticRepository = lib.mkOption {type = str;};
           };
         });
     };
@@ -50,58 +54,48 @@
         servers;
     };
 
-    systemd.services =
-      lib.mapAttrs'
-      (name: settings: {
-          name = "backup-minecraft-" + name;
+    services.restic.backups =
+      lib.mapAttrs' (name: settings: {
+          name = "minecraft-" + name;
           value = let
-            script = pkgs.writeShellScriptBin ("backup-minecraft-server-" + name) "
+            backupPath = "/srv/minecraft/${name}-backup";
+            informerScript = pkgs.writeShellScriptBin ("backup-minecraft-server-" + name) "
           #!/usr/bin/env bash
 
           set -euo pipefail
           set -x
 
-          function cleanup {
-              ${pkgs.rcon}/bin/rcon -H localhost -p ${toString settings.rconPort} -P rcon <<EOS
-                save-on
-                say [§bNOTICE§r] server backup finished
-EOS
-          }
-          trap cleanup EXIT
-
           ${pkgs.rcon}/bin/rcon -H localhost -p ${toString settings.rconPort} -P rcon <<EOS
             say [§4WARNING§r] starting server backup
-            save-off
-            save-all
 EOS
-          ${pkgs.gnutar}/bin/tar -cf /tmp/${name}.tar /srv/minecraft/${name}/
-          ${pkgs.rclone}/bin/rclone --config=${config.age.secrets.caligari-minecraft-rclone-config.path} --verbose copy /tmp/${name}.tar b2:ramona-minecraft-backups/
-          rm /tmp/${name}.tar
         ";
           in {
-            after = ["network.target"];
-            description = "Backup the Minecraft server (${name})";
-            serviceConfig = {
-              Type = "oneshot";
-              ExecStart = "${script}/bin/backup-minecraft-server-${name}";
+            timerConfig = {
+              OnCalendar = "*-*-* *:00:00";
+              Persistent = true;
+              RandomizedDelaySec = "15min";
             };
+            repository = settings.resticRepository;
+            rcloneConfigFile = settings.resticRcloneConfigFile;
+            environmentFile = settings.resticEnvironmentFile;
+            passwordFile = settings.resticPasswordFile;
+            backupPrepareCommand = ''
+              ${informerScript}/bin/backup-minecraft-server-${name}
+
+              ${pkgs.bcachefs-tools}/bin/bcachefs subvolume snapshot /srv/minecraft/${name} ${backupPath}
+            '';
+            backupCleanupCommand = ''
+              ${pkgs.bcachefs-tools}/bin/bcachefs subvolume delete ${backupPath}
+            '';
+            paths = [backupPath];
+            pruneOpts = [
+              "--keep-daily 7"
+              "--keep-weekly 4"
+              "--keep-monthly 3"
+              "--keep-yearly 100"
+            ];
           };
         })
-      servers;
-
-    systemd.timers =
-      lib.mapAttrs'
-      (name: _: {
-        name = "backup-minecraft-${name}";
-        value = {
-          wantedBy = ["timers.target"];
-          timerConfig = {
-            OnBootSec = "1h";
-            OnUnitActiveSec = "1h";
-            Unit = "backup-minecraft-${name}.service";
-          };
-        };
-      })
       servers;
 
     networking.firewall.allowedTCPPorts = lib.mapAttrsToList (_: settings: settings.port) servers;

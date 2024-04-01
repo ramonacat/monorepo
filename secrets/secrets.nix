@@ -22,5 +22,7 @@ in {
   "caligari-github-pat-runner-registration.age".publicKeys = users ++ [caligari];
   "hallewell-postgres-backups-rclone.age".publicKeys = users ++ [hallewell];
   "hallewell-postgres-backups-env.age".publicKeys = users ++ [hallewell];
+  "caligari-postgres-backups-rclone.age".publicKeys = users ++ [caligari];
+  "caligari-postgres-backups-env.age".publicKeys = users ++ [caligari];
   "restic-repository-password.age".publicKeys = users ++ [hallewell ananas shadowmend moonfall angelsin evillian caligari];
 }
