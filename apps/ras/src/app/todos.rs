@@ -12,9 +12,15 @@ use serde::Deserialize;
 use std::borrow::BorrowMut;
 
 #[derive(Deserialize)]
+enum SavedQuery {
+    AroundDeadline,
+}
+
+#[derive(Deserialize)]
 pub struct TodosQuery {
     becoming_ready_on: Option<NaiveDate>,
     status: Option<Status>,
+    query: Option<SavedQuery>,
 }
 
 pub async fn get_todos(
@@ -29,6 +35,10 @@ pub async fn get_todos(
     if query.status.is_some() {
         // FIXME this should really be find_by_status...
         result = store.find_doing();
+    } else if let Some(saved_query) = query.query {
+        result = match saved_query {
+            SavedQuery::AroundDeadline => store.find_around_deadline(),
+        };
     } else if let Some(becoming_ready_on) = query.becoming_ready_on {
         result = store.find_becoming_valid_on(becoming_ready_on);
     } else {
@@ -51,8 +61,9 @@ pub async fn post_todos(
             priority,
             estimate,
             requirements,
+            deadline,
         } => {
-            let id = store.create(title, priority, estimate, requirements);
+            let id = store.create(title, priority, estimate, requirements, deadline);
 
             Json(id)
         }

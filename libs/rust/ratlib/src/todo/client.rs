@@ -1,5 +1,8 @@
 use std::time::Duration;
 
+use chrono::{DateTime, FixedOffset};
+use chrono_tz::Tz;
+
 use crate::PostTodo;
 
 use super::{Id, Priority, Requirement, Todo};
@@ -28,6 +31,19 @@ impl Client {
             .unwrap()
     }
 
+    pub async fn find_around_deadline(&self) -> Vec<Todo> {
+        let client = reqwest::Client::new();
+
+        client
+            .get(format!("{}todos?query=AroundDeadline", self.server_url))
+            .send()
+            .await
+            .unwrap()
+            .json()
+            .await
+            .unwrap()
+    }
+
     pub async fn find_ready_to_do(&self) -> Vec<Todo> {
         let client = reqwest::Client::new();
 
@@ -47,6 +63,7 @@ impl Client {
         priority: Priority,
         estimate: Duration,
         requirements: Vec<Requirement>,
+        deadline: Option<DateTime<Tz>>,
     ) -> Id {
         let client = reqwest::Client::new();
 
@@ -57,6 +74,7 @@ impl Client {
                 priority,
                 estimate,
                 requirements,
+                deadline,
             })
             .send()
             .await

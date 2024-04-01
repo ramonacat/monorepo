@@ -58,7 +58,7 @@ h1, h2, h3 {
         font-size: var(--font-size-secondary);
     }
 
-    .id, .duration, .priority {
+    .id, .duration, .priority, .deadline {
         display: block;
         padding: 0 8px;
         border-radius: 10%;
@@ -70,10 +70,6 @@ h1, h2, h3 {
 form.-inline {
     display: flex;
     padding: 10px 0;
-
-    label:has(+ [placeholder]) {
-        display: none;
-    }
 }
 
 input, select {
