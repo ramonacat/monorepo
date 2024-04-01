@@ -140,6 +140,7 @@ impl Store {
         datafile
             .todos
             .into_values()
+            .filter(|x| x.status() != Status::Done)
             .filter(|x| match x.deadline() {
                 Some(deadline) => {
                     if deadline.signed_duration_since(Utc::now()).abs().num_days() <= 1
