@@ -47,6 +47,7 @@
       tmux
       config.boot.kernelPackages.perf
       cryptsetup
+      sbctl
     ];
 
     networking = {
