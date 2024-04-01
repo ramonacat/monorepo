@@ -46,6 +46,7 @@
       iotop
       tmux
       config.boot.kernelPackages.perf
+      cryptsetup
     ];
 
     networking = {
