@@ -7,23 +7,32 @@
     powerManagement.powertop.enable = true;
     services.upower.enable = true;
     boot = {
-      initrd.availableKernelModules = ["xhci_pci" "nvme" "usbhid" "usb_storage" "sd_mod" "rtsx_pci_sdmmc"];
-      initrd.kernelModules = [];
+      initrd = {
+        availableKernelModules = ["xhci_pci" "nvme" "usbhid" "usb_storage" "sd_mod" "rtsx_pci_sdmmc"];
+        kernelModules = [];
+        systemd = {
+          enable = true;
+          enableTpm2 = true;
+        };
+      };
       kernelModules = ["kvm-intel"];
       extraModulePackages = [];
       loader.systemd-boot.enable = true;
       loader.efi.canTouchEfiVariables = true;
     };
     fileSystems."/" = {
-      device = "/dev/disk/by-uuid/d991d608-ce53-4995-9414-3c981c0e550e";
+      device = "/dev/disk/by-uuid/a4e7280f-6a38-458a-befc-3666b8dd418f";
       fsType = "ext4";
     };
 
     fileSystems."/boot" = {
-      device = "/dev/disk/by-uuid/A3FA-597D";
+      device = "/dev/disk/by-uuid/21CD-8A5D";
       fsType = "vfat";
     };
-    swapDevices = [{device = "/dev/disk/by-uuid/b616878a-7677-4844-b81c-b11f7ae1421c";}];
+
+    swapDevices = [
+      {device = "/dev/disk/by-uuid/833d74db-81f7-4661-ac76-972b2748d5d0";}
+    ];
 
     nixpkgs.hostPlatform = lib.mkDefault "x86_64-linux";
     hardware = {
