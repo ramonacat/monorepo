@@ -1,22 +1,22 @@
-use std::{path::PathBuf, time::Duration};
+use std::{sync::Arc, time::Duration};
 
 use chrono::{DateTime, TimeZone};
 use chrono_tz::{Europe::Berlin, Tz};
 use ratlib::calendar::event::{Event, Id};
 
-use crate::datafile::DataFile;
+use crate::datafile::DataFileReader;
 
 pub struct Store {
-    path: PathBuf,
+    data_file_reader: Arc<dyn DataFileReader + Send + Sync>,
 }
 
 impl Store {
-    pub fn new(path: PathBuf) -> Self {
-        Self { path }
+    pub fn new(data_file_reader: Arc<dyn DataFileReader + Send + Sync>) -> Self {
+        Self { data_file_reader }
     }
 
     pub fn create(&self, start: DateTime<Tz>, duration: Duration, title: String) -> Id {
-        let mut datafile = DataFile::open_path(&self.path);
+        let mut datafile = self.data_file_reader.read();
 
         let id = Id(datafile.events.keys().map(|x| x.0).min().unwrap_or(0) + 1);
 
@@ -24,13 +24,13 @@ impl Store {
             .events
             .insert(id, Event::new(id, start, duration, title));
 
-        datafile.save(&self.path);
+        self.data_file_reader.save(datafile);
 
         id
     }
 
     pub fn find_by_date(&self, day: chrono::prelude::NaiveDate) -> Vec<Event> {
-        let datafile = DataFile::open_path(&self.path);
+        let datafile = self.data_file_reader.read();
         let mut today: Vec<_> = datafile
             .events
             .into_values()

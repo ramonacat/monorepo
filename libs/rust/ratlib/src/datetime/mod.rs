@@ -1,5 +1,3 @@
-use std::fmt::Write;
-
 use chrono::{DateTime, Datelike as _, TimeZone, Timelike as _};
 use chrono_tz::Tz;
 use serde::ser::SerializeTuple;

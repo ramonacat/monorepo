@@ -1,6 +1,6 @@
 use std::time::Duration;
 
-use chrono::{DateTime, FixedOffset};
+use chrono::DateTime;
 use chrono_tz::Tz;
 
 use crate::PostTodo;

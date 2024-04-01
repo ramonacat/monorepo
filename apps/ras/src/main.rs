@@ -12,6 +12,7 @@ use axum::{
     Router,
 };
 use axum_tracing_opentelemetry::middleware::{OtelAxumLayer, OtelInResponseLayer};
+use datafile::DefaultDataFileReader;
 use maintenance::MonitoringMaintainer;
 use opentelemetry::KeyValue;
 use opentelemetry_otlp::WithExportConfig;
@@ -69,6 +70,8 @@ async fn main() -> Result<(), Box<dyn Error>> {
         }
     });
 
+    let data_file_reader = Arc::new(DefaultDataFileReader::new(datafile_path));
+
     let router = Router::new()
         .route("/", get(app::index))
         .route("/todos", get(app::todos::get_todos))
@@ -80,8 +83,10 @@ async fn main() -> Result<(), Box<dyn Error>> {
         )
         .route("/events", get(app::events::get).post(app::events::post))
         .with_state(AppState {
-            todo_store: Arc::new(Mutex::new(todo::store::Store::new(datafile_path.clone()))),
-            event_store: Arc::new(Mutex::new(calendar::store::Store::new(datafile_path))),
+            todo_store: Arc::new(Mutex::new(todo::store::Store::new(
+                data_file_reader.clone(),
+            ))),
+            event_store: Arc::new(Mutex::new(calendar::store::Store::new(data_file_reader))),
             monitoring_maintainer: Arc::new(MonitoringMaintainer::new(Arc::new(postgres_client))),
         })
         .layer(OtelInResponseLayer)
