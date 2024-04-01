@@ -1,21 +1,21 @@
-use std::{collections::HashMap, ops::Add, path::PathBuf, time::Duration};
+use std::{collections::HashMap, ops::Add, sync::Arc, time::Duration};
 
-use crate::datafile::DataFile;
+use crate::datafile::DataFileReader;
 use chrono::{DateTime, NaiveTime, TimeDelta, TimeZone, Utc};
 use chrono_tz::{Europe::Berlin, Tz};
 use ratlib::todo::{Id, IdGenerator, Priority, Requirement, Status, Todo};
 use thiserror::Error;
 
 pub struct Store {
-    path: PathBuf,
+    datafile_reader: Arc<dyn DataFileReader + Send + Sync>,
 }
 
 #[derive(Debug, Error)]
 pub enum Error {}
 
 impl Store {
-    pub fn new(path: PathBuf) -> Self {
-        Self { path }
+    pub fn new(datafile_reader: Arc<dyn DataFileReader + Send + Sync>) -> Self {
+        Self { datafile_reader }
     }
 
     pub fn create(
@@ -26,7 +26,7 @@ impl Store {
         requirements: Vec<Requirement>,
         deadline: Option<DateTime<Tz>>,
     ) -> Id {
-        let mut datafile = DataFile::open_path(&self.path);
+        let mut datafile = self.datafile_reader.read();
         let mut id_generator =
             IdGenerator::new(datafile.todos.values().map(|x| x.id().0).max().unwrap_or(0));
 
@@ -35,7 +35,7 @@ impl Store {
         let new_todo = Todo::new(id, title, priority, requirements, estimate, deadline);
         datafile.todos.insert(id, new_todo);
 
-        datafile.save(&self.path);
+        self.datafile_reader.save(datafile);
 
         id
     }
@@ -68,7 +68,7 @@ impl Store {
     }
 
     pub fn find_ready_to_do(&self) -> Vec<Todo> {
-        let datafile = DataFile::open_path(&self.path);
+        let datafile = self.datafile_reader.read();
         let mut todos_to_consider = datafile
             .todos
             .values()
@@ -83,7 +83,7 @@ impl Store {
     }
 
     pub fn find_becoming_valid_on(&self, day: chrono::prelude::NaiveDate) -> Vec<Todo> {
-        let datafile = DataFile::open_path(&self.path);
+        let datafile = self.datafile_reader.read();
         let mut todos_to_consider =
             datafile
                 .todos
@@ -125,7 +125,7 @@ impl Store {
     }
 
     pub fn find_doing(&self) -> Vec<Todo> {
-        let datafile = DataFile::open_path(&self.path);
+        let datafile = self.datafile_reader.read();
 
         datafile
             .todos
@@ -135,11 +135,12 @@ impl Store {
     }
 
     pub fn find_around_deadline(&self) -> Vec<Todo> {
-        let datafile = DataFile::open_path(&self.path);
+        let datafile = self.datafile_reader.read();
 
         datafile
             .todos
             .into_values()
+            .filter(|x| x.status() != Status::Done)
             .filter(|x| match x.deadline() {
                 Some(deadline) => {
                     if deadline.signed_duration_since(Utc::now()).abs().num_days() <= 1
@@ -156,16 +157,87 @@ impl Store {
     }
 
     pub fn find_by_id(&self, id: Id) -> Option<Todo> {
-        let datafile = DataFile::open_path(&self.path);
+        let datafile = self.datafile_reader.read();
 
         datafile.todos.get(&id).cloned()
     }
 
     pub fn save(&mut self, todo: Todo) {
-        let mut datafile = DataFile::open_path(&self.path);
+        let mut datafile = self.datafile_reader.read();
 
         datafile.todos.insert(todo.id(), todo);
 
-        datafile.save(&self.path);
+        self.datafile_reader.save(datafile);
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use std::{
+        sync::{Arc, Mutex},
+        time::Duration,
+    };
+
+    use ratlib::{
+        calendar::event::Event,
+        todo::{Id, Todo},
+    };
+
+    use crate::{
+        datafile::{DataFile, DataFileReader},
+        todo::store::Store,
+    };
+
+    struct MockStore(pub Mutex<(Vec<Todo>, Vec<Event>)>);
+
+    impl DataFileReader for MockStore {
+        fn read(&self) -> crate::datafile::DataFile {
+            let guard = self.0.lock().unwrap();
+            let (todos, events) = (guard.0.clone(), guard.1.clone());
+
+            DataFile {
+                todos: todos.into_iter().map(|x| (x.id(), x)).collect(),
+                events: events.into_iter().map(|x| (x.id(), x)).collect(),
+            }
+        }
+
+        fn save(&self, data: crate::datafile::DataFile) {
+            let mut guard = self.0.lock().unwrap();
+
+            *guard = (
+                data.todos.into_values().collect(),
+                data.events.into_values().collect(),
+            );
+        }
+    }
+
+    #[test]
+    pub fn can_find_by_id() {
+        let findme = Todo::new(
+            Id(2),
+            "asdf".to_string(),
+            ratlib::todo::Priority::Medium,
+            vec![],
+            Duration::from_secs(1024),
+            None,
+        );
+        let data_file_reader = MockStore(Mutex::new((
+            vec![
+                Todo::new(
+                    Id(1),
+                    "asdf".to_string(),
+                    ratlib::todo::Priority::Medium,
+                    vec![],
+                    Duration::from_secs(1024),
+                    None,
+                ),
+                findme.clone(),
+            ],
+            vec![],
+        )));
+
+        let store = Store::new(Arc::new(data_file_reader));
+
+        assert_eq!(Some(findme), store.find_by_id(Id(2)));
     }
 }

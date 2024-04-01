@@ -9,7 +9,7 @@ use crate::datetime::{deserialize_date_time_tz, serialize_date_time_tz};
 #[derive(Serialize, Deserialize, Debug, Hash, Eq, PartialEq, Copy, Clone)]
 pub struct Id(pub u32);
 
-#[derive(Serialize, Deserialize, Debug)]
+#[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct Event {
     id: Id,
     #[serde(
@@ -30,6 +30,10 @@ impl Event {
             duration,
             title,
         }
+    }
+
+    pub fn id(&self) -> Id {
+        self.id
     }
 
     pub fn start(&self) -> DateTime<Tz> {

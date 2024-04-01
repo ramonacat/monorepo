@@ -71,7 +71,7 @@ impl Default for Status {
     }
 }
 
-#[derive(Debug, Deserialize, Serialize, Clone)]
+#[derive(Debug, Deserialize, Serialize, Clone, PartialEq, Eq)]
 pub enum Requirement {
     TodoDone(Id),
     AfterDate(DateTime<Utc>),
@@ -86,7 +86,7 @@ impl Display for Requirement {
     }
 }
 
-#[derive(Debug, Deserialize, Serialize, Clone)]
+#[derive(Debug, Deserialize, Serialize, Clone, PartialEq, Eq)]
 pub struct Todo {
     id: Id,
     title: String,
