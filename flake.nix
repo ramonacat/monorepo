@@ -10,6 +10,11 @@
       url = "github:ipetkov/crane";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+    lanzaboote = {
+      url = "github:nix-community/lanzaboote/v0.3.0";
+
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
 
     agenix.url = "github:ryantm/agenix";
     alacritty-theme.url = "github:alexghr/alacritty-theme.nix";
@@ -28,6 +33,7 @@
     agenix,
     nix-minecraft,
     alacritty-theme,
+    lanzaboote,
     ...
   }: let
     packages = {
@@ -311,6 +317,7 @@
           home-manager.nixosModules.home-manager
           agenix.nixosModules.default
           nixos-hardware.nixosModules.microsoft-surface-go
+          lanzaboote.nixosModules.lanzaboote
 
           (import ./modules/base.nix {inherit nixpkgs;})
 

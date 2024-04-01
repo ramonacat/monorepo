@@ -22,9 +22,13 @@
           };
         };
       };
+      lanzaboote = {
+        enable = true;
+        pkiBundle = "/etc/secureboot";
+      };
       kernelModules = ["kvm-intel"];
       extraModulePackages = [];
-      loader.systemd-boot.enable = true;
+      loader.systemd-boot.enable = false; # lanzaboote does it's magic instead
       loader.efi.canTouchEfiVariables = true;
     };
     fileSystems."/" = {
