@@ -30,9 +30,9 @@ dependencies = [
 
 [[package]]
 name = "amqprs"
-version = "1.5.3"
+version = "1.5.4"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "d686eb2bcac89ca1337dd6972c0db1b315286ca3f2e4d1477384ebce1dd91a17"
+checksum = "9b4f52cae99687a0375b253a435bdcdd09edb8e56e1e3a8758b165092fc387ec"
 dependencies = [
  "amqp_serde",
  "async-trait",
