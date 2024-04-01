@@ -14,6 +14,13 @@
           enable = true;
           enableTpm2 = true;
         };
+        luks.devices = {
+          luksroot = {
+            device = "/dev/disk/by-uuid/4c4faf21-01b2-42de-a89e-84ab2d8a615a";
+            preLVM = true;
+            allowDiscards = true;
+          };
+        };
       };
       kernelModules = ["kvm-intel"];
       extraModulePackages = [];
