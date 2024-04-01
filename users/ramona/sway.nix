@@ -162,6 +162,14 @@
             lib.mkOptionDefault {
               "${modifier}+d" = "exec ${pkgs.fuzzel}/bin/fuzzel";
               "${modifier}+e" = "exec BEMOJI_PICKER_CMD='${pkgs.fuzzel}/bin/fuzzel --dmenu' ${pkgs.bemoji}/bin/bemoji -t";
+              "${modifier}+Tab" = "workspace next_on_output";
+              "${modifier}+Shift+Tab" = "workspace prev_on_output";
+              "XF86AudioRaiseVolume" = "exec '${pkgs.pulseaudio}/bin/pactl set-sink-volume @DEFAULT_SINK@ +5%'";
+              "XF86AudioLowerVolume" = "exec '${pkgs.pulseaudio}/bin/pactl set-sink-volume @DEFAULT_SINK@ -5%'";
+              "XF86AudioMute" = "exec '${pkgs.pulseaudio}/bin/pactl set-sink-mute @DEFAULT_SINK@ toggle'";
+              "XF86MonBrightnessUp" = "sudo ${pkgs.light}/bin/light -A 10";
+              "XF86MonBrightnessDown" = "sudo ${pkgs.light}/bin/light -U 10";
+              "Print" = "exec '${pkgs.slurp}/bin/slurp | ${pkgs.grim}/bin/grim -g - - | ${pkgs.wl-clipboard}/bin/wl-copy'";
             };
           bars = [];
           colors = {
@@ -179,14 +187,6 @@
             xkb_layout "pl,de"
             xkb_options "grp:win_space_toggle"
           }
-          bindsym Mod4+Tab workspace next_on_output
-          bindsym Mod4+Shift+Tab workspace prev_on_output
-          bindsym XF86AudioRaiseVolume exec 'pactl set-sink-volume @DEFAULT_SINK@ +5%'
-          bindsym XF86AudioLowerVolume exec 'pactl set-sink-volume @DEFAULT_SINK@ -5%'
-          bindsym XF86AudioMute exec 'pactl set-sink-mute @DEFAULT_SINK@ toggle'
-          bindsym XF86MonBrightnessUp exec sudo light -A 10
-          bindsym XF86MonBrightnessDown exec sudo light -U 10
-          bindsym Print exec '${pkgs.slurp}/bin/slurp | ${pkgs.grim}/bin/grim -g - - | ${pkgs.wl-clipboard}/bin/wl-copy'
         '';
       };
     };
