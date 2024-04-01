@@ -5,7 +5,13 @@ use chrono_tz::Tz;
 use serde::{Deserialize, Serialize};
 use todo::{Priority, Requirement, Status};
 
+use crate::datetime::{
+    deserialize_date_time_tz, deserialize_date_time_tz_option, serialize_date_time_tz,
+    serialize_date_time_tz_option,
+};
+
 pub mod calendar;
+pub mod datetime;
 pub mod secrets;
 pub mod todo;
 
@@ -16,6 +22,11 @@ pub enum PostTodo {
         priority: Priority,
         estimate: Duration,
         requirements: Vec<Requirement>,
+        #[serde(
+            serialize_with = "serialize_date_time_tz_option",
+            deserialize_with = "deserialize_date_time_tz_option"
+        )]
+        deadline: Option<DateTime<Tz>>,
     },
 }
 
@@ -34,8 +45,8 @@ pub enum PostTodoWithId {
 pub enum PostEvent {
     Add {
         #[serde(
-            serialize_with = "calendar::event::serialize_date_time_tz",
-            deserialize_with = "calendar::event::deserialize_date_time_tz"
+            serialize_with = "serialize_date_time_tz",
+            deserialize_with = "deserialize_date_time_tz"
         )]
         date: DateTime<Tz>,
         duration: Duration,

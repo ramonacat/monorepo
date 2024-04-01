@@ -1,6 +1,8 @@
 use std::time::Duration;
 
 use crate::error_template::{AppError, ErrorTemplate};
+use chrono::{DateTime, Local, NaiveDateTime};
+use chrono_tz::Europe::Berlin;
 use leptos::{html::Form, *};
 use leptos_meta::*;
 use leptos_router::*;
@@ -66,6 +68,10 @@ fn CompactTodo(todo: Todo) -> impl IntoView {
     } else {
         None
     };
+    let deadline = todo
+        .deadline()
+        .map(|x| x.format("%Y-%m-%d %H:%M").to_string())
+        .map(|x| view! {<span class="deadline">{ move || x.clone() }</span>});
 
     view! {
         <div class="todo -compact">
@@ -76,21 +82,36 @@ fn CompactTodo(todo: Todo) -> impl IntoView {
                 {estimate}
                 " "
                 <span class="priority">{ move || priority.clone() }</span>
+                " "
+                {deadline}
             </p>
         </div>
     }
 }
 
+fn create_todo_client() -> ratlib::todo::client::Client {
+    ratlib::todo::client::Client::new("http://localhost:8438/")
+}
+
 #[server(FindReadyToDo, "/api")]
 pub async fn find_ready_to_do() -> Result<Vec<Todo>, ServerFnError> {
-    let client = ratlib::todo::client::Client::new("http://hallewell:8438/");
+    let client = create_todo_client();
+
     Ok(client.find_ready_to_do().await)
 }
 
 #[server(FindDoing, "/api")]
 pub async fn find_doing() -> Result<Vec<Todo>, ServerFnError> {
-    let client = ratlib::todo::client::Client::new("http://hallewell:8438/");
+    let client = create_todo_client();
+
     Ok(client.find_doing().await)
+}
+
+#[server(FindAroundDeadline, "/api")]
+pub async fn find_around_deadline() -> Result<Vec<Todo>, ServerFnError> {
+    let client = create_todo_client();
+
+    Ok(client.find_around_deadline().await)
 }
 
 #[component]
@@ -105,8 +126,18 @@ fn Todos(update_signal: ReadSignal<usize>) -> impl IntoView {
         |_| async move { find_doing().await.unwrap() },
     );
 
+    let around_deadline = create_resource(
+        move || update_signal.get(),
+        |_| async move { find_around_deadline().await.unwrap() },
+    );
+
     view! {
         <Suspense>
+            <h1>"Around deadline"</h1>
+            <ul class="todo-list">
+                {move || around_deadline.get().map(|y| y.iter().map(|x| view! { <li><CompactTodo todo=x.clone() /></li> }).collect::<Vec<_>>())}
+            </ul>
+
             <h1>"Currently doing"</h1>
             <ul class="todo-list">
                 {move || doing.get().map(|y| y.iter().map(|x| view! { <li><CompactTodo todo=x.clone() /></li> }).collect::<Vec<_>>())}
@@ -127,11 +158,27 @@ pub async fn add_todo(
     title: String,
     priority: Priority,
     estimate: u64,
+    deadline: Option<String>,
 ) -> Result<(), ServerFnError> {
-    let client = ratlib::todo::client::Client::new("http://hallewell:8438/");
+    println!("Deadline: {deadline:?}");
+    let deadline = deadline
+        .map(|x| {
+            NaiveDateTime::parse_from_str(&x, "%Y-%m-%dT%H:%M")
+                .map(|y| y.and_local_timezone(Berlin).single())
+        })
+        .transpose()?
+        .flatten();
+    // FIXME return the address back to hallewell
+    let client = ratlib::todo::client::Client::new("http://localhost:8438/");
 
     client
-        .create(title, priority, Duration::from_secs(estimate * 60), vec![])
+        .create(
+            title,
+            priority,
+            Duration::from_secs(estimate * 60),
+            vec![],
+            deadline,
+        )
         .await;
 
     Ok(())
@@ -175,6 +222,9 @@ fn InlineTodoCreation(on_send: WriteSignal<usize>) -> impl IntoView {
             <label for="inline-add-todo-estimate">Estimate</label>
             <input required type="number" id="inline-add-todo-estimate" name="estimate" placeholder="estimate" class="-small" />
             <span class="input-addon">min</span>
+
+            <label for="inline-add-todo-deadline">Deadline</label>
+            <input type="datetime-local" id="inline-add-todo-dealine" name="deadline" placeholder="deadline" />
 
             <input type="submit" value="add" />
         </ActionForm>

@@ -2,7 +2,7 @@ use std::{collections::HashMap, ops::Add, path::PathBuf, time::Duration};
 
 use crate::datafile::DataFile;
 use chrono::{DateTime, NaiveTime, TimeDelta, TimeZone, Utc};
-use chrono_tz::Europe::Berlin;
+use chrono_tz::{Europe::Berlin, Tz};
 use ratlib::todo::{Id, IdGenerator, Priority, Requirement, Status, Todo};
 use thiserror::Error;
 
@@ -24,6 +24,7 @@ impl Store {
         priority: Priority,
         estimate: Duration,
         requirements: Vec<Requirement>,
+        deadline: Option<DateTime<Tz>>,
     ) -> Id {
         let mut datafile = DataFile::open_path(&self.path);
         let mut id_generator =
@@ -31,7 +32,7 @@ impl Store {
 
         let id = id_generator.next();
 
-        let new_todo = Todo::new(id, title, priority, requirements, estimate);
+        let new_todo = Todo::new(id, title, priority, requirements, estimate, deadline);
         datafile.todos.insert(id, new_todo);
 
         datafile.save(&self.path);
@@ -130,6 +131,27 @@ impl Store {
             .todos
             .into_values()
             .filter(|x| x.status() == Status::Doing)
+            .collect()
+    }
+
+    pub fn find_around_deadline(&self) -> Vec<Todo> {
+        let datafile = DataFile::open_path(&self.path);
+
+        datafile
+            .todos
+            .into_values()
+            .filter(|x| match x.deadline() {
+                Some(deadline) => {
+                    if deadline.signed_duration_since(Utc::now()).abs().num_days() <= 1
+                        || deadline > Utc::now()
+                    {
+                        true
+                    } else {
+                        false
+                    }
+                }
+                None => false,
+            })
             .collect()
     }
 

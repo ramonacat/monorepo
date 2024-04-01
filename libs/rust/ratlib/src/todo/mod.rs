@@ -1,8 +1,11 @@
 use std::{fmt::Display, time::Duration};
 
 use chrono::{DateTime, Utc};
+use chrono_tz::Tz;
 use serde::{Deserialize, Serialize};
 use strum::EnumIter;
+
+use crate::datetime::{deserialize_date_time_tz_option, serialize_date_time_tz_option};
 
 pub mod client;
 
@@ -94,6 +97,12 @@ pub struct Todo {
     status: Status,
     #[serde(default)]
     estimate: Duration,
+    #[serde(
+        serialize_with = "serialize_date_time_tz_option",
+        deserialize_with = "deserialize_date_time_tz_option",
+        default
+    )]
+    deadline: Option<DateTime<Tz>>,
 }
 
 impl Todo {
@@ -103,6 +112,7 @@ impl Todo {
         priority: Priority,
         requirements: Vec<Requirement>,
         estimate: Duration,
+        deadline: Option<DateTime<Tz>>,
     ) -> Self {
         Self {
             id,
@@ -111,6 +121,7 @@ impl Todo {
             priority,
             status: Status::Todo,
             estimate,
+            deadline,
         }
     }
 
@@ -144,6 +155,10 @@ impl Todo {
 
     pub fn estimate(&self) -> Duration {
         self.estimate
+    }
+
+    pub fn deadline(&self) -> Option<DateTime<Tz>> {
+        self.deadline
     }
 
     pub fn set_estimate(&mut self, estimate: Duration) {
