@@ -21,6 +21,7 @@
     ];
     boot.kernelPackages = lib.mkOverride 500 pkgs.linuxPackages_latest;
     security.sudo.wheelNeedsPassword = false;
+    users.mutableUsers = false;
 
     time.timeZone = "Europe/Berlin";
     i18n.defaultLocale = "en_GB.UTF-8";

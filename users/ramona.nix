@@ -5,6 +5,10 @@
   ...
 }: {
   config = {
+    age.secrets.ramona-password = {
+      file = ../secrets/ramona-password.age;
+    };
+
     home-manager.useGlobalPkgs = true;
     home-manager.users.ramona = let
       homeDirectory = "/home/ramona";
@@ -149,6 +153,7 @@
         "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIIFwrLwnv2MBsa3Isr54AyFBBeFxMRF3U+lkdU5+ECv9 ramona@caligari" # caligari
       ];
       shell = pkgs.nushell;
+      hashedPasswordFile = config.age.secrets.ramona-password.path;
     };
   };
 }

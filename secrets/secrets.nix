@@ -1,5 +1,5 @@
 let
-  ramona = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIKK5e1b1wQLyZ0RByYmhlKj4Kksv4dvnwTowDPaGsq4D openpgp:0x7688871E";
+  ramona = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIJwvvTZjbvSDU7oK4B5VfsEBann7ktIVj5ShTWoFaGwH ramona@moonfall";
 
   users = [ramona];
 
@@ -10,12 +10,13 @@ let
   angelsin = "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAACAQC7aFQ+nPezDwRfdL4LtoF13Oc80j+0SVcjMj/qJ50XP+3+3tO5q7aV5ni1hBUrQwhAyzubRdOOZTijwE30ynsmPF31tXZunddlDds9KJXcuP5zsKtDmBKXQU01YpCN9TW+1Cx/E7bBOemMIIhF+16VdI0mqD57uNWRLgrZep3QJ2Ec4pBkgznMKN1yZd2WZav2MNwtQu2YtAb6/13DMMIR3S9wUvk3aHLAEJUFbt4Qr9g7SRwGSyLpXCpbgBgAfS5CLPmFm+m7rV0a6YbjCZ65RCK3OVfpoIHnNJipHapqqBmWCoQepxBhJXTtQXKXUYty4/fEB7YImNReDC/3Nm7zzt8t7+ivh4nYQKMsxH5ZGgN6Ww2Iu3TwbzxV0PtDVqmNAAu1DihzLLMebvXExTv8RIlEWilxaQ496Ko3pbA9+5RTCQ3zvGz8cP/ysSA8ZE14b8T6/HBZs1lPeN6RpuwKWana3ffppLH3Q7G/6flqcDQOZ70vlHAc34Hg5LEw1c5gw72/inzjlg01kxWLE35Ec2thV219mHd3gIWpcq9OaWLdn4xtinikuQbnKWw5/I2vXOVXT+XKtnuOuVJ/w8ghlDw0VV6mXD5TpinAQ0af5yCPrrOcZiAWhYvch/KeXf2eAf2+HOyGqmSNE1Y3jHXdyCd81fLuhvj9GSLBSe2V5w==";
   evillian = "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAACAQC8EX5XsnpjULqFaaZzkyJziEpwlkfdN0XoDexGGbhomit11Std2E8Io/QFwQFxnN99iVJ/T/UAi04ysb40GBIfDs3zMjPl6bTcmIDXqeLgsGFgqHekGLCj0d3Iz3FdCXYIeJUW5ScwDOSpwgLzZHNQA0wsy8B68laKmThvT27Ut+tDkDjx7rtgbW3DxY9VwU2zTqnt0BZkXTR50buEs9geL//1IfhYRd1jFFEENuXhTPX8YtZA+ovu0sherQ7L7V3XCqX1En8P4hi0IMUuwu3sQmVDpd/oDB15zllSiJjPgHeS0sBKXCGYNBJ/FZclBObnK+/yAoSUTOfYdDHdiYBY+qUI7xOg3uoPIFsndk5dPWyRwFO8Kws7UPFAO75DNaA4yu4qVXQA4aAl+JdKJdQTC9xReVuRDhM7OPsD8gzahPBumE3ZjTecVHk/eCh7jr8l7Qbff7Zq2esgPAmaYIysUFVNyQPWegONScosd5MqIwFueSJ9YvJTTwbqFo3ly7Yqg1KQ5FmFhmVxY3FL391RnNAevpA2xUEoL3l+SQdSep84XcWVZmQCzSHTMVkv58hgfIe6QfZ69K11C/6v6ZEMz4fAw4lluP+sKWbeiplggLO0qLq1Q8GkRe/j9EfDwf/WB6eM6EHW4WH7BUWL8mC6dil2xQ0Ywvhp+7P/wOd8Ew==";
   caligari = "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAACAQCv5LvTKJKnPm6rQ44/6Zs/xPcOiXWSj51bsg2/sZLvWx7tDWDzHwOJ0P56ThtEIpH7Pp2DTeX4aSQkfvWtSzv0ga6MFZ16VP9qfv+YJ2VVvuSoSQewt0IZDUBmXM9dH2K2Y07j0/DpUq+sHxkY9kg3iXpKR4jbgNfzAa6mDNK3o0kl4rQs1rjkbYYPmBQmT1APzJ5p72mBbTPx5BX14kbWZlhq9FM8kbaLBWJzl8efQVjkY7msDHF+XGY7qv715Oaz+0IdifYeDrsvWy0LhnuWRvPP5w8vewj7PDz6fsFEIgKvI/tHUuOG1h+gG3CPcNugiWN9R8wxxSUb9Nw8HJ9wznnwID3MHaMouNYth2bPFtargyni2aQkaooHVOU+1CJyIKh14rap0Tf23dT9RGxq8qPMXg+i4444FXCr7Cf8jpaz9jzGUvEbAfRiHBgmyozR26Hbnn+Q+Nc98YzaSXEi4DVoS03wKf7JWVCu4bbYohCT8kKrYhyLJ1vxW5MTfMvyYVlhkWipJvgJYAckPRe3lXGNon6rYNmlAcanmQ4/v40jEl1UHCwyi5DxRvEbu96qEZxaLII5UhHFyYEOJcno1vJhhPoBgXou+XKnPDaFDDco08i2V/7qSaHS/1GZpwGfbugWHYckJ+P4K3lzIYuWQ2dnIHGCq+nlnJVisL68dQ==";
+  allMachines = [hallewell ananas shadowmend moonfall angelsin evillian caligari];
 in {
   "rabbitmq-ha.age".publicKeys = users ++ [shadowmend];
   "minio-root.age".publicKeys = users ++ [hallewell];
   "minio-tempo.age".publicKeys = users ++ [hallewell];
-  "telegraf-database.age".publicKeys = users ++ [hallewell ananas shadowmend moonfall angelsin evillian caligari];
-  "universal-root.age".publicKeys = users ++ [hallewell ananas shadowmend moonfall angelsin evillian caligari];
+  "telegraf-database.age".publicKeys = users ++ allMachines;
+  "universal-root.age".publicKeys = users ++ allMachines;
   "minio-terraform-state.age".publicKeys = users ++ [moonfall angelsin];
   "terraform-tokens.age".publicKeys = users ++ [moonfall angelsin];
   "caligari-minecraft-rclone-config.age".publicKeys = users ++ [caligari];
@@ -24,5 +25,7 @@ in {
   "hallewell-postgres-backups-env.age".publicKeys = users ++ [hallewell];
   "caligari-postgres-backups-rclone.age".publicKeys = users ++ [caligari];
   "caligari-postgres-backups-env.age".publicKeys = users ++ [caligari];
-  "restic-repository-password.age".publicKeys = users ++ [hallewell ananas shadowmend moonfall angelsin evillian caligari];
+  "restic-repository-password.age".publicKeys = users ++ allMachines;
+  "ramona-password.age".publicKeys = users ++ allMachines;
+  "root-password.age".publicKeys = users ++ allMachines;
 }

@@ -191,6 +191,7 @@
           (import ./modules/base.nix {inherit nixpkgs;})
 
           ./users/ramona.nix
+          ./users/root.nix
           ./machines/hallewell/grafana.nix
           ./machines/hallewell/hardware.nix
           ./machines/hallewell/minio.nix
@@ -221,6 +222,7 @@
 
           ./users/ramona/gui.nix
           ./users/ramona.nix
+          ./users/root.nix
           ./machines/moonfall/hardware.nix
           ./machines/moonfall/networking.nix
           ./machines/moonfall/users/ramona_gui.nix
@@ -248,6 +250,7 @@
           (import ./modules/base.nix {inherit nixpkgs;})
 
           ./users/ramona.nix
+          ./users/root.nix
           ./machines/shadowmend/hardware.nix
           ./machines/shadowmend/home-automation.nix
           ./machines/shadowmend/networking.nix
@@ -274,6 +277,7 @@
 
           ./users/ramona/gui.nix
           ./users/ramona.nix
+          ./users/root.nix
           ./machines/angelsin/hardware.nix
           ./machines/angelsin/networking.nix
           ./machines/angelsin/users/ramona_gui.nix
@@ -303,6 +307,7 @@
           (import ./machines/ananas/hardware.nix {inherit pkgsCross;})
 
           ./users/ramona.nix
+          ./users/root.nix
           ./machines/ananas/music-control.nix
           ./machines/ananas/networking.nix
           ./modules/installed_base.nix
@@ -332,6 +337,7 @@
           ./modules/updates.nix
           ./modules/workstation.nix
           ./users/ramona.nix
+          ./users/root.nix
           ./users/ramona/gui.nix
           ./users/ramona/sway.nix
         ];
@@ -347,6 +353,7 @@
           (import ./modules/base.nix {inherit nixpkgs;})
 
           ./users/ramona.nix
+          ./users/root.nix
           ./machines/caligari/github-runner.nix
           ./machines/caligari/hardware.nix
           ./machines/caligari/minecraft.nix
@@ -372,6 +379,7 @@
           (import ./modules/base.nix {inherit nixpkgs;})
 
           ./users/ramona.nix
+          ./users/root.nix
           ./modules/bcachefs.nix
           ./modules/iso.nix
         ];
