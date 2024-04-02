@@ -19,6 +19,7 @@
       };
       config.common.default = "wlr";
     };
+    security.pam.services.swaylock = {};
     home-manager.users.ramona = {
       home.packages = with pkgs; [
         wl-clipboard
@@ -43,6 +44,10 @@
           ];
         };
         udiskie.enable = true;
+      };
+
+      programs.swaylock = {
+        enable = true;
       };
 
       programs.waybar = {
@@ -164,6 +169,7 @@
               "${modifier}+e" = "exec BEMOJI_PICKER_CMD='${pkgs.fuzzel}/bin/fuzzel --dmenu' ${pkgs.bemoji}/bin/bemoji -t";
               "${modifier}+Tab" = "workspace next_on_output";
               "${modifier}+Shift+Tab" = "workspace prev_on_output";
+              "${modifier}+T" = "exec ${pkgs.swaylock}/bin/swaylock";
               "XF86AudioRaiseVolume" = "exec '${pkgs.pulseaudio}/bin/pactl set-sink-volume @DEFAULT_SINK@ +5%'";
               "XF86AudioLowerVolume" = "exec '${pkgs.pulseaudio}/bin/pactl set-sink-volume @DEFAULT_SINK@ -5%'";
               "XF86AudioMute" = "exec '${pkgs.pulseaudio}/bin/pactl set-sink-mute @DEFAULT_SINK@ toggle'";
