@@ -1,7 +1,4 @@
-{
-  config,
-  ...
-}: {
+{config, ...}: {
   config = {
     age.secrets.telegraf-database = {
       file = ../secrets/telegraf-database.age;

@@ -20,7 +20,7 @@
       "delayacct"
     ];
     boot.kernelPackages = lib.mkOverride 500 pkgs.linuxPackages_latest;
-    security.sudo.wheelNeedsPassword = false;
+    security.sudo.wheelNeedsPassword = true;
     users.mutableUsers = false;
 
     time.timeZone = "Europe/Berlin";
