@@ -268,6 +268,7 @@
           home-manager.nixosModules.home-manager
           agenix.nixosModules.default
           nixos-hardware.nixosModules.framework-13-7040-amd
+          lanzaboote.nixosModules.lanzaboote
 
           (import ./modules/base.nix {inherit nixpkgs;})
 

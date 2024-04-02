@@ -16,10 +16,14 @@
           };
         };
       };
+      lanzaboote = {
+        enable = true;
+        pkiBundle = "/etc/secureboot";
+      };
       kernelModules = ["kvm-amd"];
       extraModulePackages = [];
       kernelParams = ["amd_pstate=active"];
-      loader.systemd-boot.enable = true;
+      loader.systemd-boot.enable = false; # lanzaboote will do its magic
       loader.efi.canTouchEfiVariables = true;
     };
     fileSystems."/" = {
