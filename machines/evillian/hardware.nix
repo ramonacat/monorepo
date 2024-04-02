@@ -16,7 +16,7 @@
         };
         luks.devices = {
           luksroot = {
-            device = "/dev/disk/by-uuid/4c4faf21-01b2-42de-a89e-84ab2d8a615a";
+            device = "/dev/disk/by-uuid/145b1be2-ee92-487b-80e9-1e744b5ec5d6";
             preLVM = true;
             allowDiscards = true;
           };
@@ -32,17 +32,17 @@
       loader.efi.canTouchEfiVariables = true;
     };
     fileSystems."/" = {
-      device = "/dev/disk/by-uuid/a4e7280f-6a38-458a-befc-3666b8dd418f";
+      device = "/dev/disk/by-uuid/fcaeec1c-1e4f-423a-b8aa-5d871bc17cb2";
       fsType = "ext4";
     };
 
     fileSystems."/boot" = {
-      device = "/dev/disk/by-uuid/21CD-8A5D";
+      device = "/dev/disk/by-uuid/4B8C-0DB9";
       fsType = "vfat";
     };
 
     swapDevices = [
-      {device = "/dev/disk/by-uuid/833d74db-81f7-4661-ac76-972b2748d5d0";}
+      {device = "/dev/disk/by-uuid/37bcd061-33bb-4632-b465-3aaff73a45f4";}
     ];
 
     nixpkgs.hostPlatform = lib.mkDefault "x86_64-linux";
