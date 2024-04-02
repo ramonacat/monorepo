@@ -23,8 +23,8 @@
       loader.efi.canTouchEfiVariables = true;
     };
     fileSystems."/" = {
-      device = "UUID=9c39d5fb-30e2-4569-be17-6f6475630c29";
-      fsType = "ext4";
+      device = "/dev/disk/by-uuid/9c39d5fb-30e2-4569-be17-6f6475630c29";
+      fsType = "bcachefs";
     };
 
     fileSystems."/boot" = {

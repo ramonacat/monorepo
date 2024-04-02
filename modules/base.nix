@@ -19,7 +19,7 @@
       # this is needed for iotop
       "delayacct"
     ];
-    boot.kernelPackages = lib.mkDefault pkgs.linuxPackages_latest;
+    boot.kernelPackages = lib.mkOverride 500 pkgs.linuxPackages_latest;
     security.sudo.wheelNeedsPassword = false;
 
     time.timeZone = "Europe/Berlin";

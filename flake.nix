@@ -321,8 +321,6 @@
 
           (import ./modules/base.nix {inherit nixpkgs;})
 
-          ./users/ramona/gui.nix
-          ./users/ramona.nix
           ./machines/evillian/hardware.nix
           ./machines/evillian/networking.nix
           ./modules/greetd.nix
@@ -332,6 +330,8 @@
           ./modules/telegraf.nix
           ./modules/updates.nix
           ./modules/workstation.nix
+          ./users/ramona.nix
+          ./users/ramona/gui.nix
           ./users/ramona/sway.nix
         ];
       };
