@@ -26,6 +26,7 @@
           unzip
           yt-dlp
         ];
+        file.".config/Yubico/u2f_keys".text = lib.readFile ./ramona/u2f_keys;
       };
       services.gpg-agent.pinentryPackage = lib.mkDefault pkgs.pinentry-curses;
 
