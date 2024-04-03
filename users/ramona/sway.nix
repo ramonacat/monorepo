@@ -33,7 +33,7 @@
           timeouts = [
             {
               timeout = 540;
-              command = "${pkgs.sway}/bin/swaymsg \"output * dpms off\"";
+              command = "${pkgs.swaylock}/bin/swaylock --daemonize && ${pkgs.sway}/bin/swaymsg \"output * dpms off\"";
               resumeCommand = "${pkgs.sway}/bin/swaymsg \"output * dpms on\"";
             }
             {
