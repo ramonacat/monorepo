@@ -3,3 +3,5 @@ result
 .direnv/
 target/
 terraform/.terraform/
+.tmp/
+.s.PGSQL.*.lock
