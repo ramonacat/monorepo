@@ -42,6 +42,7 @@
         pkgs = pkgsAarch64;
         craneLib = craneLibAarch64;
       };
+      rad = import ./packages/rad.nix {inherit pkgs craneLib;};
       ras = import ./packages/ras.nix {inherit pkgs craneLib;};
       rat = import ./packages/rat.nix {
         inherit pkgs;
@@ -156,6 +157,7 @@
       ratweb = packages.ratweb.package;
     };
     devShells.x86_64-linux.default = pkgs.mkShell {
+      DATABASE_URL = "postgres://ramona:@localhost/rad";
       packages = with pkgs; [
         alsaLib.dev
         cargo-leptos
@@ -205,6 +207,7 @@
           ./machines/hallewell/tempo.nix
           ./machines/hallewell/users/ramona.nix
           ./modules/bcachefs.nix
+          ./modules/rad.nix
           ./modules/installed_base.nix
           ./modules/ras.nix
           ./modules/syncthing.nix
@@ -231,6 +234,7 @@
           ./modules/android-dev.nix
           ./modules/greetd.nix
           ./modules/installed_base.nix
+          ./modules/rad.nix
           ./modules/nas-client.nix
           ./modules/steam.nix
           ./modules/syncthing.nix
@@ -262,6 +266,7 @@
           ./modules/installed_base.nix
           ./modules/nas-client.nix
           ./modules/telegraf.nix
+          ./modules/rad.nix
           ./modules/updates.nix
         ];
       };
@@ -292,6 +297,7 @@
           ./modules/telegraf.nix
           ./modules/terraform-tokens.nix
           ./modules/updates.nix
+          ./modules/rad.nix
           ./modules/workstation.nix
           ./users/ramona/sway.nix
         ];
@@ -313,6 +319,7 @@
           ./machines/ananas/networking.nix
           ./modules/installed_base.nix
           ./modules/nas-client.nix
+          ./modules/rad.nix
           ./modules/telegraf.nix
           ./modules/updates.nix
         ];
@@ -338,6 +345,7 @@
           ./modules/updates.nix
           ./modules/workstation.nix
           ./users/ramona.nix
+          ./modules/rad.nix
           ./users/root.nix
           ./users/ramona/gui.nix
           ./users/ramona/sway.nix
@@ -360,6 +368,7 @@
           ./machines/caligari/minecraft.nix
           ./machines/caligari/networking.nix
           ./machines/caligari/nginx.nix
+          ./modules/rad.nix
           ./machines/caligari/telegraf.nix
           ./modules/bcachefs.nix
           ./modules/installed_base.nix
