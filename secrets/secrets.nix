@@ -28,4 +28,5 @@ in {
   "restic-repository-password.age".publicKeys = users ++ allMachines;
   "ramona-password.age".publicKeys = users ++ allMachines;
   "root-password.age".publicKeys = users ++ allMachines;
+  "rad-environment.age".publicKeys = users ++ allMachines;
 }
