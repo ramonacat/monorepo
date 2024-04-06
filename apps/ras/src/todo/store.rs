@@ -143,13 +143,8 @@ impl Store {
             .filter(|x| x.status() != Status::Done)
             .filter(|x| match x.deadline() {
                 Some(deadline) => {
-                    if deadline.signed_duration_since(Utc::now()).abs().num_days() <= 1
+                    deadline.signed_duration_since(Utc::now()).abs().num_days() <= 1
                         || deadline > Utc::now()
-                    {
-                        true
-                    } else {
-                        false
-                    }
                 }
                 None => false,
             })
@@ -180,7 +175,7 @@ mod tests {
 
     use ratlib::{
         calendar::event::Event,
-        todo::{Id, Todo},
+        todo::{Id, Priority, Requirement, Todo},
     };
 
     use crate::{
@@ -239,5 +234,35 @@ mod tests {
         let store = Store::new(Arc::new(data_file_reader));
 
         assert_eq!(Some(findme), store.find_by_id(Id(2)));
+    }
+
+    #[test]
+    pub fn test_can_find_ready_to_do() {
+        let findme = Todo::new(
+            Id(1),
+            "aaa".to_string(),
+            ratlib::todo::Priority::High,
+            vec![],
+            Duration::from_secs(120),
+            None,
+        );
+        let data_file_reader = MockStore(Mutex::new((
+            vec![
+                findme.clone(),
+                Todo::new(
+                    Id(2),
+                    "basdf".to_string(),
+                    Priority::High,
+                    vec![Requirement::TodoDone(Id(1))],
+                    Duration::from_secs(15),
+                    None,
+                ),
+            ],
+            vec![],
+        )));
+
+        let store = Store::new(Arc::new(data_file_reader));
+
+        assert_eq!(vec![findme], store.find_ready_to_do());
     }
 }
