@@ -37,55 +37,59 @@
     ...
   }: let
     packages = {
-      home-automation = import ./packages/home-automation.nix {inherit pkgs craneLib;};
-      music-control = import ./packages/music-control.nix {
-        pkgs = pkgsAarch64;
-        craneLib = craneLibAarch64;
-      };
-      rad = import ./packages/rad.nix {inherit pkgs craneLib;};
-      ras = import ./packages/ras.nix {inherit pkgs craneLib;};
-      rat = import ./packages/rat.nix {
-        inherit pkgs;
-        inherit craneLib;
-      };
-      ratweb = import ./packages/ratweb.nix {
-        inherit pkgs;
-        inherit craneLib;
-      };
-      hat = import ./packages/hat.nix {
-        inherit pkgs;
-        inherit craneLib;
-      };
+      home-automation = import ./packages/home-automation.nix;
+      music-control = import ./packages/music-control.nix;
+      rad = import ./packages/rad.nix;
+      ras = import ./packages/ras.nix;
+      rat = import ./packages/rat.nix;
+      ratweb = import ./packages/ratweb.nix;
+      hat = import ./packages/hat.nix;
     };
     libraries = {
-      ratlib = import ./packages/libraries/ratlib.nix {inherit pkgs craneLib;};
+      ratlib = import ./packages/libraries/ratlib.nix;
     };
-    overlays = [
-      (import rust-overlay)
-      nix-minecraft.overlay
-      alacritty-theme.overlays.default
-      (_: prev: {
-        agenix = agenix.packages.x86_64-linux.default;
+    overlays = let
+      common = [
+        (import rust-overlay)
+      ];
+      mine = architecture: {
+        pkgs,
+        craneLib,
+      }: (_: prev: {
+        agenix = agenix.packages."${architecture}-linux".default;
         ramona =
           {
             lan-mouse = (import ./packages/lan-mouse.nix) {inherit pkgs craneLib;};
           }
           // prev.lib.mapAttrs' (name: value: {
             name = "${name}";
-            value = value.package;
+            value = (value {inherit pkgs craneLib;}).package;
           })
           packages;
-      })
-    ];
+      });
+    in {
+      x86_64 =
+        common
+        ++ [
+          nix-minecraft.overlay
+          alacritty-theme.overlays.default
+          (mine "x86_64" {inherit pkgs craneLib;})
+        ];
+      aarch64 =
+        common
+        ++ [
+          (mine "aarch64" {
+            pkgs = pkgsAarch64;
+            craneLib = craneLibAarch64;
+          })
+        ];
+    };
     pkgsConfig = {
       allowUnfree = true;
       android_sdk.accept_license = true;
-      permittedInsecurePackages = [
-        "nix-2.16.2"
-      ];
     };
     pkgs = import nixpkgs {
-      inherit overlays;
+      overlays = overlays.x86_64;
       system = "x86_64-linux";
       config =
         pkgsConfig
@@ -97,12 +101,12 @@
         };
     };
     pkgsAarch64 = import nixpkgs {
-      inherit overlays;
+      overlays = overlays.aarch64;
       system = "aarch64-linux";
       config = pkgsConfig;
     };
     pkgsCross = import nixpkgs {
-      inherit overlays;
+      overlays = overlays.aarch64;
       localSystem = "x86_64-linux";
       crossSystem = "aarch64-linux";
       config = pkgsConfig;
@@ -146,15 +150,14 @@
           touch $out
         '';
       }
-      // (pkgs.lib.mergeAttrsList (pkgs.lib.mapAttrsToList (_: value: value.checks) libraries))
-      // (pkgs.lib.mergeAttrsList (pkgs.lib.mapAttrsToList (_: value: value.checks) packages));
+      // (pkgs.lib.mergeAttrsList (pkgs.lib.mapAttrsToList (_: value: (value {inherit craneLib pkgs;}).checks) libraries))
+      // (pkgs.lib.mergeAttrsList (pkgs.lib.mapAttrsToList (_: value: (value {inherit craneLib pkgs;}).checks) packages));
     packages.x86_64-linux = rec {
       coverage = let
-        paths = pkgs.lib.mapAttrsToList (_: value: value.coverage) (libraries // packages);
+        paths = pkgs.lib.mapAttrsToList (_: value: (value {inherit craneLib pkgs;}).coverage) (libraries // packages);
       in
         pkgs.runCommand "coverage" {} ("mkdir $out\n" + (pkgs.lib.concatStringsSep "\n" (builtins.map (p: "ln -s ${p} $out/${p.name}") paths)) + "\n");
       default = coverage;
-      ratweb = packages.ratweb.package;
     };
     devShells.x86_64-linux.default = pkgs.mkShell {
       DATABASE_URL = "postgres://ramona:@localhost/rad";
