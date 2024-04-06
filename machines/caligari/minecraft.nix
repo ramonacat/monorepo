@@ -1,19 +1,15 @@
 {config, ...}: {
   config = {
     age.secrets = {
-      caligari-minecraft-rclone-config = {
-        file = ../../secrets/caligari-minecraft-rclone-config.age;
+      postgres-backups-rclone = {
+        file = ../../secrets/postgres-backups-rclone.age;
       };
 
-      "caligari-postgres-backups-env" = {
-        file = ../../secrets/caligari-postgres-backups-env.age;
+      postgres-backups-env = {
+        file = ../../secrets/postgres-backups-env.age;
       };
 
-      "caligari-postgres-backups-rclone" = {
-        file = ../../secrets/caligari-postgres-backups-rclone.age;
-      };
-
-      "restic-repository-password.age" = {
+      restic-repository-password = {
         file = ../../secrets/restic-repository-password.age;
       };
     };
@@ -21,9 +17,9 @@
     services.ramona.minecraft = let
       backupSettings = {
         resticRepository = "b2:ramona-postgres-backups:/caligari/";
-        resticEnvironmentFile = config.age.secrets."caligari-postgres-backups-env".path;
-        resticRcloneConfigFile = config.age.secrets."caligari-postgres-backups-rclone".path;
-        resticPasswordFile = config.age.secrets."restic-repository-password.age".path;
+        resticEnvironmentFile = config.age.secrets."postgres-backups-env".path;
+        resticRcloneConfigFile = config.age.secrets."postgres-backups-rclone".path;
+        resticPasswordFile = config.age.secrets."restic-repository-password".path;
       };
     in {
       gierki =

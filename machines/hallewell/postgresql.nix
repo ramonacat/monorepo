@@ -7,12 +7,12 @@
 in {
   config = {
     age.secrets = {
-      "hallewell-postgres-backups-rclone" = {
-        file = ../../secrets/hallewell-postgres-backups-rclone.age;
+      "postgres-backups-rclone" = {
+        file = ../../secrets/postgres-backups-rclone.age;
       };
 
-      "hallewell-postgres-backups-env" = {
-        file = ../../secrets/hallewell-postgres-backups-env.age;
+      "postgres-backups-env" = {
+        file = ../../secrets/postgres-backups-env.age;
       };
 
       "restic-repository-password.age" = {
@@ -56,8 +56,8 @@ in {
           RandomizedDelaySec = "3h";
         };
         repository = "b2:ramona-postgres-backups:/hallewell/";
-        rcloneConfigFile = config.age.secrets."hallewell-postgres-backups-rclone".path;
-        environmentFile = config.age.secrets."hallewell-postgres-backups-env".path;
+        rcloneConfigFile = config.age.secrets."postgres-backups-rclone".path;
+        environmentFile = config.age.secrets."postgres-backups-env".path;
         backupPrepareCommand = ''
           mkdir ${backupPath}
           chown postgres:postgres ${backupPath}
