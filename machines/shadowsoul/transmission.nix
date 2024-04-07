@@ -12,18 +12,19 @@
       performanceNetParameters = true;
       credentialsFile = config.age.secrets.transmission-credentials.path;
       settings = {
-        peer-port = 51413;
-        peer-port-random-on-start = false;
-        utp-enabled = true;
-        rpc-whitelist = "127.0.0.1,::1,100.0.0.0/8";
-        rpc-host-whitelist-enabled = false;
-        rpc-bind-address = "0.0.0.0";
+        lpd-enabled = true;
         peer-limit-global = 1000;
         peer-limit-per-torrent = 500;
-        lpd-enabled = true;
+        peer-port = 51413;
+        peer-port-random-on-start = false;
+        rpc-bind-address = "0.0.0.0";
+        rpc-host-whitelist-enabled = false;
+        rpc-port = 9091;
+        rpc-whitelist = "127.0.0.1,::1,100.0.0.0/8";
+        utp-enabled = true;
       };
     };
 
-    networking.firewall.interfaces.tailscale0.allowedTCPPorts = [9001];
+    networking.firewall.interfaces.tailscale0.allowedTCPPorts = [9091];
   };
 }
