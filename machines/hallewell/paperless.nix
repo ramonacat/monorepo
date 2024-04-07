@@ -12,5 +12,6 @@ _: {
         PAPERLESS_OCR_LANGUAGE = "deu+eng+pol";
       };
     };
+    networking.firewall.interfaces.tailscale0.allowedTCPPorts = [58080];
   };
 }
