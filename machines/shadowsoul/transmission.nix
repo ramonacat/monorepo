@@ -20,7 +20,7 @@
         rpc-bind-address = "0.0.0.0";
         rpc-host-whitelist-enabled = false;
         rpc-port = 9091;
-        rpc-whitelist = "127.0.0.1,::1,100.0.0.0/8";
+        rpc-whitelist = "127.0.0.1,::1,100.*.*.*";
         utp-enabled = true;
       };
     };
