@@ -18,6 +18,7 @@ build_closure "evillian"
 build_closure "hallewell"
 build_closure "moonfall"
 build_closure "shadowmend"
+build_closure "shadowsoul"
 nix build .#nixosConfigurations.iso.config.system.build.isoImage --out-link iso
 
 echo "On branch: $BRANCH_NAME"

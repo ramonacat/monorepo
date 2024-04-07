@@ -273,6 +273,27 @@
           ./modules/updates.nix
         ];
       };
+      shadowsoul = nixpkgs.lib.nixosSystem {
+        inherit pkgs;
+        system = "x86_64-linux";
+        modules = [
+          home-manager.nixosModules.home-manager
+          agenix.nixosModules.default
+
+          (import ./modules/base.nix {inherit nixpkgs;})
+
+          ./users/ramona.nix
+          ./users/root.nix
+          ./machines/shadowsoul/hardware.nix
+          ./machines/shadowsoul/networking.nix
+          ./modules/bcachefs.nix
+          ./modules/installed_base.nix
+          ./modules/nas-client.nix
+          ./modules/telegraf.nix
+          ./modules/rad.nix
+          ./modules/updates.nix
+        ];
+      };
       angelsin = nixpkgs.lib.nixosSystem {
         inherit pkgs;
         system = "x86_64-linux";
