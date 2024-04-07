@@ -21,6 +21,7 @@
         rpc-host-whitelist-enabled = false;
         rpc-port = 9091;
         rpc-whitelist = "127.0.0.1,::1,100.*.*.*";
+        upload-slots-per-torrent = 50;
         utp-enabled = true;
       };
     };
