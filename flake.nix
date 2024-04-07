@@ -286,6 +286,7 @@
           ./users/root.nix
           ./machines/shadowsoul/hardware.nix
           ./machines/shadowsoul/networking.nix
+          ./machines/shadowsoul/transmission.nix
           ./modules/bcachefs.nix
           ./modules/installed_base.nix
           ./modules/nas-client.nix
