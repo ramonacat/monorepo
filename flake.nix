@@ -198,6 +198,7 @@
 
           ./users/ramona.nix
           ./users/root.nix
+          ./machines/hallewell/arrsuite.nix
           ./machines/hallewell/grafana.nix
           ./machines/hallewell/hardware.nix
           ./machines/hallewell/minio.nix
