@@ -26,6 +26,13 @@
       };
     };
 
+    services.nfs.server = {
+      enable = true;
+      exports = ''
+        /var/lib/transmission/Downloads 10.69.10.0/24(rw,sync,all_squash,anonuid=${builtins.toString config.ids.uids.transmission},no_subtree_check,insecure) 100.0.0.0/8(rw,sync,all_squash,anonuid=${builtins.toString config.ids.uids.transmission},no_subtree_check,insecure)
+      '';
+    };
+
     networking.firewall.interfaces.tailscale0.allowedTCPPorts = [9091];
   };
 }
