@@ -12,11 +12,14 @@
       performanceNetParameters = true;
       credentialsFile = config.age.secrets.transmission-credentials.path;
       settings = {
+        download-queue-size = 15;
         lpd-enabled = true;
         peer-limit-global = 1000;
         peer-limit-per-torrent = 500;
         peer-port = 51413;
         peer-port-random-on-start = false;
+        ratio-limit = 3;
+        ratio-limit-enabled = true;
         rpc-bind-address = "0.0.0.0";
         rpc-host-whitelist-enabled = false;
         rpc-port = 9091;
