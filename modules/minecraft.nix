@@ -73,8 +73,9 @@ EOS
             timerConfig = {
               OnCalendar = "*-*-* *:00:00";
               Persistent = true;
-              RandomizedDelaySec = "15min";
+              RandomizedDelaySec = "30min";
             };
+            extraOptions = ["--retry-lock"];
             repository = settings.resticRepository;
             rcloneConfigFile = settings.resticRcloneConfigFile;
             environmentFile = settings.resticEnvironmentFile;

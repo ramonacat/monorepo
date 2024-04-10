@@ -19,7 +19,7 @@
       wantedBy = ["timers.target"];
       timerConfig = {
         OnCalendar = "*-*-* 00/6:00:00";
-        RandomizeDelaySec = "3h";
+        RandomizedDelaySec = "3h";
         Unit = "rat-monitoring-maintenance.service";
       };
     };
