@@ -21,7 +21,7 @@ _: {
     networking.firewall.interfaces.tailscale0.allowedTCPPorts = [
       9117 # jackett
       7878 # radarr
-      8989 # sonarr
+      8990 # sonarr
     ];
   };
 }
