@@ -18,8 +18,13 @@ jobs:
         run: echo "branch=${GITHUB_HEAD_REF:-${GITHUB_REF#refs/heads/}}" >> $GITHUB_OUTPUT
         id: extract_branch
 
+      - name: Setup ssh credentials
+        run: ./.github/scripts/credentials.sh
+        env:
+          LIX_REPO_TOKEN: "${{ secrets.LIX_REPO_TOKEN }}"
+
       - name: put the SSH key in a file
         run: echo "${{ secrets.SSH_KEY }}" > id_ed25519
 
       - name: build all machines
-        run: nix shell nixpkgs#openssh --command ./.github/scripts/build.sh "${{ steps.extract_branch.outputs.branch }}"
+        run: ./.github/scripts/build.sh "${{ steps.extract_branch.outputs.branch }}"

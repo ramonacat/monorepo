@@ -19,12 +19,12 @@
     };
 
     lix = {
-      url = "git+ssh://git@lix.systems/lix-project/lix";
+      url = "git+https://git.lix.systems/lix-project/lix";
       flake = false;
     };
 
     lix-module = {
-      url = "git+ssh://git@lix.systems/lix-project/nixos-module";
+      url = "git+https://git.lix.systems/lix-project/nixos-module";
       inputs.nixpkgs.follows = "nixpkgs";
       inputs.lix.follows = "lix";
     };
