@@ -28,4 +28,5 @@ in {
   "root-password.age".publicKeys = users ++ allMachines;
   "rad-environment.age".publicKeys = users ++ allMachines;
   "transmission-credentials.age".publicKeys = users ++ [shadowsoul];
+  "lix-repo-credentials.age".publicKeys = users ++ allMachines;
 }
