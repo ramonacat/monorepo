@@ -19,13 +19,13 @@
           packages = with pkgs; [
             dconf
             discord
+            element
             flac
             grip
             hunspell
             hunspellDicts.de_DE
             hunspellDicts.en_US
             hunspellDicts.pl_PL
-            ramona.lan-mouse
             keepassxc
             krita
             light
@@ -36,6 +36,7 @@
             pamixer
             pavucontrol
             playerctl
+            ramona.lan-mouse
             spotify
             virt-manager
             vlc
