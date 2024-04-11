@@ -1,4 +1,5 @@
 {
+  pkgs,
   config,
   lib,
   ...
@@ -15,6 +16,8 @@
         url = "https://github.com/ramonacat/nix-configs";
         tokenFile = config.age.secrets.caligari-github-pat-runner-registration.path;
         extraLabels = ["nixos"];
+        extraPackages = with pkgs; [openssh];
+        replace = true;
       };
     })
     (lib.range 0 6));
