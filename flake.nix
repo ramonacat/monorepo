@@ -6,14 +6,27 @@
       url = "github:nix-community/home-manager";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+
     crane = {
       url = "github:ipetkov/crane";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+
     lanzaboote = {
       url = "github:nix-community/lanzaboote/v0.3.0";
 
       inputs.nixpkgs.follows = "nixpkgs";
+    };
+
+    lix = {
+      url = "git+https://git.lix.systems/lix-project/lix";
+      flake = false;
+    };
+
+    lix-module = {
+      url = "git+https://git.lix.systems/lix-project/nixos-module";
+      inputs.nixpkgs.follows = "nixpkgs";
+      inputs.lix.follows = "lix";
     };
 
     agenix.url = "github:ryantm/agenix";
@@ -34,6 +47,7 @@
     nix-minecraft,
     alacritty-theme,
     lanzaboote,
+    lix-module,
     ...
   }: let
     packages = {
@@ -354,6 +368,7 @@
         inherit pkgs;
         system = "x86_64-linux";
         modules = [
+          lix-module.nixosModules.default
           home-manager.nixosModules.home-manager
           agenix.nixosModules.default
           nixos-hardware.nixosModules.microsoft-surface-go

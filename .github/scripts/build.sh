@@ -25,6 +25,7 @@ echo "On branch: $BRANCH_NAME"
 if [[ "$BRANCH_NAME" == "main" ]]; then
     scp -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -i ./id_ed25519 -- iso/iso/*.iso root@caligari:/var/www/ramona.fun/builds/nixos-latest.iso
     scp -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -i ./id_ed25519 -- *-closure root@caligari:/var/www/ramona.fun/builds/
+
     for filename in *-closure; do
         CLOSURE=$(tr -d "\n" < "$filename")
         GCROOT="/nix/var/nix/gcroots/$filename"
