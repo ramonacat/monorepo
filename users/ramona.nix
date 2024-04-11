@@ -10,6 +10,7 @@
     };
     age.secrets.lix-repo-credentials = {
       file = ../secrets/lix-repo-credentials.age;
+      owner = "ramona";
     };
 
     home-manager.useGlobalPkgs = true;
