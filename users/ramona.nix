@@ -8,6 +8,9 @@
     age.secrets.ramona-password = {
       file = ../secrets/ramona-password.age;
     };
+    age.secrets.lix-repo-credentials = {
+      file = ../secrets/lix-repo-credentials.age;
+    };
 
     home-manager.useGlobalPkgs = true;
     home-manager.users.ramona = let
@@ -109,6 +112,12 @@
           };
           init = {
             defaultBranch = "main";
+          };
+          credential = {
+            "https://git.lix.systems" = {
+              username = "ramona";
+              helper = "!f() { test \"$1\" = get && echo \"password=$(cat ${config.age.secrets.lix-repo-credentials.path})\"; }; f";
+            };
           };
         };
       };
