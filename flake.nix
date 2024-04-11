@@ -205,6 +205,7 @@
         inherit pkgs;
         system = "x86_64-linux";
         modules = [
+          lix-module.nixosModules.default
           home-manager.nixosModules.home-manager
           agenix.nixosModules.default
 
@@ -237,6 +238,7 @@
         inherit pkgs;
         system = "x86_64-linux";
         modules = [
+          lix-module.nixosModules.default
           home-manager.nixosModules.home-manager
           agenix.nixosModules.default
 
@@ -267,6 +269,7 @@
         inherit pkgs;
         system = "x86_64-linux";
         modules = [
+          lix-module.nixosModules.default
           home-manager.nixosModules.home-manager
           agenix.nixosModules.default
 
@@ -292,6 +295,7 @@
         inherit pkgs;
         system = "x86_64-linux";
         modules = [
+          lix-module.nixosModules.default
           home-manager.nixosModules.home-manager
           agenix.nixosModules.default
 
@@ -314,6 +318,7 @@
         inherit pkgs;
         system = "x86_64-linux";
         modules = [
+          lix-module.nixosModules.default
           home-manager.nixosModules.home-manager
           agenix.nixosModules.default
           nixos-hardware.nixosModules.framework-13-7040-amd
@@ -396,6 +401,7 @@
         inherit pkgs;
         system = "x86_64-linux";
         modules = [
+          lix-module.nixosModules.default
           home-manager.nixosModules.home-manager
           agenix.nixosModules.default
           nix-minecraft.nixosModules.minecraft-servers
