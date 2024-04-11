@@ -19,7 +19,7 @@
           packages = with pkgs; [
             dconf
             discord
-            element
+            element-desktop
             flac
             grip
             hunspell
