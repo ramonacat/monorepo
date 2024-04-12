@@ -227,7 +227,7 @@
           ./machines/hallewell/users/ramona.nix
           ./modules/bcachefs.nix
           ./modules/rad.nix
-          ./modules/installed_base.nix
+          ./modules/installed-base.nix
           ./modules/ras.nix
           ./modules/syncthing.nix
           ./modules/telegraf.nix
@@ -250,7 +250,7 @@
           ./machines/moonfall/virtualisation.nix
           ./modules/android-dev.nix
           ./modules/greetd.nix
-          ./modules/installed_base.nix
+          ./modules/installed-base.nix
           ./modules/nas-client.nix
           ./modules/rad.nix
           ./modules/steam.nix
@@ -280,7 +280,7 @@
           ./machines/shadowmend/users/ramona.nix
           ./machines/shadowmend/zigbee2mqtt.nix
           ./modules/bcachefs.nix
-          ./modules/installed_base.nix
+          ./modules/installed-base.nix
           ./modules/nas-client.nix
           ./modules/rad.nix
           ./modules/telegraf.nix
@@ -303,7 +303,7 @@
           ./machines/shadowsoul/networking.nix
           ./machines/shadowsoul/transmission.nix
           ./modules/bcachefs.nix
-          ./modules/installed_base.nix
+          ./modules/installed-base.nix
           ./modules/nas-client.nix
           ./modules/rad.nix
           ./modules/telegraf.nix
@@ -330,7 +330,7 @@
           ./machines/angelsin/virtual-screen.nix
           ./modules/android-dev.nix
           ./modules/greetd.nix
-          ./modules/installed_base.nix
+          ./modules/installed-base.nix
           ./modules/nas-client.nix
           ./modules/rad.nix
           ./modules/steam.nix
@@ -356,7 +356,7 @@
 
           ./machines/ananas/music-control.nix
           ./machines/ananas/networking.nix
-          ./modules/installed_base.nix
+          ./modules/installed-base.nix
           ./modules/nas-client.nix
           ./modules/rad.nix
           ./modules/telegraf.nix
@@ -380,7 +380,7 @@
           ./machines/evillian/hardware.nix
           ./machines/evillian/networking.nix
           ./modules/greetd.nix
-          ./modules/installed_base.nix
+          ./modules/installed-base.nix
           ./modules/nas-client.nix
           ./modules/rad.nix
           ./modules/syncthing.nix
@@ -409,7 +409,7 @@
           ./machines/caligari/nginx.nix
           ./machines/caligari/telegraf.nix
           ./modules/bcachefs.nix
-          ./modules/installed_base.nix
+          ./modules/installed-base.nix
           ./modules/minecraft.nix
           ./modules/rad.nix
           ./modules/telegraf.nix

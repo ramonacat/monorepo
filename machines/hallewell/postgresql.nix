@@ -6,20 +6,6 @@
   postgresPackage = pkgs.postgresql_16;
 in {
   config = {
-    age.secrets = {
-      "postgres-backups-rclone" = {
-        file = ../../secrets/postgres-backups-rclone.age;
-      };
-
-      "postgres-backups-env" = {
-        file = ../../secrets/postgres-backups-env.age;
-      };
-
-      "restic-repository-password.age" = {
-        file = ../../secrets/restic-repository-password.age;
-      };
-    };
-
     services = {
       postgresql = {
         enable = true;
@@ -66,7 +52,7 @@ in {
         backupCleanupCommand = ''
           rm -r ${backupPath} || true
         '';
-        passwordFile = config.age.secrets."restic-repository-password.age".path;
+        passwordFile = config.age.secrets."restic-repository-password".path;
         paths = [
           backupPath
         ];

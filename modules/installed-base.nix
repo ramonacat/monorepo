@@ -3,6 +3,9 @@
   pkgs,
   ...
 }: {
+  imports = [
+    ./installed-base/restic.nix
+  ];
   config = {
     services = {
       openssh = {

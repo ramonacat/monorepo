@@ -1,19 +1,5 @@
 {config, ...}: {
   config = {
-    age.secrets = {
-      postgres-backups-rclone = {
-        file = ../../secrets/postgres-backups-rclone.age;
-      };
-
-      postgres-backups-env = {
-        file = ../../secrets/postgres-backups-env.age;
-      };
-
-      restic-repository-password = {
-        file = ../../secrets/restic-repository-password.age;
-      };
-    };
-
     services.ramona.minecraft = let
       backupSettings = {
         resticRepository = "b2:ramona-postgres-backups:/caligari/";
