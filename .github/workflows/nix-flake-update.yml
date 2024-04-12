@@ -17,8 +17,15 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
+ 
       - name: Install Nix
         uses: DeterminateSystems/nix-installer-action@v10
+ 
+      - name: Setup ssh credentials
+        run: ./.github/scripts/credentials.sh
+        env:
+          LIX_REPO_TOKEN: "${{ secrets.LIX_REPO_TOKEN }}"
+ 
       - name: Update and create the PR
         run: |
           export BRANCH_NAME=update_$(date +%Y%m%d%H%M%S)
