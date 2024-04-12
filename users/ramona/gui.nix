@@ -3,6 +3,9 @@
   pkgs,
   ...
 }: {
+  imports = [
+    ./installed.nix
+  ];
   # colors: https://coolors.co/ff1885-19323c-9da2ab-f3de8a-988f2a
   config = {
     # LANMouse

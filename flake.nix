@@ -211,8 +211,8 @@
 
           (import ./modules/base.nix {inherit nixpkgs;})
 
-          ./users/ramona.nix
-          ./users/root.nix
+          ./users/ramona/installed.nix
+          ./users/root/base.nix
           ./machines/hallewell/arrsuite.nix
           ./machines/hallewell/grafana.nix
           ./machines/hallewell/hardware.nix
@@ -244,9 +244,6 @@
 
           (import ./modules/base.nix {inherit nixpkgs;})
 
-          ./users/ramona/gui.nix
-          ./users/ramona.nix
-          ./users/root.nix
           ./machines/moonfall/hardware.nix
           ./machines/moonfall/networking.nix
           ./machines/moonfall/users/ramona_gui.nix
@@ -254,8 +251,8 @@
           ./modules/android-dev.nix
           ./modules/greetd.nix
           ./modules/installed_base.nix
-          ./modules/rad.nix
           ./modules/nas-client.nix
+          ./modules/rad.nix
           ./modules/steam.nix
           ./modules/syncthing.nix
           ./modules/telegraf.nix
@@ -263,6 +260,7 @@
           ./modules/updates.nix
           ./modules/workstation.nix
           ./users/ramona/sway.nix
+          ./users/root/base.nix
         ];
       };
       shadowmend = nixpkgs.lib.nixosSystem {
@@ -275,8 +273,6 @@
 
           (import ./modules/base.nix {inherit nixpkgs;})
 
-          ./users/ramona.nix
-          ./users/root.nix
           ./machines/shadowmend/hardware.nix
           ./machines/shadowmend/home-automation.nix
           ./machines/shadowmend/networking.nix
@@ -286,9 +282,11 @@
           ./modules/bcachefs.nix
           ./modules/installed_base.nix
           ./modules/nas-client.nix
-          ./modules/telegraf.nix
           ./modules/rad.nix
+          ./modules/telegraf.nix
           ./modules/updates.nix
+          ./users/ramona/installed.nix
+          ./users/root/base.nix
         ];
       };
       shadowsoul = nixpkgs.lib.nixosSystem {
@@ -301,17 +299,17 @@
 
           (import ./modules/base.nix {inherit nixpkgs;})
 
-          ./users/ramona.nix
-          ./users/root.nix
           ./machines/shadowsoul/hardware.nix
           ./machines/shadowsoul/networking.nix
           ./machines/shadowsoul/transmission.nix
           ./modules/bcachefs.nix
           ./modules/installed_base.nix
           ./modules/nas-client.nix
-          ./modules/telegraf.nix
           ./modules/rad.nix
+          ./modules/telegraf.nix
           ./modules/updates.nix
+          ./users/ramona/installed.nix
+          ./users/root/base.nix
         ];
       };
       angelsin = nixpkgs.lib.nixosSystem {
@@ -326,9 +324,6 @@
 
           (import ./modules/base.nix {inherit nixpkgs;})
 
-          ./users/ramona/gui.nix
-          ./users/ramona.nix
-          ./users/root.nix
           ./machines/angelsin/hardware.nix
           ./machines/angelsin/networking.nix
           ./machines/angelsin/users/ramona_gui.nix
@@ -337,14 +332,15 @@
           ./modules/greetd.nix
           ./modules/installed_base.nix
           ./modules/nas-client.nix
+          ./modules/rad.nix
           ./modules/steam.nix
           ./modules/syncthing.nix
           ./modules/telegraf.nix
           ./modules/terraform-tokens.nix
           ./modules/updates.nix
-          ./modules/rad.nix
           ./modules/workstation.nix
           ./users/ramona/sway.nix
+          ./users/root/installed.nix
         ];
       };
       ananas = nixpkgs.lib.nixosSystem {
@@ -358,8 +354,6 @@
           (import ./modules/base.nix {inherit nixpkgs;})
           (import ./machines/ananas/hardware.nix {inherit pkgsCross;})
 
-          ./users/ramona.nix
-          ./users/root.nix
           ./machines/ananas/music-control.nix
           ./machines/ananas/networking.nix
           ./modules/installed_base.nix
@@ -367,6 +361,8 @@
           ./modules/rad.nix
           ./modules/telegraf.nix
           ./modules/updates.nix
+          ./users/ramona/installed.nix
+          ./users/root/installed.nix
         ];
       };
       evillian = nixpkgs.lib.nixosSystem {
@@ -386,15 +382,13 @@
           ./modules/greetd.nix
           ./modules/installed_base.nix
           ./modules/nas-client.nix
+          ./modules/rad.nix
           ./modules/syncthing.nix
           ./modules/telegraf.nix
           ./modules/updates.nix
           ./modules/workstation.nix
-          ./users/ramona.nix
-          ./modules/rad.nix
-          ./users/root.nix
-          ./users/ramona/gui.nix
           ./users/ramona/sway.nix
+          ./users/root/installed.nix
         ];
       };
       caligari = nixpkgs.lib.nixosSystem {
@@ -408,20 +402,20 @@
 
           (import ./modules/base.nix {inherit nixpkgs;})
 
-          ./users/ramona.nix
-          ./users/root.nix
           ./machines/caligari/github-runner.nix
           ./machines/caligari/hardware.nix
           ./machines/caligari/minecraft.nix
           ./machines/caligari/networking.nix
           ./machines/caligari/nginx.nix
-          ./modules/rad.nix
           ./machines/caligari/telegraf.nix
           ./modules/bcachefs.nix
           ./modules/installed_base.nix
           ./modules/minecraft.nix
+          ./modules/rad.nix
           ./modules/telegraf.nix
           ./modules/updates.nix
+          ./users/ramona/installed.nix
+          ./users/root/installed.nix
         ];
       };
       iso = nixpkgs.lib.nixosSystem {
@@ -429,16 +423,15 @@
         system = "x86_64-linux";
         modules = [
           home-manager.nixosModules.home-manager
-          agenix.nixosModules.default
 
           "${nixpkgs}/nixos/modules/installer/cd-dvd/installation-cd-minimal.nix"
 
           (import ./modules/base.nix {inherit nixpkgs;})
 
-          ./users/ramona.nix
-          ./users/root.nix
           ./modules/bcachefs.nix
           ./modules/iso.nix
+          ./users/ramona/base.nix
+          ./users/root/base.nix
         ];
       };
     };
