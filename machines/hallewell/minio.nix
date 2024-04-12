@@ -11,5 +11,7 @@
       dataDir = ["/mnt/nas3/minio/"];
       rootCredentialsFile = config.age.secrets.minio-root.path;
     };
+
+    networking.firewall.interfaces.tailscale0.allowedTCPPorts = [9000];
   };
 }
