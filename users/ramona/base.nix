@@ -5,20 +5,12 @@
   ...
 }: {
   config = {
-    age.secrets.ramona-password = {
-      file = ../secrets/ramona-password.age;
-    };
-    age.secrets.lix-repo-credentials = {
-      file = ../secrets/lix-repo-credentials.age;
-      owner = "ramona";
-    };
-
     home-manager.useGlobalPkgs = true;
     home-manager.users.ramona = let
       homeDirectory = "/home/ramona";
     in {
       imports = [
-        ../modules/home-manager/rat.nix
+        ../../modules/home-manager/rat.nix
       ];
       nixpkgs.config.allowUnfree = true;
       home = {
@@ -47,11 +39,11 @@
           enable = true;
           publicKeys = [
             {
-              source = ./ramona.pgp;
+              source = ./keys/ramona.pgp;
               trust = "ultimate";
             }
             {
-              source = ./ramona2.pgp;
+              source = ./keys/ramona2.pgp;
               trust = "ultimate";
             }
           ];
@@ -80,8 +72,7 @@
       programs = {
         nushell = {
           enable = true;
-          # The config.nu can be anywhere you want if you like to edit your Nushell with Nu
-          configFile.source = ./ramona.nu;
+          configFile.source = ./shell.nu;
         };
         starship = {
           enable = true;
@@ -114,12 +105,6 @@
           init = {
             defaultBranch = "main";
           };
-          credential = {
-            "https://git.lix.systems" = {
-              username = "ramona";
-              helper = "!f() { test \"$1\" = get && echo \"password=$(cat ${config.age.secrets.lix-repo-credentials.path})\"; }; f";
-            };
-          };
         };
       };
 
@@ -149,7 +134,7 @@
           nvim-treesitter-parsers.nix
           nvim-treesitter-parsers.lua
         ];
-        extraLuaConfig = lib.readFile ./ramona/neovim/extraConfig.lua;
+        extraLuaConfig = lib.readFile ./neovim/extraConfig.lua;
       };
     };
 
@@ -162,7 +147,6 @@
         "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIIFwrLwnv2MBsa3Isr54AyFBBeFxMRF3U+lkdU5+ECv9 ramona@caligari" # caligari
       ];
       shell = pkgs.nushell;
-      hashedPasswordFile = config.age.secrets.ramona-password.path;
     };
   };
 }
