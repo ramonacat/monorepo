@@ -27,6 +27,7 @@
       cue = true;
       appId = "local";
       origin = "local";
+      debug = true;
       authFile = pkgs.writeText "u2f-auth-file" ''
         ramona:bhqayNhwfHB5u4bgnlYoJVG5QY6sbHYeUoReCV+xVFQB5wqo3HmzSi+d18VywFdDFJgLbQ/JHhM2PjuRM/yRoQ==,sj6KisA0vqMF4EPD4mFVBDbsKxHwjVbwc/WspsTRma7FHJwK7yGUb1uH2KdASrZxW+Q3lCrGnJl9U9yLP9RrQQ==,es256,+presence
         ramona:hwPvtJt4xtmklNLCEdINbFf7ZOjq48weK/iDL8iat0Muw6zb/DuZEYCLgf1hP04L1JlvGAgx1aNIbq1fVUIkHg==,N3BQ+NWRHYpj4g98qY+BLKmygQA4bVVYBKNgVi0joJRxTsJ//kgTnlEI69SLjo31VRSjrOsTfoyDfn14mBMGHA==,es256,+presence
