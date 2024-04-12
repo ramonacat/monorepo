@@ -25,13 +25,13 @@
     security.pam.u2f = {
       enable = true;
       cue = true;
-      appId = "local";
-      origin = "local";
+      appId = "pam://local";
+      origin = "pam://local";
       debug = true;
       authFile = pkgs.writeText "u2f-auth-file" ''
-        ramona:aPSQGcDlQwe0fzExtBKMDOw9VQgjeAKXk2y5O3yzcWJaPj8XyognBmiqYVdkSX8oKFzHc+324tQmlCC82Q/9aw==,qkAVtTymz21EM9TS0I6h1VI/qo+1XkiK6pfxDsB5EYjgedgej77I5E4Rt9xzYQUaUMg7DMOjnwgWUL6kEpvDoA==,es256,+presence
-        ramona:nkhSuCIHSolJYtuxnkJwc7PPCns9FmZZgLdS3vzZQQLs2UZGV2OFpZH9igbNpUNZvn3G6ct8tzvrlCsU3RX6YA==,9nVojZVvXWhGuqfQrlXmOsdHW9TCKr5j7rAsj9mifSIoVoWDN7kYgFQLpv+eWPmCSq2QHK5mnYGhaFjX+YJpzw==,es256,+presence
-        ramona:owBYesojXrbOELSCjgrDYCF9szDAIedNXz+5u/BcP/09STjnalleG++NkhXzl3m9FHw2yGqIHqzBNvxRTrLimxVYcNuJ/sujPtL0gpQejsIvvNOpOFxKJA6/AO3cIE4zLbz086JmbAm6+xobNJEYgCrseEiySeuoVElhz8tMAUwZcafkMb6PjF/Mb4MCUJyGqMuoWPJH6WKhMvfHef0=,CTIzlMzig9Vea93B84GU3I+/6tL+rAhFFumut1WA0laUe3UMycMwCX/37fXQngzg4UbzdSrSgL5mPVRWnEXvnA==,es256,+presence
+        ramona:IfYfQemq431XIiaVdiGFLCxr3UIBD/PH7j4QhBDQBURLgbHwUnoP7xhbPi8xFl46GbBQ9WPInSHlffen8Hi9CQ==,rO6dkgPn/545BgDUHj+hDnvI2wf5R7SeTrrFuqWtOK0Yw8mt+dIxs9Pd8asV6dwEPlVRSWjI8zlnwUKI8PE6uA==,es256,+presence
+        ramona:a4QUXjAdm4kBXoobh9TlTaR5etTFRs99tQDW9sMqL9ugwq61KIU3ow99yz8BaPzCwS/fFiUHiuOk6/HFtPy6WQ==,LWxAOECZfRNuCDbLd7M2UEswECgnlC7KG2I9SXluzM/odVsM4793F17x5Pbckzk0wwwfSqGA0FPK7y9RALbahA==,es256,+presence
+        ramona:owBYel42czlA+alISSGNN4hym6xXBSm0bqowJ6uTpr0m1q9DgfCFPtgbFPhb1+aY6Kw3Xv7BSccvk5Uk5WQ79dYIU3FPN2ixJxDE4g8iwrtHahmAwMpKchp5VhGSfhG2ZnhedpEKYzSp05vfsYZbmuybr3nybfYoP0ZOZu/MAUzFlfLPoEcPTTJV0zUCUG9aOv+gk8Kp6YOxakFf/gY=,VRbZBBGg3qYrjiqmMLbyvelxzhWIlKD3uG324OPn+NpuIW5M7HGIULjzuhB5hq5vrL6kUCEhpjtHvUUUAc67mQ==,es256,+presence
       '';
     };
     programs.nix-ld.enable = true;
