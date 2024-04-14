@@ -29,6 +29,11 @@
       inputs.lix.follows = "lix";
     };
 
+    disko = {
+      url = "github:nix-community/disko";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
     agenix.url = "github:ryantm/agenix";
     alacritty-theme.url = "github:alexghr/alacritty-theme.nix";
     nix-minecraft.url = "github:Infinidoge/nix-minecraft";
@@ -48,6 +53,7 @@
     alacritty-theme,
     lanzaboote,
     lix-module,
+    disko,
     ...
   }: let
     packages = {
@@ -201,6 +207,27 @@
       LIBCLANG_PATH = "${pkgs.libclang.lib}/lib";
     };
     nixosConfigurations = {
+      redwood = nixpkgs.lib.nixosSystem {
+        pkgs = pkgsAarch64;
+        system = "aarch64-linux";
+        modules = [
+          home-manager.nixosModules.home-manager
+          agenix.nixosModules.default
+          disko.nixosModules.disko
+
+          (import ./modules/base.nix {inherit nixpkgs;})
+          ./users/ramona/installed.nix
+          ./users/root/base.nix
+
+          ./machines/redwood/networking.nix
+          ./machines/redwood/hardware.nix
+          ./modules/bcachefs.nix
+          ./modules/rad.nix
+          ./modules/installed-base.nix
+          ./modules/telegraf.nix
+          ./modules/updates.nix
+        ];
+      };
       hallewell = nixpkgs.lib.nixosSystem {
         inherit pkgs;
         system = "x86_64-linux";
