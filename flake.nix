@@ -276,17 +276,18 @@
           ./machines/moonfall/users/ramona_gui.nix
           ./machines/moonfall/virtualisation.nix
           ./modules/android-dev.nix
+          ./modules/arm-builder.nix
           ./modules/greetd.nix
           ./modules/installed-base.nix
           ./modules/nas-client.nix
           ./modules/rad.nix
-          ./modules/arm-builder.nix
           ./modules/steam.nix
           ./modules/syncthing.nix
           ./modules/telegraf.nix
           ./modules/terraform-tokens.nix
           ./modules/updates.nix
           ./modules/workstation.nix
+          ./modules/x86-builder.nix
           ./users/ramona/sway.nix
           ./users/root/base.nix
         ];
@@ -357,6 +358,7 @@
           ./machines/angelsin/users/ramona_gui.nix
           ./machines/angelsin/virtual-screen.nix
           ./modules/android-dev.nix
+          ./modules/arm-builder.nix
           ./modules/greetd.nix
           ./modules/installed-base.nix
           ./modules/nas-client.nix
@@ -367,6 +369,7 @@
           ./modules/terraform-tokens.nix
           ./modules/updates.nix
           ./modules/workstation.nix
+          ./modules/x86-builder.nix
           ./users/ramona/sway.nix
           ./users/root/installed.nix
         ];
