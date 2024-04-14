@@ -125,12 +125,6 @@
       system = "aarch64-linux";
       config = pkgsConfig;
     };
-    pkgsCross = import nixpkgs {
-      overlays = overlays.aarch64;
-      localSystem = "x86_64-linux";
-      crossSystem = "aarch64-linux";
-      config = pkgsConfig;
-    };
     craneLib = (crane.mkLib pkgs).overrideToolchain rustVersion;
     rustVersion = pkgs.rust-bin.stable.latest.default.override {
       extensions = ["llvm-tools-preview"];
@@ -383,8 +377,8 @@
           nixos-hardware.nixosModules.raspberry-pi-4
 
           (import ./modules/base.nix {inherit nixpkgs;})
-          (import ./machines/ananas/hardware.nix {inherit pkgsCross;})
 
+          ./machines/ananas/hardware.nix
           ./machines/ananas/music-control.nix
           ./machines/ananas/networking.nix
           ./modules/installed-base.nix

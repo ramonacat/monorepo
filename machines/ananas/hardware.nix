@@ -1,5 +1,4 @@
-{pkgsCross}: {
-  config,
+{
   pkgs,
   lib,
   ...
@@ -19,7 +18,7 @@
           '';
         }
       ];
-      kernelPackages = lib.mkForce pkgsCross.linuxPackages_latest;
+      kernelPackages = pkgs.linuxPackages_latest;
       kernelParams = [];
     };
     fileSystems."/" = {
