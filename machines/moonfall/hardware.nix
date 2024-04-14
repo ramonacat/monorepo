@@ -5,7 +5,6 @@
       initrd.kernelModules = ["vfio_pci "];
       kernelModules = ["kvm-amd" "vfio" "vfio_pci" "vfio_iommu_type1" "vfio_virqfd" "amdgpu" "i2c-dev"];
       extraModulePackages = [];
-      binfmt.emulatedSystems = ["aarch64-linux"];
       loader.systemd-boot.enable = true;
       loader.efi.canTouchEfiVariables = true;
     };

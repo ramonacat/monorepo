@@ -5,7 +5,6 @@
       initrd.kernelModules = [];
       kernelModules = ["kvm-amd"];
       extraModulePackages = [];
-      binfmt.emulatedSystems = ["aarch64-linux"];
 
       loader.grub = {
         enable = true;
