@@ -280,6 +280,7 @@
           ./modules/installed-base.nix
           ./modules/nas-client.nix
           ./modules/rad.nix
+          ./modules/arm-builder.nix
           ./modules/steam.nix
           ./modules/syncthing.nix
           ./modules/telegraf.nix
@@ -437,6 +438,7 @@
           ./machines/caligari/telegraf.nix
           ./modules/bcachefs.nix
           ./modules/installed-base.nix
+          ./modules/arm-builder.nix
           ./modules/minecraft.nix
           ./modules/rad.nix
           ./modules/telegraf.nix
