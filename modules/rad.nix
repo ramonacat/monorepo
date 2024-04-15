@@ -13,6 +13,8 @@
         DynamicUser = true;
         ExecStart = "${pkgs.ramona.rad}/bin/rad";
         EnvironmentFile = config.age.secrets.rad-environment.path;
+        Restart = "always";
+        RestartSec = "5s";
       };
     };
   };
