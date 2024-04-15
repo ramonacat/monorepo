@@ -34,12 +34,32 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
-    agenix.url = "github:ryantm/agenix";
-    alacritty-theme.url = "github:alexghr/alacritty-theme.nix";
-    nix-minecraft.url = "github:Infinidoge/nix-minecraft";
-    nixos-hardware.url = "github:NixOS/nixos-hardware/master";
+    nixos-generators = {
+      url = "github:nix-community/nixos-generators";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
+    agenix = {
+      url = "github:ryantm/agenix";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+    alacritty-theme = {
+      url = "github:alexghr/alacritty-theme.nix";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+    nix-minecraft = {
+      url = "github:Infinidoge/nix-minecraft";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+    nixos-hardware = {
+      url = "github:NixOS/nixos-hardware/master";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+    rust-overlay = {
+      url = "github:oxalica/rust-overlay";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
     nixpkgs.url = "nixpkgs/nixos-unstable-small";
-    rust-overlay.url = "github:oxalica/rust-overlay";
   };
 
   outputs = {
@@ -54,6 +74,7 @@
     lanzaboote,
     lix-module,
     disko,
+    nixos-generators,
     ...
   }: let
     packages = {
@@ -449,6 +470,7 @@
         system = "x86_64-linux";
         modules = [
           home-manager.nixosModules.home-manager
+          nixos-generators.nixosModules.all-formats
 
           "${nixpkgs}/nixos/modules/installer/cd-dvd/installation-cd-minimal.nix"
 

@@ -22,10 +22,13 @@ build_closure "shadowmend"
 build_closure "shadowsoul"
 
 nix build .#nixosConfigurations.iso.config.system.build.isoImage --out-link iso
+nix build .#nixosConfigurations.iso.config.formats.kexec-bundle --out-link kexec-bundle
 
 echo "On branch: $BRANCH_NAME"
 if [[ "$BRANCH_NAME" == "main" ]]; then
     scp -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -i ./id_ed25519 -- iso/iso/*.iso root@caligari:/var/www/ramona.fun/builds/nixos-latest.iso
+    scp -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -i ./id_ed25519 -- kexec-bundle root@caligari:/var/www/ramona.fun/builds/kexec-bundle
+
     scp -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -i ./id_ed25519 -- *-closure root@caligari:/var/www/ramona.fun/builds/
 
     for filename in *-closure; do
