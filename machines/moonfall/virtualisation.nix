@@ -70,7 +70,7 @@ in {
         description = "Set permissions for looking glass shm file";
         serviceConfig = {
           Type = "oneshot";
-          ExecStart = "${pkgs.coreutils}/bin/chown ramona:kvm /dev/shm/looking-glass";
+          ExecStart = "${pkgs.coreutils}/bin/chown ramona:kvm /dev/shm/looking-glass || true";
         };
       };
     };

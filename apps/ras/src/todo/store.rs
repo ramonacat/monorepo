@@ -265,4 +265,25 @@ mod tests {
 
         assert_eq!(vec![findme], store.find_ready_to_do());
     }
+
+    #[test]
+    pub fn can_save() {
+        let todo = Todo::new(
+            Id(1234),
+            "aaa".to_string(),
+            Priority::High,
+            vec![],
+            Duration::from_secs(12),
+            None,
+        );
+
+        let data = Mutex::new((vec![todo.clone()], vec![]));
+        let data_file_reader = Arc::new(MockStore(data));
+
+        let mut store = Store::new(data_file_reader.clone());
+        store.save(todo.clone());
+
+        let store = Store::new(data_file_reader);
+        assert_eq!(vec![todo], store.find_ready_to_do());
+    }
 }
