@@ -33,6 +33,16 @@
         blueman-applet.enable = config.services.blueman.enable;
         swayidle = {
           enable = true;
+          events = [
+            {
+              event = "before-sleep";
+              command = "${pkgs.swaylock}/bin/swaylock --daemonize";
+            }
+            {
+              event = "lock";
+              command = "${pkgs.swaylock}/bin/swaylock --daemonize";
+            }
+          ];
           timeouts = [
             {
               timeout = 540;

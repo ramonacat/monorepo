@@ -1,7 +1,6 @@
 {
   lib,
   pkgs,
-  config,
   ...
 }: {
   config = {
@@ -31,7 +30,7 @@
 
       programs = {
         rat = {
-          enable = lib.attrsets.hasAttrByPath ["services" "syncthing" "settings" "folders" "shared"] config;
+          enable = true;
           serverAddress = "http://hallewell:8438/";
         };
 

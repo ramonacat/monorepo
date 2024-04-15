@@ -34,12 +34,32 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
-    agenix.url = "github:ryantm/agenix";
-    alacritty-theme.url = "github:alexghr/alacritty-theme.nix";
-    nix-minecraft.url = "github:Infinidoge/nix-minecraft";
-    nixos-hardware.url = "github:NixOS/nixos-hardware/master";
+    nixos-generators = {
+      url = "github:nix-community/nixos-generators";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
+    agenix = {
+      url = "github:ryantm/agenix";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+    alacritty-theme = {
+      url = "github:alexghr/alacritty-theme.nix";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+    nix-minecraft = {
+      url = "github:Infinidoge/nix-minecraft";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+    nixos-hardware = {
+      url = "github:NixOS/nixos-hardware/master";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+    rust-overlay = {
+      url = "github:oxalica/rust-overlay";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
     nixpkgs.url = "nixpkgs/nixos-unstable-small";
-    rust-overlay.url = "github:oxalica/rust-overlay";
   };
 
   outputs = {
@@ -54,6 +74,7 @@
     lanzaboote,
     lix-module,
     disko,
+    nixos-generators,
     ...
   }: let
     packages = {
@@ -205,6 +226,7 @@
         pkgs = pkgsAarch64;
         system = "aarch64-linux";
         modules = [
+          lix-module.nixosModules.default
           home-manager.nixosModules.home-manager
           agenix.nixosModules.default
           disko.nixosModules.disko
@@ -213,13 +235,14 @@
           ./users/ramona/installed.nix
           ./users/root/base.nix
 
-          ./machines/redwood/networking.nix
           ./machines/redwood/hardware.nix
+          ./machines/redwood/networking.nix
           ./modules/bcachefs.nix
-          ./modules/rad.nix
           ./modules/installed-base.nix
+          ./modules/rad.nix
           ./modules/telegraf.nix
           ./modules/updates.nix
+          ./modules/zram-swap.nix
         ];
       };
       hallewell = nixpkgs.lib.nixosSystem {
@@ -308,6 +331,7 @@
           ./modules/rad.nix
           ./modules/telegraf.nix
           ./modules/updates.nix
+          ./modules/zram-swap.nix
           ./users/ramona/installed.nix
           ./users/root/base.nix
         ];
@@ -331,6 +355,7 @@
           ./modules/rad.nix
           ./modules/telegraf.nix
           ./modules/updates.nix
+          ./modules/zram-swap.nix
           ./users/ramona/installed.nix
           ./users/root/base.nix
         ];
@@ -372,6 +397,7 @@
         pkgs = pkgsAarch64;
         system = "aarch64-linux";
         modules = [
+          lix-module.nixosModules.default
           home-manager.nixosModules.home-manager
           agenix.nixosModules.default
           nixos-hardware.nixosModules.raspberry-pi-4
@@ -386,6 +412,7 @@
           ./modules/rad.nix
           ./modules/telegraf.nix
           ./modules/updates.nix
+          ./modules/zram-swap.nix
           ./users/ramona/installed.nix
           ./users/root/installed.nix
         ];
@@ -412,6 +439,7 @@
           ./modules/telegraf.nix
           ./modules/updates.nix
           ./modules/workstation.nix
+          ./modules/zram-swap.nix
           ./users/ramona/sway.nix
           ./users/root/installed.nix
         ];
@@ -449,6 +477,7 @@
         system = "x86_64-linux";
         modules = [
           home-manager.nixosModules.home-manager
+          nixos-generators.nixosModules.all-formats
 
           "${nixpkgs}/nixos/modules/installer/cd-dvd/installation-cd-minimal.nix"
 
