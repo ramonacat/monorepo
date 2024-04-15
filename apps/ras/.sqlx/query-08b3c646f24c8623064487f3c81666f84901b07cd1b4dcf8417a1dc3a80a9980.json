@@ -1,0 +1,15 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "\n                INSERT INTO \n                    hosts AS h(hostname, last_seen, running_closure_path, last_running_closure_change) \n                VALUES($1, NOW(), $2, NOW())\n                ON CONFLICT(hostname) DO UPDATE \n                    SET \n                        last_seen = NOW(), \n                        running_closure_path = $2, \n                        last_running_closure_change = CASE \n                            WHEN h.running_closure_path != $2 THEN NOW() \n                            ELSE h.last_running_closure_change \n                        END\n              ",
+  "describe": {
+    "columns": [],
+    "parameters": {
+      "Left": [
+        "Text",
+        "Text"
+      ]
+    },
+    "nullable": []
+  },
+  "hash": "08b3c646f24c8623064487f3c81666f84901b07cd1b4dcf8417a1dc3a80a9980"
+}

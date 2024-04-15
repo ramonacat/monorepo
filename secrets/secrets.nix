@@ -28,6 +28,7 @@ in {
   "ramona-password.age".publicKeys = users ++ allMachines;
   "root-password.age".publicKeys = users ++ allMachines;
   "rad-environment.age".publicKeys = users ++ allMachines;
+  "ras-environment.age".publicKeys = users ++ [hallewell];
   "transmission-credentials.age".publicKeys = users ++ [shadowsoul];
   "lix-repo-credentials.age".publicKeys = users ++ allMachines;
 }

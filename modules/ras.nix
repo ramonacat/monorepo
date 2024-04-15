@@ -16,12 +16,16 @@
     rasConfig = config.services.ramona.ras;
   in
     lib.mkIf rasConfig.enable {
+      age.secrets.ras-environment = {
+        file = ../secrets/ras-environment.age;
+      };
       systemd.services.ras = {
         wantedBy = ["multi-user.target"];
         serviceConfig = {
           User = "ras";
           ExecStart = "${pkgs.ramona.ras}/bin/ras ${rasConfig.dataFile}";
           ReadWritePaths = "${rasConfig.dataFile}";
+          EnvironmentFile = config.age.secrets.ras-environment.path;
         };
       };
 

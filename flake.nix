@@ -194,7 +194,6 @@
       default = coverage;
     };
     devShells.x86_64-linux.default = pkgs.mkShell {
-      DATABASE_URL = "postgres://ramona:@localhost/rad";
       packages = with pkgs; [
         alsaLib.dev
         cargo-leptos
