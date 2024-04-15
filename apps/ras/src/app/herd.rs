@@ -3,14 +3,10 @@ use axum::{
     http::StatusCode,
     Json,
 };
-use serde::Deserialize;
+use ratlib::herd::PostHerdMachine;
 
 use super::AppState;
 
-#[derive(Deserialize)]
-pub struct PostHerdMachine {
-    pub current_closure: String,
-}
 
 pub async fn post_herd_machine(
     State(state): State<AppState>,

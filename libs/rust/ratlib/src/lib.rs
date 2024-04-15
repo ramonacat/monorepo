@@ -14,6 +14,7 @@ pub mod calendar;
 pub mod datetime;
 pub mod secrets;
 pub mod todo;
+pub mod herd;
 
 #[derive(Debug, Deserialize, Serialize)]
 pub enum PostTodo {
