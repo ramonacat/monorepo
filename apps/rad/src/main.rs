@@ -1,7 +1,7 @@
 use std::{error::Error, time::Duration};
 
 use ratlib::herd::PostHerdMachine;
-use sqlx::{postgres::PgPoolOptions, query};
+use sqlx::postgres::PgPoolOptions;
 use tokio::time::sleep;
 
 #[tokio::main]
@@ -22,7 +22,7 @@ async fn main() -> Result<(), Box<dyn Error>> {
         let closure_path = closure_path.to_string_lossy();
 
         let result: String = client
-            .post(format!("http://localhost:8438/herd/machines/{hostname}"))
+            .post(format!("http://hallewell:8438/herd/machines/{hostname}"))
             .json(&PostHerdMachine {
                 current_closure: closure_path.to_string(),
             })
