@@ -226,6 +226,7 @@
         pkgs = pkgsAarch64;
         system = "aarch64-linux";
         modules = [
+          lix-module.nixosModules.default
           home-manager.nixosModules.home-manager
           agenix.nixosModules.default
           disko.nixosModules.disko
@@ -396,6 +397,7 @@
         pkgs = pkgsAarch64;
         system = "aarch64-linux";
         modules = [
+          lix-module.nixosModules.default
           home-manager.nixosModules.home-manager
           agenix.nixosModules.default
           nixos-hardware.nixosModules.raspberry-pi-4
