@@ -1,6 +1,7 @@
 mod app;
 mod calendar;
 mod datafile;
+mod herd;
 mod maintenance;
 mod todo;
 
@@ -17,6 +18,7 @@ use maintenance::MonitoringMaintainer;
 use opentelemetry::KeyValue;
 use opentelemetry_otlp::WithExportConfig;
 use opentelemetry_sdk::{runtime::Tokio, Resource};
+use sqlx::postgres::PgPoolOptions;
 use tokio::sync::Mutex;
 use tokio_postgres::NoTls;
 use tracing::error;
@@ -46,6 +48,14 @@ async fn main() -> Result<(), Box<dyn Error>> {
         .with(fmt::layer())
         .with(tracing_layer)
         .init();
+
+    let database_url = std::env::var("DATABASE_URL").unwrap();
+    let pool = PgPoolOptions::new()
+        .max_connections(5)
+        .connect(&database_url)
+        .await?;
+
+    sqlx::migrate!("./migrations/").run(&pool).await?;
 
     let datafile_path: PathBuf = std::env::args().nth(1).unwrap().into();
     let postgres_password = ratlib::secrets::read("telegraf-database")
@@ -78,6 +88,10 @@ async fn main() -> Result<(), Box<dyn Error>> {
         .route("/todos", post(app::todos::post_todos))
         .route("/todos/:id", post(app::todos::post_todos_with_id))
         .route(
+            "/herd/machines/:hostname",
+            post(app::herd::post_herd_machine),
+        )
+        .route(
             "/maintenance/monitoring",
             post(app::maintenance::post_monitoring),
         )
@@ -88,6 +102,7 @@ async fn main() -> Result<(), Box<dyn Error>> {
             ))),
             event_store: Arc::new(Mutex::new(calendar::store::Store::new(data_file_reader))),
             monitoring_maintainer: Arc::new(MonitoringMaintainer::new(Arc::new(postgres_client))),
+            herd_store: Arc::new(herd::Store::new(Arc::new(pool))),
         })
         .layer(OtelInResponseLayer)
         .layer(OtelAxumLayer::default());
