@@ -58,8 +58,6 @@
       nftables.enable = true;
     };
 
-    programs.zsh.enable = true;
-
     console.keyMap = "pl";
     system.stateVersion = "22.11";
 
