@@ -22,7 +22,7 @@
           cpu = {};
           disk = {};
           diskio = {};
-          ethtool = {};
+          mem = {};
           syslog = {
             server = "tcp4://:6514";
           };

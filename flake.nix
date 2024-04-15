@@ -53,7 +53,6 @@
     };
     nixos-hardware = {
       url = "github:NixOS/nixos-hardware/master";
-      inputs.nixpkgs.follows = "nixpkgs";
     };
     rust-overlay = {
       url = "github:oxalica/rust-overlay";
