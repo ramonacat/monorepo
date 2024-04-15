@@ -234,13 +234,14 @@
           ./users/ramona/installed.nix
           ./users/root/base.nix
 
-          ./machines/redwood/networking.nix
           ./machines/redwood/hardware.nix
+          ./machines/redwood/networking.nix
           ./modules/bcachefs.nix
-          ./modules/rad.nix
           ./modules/installed-base.nix
+          ./modules/rad.nix
           ./modules/telegraf.nix
           ./modules/updates.nix
+          ./modules/zram-swap.nix
         ];
       };
       hallewell = nixpkgs.lib.nixosSystem {
@@ -329,6 +330,7 @@
           ./modules/rad.nix
           ./modules/telegraf.nix
           ./modules/updates.nix
+          ./modules/zram-swap.nix
           ./users/ramona/installed.nix
           ./users/root/base.nix
         ];
@@ -352,6 +354,7 @@
           ./modules/rad.nix
           ./modules/telegraf.nix
           ./modules/updates.nix
+          ./modules/zram-swap.nix
           ./users/ramona/installed.nix
           ./users/root/base.nix
         ];
@@ -407,6 +410,7 @@
           ./modules/rad.nix
           ./modules/telegraf.nix
           ./modules/updates.nix
+          ./modules/zram-swap.nix
           ./users/ramona/installed.nix
           ./users/root/installed.nix
         ];
@@ -433,6 +437,7 @@
           ./modules/telegraf.nix
           ./modules/updates.nix
           ./modules/workstation.nix
+          ./modules/zram-swap.nix
           ./users/ramona/sway.nix
           ./users/root/installed.nix
         ];
