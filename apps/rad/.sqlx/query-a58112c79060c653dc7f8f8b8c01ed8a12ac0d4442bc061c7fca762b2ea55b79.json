@@ -1,0 +1,15 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "\n            UPDATE \n                hosts \n            SET \n                last_running_closure_change = CASE \n                    WHEN running_closure_path != $1 OR last_running_closure_change IS NULL THEN NOW()  \n                    ELSE last_running_closure_change \n                END,\n                running_closure_path=$1\n            WHERE hostname=$2",
+  "describe": {
+    "columns": [],
+    "parameters": {
+      "Left": [
+        "Text",
+        "Text"
+      ]
+    },
+    "nullable": []
+  },
+  "hash": "a58112c79060c653dc7f8f8b8c01ed8a12ac0d4442bc061c7fca762b2ea55b79"
+}
