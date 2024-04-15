@@ -21,14 +21,15 @@ async fn main() -> Result<(), Box<dyn Error>> {
         let closure_path = tokio::fs::canonicalize("/nix/var/nix/profiles/system").await?;
         let closure_path = closure_path.to_string_lossy();
 
-        let result:String = client
+        let result: String = client
             .post(format!("http://localhost:8438/herd/machines/{hostname}"))
-            .json(&PostHerdMachine { current_closure: closure_path.to_string() })
+            .json(&PostHerdMachine {
+                current_closure: closure_path.to_string(),
+            })
             .send()
             .await?
             .json()
-            .await?
-            ;
+            .await?;
 
         println!("Updated host {hostname} with closure {closure_path}, response: {result}");
 

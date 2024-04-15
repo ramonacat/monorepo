@@ -173,6 +173,7 @@ mod tests {
         time::Duration,
     };
 
+    use chrono::{NaiveDate, TimeZone, Utc};
     use ratlib::{
         calendar::event::Event,
         todo::{Id, Priority, Requirement, Todo},
@@ -264,6 +265,42 @@ mod tests {
         let store = Store::new(Arc::new(data_file_reader));
 
         assert_eq!(vec![findme], store.find_ready_to_do());
+    }
+
+    #[test]
+    pub fn can_find_becoming_valid_on() {
+        let todo = Todo::new(
+            Id(1234),
+            "aaa".to_string(),
+            Priority::High,
+            vec![Requirement::AfterDate(
+                Utc.with_ymd_and_hms(2022, 1, 1, 16, 0, 0).unwrap(),
+            )],
+            Duration::from_secs(12),
+            None,
+        );
+
+        let data_file_reader = MockStore(Mutex::new((
+            vec![
+                todo.clone(),
+                Todo::new(
+                    Id(2),
+                    "basdf".to_string(),
+                    Priority::High,
+                    vec![],
+                    Duration::from_secs(15),
+                    None,
+                ),
+            ],
+            vec![],
+        )));
+
+        let store = Store::new(Arc::new(data_file_reader));
+
+        let becoming_valid =
+            store.find_becoming_valid_on(NaiveDate::from_ymd_opt(2022, 1, 1).unwrap());
+
+        assert_eq!(vec![todo], becoming_valid);
     }
 
     #[test]

@@ -12,9 +12,9 @@ use crate::datetime::{
 
 pub mod calendar;
 pub mod datetime;
+pub mod herd;
 pub mod secrets;
 pub mod todo;
-pub mod herd;
 
 #[derive(Debug, Deserialize, Serialize)]
 pub enum PostTodo {

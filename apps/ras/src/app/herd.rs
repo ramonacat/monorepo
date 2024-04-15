@@ -7,7 +7,6 @@ use ratlib::herd::PostHerdMachine;
 
 use super::AppState;
 
-
 pub async fn post_herd_machine(
     State(state): State<AppState>,
     Path(hostname): Path<String>,
