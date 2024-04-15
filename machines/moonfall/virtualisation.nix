@@ -66,11 +66,15 @@ in {
         };
       };
 
-      permissions-looking-glass = {
+      permissions-looking-glass = let
+        permissions_script = pkgs.writeShellScript "windowsify" ''
+          ${pkgs.coreutils}/bin/chown ramona:kvm /dev/shm/looking-glass || true
+        '';
+      in {
         description = "Set permissions for looking glass shm file";
         serviceConfig = {
           Type = "oneshot";
-          ExecStart = "${pkgs.coreutils}/bin/chown ramona:kvm /dev/shm/looking-glass || true";
+          ExecStart = "${permissions_script}";
         };
       };
     };
