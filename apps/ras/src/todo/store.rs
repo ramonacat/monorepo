@@ -208,6 +208,32 @@ mod tests {
     }
 
     #[test]
+    pub fn can_create() {
+        let data_file_reader = MockStore(Mutex::new((vec![], vec![])));
+
+        let mut store = Store::new(Arc::new(data_file_reader));
+        let id = store.create(
+            "This is a todo".to_string(),
+            Priority::Low,
+            Duration::from_secs(15),
+            vec![],
+            None,
+        );
+
+        assert_eq!(
+            Todo::new(
+                id,
+                "This is a todo".to_string(),
+                Priority::Low,
+                vec![],
+                Duration::from_secs(15),
+                None
+            ),
+            store.find_by_id(id).unwrap()
+        );
+    }
+
+    #[test]
     pub fn can_find_by_id() {
         let findme = Todo::new(
             Id(2),
