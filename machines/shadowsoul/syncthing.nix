@@ -3,7 +3,6 @@ _: {
     enable = true;
     overrideDevices = true;
     overrideFolders = true;
-    user = "ramona";
     guiAddress = "0.0.0.0:8384";
 
     settings = {
