@@ -12,7 +12,7 @@ _: {
       };
       folders.dls = {
         id = "trnsmsn-dls";
-        path = "/var/lib/transmission/downloads/";
+        path = "/var/lib/transmission/Downloads/";
         devices = ["hallewell"];
       };
     };
