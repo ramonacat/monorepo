@@ -253,8 +253,6 @@
 
           (import ./modules/base.nix {inherit nixpkgs;})
 
-          ./users/ramona/installed.nix
-          ./users/root/base.nix
           ./machines/hallewell/arrsuite.nix
           ./machines/hallewell/grafana.nix
           ./machines/hallewell/hardware.nix
@@ -265,15 +263,18 @@
           ./machines/hallewell/postgresql.nix
           ./machines/hallewell/ras.nix
           ./machines/hallewell/ratweb.nix
+          ./machines/hallewell/syncthing.nix
           ./machines/hallewell/tempo.nix
           ./machines/hallewell/users/ramona.nix
           ./modules/bcachefs.nix
-          ./modules/rad.nix
           ./modules/installed-base.nix
+          ./modules/rad.nix
           ./modules/ras.nix
           ./modules/syncthing.nix
           ./modules/telegraf.nix
           ./modules/updates.nix
+          ./users/ramona/installed.nix
+          ./users/root/base.nix
         ];
       };
       moonfall = nixpkgs.lib.nixosSystem {
