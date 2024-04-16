@@ -347,6 +347,7 @@
 
           ./machines/shadowsoul/hardware.nix
           ./machines/shadowsoul/networking.nix
+          ./machines/shadowsoul/syncthing.nix
           ./machines/shadowsoul/transmission.nix
           ./modules/bcachefs.nix
           ./modules/installed-base.nix
