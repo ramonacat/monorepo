@@ -8,6 +8,7 @@
     overrideDevices = true;
     overrideFolders = true;
     user = "ramona";
+    guiAddress = "0.0.0.0:8384";
 
     dataDir = "/home/ramona/.syncthing-data";
     configDir = "/home/ramona/.config/syncthing";
@@ -26,7 +27,12 @@
     };
   };
 
-  # For syncthing
-  networking.firewall.allowedTCPPorts = [22000];
-  networking.firewall.allowedUDPPorts = [22000 21027];
+  networking.firewall = {
+    # Public syncing traffic
+    allowedTCPPorts = [22000];
+    allowedUDPPorts = [22000 21027];
+
+    # Web GUI
+    interfaces.tailscale0.allowedTCPPorts = [8384];
+  };
 }
