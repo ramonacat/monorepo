@@ -4,30 +4,17 @@ set -euo pipefail
 
 BRANCH_NAME=$1
 
-function build_closure() {
-    HOSTNAME=$1
+nix build ".#everything"
 
-    nix build ".#nixosConfigurations.${HOSTNAME}.config.system.build.toplevel"
-    readlink result > "${HOSTNAME}-closure"
-}
-
-build_closure "ananas"
-build_closure "angelsin"
-build_closure "caligari"
-build_closure "evillian"
-build_closure "hallewell"
-build_closure "moonfall"
-build_closure "redwood"
-build_closure "shadowmend"
-build_closure "shadowsoul"
-
-nix build .#nixosConfigurations.iso.config.system.build.isoImage --out-link iso
-nix build .#nixosConfigurations.iso.config.formats.kexec-bundle --out-link kexec-bundle
+for f in result/hosts/*; do
+    host_basename=$(basename "$f")
+    readlink "$f" > "$host_basename-closure"
+done
 
 echo "On branch: $BRANCH_NAME"
 if [[ "$BRANCH_NAME" == "main" ]]; then
-    scp -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -i ./id_ed25519 -- iso/iso/*.iso root@caligari:/var/www/ramona.fun/builds/nixos-latest.iso
-    scp -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -i ./id_ed25519 -- kexec-bundle root@caligari:/var/www/ramona.fun/builds/kexec-bundle
+    scp -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -i ./id_ed25519 -- result/iso/iso/*.iso root@caligari:/var/www/ramona.fun/builds/nixos-latest.iso
+    scp -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -i ./id_ed25519 -- result/kexec-bundle root@caligari:/var/www/ramona.fun/builds/kexec-bundle
 
     scp -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -i ./id_ed25519 -- *-closure root@caligari:/var/www/ramona.fun/builds/
 
