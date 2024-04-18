@@ -9,7 +9,7 @@
       repository = "sftp:u401821@u401821.your-storagebox.de:${config.networking.hostName}/";
       passwordFile = config.age.secrets."restic-repository-password".path;
       paths = [
-        "/home/"
+        "/mnt/nas3/data/"
       ];
       pruneOpts = [
         "--keep-hourly 24"
