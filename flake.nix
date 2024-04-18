@@ -2,6 +2,11 @@
   description = "Root flake for my machines";
 
   inputs = {
+    NixVirt = {
+      url = "https://flakehub.com/f/AshleyYakeley/NixVirt/*.tar.gz";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
     home-manager = {
       url = "github:nix-community/home-manager";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -62,18 +67,19 @@
   };
 
   outputs = {
-    nixpkgs,
-    home-manager,
-    rust-overlay,
-    crane,
-    nixos-hardware,
+    NixVirt,
     agenix,
-    nix-minecraft,
     alacritty-theme,
+    crane,
+    disko,
+    home-manager,
     lanzaboote,
     lix-module,
-    disko,
+    nix-minecraft,
     nixos-generators,
+    nixos-hardware,
+    nixpkgs,
+    rust-overlay,
     self,
     ...
   }: let
@@ -294,6 +300,7 @@
           lix-module.nixosModules.default
           home-manager.nixosModules.home-manager
           agenix.nixosModules.default
+          NixVirt.nixosModules.default
 
           (import ./modules/base.nix {inherit nixpkgs;})
 
