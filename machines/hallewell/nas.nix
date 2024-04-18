@@ -1,4 +1,7 @@
 {pkgs, ...}: {
+  imports = [
+    ./nas/backup.nix
+  ];
   config = {
     users.users.nas = {
       isSystemUser = true;
