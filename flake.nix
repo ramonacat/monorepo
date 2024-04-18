@@ -74,6 +74,7 @@
     lix-module,
     disko,
     nixos-generators,
+    self,
     ...
   }: let
     packages = {
@@ -191,6 +192,15 @@
         paths = pkgs.lib.mapAttrsToList (_: value: (value {inherit craneLib pkgs;}).coverage) (libraries // packages);
       in
         pkgs.runCommand "coverage" {} ("mkdir $out\n" + (pkgs.lib.concatStringsSep "\n" (builtins.map (p: "ln -s ${p} $out/${p.name}") paths)) + "\n");
+      everything = let
+        allClosures = builtins.mapAttrs (_: value: value.config.system.build.toplevel) self.nixosConfigurations;
+      in
+        pkgs.runCommand "everything" {} (
+          "mkdir -p $out/hosts\n"
+          + (pkgs.lib.concatStringsSep "\n" (pkgs.lib.mapAttrsToList (k: p: "ln -s ${p} $out/hosts/${k}") allClosures))
+          + "\nln -s ${self.nixosConfigurations.iso.config.system.build.isoImage} $out/iso\n"
+          + "\nln -s ${self.nixosConfigurations.iso.config.system.build.isoImage} $out/kexec-bundle\n"
+        );
       default = coverage;
     };
     devShells.x86_64-linux.default = pkgs.mkShell {
