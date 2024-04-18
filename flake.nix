@@ -199,7 +199,7 @@
           "mkdir -p $out/hosts\n"
           + (pkgs.lib.concatStringsSep "\n" (pkgs.lib.mapAttrsToList (k: p: "ln -s ${p} $out/hosts/${k}") allClosures))
           + "\nln -s ${self.nixosConfigurations.iso.config.system.build.isoImage} $out/iso\n"
-          + "\nln -s ${self.nixosConfigurations.iso.config.system.build.isoImage} $out/kexec-bundle\n"
+          + "\nln -s ${self.nixosConfigurations.iso.config.formats.kexec-bundle} $out/kexec-bundle\n"
         );
       default = coverage;
     };
