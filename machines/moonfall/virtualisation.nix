@@ -36,9 +36,14 @@ in {
         options kvm ignore_msrs=1
       '';
     };
-    virtualisation.libvirtd = {
-      enable = true;
-    };
+    virtualisation.libvirt.enable = true;
+    virtualisation.libvirt.connections."qemu:///system".domains = [
+      {
+        definition = ./virtualisation/win10vm.xml;
+        active = true;
+      }
+    ];
+
     security.polkit.enable = true;
     security.pam.loginLimits = [
       {
