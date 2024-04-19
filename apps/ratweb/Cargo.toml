@@ -23,7 +23,7 @@ http = "1"
 ratlib = { path = "../../libs/rust/ratlib/" }
 strum = { version = "0.26.2", features = ["derive"] }
 web-sys = "0.3.69"
-chrono = { version = "0.4.37", features = ["serde"] }
+chrono = { version = "0.4.38", features = ["serde"] }
 chrono-tz = { version = "0.9.0", features = ["serde"] }
 
 [features]
