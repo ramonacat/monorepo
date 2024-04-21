@@ -5,6 +5,7 @@
 }: {
   imports = [
     ./installed-base/restic.nix
+    ./installed-base/rat.nix
   ];
   config = {
     services = {
