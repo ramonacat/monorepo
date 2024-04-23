@@ -4,7 +4,7 @@ set -euo pipefail
 
 BRANCH_NAME=$1
 
-nix build ".#everything"
+nix build -L -v ".#everything"
 
 for f in result/hosts/*; do
     host_basename=$(basename "$f")
