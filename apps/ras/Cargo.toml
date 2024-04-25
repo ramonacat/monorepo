@@ -5,7 +5,7 @@ edition = "2021"
 
 [dependencies]
 axum = "0.7.5"
-axum-tracing-opentelemetry = "0.18.0"
+axum-tracing-opentelemetry = "0.18.1"
 opentelemetry = "0.22.0"
 opentelemetry-otlp = "0.15.0"
 opentelemetry_sdk = { version = "0.22.1", features = ["tokio", "rt-tokio"] }
@@ -14,10 +14,10 @@ tracing = "0.1.40"
 tracing-opentelemetry = "0.23.0"
 tracing-subscriber = { version = "0.3.18", features = ["env-filter"] }
 ratlib = { path = "../../libs/rust/ratlib/" }
-serde = { version = "1.0.197", features = ["derive"] }
-chrono = { version = "0.4.37", features = ["serde"] }
+serde = { version = "1.0.198", features = ["derive"] }
+chrono = { version = "0.4.38", features = ["serde"] }
 chrono-tz = { version = "0.9", features = ["serde"] }
-thiserror = "1.0.58"
-serde_json = "1.0.115"
+thiserror = "1.0.59"
+serde_json = "1.0.116"
 tokio-postgres = "0.7.10"
 sqlx = { version = "0.7", features = [ "runtime-tokio", "tls-rustls", "postgres", "migrate" ] }
