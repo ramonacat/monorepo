@@ -330,6 +330,40 @@ mod tests {
     }
 
     #[test]
+    pub fn can_find_doing() {
+        let mut todo = Todo::new(
+            Id(1234),
+            "aaa".to_string(),
+            Priority::High,
+            vec![],
+            Duration::from_secs(12),
+            None,
+        );
+        todo.transition_to(ratlib::todo::Status::Doing);
+
+        let data_file_reader = MockStore(Mutex::new((
+            vec![
+                todo.clone(),
+                Todo::new(
+                    Id(2),
+                    "basdf".to_string(),
+                    Priority::High,
+                    vec![],
+                    Duration::from_secs(15),
+                    None,
+                ),
+            ],
+            vec![],
+        )));
+
+        let store = Store::new(Arc::new(data_file_reader));
+
+        let doing = store.find_doing();
+
+        assert_eq!(vec![todo], doing);
+    }
+
+    #[test]
     pub fn can_save() {
         let todo = Todo::new(
             Id(1234),

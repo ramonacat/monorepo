@@ -8,9 +8,6 @@
     home-manager.users.ramona = let
       homeDirectory = "/home/ramona";
     in {
-      imports = [
-        ../../modules/home-manager/rat.nix
-      ];
       nixpkgs.config.allowUnfree = true;
       home = {
         inherit homeDirectory;
@@ -29,11 +26,6 @@
       services.gpg-agent.pinentryPackage = lib.mkDefault pkgs.pinentry-curses;
 
       programs = {
-        rat = {
-          enable = true;
-          serverAddress = "http://hallewell:8438/";
-        };
-
         gpg = {
           enable = true;
           publicKeys = [

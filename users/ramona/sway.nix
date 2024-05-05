@@ -191,6 +191,7 @@
               "Print" = "exec '${pkgs.slurp}/bin/slurp | ${pkgs.grim}/bin/grim -g - - | ${pkgs.wl-clipboard}/bin/wl-copy'";
             };
           bars = [];
+          output."*".bg = "${./wallpaper.jpg} fill #000000";
           colors = {
             focused = {
               background = "#19323C";
