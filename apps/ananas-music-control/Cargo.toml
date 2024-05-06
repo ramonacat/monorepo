@@ -14,7 +14,7 @@ fontdue = "0.8.0"
 opentelemetry = "0.22.0"
 opentelemetry-otlp = "0.15.0"
 opentelemetry_sdk = { version = "0.22.1", features = ["tokio"] }
-rodio = "0.17.3"
+rodio = "0.18.0"
 rppal = "0.17.1"
 thiserror = "1.0.59"
 tokio = { version = "1.37.0", features = ["full"] }
