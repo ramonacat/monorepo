@@ -206,6 +206,7 @@
           + (pkgs.lib.concatStringsSep "\n" (pkgs.lib.mapAttrsToList (k: p: "ln -s ${p} $out/hosts/${k}") allClosures))
           + "\nln -s ${self.nixosConfigurations.iso.config.system.build.isoImage} $out/iso\n"
           + "\nln -s ${self.nixosConfigurations.iso.config.formats.kexec-bundle} $out/kexec-bundle\n"
+          + "\nln -s ${self.nixosConfigurations.ananas.config.formats.sd-aarch64} $out/ananas-sd-image\n"
         );
       default = coverage;
     };
@@ -414,9 +415,10 @@
         pkgs = pkgsAarch64;
         system = "aarch64-linux";
         modules = [
-          lix-module.nixosModules.default
-          home-manager.nixosModules.home-manager
           agenix.nixosModules.default
+          home-manager.nixosModules.home-manager
+          lix-module.nixosModules.default
+          nixos-generators.nixosModules.all-formats
           nixos-hardware.nixosModules.raspberry-pi-4
 
           (import ./modules/base.nix {inherit nixpkgs;})
