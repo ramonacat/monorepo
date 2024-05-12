@@ -479,6 +479,7 @@
           ./machines/caligari/minecraft.nix
           ./machines/caligari/networking.nix
           ./machines/caligari/nginx.nix
+          ./machines/caligari/postgresql.nix
           ./machines/caligari/telegraf.nix
           ./modules/bcachefs.nix
           ./modules/installed-base.nix
