@@ -14,7 +14,7 @@
       extraConfig = {
         agent.omit_hostname = false;
         outputs.postgresql = {
-          connection = "postgres://telegraf:$DB_PASSWORD@hallewell/telegraf";
+          connection = "postgres://telegraf:$DB_PASSWORD@caligari/telegraf";
           timestamp_column_type = "timestamp with time zone";
           tag_cache_size = 100000;
         };

@@ -305,10 +305,22 @@ mod tests {
             Duration::from_secs(12),
             None,
         );
+        let mut todo_done = Todo::new(
+            Id(1230),
+            "aaa".to_string(),
+            Priority::High,
+            vec![Requirement::AfterDate(
+                Utc.with_ymd_and_hms(2022, 1, 1, 16, 0, 0).unwrap(),
+            )],
+            Duration::from_secs(12),
+            None,
+        );
+        todo_done.transition_to(ratlib::todo::Status::Done);
 
         let data_file_reader = MockStore(Mutex::new((
             vec![
                 todo.clone(),
+                todo_done,
                 Todo::new(
                     Id(2),
                     "basdf".to_string(),
