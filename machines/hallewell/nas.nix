@@ -56,26 +56,6 @@
       };
     };
 
-    # Backups
-    systemd.services.backup = {
-      after = ["network.target"];
-      description = "Backup the NAS";
-      serviceConfig = {
-        Type = "oneshot";
-        User = "ramona"; # This user must have the b2 credentials configured for rclone
-        ExecStart = "${pkgs.rclone}/bin/rclone --verbose --transfers 32 sync /mnt/nas3/data/ b2:ramona-fun-nas-backup/";
-      };
-    };
-
-    systemd.timers.backup = {
-      wantedBy = ["timers.target"];
-      timerConfig = {
-        OnBootSec = "12h";
-        OnUnitActiveSec = "12h";
-        Unit = "backup.service";
-      };
-    };
-
     hardware.opengl = {
       enable = true;
       extraPackages = with pkgs; [
