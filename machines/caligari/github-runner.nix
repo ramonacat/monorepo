@@ -13,7 +13,7 @@
       name = "caligari-${toString i}";
       value = {
         enable = true;
-        url = "https://github.com/ramonacat/nix-configs";
+        url = "https://github.com/ramonacat/monorepo";
         tokenFile = config.age.secrets.caligari-github-pat-runner-registration.path;
         extraLabels = ["nixos"];
         extraPackages = with pkgs; [openssh];

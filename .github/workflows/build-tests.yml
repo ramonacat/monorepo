@@ -50,5 +50,5 @@ jobs:
         with:
           files: "${{ steps.coverage_files.outputs.files }}"
           token: ${{ secrets.CODECOV_TOKEN }}
-          slug: ramonacat/nix-configs
+          slug: ramonacat/monorepo
           fail_ci_if_error: true
