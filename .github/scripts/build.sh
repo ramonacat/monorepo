@@ -14,8 +14,6 @@ done
 echo "On branch: $BRANCH_NAME"
 if [[ "$BRANCH_NAME" == "main" ]]; then
     scp -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -i ./id_ed25519 -- result/iso/iso/*.iso root@caligari:/var/www/ramona.fun/builds/nixos-latest.iso
-    scp -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -i ./id_ed25519 -- result/kexec-bundle root@caligari:/var/www/ramona.fun/builds/kexec-bundle
-    scp -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -i ./id_ed25519 -- result/ananas-sd-image root@caligari:/var/www/ramona.fun/builds/ananas-sd-image
 
     scp -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -i ./id_ed25519 -- *-closure root@caligari:/var/www/ramona.fun/builds/
 
