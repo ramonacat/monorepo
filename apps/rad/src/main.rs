@@ -1,19 +1,10 @@
 use std::{error::Error, time::Duration};
 
 use ratlib::herd::PostHerdMachine;
-use sqlx::postgres::PgPoolOptions;
 use tokio::time::sleep;
 
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn Error>> {
-    let database_url = std::env::var("DATABASE_URL").unwrap();
-    let pool = PgPoolOptions::new()
-        .max_connections(5)
-        .connect(&database_url)
-        .await?;
-
-    sqlx::migrate!("./migrations/").run(&pool).await?;
-
     let client = reqwest::Client::new();
 
     loop {
