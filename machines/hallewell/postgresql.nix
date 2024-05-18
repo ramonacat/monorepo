@@ -29,9 +29,6 @@ in {
           "auto_explain.log_min_duration" = "250ms";
         };
       };
-      telegraf.extraConfig.inputs.postgresql = {
-        address = "postgres://telegraf:$DB_PASSWORD@hallewell/telegraf";
-      };
 
       restic.backups.postgresql = let
         backupPath = "/mnt/nas3/postgres-backup";
