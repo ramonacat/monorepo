@@ -10,7 +10,7 @@
     };
     services.logind.lidSwitch = "ignore";
     fileSystems."/" = {
-      device = "/dev/sdb1:/dev/sda1";
+      device = "/dev/disk/by-id/ata-Samsung_SSD_850_EVO_250GB_S3R0NF0JA23099Z-part1";
       fsType = "bcachefs";
     };
 
