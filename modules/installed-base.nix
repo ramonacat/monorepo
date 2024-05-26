@@ -22,7 +22,15 @@
       };
     };
     networking.firewall.interfaces.tailscale0.allowedTCPPorts = [22];
-    environment.systemPackages = with pkgs; [pciutils tailscale];
+    environment.systemPackages = with pkgs; [
+      pciutils
+      tailscale
+      (pkgs.writeShellScriptBin "qemu-system-x86_64-uefi" ''
+        qemu-system-x86_64 \
+          -bios ${pkgs.OVMF.fd}/FV/OVMF.fd \
+          "$@"
+      '')
+    ];
     security.polkit.enable = true;
 
     services.udev.packages = with pkgs; [yubikey-personalization libu2f-host];
