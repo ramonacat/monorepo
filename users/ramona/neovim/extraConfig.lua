@@ -57,6 +57,7 @@ lspconfig.terraformls.setup({})
 lspconfig.csharp_ls.setup({})
 lspconfig.nushell.setup({})
 lspconfig.jdtls.setup({})
+lspconfig.phan.setup({})
 lspconfig.volar.setup({
 	filetypes = { "typescript", "javascript", "javascriptreact", "typescriptreact", "vue", "json" },
 })
