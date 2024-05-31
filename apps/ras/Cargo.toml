@@ -9,7 +9,7 @@ axum-tracing-opentelemetry = "0.18.1"
 opentelemetry = "0.23.0"
 opentelemetry-otlp = "0.16.0"
 opentelemetry_sdk = { version = "0.23.0", features = ["tokio", "rt-tokio"] }
-tokio = { version = "1.37.0", features = ["full"] }
+tokio = { version = "1.38.0", features = ["full"] }
 tracing = "0.1.40"
 tracing-opentelemetry = "0.24.0"
 tracing-subscriber = { version = "0.3.18", features = ["env-filter"] }
