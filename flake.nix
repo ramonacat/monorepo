@@ -273,6 +273,7 @@
           ./machines/hallewell/nas.nix
           ./machines/hallewell/networking.nix
           ./machines/hallewell/paperless.nix
+          ./machines/hallewell/photoprism.nix
           ./machines/hallewell/postgresql.nix
           ./machines/hallewell/ras.nix
           ./machines/hallewell/ratweb.nix
