@@ -84,13 +84,11 @@
     ...
   }: let
     packages = {
-      home-automation = import ./packages/home-automation.nix;
       music-control = import ./packages/music-control.nix;
       rad = import ./packages/rad.nix;
       ras = import ./packages/ras.nix;
       rat = import ./packages/rat.nix;
       ratweb = import ./packages/ratweb.nix;
-      hat = import ./packages/hat.nix;
     };
     libraries = {
       ratlib = import ./packages/libraries/ratlib.nix;
@@ -321,33 +319,6 @@
           ./modules/workstation.nix
           ./modules/x86-builder.nix
           ./users/ramona/sway.nix
-          ./users/root/base.nix
-        ];
-      };
-      shadowmend = nixpkgs.lib.nixosSystem {
-        inherit pkgs;
-        system = "x86_64-linux";
-        modules = [
-          lix-module.nixosModules.default
-          home-manager.nixosModules.home-manager
-          agenix.nixosModules.default
-
-          (import ./modules/base.nix {inherit nixpkgs;})
-
-          ./machines/shadowmend/hardware.nix
-          ./machines/shadowmend/home-automation.nix
-          ./machines/shadowmend/networking.nix
-          ./machines/shadowmend/rabbitmq.nix
-          ./machines/shadowmend/users/ramona.nix
-          ./machines/shadowmend/zigbee2mqtt.nix
-          ./modules/bcachefs.nix
-          ./modules/installed-base.nix
-          ./modules/nas-client.nix
-          ./modules/rad.nix
-          ./modules/telegraf.nix
-          ./modules/updates.nix
-          ./modules/zram-swap.nix
-          ./users/ramona/installed.nix
           ./users/root/base.nix
         ];
       };
