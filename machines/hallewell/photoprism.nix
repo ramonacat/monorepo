@@ -14,7 +14,7 @@
     address = "0.0.0.0";
   };
 
-  networking.firewall.allowedTCPPorts = [2342];
+  networking.firewall.interfaces.tailscale0.allowedTCPPorts = [2342];
 
   services.restic.backups.photoprism = let
     backupPath = "/mnt/nas3/photoprism/";

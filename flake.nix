@@ -267,6 +267,7 @@
           (import ./modules/base.nix {inherit nixpkgs;})
 
           ./machines/hallewell/arrsuite.nix
+          ./machines/hallewell/navidrome.nix
           ./machines/hallewell/grafana.nix
           ./machines/hallewell/hardware.nix
           ./machines/hallewell/minio.nix
