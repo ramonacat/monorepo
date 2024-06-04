@@ -19,7 +19,7 @@
       # this is needed for iotop
       "delayacct"
     ];
-    boot.kernelPackages = lib.mkOverride 500 pkgs.linuxPackages_testing;
+    boot.kernelPackages = lib.mkOverride 500 pkgs.linuxPackages_latest;
     security.sudo.wheelNeedsPassword = true;
     users.mutableUsers = false;
 
