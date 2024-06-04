@@ -10,6 +10,10 @@ _: {
         enable = true;
         user = "nas";
       };
+      readarr = {
+        enable = true;
+        user = "nas";
+      };
     };
 
     fileSystems."/var/lib/transmission/Downloads" = {
@@ -22,6 +26,7 @@ _: {
       9117 # jackett
       7878 # radarr
       8990 # sonarr
+      8787 # readarr
     ];
   };
 }
