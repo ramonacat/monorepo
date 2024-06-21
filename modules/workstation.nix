@@ -15,30 +15,7 @@
           enable = true;
         };
       };
-
-      pipewire.extraConfig.pipewire = {
-        "99-roc-sink" = {
-          "context.modules" = [
-            {
-              name = "libpipewire-module-roc-sink";
-              args = {
-                "fec.code" = "rs8m";
-                "remote.ip" = "10.69.10.29";
-                "remote.source.port" = 10001;
-                "remote.repair.port" = 10002;
-                "remote.control.port" = 10003;
-                "sink.name" = "moonfall";
-                "sink.props" = {
-                  "node.name" = "moonfall-sink";
-                };
-              };
-            }
-          ];
-        };
-      };
     };
-    networking.firewall.allowedUDPPorts = [10001 10002 10003];
-    networking.firewall.allowedTCPPorts = [10001 10002 10003];
     boot.plymouth = {
       enable = true;
       theme = "breeze";
