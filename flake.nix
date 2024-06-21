@@ -2,11 +2,6 @@
   description = "Root flake for my machines";
 
   inputs = {
-    NixVirt = {
-      url = "https://flakehub.com/f/AshleyYakeley/NixVirt/*.tar.gz";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
-
     home-manager = {
       url = "github:nix-community/home-manager";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -67,7 +62,6 @@
   };
 
   outputs = {
-    NixVirt,
     agenix,
     alacritty-theme,
     crane,
@@ -289,38 +283,6 @@
           ./modules/telegraf.nix
           ./modules/updates.nix
           ./users/ramona/installed.nix
-          ./users/root/base.nix
-        ];
-      };
-      moonfall = nixpkgs.lib.nixosSystem {
-        inherit pkgs;
-        system = "x86_64-linux";
-        modules = [
-          lix-module.nixosModules.default
-          home-manager.nixosModules.home-manager
-          agenix.nixosModules.default
-          NixVirt.nixosModules.default
-
-          (import ./modules/base.nix {inherit nixpkgs;})
-
-          ./machines/moonfall/hardware.nix
-          ./machines/moonfall/networking.nix
-          ./machines/moonfall/users/ramona_gui.nix
-          ./machines/moonfall/virtualisation.nix
-          ./modules/android-dev.nix
-          ./modules/arm-builder.nix
-          ./modules/greetd.nix
-          ./modules/installed-base.nix
-          ./modules/nas-client.nix
-          ./modules/rad.nix
-          ./modules/steam.nix
-          ./modules/syncthing.nix
-          ./modules/telegraf.nix
-          ./modules/terraform-tokens.nix
-          ./modules/updates.nix
-          ./modules/workstation.nix
-          ./modules/x86-builder.nix
-          ./users/ramona/sway.nix
           ./users/root/base.nix
         ];
       };
