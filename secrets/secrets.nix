@@ -26,6 +26,5 @@ in {
   "rad-environment.age".publicKeys = users ++ allMachines;
   "ras-environment.age".publicKeys = users ++ [hallewell];
   "transmission-credentials.age".publicKeys = users ++ [shadowsoul];
-  "lix-repo-credentials.age".publicKeys = users ++ allMachines;
   "photoprism-password.age".publicKeys = users ++ [hallewell];
 }
