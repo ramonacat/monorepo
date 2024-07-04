@@ -226,6 +226,14 @@
       ];
       LIBCLANG_PATH = "${pkgs.libclang.lib}/lib";
     };
+    homeConfigurations.ramona = home-manager.lib.homeManagerConfiguration {
+      inherit pkgs;
+
+      modules = [
+        ./users/ramona/home-manager/base.nix
+        ./users/ramona/home-manager/wsl-moonfall.nix
+      ];
+    };
     nixosConfigurations = {
       redwood = nixpkgs.lib.nixosSystem {
         pkgs = pkgsAarch64;
