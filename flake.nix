@@ -226,6 +226,14 @@
       ];
       LIBCLANG_PATH = "${pkgs.libclang.lib}/lib";
     };
+    homeConfigurations.ramona = home-manager.lib.homeManagerConfiguration {
+      inherit pkgs;
+
+      modules = [
+        ./users/ramona/home-manager/base.nix
+        ./users/ramona/home-manager/wsl-moonfall.nix
+      ];
+    };
     nixosConfigurations = {
       redwood = nixpkgs.lib.nixosSystem {
         pkgs = pkgsAarch64;
@@ -366,33 +374,6 @@
           ./modules/updates.nix
           ./modules/zram-swap.nix
           ./users/ramona/installed.nix
-          ./users/root/installed.nix
-        ];
-      };
-      evillian = nixpkgs.lib.nixosSystem {
-        inherit pkgs;
-        system = "x86_64-linux";
-        modules = [
-          lix-module.nixosModules.default
-          home-manager.nixosModules.home-manager
-          agenix.nixosModules.default
-          nixos-hardware.nixosModules.microsoft-surface-go
-          lanzaboote.nixosModules.lanzaboote
-
-          (import ./modules/base.nix {inherit nixpkgs;})
-
-          ./machines/evillian/hardware.nix
-          ./machines/evillian/networking.nix
-          ./modules/greetd.nix
-          ./modules/installed-base.nix
-          ./modules/nas-client.nix
-          ./modules/rad.nix
-          ./modules/syncthing.nix
-          ./modules/telegraf.nix
-          ./modules/updates.nix
-          ./modules/workstation.nix
-          ./modules/zram-swap.nix
-          ./users/ramona/sway.nix
           ./users/root/installed.nix
         ];
       };
