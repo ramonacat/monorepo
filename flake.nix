@@ -12,12 +12,6 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
-    lanzaboote = {
-      url = "github:nix-community/lanzaboote/v0.3.0";
-
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
-
     lix = {
       url = "git+https://git.lix.systems/lix-project/lix";
       flake = false;
@@ -67,7 +61,6 @@
     crane,
     disko,
     home-manager,
-    lanzaboote,
     lix-module,
     nix-minecraft,
     nixos-generators,
@@ -317,39 +310,6 @@
           ./modules/zram-swap.nix
           ./users/ramona/installed.nix
           ./users/root/base.nix
-        ];
-      };
-      angelsin = nixpkgs.lib.nixosSystem {
-        inherit pkgs;
-        system = "x86_64-linux";
-        modules = [
-          lix-module.nixosModules.default
-          home-manager.nixosModules.home-manager
-          agenix.nixosModules.default
-          nixos-hardware.nixosModules.framework-13-7040-amd
-          lanzaboote.nixosModules.lanzaboote
-
-          (import ./modules/base.nix {inherit nixpkgs;})
-
-          ./machines/angelsin/hardware.nix
-          ./machines/angelsin/networking.nix
-          ./machines/angelsin/users/ramona_gui.nix
-          ./machines/angelsin/virtual-screen.nix
-          ./modules/android-dev.nix
-          ./modules/arm-builder.nix
-          ./modules/greetd.nix
-          ./modules/installed-base.nix
-          ./modules/nas-client.nix
-          ./modules/rad.nix
-          ./modules/steam.nix
-          ./modules/syncthing.nix
-          ./modules/telegraf.nix
-          ./modules/terraform-tokens.nix
-          ./modules/updates.nix
-          ./modules/workstation.nix
-          ./modules/x86-builder.nix
-          ./users/ramona/sway.nix
-          ./users/root/installed.nix
         ];
       };
       ananas = nixpkgs.lib.nixosSystem {
