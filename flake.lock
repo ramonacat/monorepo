@@ -103,26 +103,6 @@
         "type": "github"
       }
     },
-    "disko": {
-      "inputs": {
-        "nixpkgs": [
-          "nixpkgs"
-        ]
-      },
-      "locked": {
-        "lastModified": 1720402389,
-        "narHash": "sha256-zJv6euDOrJWMHBhxfp/ay+Dvjwpe8YtMuEI5b09bxmo=",
-        "owner": "nix-community",
-        "repo": "disko",
-        "rev": "f1a00e7f55dc266ef286cc6fc8458fa2b5ca2414",
-        "type": "github"
-      },
-      "original": {
-        "owner": "nix-community",
-        "repo": "disko",
-        "type": "github"
-      }
-    },
     "flake-compat": {
       "flake": false,
       "locked": {
@@ -348,22 +328,6 @@
         "type": "github"
       }
     },
-    "nixos-hardware": {
-      "locked": {
-        "lastModified": 1720429258,
-        "narHash": "sha256-d6JI5IgJ1xdrk7DvYVx7y8ijcYz5I1nhCwOiDP6cq00=",
-        "owner": "NixOS",
-        "repo": "nixos-hardware",
-        "rev": "72d3c007024ce47d838bb38693c8773812f54bf2",
-        "type": "github"
-      },
-      "original": {
-        "owner": "NixOS",
-        "ref": "master",
-        "repo": "nixos-hardware",
-        "type": "github"
-      }
-    },
     "nixpkgs": {
       "locked": {
         "lastModified": 1720459846,
@@ -402,13 +366,11 @@
         "agenix": "agenix",
         "alacritty-theme": "alacritty-theme",
         "crane": "crane",
-        "disko": "disko",
         "home-manager": "home-manager_2",
         "lix": "lix",
         "lix-module": "lix-module",
         "nix-minecraft": "nix-minecraft",
         "nixos-generators": "nixos-generators",
-        "nixos-hardware": "nixos-hardware",
         "nixpkgs": "nixpkgs",
         "rust-overlay": "rust-overlay"
       }

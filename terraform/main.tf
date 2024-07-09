@@ -11,7 +11,7 @@ terraform {
     skip_requesting_account_id  = true
     use_path_style              = true
 
-    shared_credentials_files = ["/run/agenix/minio-terraform-state"]
+    shared_credentials_files = ["/home/ramona/minio-terraform-state"]
 
     endpoints = {
       s3 = "http://hallewell:9000/"
