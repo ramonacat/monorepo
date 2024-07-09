@@ -23,11 +23,6 @@
       inputs.lix.follows = "lix";
     };
 
-    disko = {
-      url = "github:nix-community/disko";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
-
     nixos-generators = {
       url = "github:nix-community/nixos-generators";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -45,9 +40,6 @@
       url = "github:Infinidoge/nix-minecraft";
       inputs.nixpkgs.follows = "nixpkgs";
     };
-    nixos-hardware = {
-      url = "github:NixOS/nixos-hardware/master";
-    };
     rust-overlay = {
       url = "github:oxalica/rust-overlay";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -59,12 +51,10 @@
     agenix,
     alacritty-theme,
     crane,
-    disko,
     home-manager,
     lix-module,
     nix-minecraft,
     nixos-generators,
-    nixos-hardware,
     nixpkgs,
     rust-overlay,
     self,
@@ -228,29 +218,6 @@
       ];
     };
     nixosConfigurations = {
-      redwood = nixpkgs.lib.nixosSystem {
-        pkgs = pkgsAarch64;
-        system = "aarch64-linux";
-        modules = [
-          lix-module.nixosModules.default
-          home-manager.nixosModules.home-manager
-          agenix.nixosModules.default
-          disko.nixosModules.disko
-
-          (import ./modules/base.nix {inherit nixpkgs;})
-          ./users/ramona/installed.nix
-          ./users/root/base.nix
-
-          ./machines/redwood/hardware.nix
-          ./machines/redwood/networking.nix
-          ./modules/bcachefs.nix
-          ./modules/installed-base.nix
-          ./modules/rad.nix
-          ./modules/telegraf.nix
-          ./modules/updates.nix
-          ./modules/zram-swap.nix
-        ];
-      };
       hallewell = nixpkgs.lib.nixosSystem {
         inherit pkgs;
         system = "x86_64-linux";
@@ -312,31 +279,6 @@
           ./users/root/base.nix
         ];
       };
-      ananas = nixpkgs.lib.nixosSystem {
-        pkgs = pkgsAarch64;
-        system = "aarch64-linux";
-        modules = [
-          agenix.nixosModules.default
-          home-manager.nixosModules.home-manager
-          lix-module.nixosModules.default
-          nixos-generators.nixosModules.all-formats
-          nixos-hardware.nixosModules.raspberry-pi-4
-
-          (import ./modules/base.nix {inherit nixpkgs;})
-
-          ./machines/ananas/hardware.nix
-          ./machines/ananas/music-control.nix
-          ./machines/ananas/networking.nix
-          ./modules/installed-base.nix
-          ./modules/nas-client.nix
-          ./modules/rad.nix
-          ./modules/telegraf.nix
-          ./modules/updates.nix
-          ./modules/zram-swap.nix
-          ./users/ramona/installed.nix
-          ./users/root/installed.nix
-        ];
-      };
       caligari = nixpkgs.lib.nixosSystem {
         inherit pkgs;
         system = "x86_64-linux";
@@ -357,7 +299,6 @@
           ./machines/caligari/telegraf.nix
           ./modules/bcachefs.nix
           ./modules/installed-base.nix
-          ./modules/arm-builder.nix
           ./modules/minecraft.nix
           ./modules/rad.nix
           ./modules/telegraf.nix
