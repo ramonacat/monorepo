@@ -7,7 +7,4 @@ _: {
       "100.0.0.0/8"
     ];
   };
-
-  # FIXME remove once tailscale is running
-  networking.firewall.allowedTCPPorts = [22];
 }

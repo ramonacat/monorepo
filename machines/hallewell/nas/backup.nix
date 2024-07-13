@@ -6,7 +6,7 @@
         Persistent = true;
         RandomizedDelaySec = "30m";
       };
-      repository = "sftp:u401821@u401821.your-storagebox.de:${config.networking.hostName}/";
+      repository = "sftp:root@blackwood:/var/backups/${config.networking.hostName}/";
       passwordFile = config.age.secrets."restic-repository-password".path;
       paths = [
         "/mnt/nas3/data/"
