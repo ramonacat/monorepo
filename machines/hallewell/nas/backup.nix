@@ -1,5 +1,10 @@
 {config, ...}: {
   config = {
+    fileSystems."/var/backups" = {
+      device = "blackwood:/var/backups";
+      fsType = "nfs";
+      options = ["x-systemd.after=tailscaled.service"];
+    };
     services.restic.backups.nas = {
       timerConfig = {
         OnCalendar = "*-*-* 00/1:00:00";
@@ -7,7 +12,7 @@
         RandomizedDelaySec = "30m";
       };
       # TODO use a DNS name instead
-      repository = "sftp:root@37.27.125.251:/var/backups/${config.networking.hostName}/";
+      repository = "/var/backups/${config.networking.hostName}/";
       passwordFile = config.age.secrets."restic-repository-password".path;
       paths = [
         "/mnt/nas3/data/"
