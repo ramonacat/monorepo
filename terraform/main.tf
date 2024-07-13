@@ -34,6 +34,6 @@ provider "hcloud" {
 }
 
 provider "google" {
-  project     = "ramona-infra"
-  region      = "europe-west10"
+  project = "ramona-infra"
+  region  = "europe-west10"
 }
