@@ -316,7 +316,6 @@
 
           (import ./modules/base.nix {inherit nixpkgs;})
 
-          ./machines/caligari/github-runner.nix
           ./machines/caligari/hardware.nix
           ./machines/caligari/minecraft.nix
           ./machines/caligari/networking.nix
