@@ -65,7 +65,10 @@ async fn main() -> Result<(), Box<dyn Error>> {
         .to_string();
 
     let (postgres_client, postgres_connection) = tokio_postgres::connect(
-        &format!("host=caligari user=telegraf password={}", postgres_password),
+        &format!(
+            "host=blackwood user=telegraf password={}",
+            postgres_password
+        ),
         NoTls,
     )
     .await
