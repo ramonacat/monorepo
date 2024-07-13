@@ -7,7 +7,7 @@
         RandomizedDelaySec = "30m";
       };
       # TODO use a DNS name instead
-      repository = "sftp:root@37.27.125.251/var/backups/${config.networking.hostName}/";
+      repository = "sftp:root@37.27.125.251:/var/backups/${config.networking.hostName}/";
       passwordFile = config.age.secrets."restic-repository-password".path;
       paths = [
         "/mnt/nas3/data/"
