@@ -264,11 +264,13 @@
           agenix.nixosModules.default
 
           (import ./modules/base.nix {inherit nixpkgs;})
-          ./machines/blackwood/hardware.nix
-          ./machines/blackwood/networking.nix
           ./machines/blackwood/backup-target.nix
           ./machines/blackwood/github-runner.nix
-
+          ./machines/blackwood/hardware.nix
+          ./machines/blackwood/networking.nix
+          ./machines/blackwood/nginx.nix
+          ./machines/blackwood/postgresql.nix
+          ./machines/blackwood/telegraf.nix
           ./modules/bcachefs.nix
           ./modules/installed-base.nix
           ./modules/rad.nix
