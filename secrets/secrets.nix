@@ -13,7 +13,7 @@ in {
   "minio-tempo.age".publicKeys = users ++ [hallewell];
   "telegraf-database.age".publicKeys = users ++ allMachines;
   "universal-root.age".publicKeys = users ++ allMachines;
-  "caligari-github-pat-runner-registration.age".publicKeys = users ++ [caligari];
+  "caligari-github-pat-runner-registration.age".publicKeys = users ++ [caligari blackwood];
   "postgres-backups-rclone.age".publicKeys = users ++ allMachines;
   "postgres-backups-env.age".publicKeys = users ++ allMachines;
   "restic-repository-password.age".publicKeys = users ++ allMachines;

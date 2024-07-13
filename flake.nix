@@ -267,6 +267,7 @@
           ./machines/blackwood/hardware.nix
           ./machines/blackwood/networking.nix
           ./machines/blackwood/backup-target.nix
+          ./machines/blackwood/github-runner.nix
 
           ./modules/bcachefs.nix
           ./modules/installed-base.nix
