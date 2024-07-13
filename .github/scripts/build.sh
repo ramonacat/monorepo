@@ -21,7 +21,7 @@ if [[ "$BRANCH_NAME" == "main" ]]; then
         CLOSURE=$(tr -d "\n" < "$filename")
         GCROOT="/nix/var/nix/gcroots/$filename"
 
-        ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -i ./id_ed25519 root@caligari -- "rm $GCROOT; ln -s $CLOSURE $GCROOT"
+        ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -i ./id_ed25519 root@blackwood -- "rm $GCROOT; ln -s $CLOSURE $GCROOT"
     done
 fi
 
