@@ -262,17 +262,20 @@
           lix-module.nixosModules.default
           home-manager.nixosModules.home-manager
           agenix.nixosModules.default
+          nix-minecraft.nixosModules.minecraft-servers
 
           (import ./modules/base.nix {inherit nixpkgs;})
           ./machines/blackwood/backup-target.nix
           ./machines/blackwood/github-runner.nix
           ./machines/blackwood/hardware.nix
+          ./machines/blackwood/minecraft.nix
           ./machines/blackwood/networking.nix
           ./machines/blackwood/nginx.nix
           ./machines/blackwood/postgresql.nix
           ./machines/blackwood/telegraf.nix
           ./modules/bcachefs.nix
           ./modules/installed-base.nix
+          ./modules/minecraft.nix
           ./modules/rad.nix
           ./modules/telegraf.nix
           ./modules/updates.nix
@@ -312,19 +315,14 @@
           lix-module.nixosModules.default
           home-manager.nixosModules.home-manager
           agenix.nixosModules.default
-          nix-minecraft.nixosModules.minecraft-servers
 
           (import ./modules/base.nix {inherit nixpkgs;})
 
           ./machines/caligari/hardware.nix
-          ./machines/caligari/minecraft.nix
           ./machines/caligari/networking.nix
-          ./machines/caligari/nginx.nix
           ./machines/caligari/postgresql.nix
-          ./machines/caligari/telegraf.nix
           ./modules/bcachefs.nix
           ./modules/installed-base.nix
-          ./modules/minecraft.nix
           ./modules/rad.nix
           ./modules/telegraf.nix
           ./modules/updates.nix
