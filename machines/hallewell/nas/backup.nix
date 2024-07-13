@@ -6,7 +6,8 @@
         Persistent = true;
         RandomizedDelaySec = "30m";
       };
-      repository = "sftp:root@blackwood:/var/backups/${config.networking.hostName}/";
+      # TODO use a DNS name instead
+      repository = "sftp:root@:37.27.125.251/var/backups/${config.networking.hostName}/";
       passwordFile = config.age.secrets."restic-repository-password".path;
       paths = [
         "/mnt/nas3/data/"
