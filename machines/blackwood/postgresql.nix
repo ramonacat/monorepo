@@ -41,7 +41,7 @@ in {
           Persistent = true;
           RandomizedDelaySec = "3h";
         };
-        repository = "b2:ramona-postgres-backups:/${config.networking.hostName}/";
+        repository = "b2:ramona-postgres-backups:/caligari/";
         rcloneConfigFile = config.age.secrets."postgres-backups-rclone".path;
         environmentFile = config.age.secrets."postgres-backups-env".path;
         backupPrepareCommand = ''
