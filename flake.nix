@@ -201,6 +201,7 @@
         wasm-bindgen-cli
         udev.dev
         postgresql_16
+        nil
 
         (pkgs.rust-bin.stable.latest.default.override {
           extensions = ["rust-src" "llvm-tools-preview"];
@@ -252,6 +253,27 @@
           ./modules/updates.nix
           ./users/ramona/installed.nix
           ./users/root/base.nix
+        ];
+      };
+      blackwood = nixpkgs.lib.nixosSystem {
+        inherit pkgs;
+
+        modules = [
+          lix-module.nixosModules.default
+          home-manager.nixosModules.home-manager
+          agenix.nixosModules.default
+
+          (import ./modules/base.nix {inherit nixpkgs;})
+          ./machines/blackwood/hardware.nix
+          ./machines/blackwood/networking.nix
+
+          ./modules/bcachefs.nix
+          ./modules/installed-base.nix
+          ./modules/rad.nix
+          ./modules/telegraf.nix
+          ./modules/updates.nix
+          ./users/ramona/installed.nix
+          ./users/root/installed.nix
         ];
       };
       shadowsoul = nixpkgs.lib.nixosSystem {
