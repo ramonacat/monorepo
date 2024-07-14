@@ -26,6 +26,6 @@ resource "google_dns_record_set" "TXT-luczkiewi-cz" {
   managed_zone = google_dns_managed_zone.luczkiewi-cz.name
 
   rrdatas = [
-    "v=spf1 include:_spf.google.com ~all"
+    "\"v=spf1 include:_spf.google.com ~all\""
   ]
 }
