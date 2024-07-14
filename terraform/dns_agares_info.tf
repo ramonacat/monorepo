@@ -26,6 +26,6 @@ resource "google_dns_record_set" "TXT-agares-info" {
   managed_zone = google_dns_managed_zone.agares-info.name
 
   rrdatas = [
-    "v=spf1 include:_spf.google.com ~all"
+    "\"v=spf1 include:_spf.google.com ~all\""
   ]
 }
