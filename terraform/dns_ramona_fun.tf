@@ -49,3 +49,51 @@ resource "google_dns_record_set" "ramona-fun" {
   type    = "A"
   rrdatas = [var.blackwood_ip_address]
 }
+
+resource "google_dns_record_set" "MX-ramona-fun" {
+  name         = google_dns_managed_zone.ramona-fun.dns_name
+  managed_zone = google_dns_managed_zone.ramona-fun.name
+  ttl          = "60"
+  type         = "MX"
+
+  rrdatas = [
+    "10 in1-smtp.messagingengine.com.",
+    "in2-smtp.messagingengine.com"
+  ]
+}
+
+resource "google_dns_record_set" "CNAME-fm1-_domainkey-ramona-fun" {
+  name         = "fm1._domainkey.${google_dns_managed_zone.ramona-fun.dns_name}"
+  managed_zone = google_dns_managed_zone.ramona-fun.name
+  type         = "A"
+  ttl          = "60"
+
+  rrdatas = ["fm1.ramona.fun.dkim.fmhosted.com"]
+}
+
+resource "google_dns_record_set" "CNAME-fm2-_domainkey-ramona-fun" {
+  name         = "fm2._domainkey.${google_dns_managed_zone.ramona-fun.dns_name}"
+  managed_zone = google_dns_managed_zone.ramona-fun.name
+  type         = "A"
+  ttl          = "60"
+
+  rrdatas = ["fm2.ramona.fun.dkim.fmhosted.com"]
+}
+
+resource "google_dns_record_set" "CNAME-fm3-_domainkey-ramona-fun" {
+  name         = "fm3._domainkey.${google_dns_managed_zone.ramona-fun.dns_name}"
+  managed_zone = google_dns_managed_zone.ramona-fun.name
+  type         = "A"
+  ttl          = "60"
+
+  rrdatas = ["fm3.ramona.fun.dkim.fmhosted.com"]
+}
+
+resource "google_dns_record_set" "TXT-ramona-fun" {
+  name         = google_dns_managed_zone.ramona-fun.dns_name
+  managed_zone = google_dns_managed_zone.ramona-fun.name
+  ttl          = "60"
+  type         = "TXT"
+
+  rrdatas = ["v=spf1 include:spf.messagingengine.com ?all"]
+}
