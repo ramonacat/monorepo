@@ -16,6 +16,7 @@
       ripgrep
       unzip
       yt-dlp
+      pkgs.ramona.rat
     ];
   };
   services.gpg-agent.pinentryPackage = lib.mkDefault pkgs.pinentry-curses;
