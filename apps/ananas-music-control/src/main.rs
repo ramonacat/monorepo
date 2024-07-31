@@ -5,7 +5,7 @@ use std::{
 };
 
 use fontdue::{Font, FontSettings};
-use opentelemetry::KeyValue;
+use opentelemetry::{trace::Tracer, trace::TracerProvider, KeyValue};
 use opentelemetry_otlp::WithExportConfig;
 use opentelemetry_sdk::Resource;
 use rppal::{i2c::I2c, spi::Mode};
@@ -45,16 +45,15 @@ async fn main() {
                 .tonic()
                 .with_endpoint("http://hallewell:4317/"),
         )
-        .with_trace_config(
-            opentelemetry_sdk::trace::config().with_resource(Resource::new(vec![KeyValue::new(
-                "service.name",
-                "music-control",
-            )])),
-        )
+        .with_trace_config(opentelemetry_sdk::trace::Config::default().with_resource(
+            Resource::new(vec![KeyValue::new("service.name", "music-control")]),
+        ))
         .install_simple()
         .unwrap();
+    opentelemetry::global::set_tracer_provider(tracer.clone());
+    let tracer = tracer.tracer("ananas-music-control");
 
-    let tracing_layer = tracing_opentelemetry::layer().with_tracer(tracer);
+    let tracing_layer = tracing_opentelemetry::OpenTelemetryLayer::default().with_tracer(tracer);
     Registry::default()
         .with(tracing_layer.with_filter(LevelFilter::INFO))
         .init();
