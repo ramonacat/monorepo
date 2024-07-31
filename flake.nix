@@ -303,7 +303,6 @@
           ./modules/rad.nix
           ./modules/telegraf.nix
           ./modules/updates.nix
-          ./modules/zram-swap.nix
           ./users/ramona/installed.nix
           ./users/root/base.nix
         ];
