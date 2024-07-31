@@ -1,0 +1,42 @@
+{
+    "name": "ramona/ras2",
+    "description": "Ramona's Monolithic Server",
+    "license": "MIT",
+    "type": "project",
+    "autoload": {
+        "psr-4": {
+            "Ramona\\Ras2\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "Tests\\Ramona\\Ras2\\": "tests/"
+    },
+    "authors": [
+        {
+            "name": "Ramona Łuczkiewicz",
+            "email": "ja@agares.info"
+        }
+    ],
+    "minimum-stability": "dev",
+    "prefer-stable": true,
+    "require": {
+        "php": "^8.2",
+        "thecodingmachine/safe": "^2.5"
+    },
+    "require-dev": {
+        "phpstan/phpstan": "^1.11",
+        "symplify/easy-coding-standard": "^12.3",
+        "phpstan/phpstan-strict-rules": "^1.6",
+        "phpstan/extension-installer": "^1.4",
+        "psalm/phar": "^5.25",
+        "phpunit/phpunit": "^11.0",
+        "infection/infection": "^0.29.6",
+        "thecodingmachine/phpstan-safe-rule": "^1.2"
+    },
+    "config": {
+        "allow-plugins": {
+            "infection/extension-installer": true,
+            "phpstan/extension-installer": true
+        }
+    }
+}

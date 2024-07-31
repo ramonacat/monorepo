@@ -64,6 +64,7 @@
       music-control = import ./packages/music-control.nix;
       rad = import ./packages/rad.nix;
       ras = import ./packages/ras.nix;
+      ras2 = import ./packages/ras2.nix;
       rat = import ./packages/rat.nix;
       ratweb = import ./packages/ratweb.nix;
     };
@@ -80,10 +81,7 @@
       }: (_: prev: {
         agenix = agenix.packages."${architecture}-linux".default;
         ramona =
-          {
-            lan-mouse = (import ./packages/lan-mouse.nix) {inherit pkgs craneLib;};
-          }
-          // prev.lib.mapAttrs' (name: value: {
+          prev.lib.mapAttrs' (name: value: {
             name = "${name}";
             value = (value {inherit pkgs craneLib;}).package;
           })
@@ -96,14 +94,6 @@
           nix-minecraft.overlay
           alacritty-theme.overlays.default
           (mine "x86_64" {inherit pkgs craneLib;})
-        ];
-      aarch64 =
-        common
-        ++ [
-          (mine "aarch64" {
-            pkgs = pkgsAarch64;
-            craneLib = craneLibAarch64;
-          })
         ];
     };
     pkgsConfig = {
@@ -122,20 +112,20 @@
           };
         };
     };
-    pkgsAarch64 = import nixpkgs {
-      overlays = overlays.aarch64;
-      system = "aarch64-linux";
-      config = pkgsConfig;
-    };
     craneLib = (crane.mkLib pkgs).overrideToolchain rustVersion;
     rustVersion = pkgs.rust-bin.stable.latest.default.override {
       extensions = ["llvm-tools-preview"];
       targets = ["wasm32-unknown-unknown"];
     };
-    rustVersionAarch64 = pkgsAarch64.rust-bin.stable.latest.default.override {extensions = ["llvm-tools-preview"];};
-    craneLibAarch64 = (crane.mkLib pkgsAarch64).overrideToolchain rustVersionAarch64;
 
-    shellScripts = builtins.concatStringsSep " " (builtins.filter (x: pkgs.lib.hasSuffix ".sh" x) (pkgs.lib.filesystem.listFilesRecursive (pkgs.lib.cleanSource ./.)));
+    shellScripts =
+      builtins.concatStringsSep
+      " "
+      (
+        builtins.filter
+        (x: pkgs.lib.hasSuffix ".sh" x && !(pkgs.lib.strings.hasInfix "/vendor/" x))
+        (pkgs.lib.filesystem.listFilesRecursive (pkgs.lib.cleanSource ./.))
+      );
   in {
     formatter.x86_64-linux = pkgs.alejandra;
     checks.x86_64-linux =
@@ -203,6 +193,11 @@
         postgresql_16
         nil
 
+        (pkgs.php82.withExtensions ({
+          enabled,
+          all,
+        }:
+          enabled ++ [all.pcov]))
         (pkgs.rust-bin.stable.latest.default.override {
           extensions = ["rust-src" "llvm-tools-preview"];
           targets = ["aarch64-unknown-linux-gnu" "wasm32-unknown-unknown"];

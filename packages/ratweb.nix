@@ -12,7 +12,7 @@ in
       cargoToml = "${src}/apps/ratweb/Cargo.toml";
       cargoLock = "${src}/apps/ratweb/Cargo.lock";
     };
-    sourceFilter = path: type: craneLib.filterCargoSources path type || (builtins.match ".*\\.scss$" path != null);
+    sourceFilter = path: type: (craneLib.filterCargoSources path type || (builtins.match ".*\\.scss$" path != null));
     buildAdditionalPackageArguments = _: {
       buildInputs = with pkgs; [
         cargo-leptos

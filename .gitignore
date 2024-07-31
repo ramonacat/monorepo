@@ -1,7 +1,10 @@
-result
-.vscode/
 .direnv/
+.idea/
+.phpunit.cache/
+.s.PGSQL.*.lock
+.tmp/
+.vscode/
+result
 target/
 terraform/.terraform/
-.tmp/
-.s.PGSQL.*.lock
+vendor/
