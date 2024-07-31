@@ -16,7 +16,7 @@
         "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIIFwrLwnv2MBsa3Isr54AyFBBeFxMRF3U+lkdU5+ECv9 ramona@caligari" # caligari
         "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIJwvvTZjbvSDU7oK4B5VfsEBann7ktIVj5ShTWoFaGwH ramona@moonfall" # WSL machines
       ];
-      shell = pkgs.nushell;
+      shell = pkgs.bash;
     };
   };
 }
