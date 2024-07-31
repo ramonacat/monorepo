@@ -15,6 +15,7 @@ use axum::{
 use axum_tracing_opentelemetry::middleware::{OtelAxumLayer, OtelInResponseLayer};
 use datafile::DefaultDataFileReader;
 use maintenance::MonitoringMaintainer;
+use opentelemetry::trace::TracerProvider;
 use opentelemetry::KeyValue;
 use opentelemetry_otlp::WithExportConfig;
 use opentelemetry_sdk::{runtime::Tokio, Resource};
@@ -34,10 +35,13 @@ async fn main() -> Result<(), Box<dyn Error>> {
                 .with_endpoint("http://hallewell:4317"),
         )
         .with_trace_config(
-            opentelemetry_sdk::trace::config()
+            opentelemetry_sdk::trace::Config::default()
                 .with_resource(Resource::new(vec![KeyValue::new("service.name", "ras")])),
         )
         .install_batch(Tokio)?;
+    opentelemetry::global::set_tracer_provider(tracer.clone());
+
+    let tracer = tracer.tracer("ras");
 
     let tracing_layer = tracing_opentelemetry::layer().with_tracer(tracer);
 
