@@ -303,31 +303,8 @@
           ./modules/rad.nix
           ./modules/telegraf.nix
           ./modules/updates.nix
-          ./modules/zram-swap.nix
           ./users/ramona/installed.nix
           ./users/root/base.nix
-        ];
-      };
-      caligari = nixpkgs.lib.nixosSystem {
-        inherit pkgs;
-        system = "x86_64-linux";
-        modules = [
-          lix-module.nixosModules.default
-          home-manager.nixosModules.home-manager
-          agenix.nixosModules.default
-
-          (import ./modules/base.nix {inherit nixpkgs;})
-
-          ./machines/caligari/hardware.nix
-          ./machines/caligari/networking.nix
-          ./machines/caligari/postgresql.nix
-          ./modules/bcachefs.nix
-          ./modules/installed-base.nix
-          ./modules/rad.nix
-          ./modules/telegraf.nix
-          ./modules/updates.nix
-          ./users/ramona/installed.nix
-          ./users/root/installed.nix
         ];
       };
       iso = nixpkgs.lib.nixosSystem {

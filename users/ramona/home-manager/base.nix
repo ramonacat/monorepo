@@ -12,11 +12,9 @@
       agenix
       atop
       jq
-      pulseaudio
       ripgrep
       unzip
-      yt-dlp
-      pkgs.ramona.rat
+      ramona.rat
     ];
   };
   services.gpg-agent.pinentryPackage = lib.mkDefault pkgs.pinentry-curses;
@@ -60,19 +58,8 @@
   programs.direnv.enable = true;
 
   programs = {
-    nushell = {
+    bash = {
       enable = true;
-      configFile.source = ../shell.nu;
-    };
-    starship = {
-      enable = true;
-      settings = {
-        add_newline = true;
-        character = {
-          success_symbol = "[➜](bold green)";
-          error_symbol = "[➜](bold red)";
-        };
-      };
     };
   };
 
