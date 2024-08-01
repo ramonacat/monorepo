@@ -17,6 +17,7 @@ def "main start" [] {
 
         createdb -h $env.PWD rad
         createdb -h $env.PWD ras
+        createdb -h $env.PWD ras2
     }
 }
 
@@ -25,7 +26,7 @@ def "main stop" [] {
 }
 
 def "main context" [db_name: string] {
-    if $db_name not-in ['rad', 'ras'] {
+    if $db_name not-in ['rad', 'ras', 'ras2'] {
         print ('Unknown database ' + $db_name)
         exit 1
     }

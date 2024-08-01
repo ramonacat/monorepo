@@ -192,6 +192,7 @@
         udev.dev
         postgresql_16
         nil
+        nodejs_22
 
         (pkgs.php82.withExtensions ({
           enabled,
