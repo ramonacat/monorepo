@@ -2,7 +2,8 @@
     "$schema": "vendor/infection/infection/resources/schema.json",
     "source": {
         "directories": [
-            "src"
+            "src",
+            "public"
         ]
     },
     "mutators": {

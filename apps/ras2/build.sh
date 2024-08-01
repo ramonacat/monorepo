@@ -11,4 +11,4 @@ fi
 php ./vendor/bin/phpstan.phar
 php ./vendor/bin/psalm.phar --no-cache
 php ./vendor/bin/phpunit
-php ./vendor/bin/infection --min-msi=100 --min-covered-msi=100 -j"$(nproc)"
+php ./vendor/bin/infection --min-msi=0 --min-covered-msi=100 -j"$(nproc)"

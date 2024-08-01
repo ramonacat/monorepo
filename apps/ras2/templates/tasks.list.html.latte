@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <title>RAS2</title>
+    </head>
+    <body>
+    {foreach $tasks as $categoryId => $tasksA}
+        <h1>{$categoryId}</h1>
+        {foreach $tasksA as $task}
+            <div>
+                <p>{$task->id} / {$task->title} / {$task->assignee} / {$task->state}</p>
+                <ul>
+                    {foreach $task->tags as $tag}
+                        <li>{$tag}</li>
+                    {/foreach}
+                </ul>
+                <hr />
+            </div>
+        {/foreach}
+    {/foreach}
+    </body>
+</html>
