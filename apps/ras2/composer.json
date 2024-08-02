@@ -5,7 +5,8 @@
     "type": "project",
     "autoload": {
         "psr-4": {
-            "Ramona\\Ras2\\": "src/"
+            "Ramona\\Ras2\\": "src/",
+            "Generated\\Ramona\\Ras2\\": "src-generated/"
         }
     },
     "autoload-dev": {
@@ -19,10 +20,15 @@
             "email": "ja@agares.info"
         }
     ],
+    "bin": [
+        "bin/generate-css-modules.php"
+    ],
     "minimum-stability": "dev",
     "prefer-stable": true,
     "require": {
         "php": "^8.2",
+        "ext-mbstring": "*",
+
         "thecodingmachine/safe": "^2.5",
         "doctrine/collections": "^2.2",
         "ramsey/uuid": "^4.7",
@@ -32,7 +38,8 @@
         "laminas/laminas-httphandlerrunner": "^2.10",
         "doctrine/dbal": "^4.0",
         "doctrine/migrations": "^3.8",
-        "latte/latte": "^3.0"
+        "latte/latte": "^3.0",
+        "nette/php-generator": "^4.1"
     },
     "require-dev": {
         "phpstan/phpstan": "^1.11",

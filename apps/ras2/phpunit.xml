@@ -17,6 +17,7 @@
         <include>
             <directory>src</directory>
             <directory>public</directory>
+            <directory>bin</directory>
         </include>
     </source>
 </phpunit>

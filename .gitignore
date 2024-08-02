@@ -11,3 +11,5 @@ vendor/
 public/assets/
 node_modules/
 *.css.json
+
+src-generated/
