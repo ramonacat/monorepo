@@ -13,9 +13,7 @@ $request = Laminas\Diactoros\ServerRequestFactory::fromGlobals($_SERVER, $_GET, 
 $databaseConnection = DriverManager::getConnection(require __DIR__ . '/../migrations-db.php');
 
 $router = new League\Route\Router();
-$latte = new \Latte\Engine();
-$latte->setLoader(new \Latte\Loaders\FileLoader(__DIR__ . '/../templates/'));
-$router->map('GET', '/', new ListController($latte, new AllTasksByCategoryExecutor($databaseConnection)));
+$router->map('GET', '/', new ListController(new AllTasksByCategoryExecutor($databaseConnection)));
 $response = $router->dispatch($request);
 
 // send the response to the browser

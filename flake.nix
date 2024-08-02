@@ -194,6 +194,7 @@
         nil
         nodejs_22
         nodePackages.gulp-cli
+        nodePackages.ts-node
 
         (pkgs.php82.withExtensions ({
           enabled,

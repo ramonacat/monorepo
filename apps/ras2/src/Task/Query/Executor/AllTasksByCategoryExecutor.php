@@ -8,12 +8,12 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\DBAL\Connection;
 use Ramona\Ras2\Task\CategoryId;
 use Ramona\Ras2\Task\Query\Query;
-use Ramona\Ras2\Task\Query\TaskView;
+use Ramona\Ras2\Task\Query\TaskSummary;
 use Ramona\Ras2\Task\TaskId;
 use Ramona\Ras2\UserId;
 
 /**
- * @implements Executor<ArrayCollection<string, ArrayCollection<int, TaskView>>>
+ * @implements Executor<ArrayCollection<string, ArrayCollection<int, TaskSummary>>>
  */
 class AllTasksByCategoryExecutor implements Executor
 {
@@ -41,7 +41,7 @@ class AllTasksByCategoryExecutor implements Executor
             ->executeQuery()
             ->fetchAllAssociative();
 
-        /** @var ArrayCollection<string, ArrayCollection<int, TaskView>> $result */
+        /** @var ArrayCollection<string, ArrayCollection<int, TaskSummary>> $result */
         $result = new ArrayCollection();
 
         foreach ($allTasks as $rawTask) {
@@ -60,7 +60,7 @@ class AllTasksByCategoryExecutor implements Executor
                     ))
                     : []
             );
-            $result[$categoryId]?->add(new TaskView(
+            $result[$categoryId]?->add(new TaskSummary(
                 TaskId::fromString((string) $rawTask['id']),
                 CategoryId::fromString($categoryId),
                 (string) $rawTask['title'],

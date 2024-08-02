@@ -148,21 +148,7 @@ Not Covered mutants:
  }
 
 
-10) /home/ramona/Projects/monorepo/apps/ras2/src/Task/CategoryId.php:31    [M] PublicVisibility
-
-@@ @@
-     {
-         return new self(Uuid::uuid7());
-     }
--    public static function fromString(string $raw): self
-+    protected static function fromString(string $raw): self
-     {
-         return new self(Uuid::fromString($raw));
-     }
- }
-
-
-11) /home/ramona/Projects/monorepo/apps/ras2/src/Task/Idea.php:21    [M] PublicVisibility
+10) /home/ramona/Projects/monorepo/apps/ras2/src/Task/Idea.php:21    [M] PublicVisibility
 
 @@ @@
      /**
@@ -176,11 +162,11 @@ Not Covered mutants:
  }
 
 
-12) /home/ramona/Projects/monorepo/apps/ras2/src/Task/Query/Executor/AllTasksByCategoryExecutor.php:47    [M] Foreach_
+11) /home/ramona/Projects/monorepo/apps/ras2/src/Task/Query/Executor/AllTasksByCategoryExecutor.php:47    [M] Foreach_
 
 @@ @@
              ')->executeQuery()->fetchAllAssociative();
-         /** @var ArrayCollection<string, ArrayCollection<int, TaskView>> $result */
+         /** @var ArrayCollection<string, ArrayCollection<int, TaskSummary>> $result */
          $result = new ArrayCollection();
 -        foreach ($allTasks as $rawTask) {
 +        foreach ([] as $rawTask) {
@@ -189,10 +175,10 @@ Not Covered mutants:
                  $result[$categoryId] = new ArrayCollection();
 
 
-13) /home/ramona/Projects/monorepo/apps/ras2/src/Task/Query/Executor/AllTasksByCategoryExecutor.php:48    [M] CastString
+12) /home/ramona/Projects/monorepo/apps/ras2/src/Task/Query/Executor/AllTasksByCategoryExecutor.php:48    [M] CastString
 
 @@ @@
-         /** @var ArrayCollection<string, ArrayCollection<int, TaskView>> $result */
+         /** @var ArrayCollection<string, ArrayCollection<int, TaskSummary>> $result */
          $result = new ArrayCollection();
          foreach ($allTasks as $rawTask) {
 -            $categoryId = (string) $rawTask['category_id'];
@@ -202,7 +188,7 @@ Not Covered mutants:
              }
 
 
-14) /home/ramona/Projects/monorepo/apps/ras2/src/Task/Query/Executor/AllTasksByCategoryExecutor.php:50    [M] LogicalNot
+13) /home/ramona/Projects/monorepo/apps/ras2/src/Task/Query/Executor/AllTasksByCategoryExecutor.php:50    [M] LogicalNot
 
 @@ @@
          $result = new ArrayCollection();
@@ -215,7 +201,7 @@ Not Covered mutants:
              /** @var ArrayCollection<int, string> $tagNames */
 
 
-15) /home/ramona/Projects/monorepo/apps/ras2/src/Task/Query/Executor/AllTasksByCategoryExecutor.php:56    [M] NotIdentical
+14) /home/ramona/Projects/monorepo/apps/ras2/src/Task/Query/Executor/AllTasksByCategoryExecutor.php:56    [M] NotIdentical
 
 @@ @@
                  $result[$categoryId] = new ArrayCollection();
@@ -223,14 +209,14 @@ Not Covered mutants:
              /** @var ArrayCollection<int, string> $tagNames */
 -            $tagNames = new ArrayCollection($rawTask['tag_names'] !== null ? array_values(array_map(fn($x) => (string) $x, (array) \Safe\json_decode((string) $rawTask['tag_names'], true))) : []);
 +            $tagNames = new ArrayCollection($rawTask['tag_names'] === null ? array_values(array_map(fn($x) => (string) $x, (array) \Safe\json_decode((string) $rawTask['tag_names'], true))) : []);
-             $result[$categoryId]?->add(new TaskView(TaskId::fromString((string) $rawTask['id']), CategoryId::fromString($categoryId), (string) $rawTask['title'], $rawTask['assignee_id'] === null ? null : UserId::fromString((string) $rawTask['assignee_id']), $tagNames, (string) $rawTask['state']));
+             $result[$categoryId]?->add(new TaskSummary(TaskId::fromString((string) $rawTask['id']), CategoryId::fromString($categoryId), (string) $rawTask['title'], $rawTask['assignee_id'] === null ? null : UserId::fromString((string) $rawTask['assignee_id']), $tagNames, (string) $rawTask['state']));
          }
          return $result;
      }
  }
 
 
-16) /home/ramona/Projects/monorepo/apps/ras2/src/Task/Query/Executor/AllTasksByCategoryExecutor.php:56    [M] Ternary
+15) /home/ramona/Projects/monorepo/apps/ras2/src/Task/Query/Executor/AllTasksByCategoryExecutor.php:56    [M] Ternary
 
 @@ @@
                  $result[$categoryId] = new ArrayCollection();
@@ -238,14 +224,14 @@ Not Covered mutants:
              /** @var ArrayCollection<int, string> $tagNames */
 -            $tagNames = new ArrayCollection($rawTask['tag_names'] !== null ? array_values(array_map(fn($x) => (string) $x, (array) \Safe\json_decode((string) $rawTask['tag_names'], true))) : []);
 +            $tagNames = new ArrayCollection($rawTask['tag_names'] !== null ? [] : array_values(array_map(fn($x) => (string) $x, (array) \Safe\json_decode((string) $rawTask['tag_names'], true))));
-             $result[$categoryId]?->add(new TaskView(TaskId::fromString((string) $rawTask['id']), CategoryId::fromString($categoryId), (string) $rawTask['title'], $rawTask['assignee_id'] === null ? null : UserId::fromString((string) $rawTask['assignee_id']), $tagNames, (string) $rawTask['state']));
+             $result[$categoryId]?->add(new TaskSummary(TaskId::fromString((string) $rawTask['id']), CategoryId::fromString($categoryId), (string) $rawTask['title'], $rawTask['assignee_id'] === null ? null : UserId::fromString((string) $rawTask['assignee_id']), $tagNames, (string) $rawTask['state']));
          }
          return $result;
      }
  }
 
 
-17) /home/ramona/Projects/monorepo/apps/ras2/src/Task/Query/Executor/AllTasksByCategoryExecutor.php:57    [M] UnwrapArrayMap
+16) /home/ramona/Projects/monorepo/apps/ras2/src/Task/Query/Executor/AllTasksByCategoryExecutor.php:57    [M] UnwrapArrayMap
 
 @@ @@
                  $result[$categoryId] = new ArrayCollection();
@@ -253,14 +239,14 @@ Not Covered mutants:
              /** @var ArrayCollection<int, string> $tagNames */
 -            $tagNames = new ArrayCollection($rawTask['tag_names'] !== null ? array_values(array_map(fn($x) => (string) $x, (array) \Safe\json_decode((string) $rawTask['tag_names'], true))) : []);
 +            $tagNames = new ArrayCollection($rawTask['tag_names'] !== null ? array_values((array) \Safe\json_decode((string) $rawTask['tag_names'], true)) : []);
-             $result[$categoryId]?->add(new TaskView(TaskId::fromString((string) $rawTask['id']), CategoryId::fromString($categoryId), (string) $rawTask['title'], $rawTask['assignee_id'] === null ? null : UserId::fromString((string) $rawTask['assignee_id']), $tagNames, (string) $rawTask['state']));
+             $result[$categoryId]?->add(new TaskSummary(TaskId::fromString((string) $rawTask['id']), CategoryId::fromString($categoryId), (string) $rawTask['title'], $rawTask['assignee_id'] === null ? null : UserId::fromString((string) $rawTask['assignee_id']), $tagNames, (string) $rawTask['state']));
          }
          return $result;
      }
  }
 
 
-18) /home/ramona/Projects/monorepo/apps/ras2/src/Task/Query/Executor/AllTasksByCategoryExecutor.php:57    [M] UnwrapArrayValues
+17) /home/ramona/Projects/monorepo/apps/ras2/src/Task/Query/Executor/AllTasksByCategoryExecutor.php:57    [M] UnwrapArrayValues
 
 @@ @@
                  $result[$categoryId] = new ArrayCollection();
@@ -268,14 +254,14 @@ Not Covered mutants:
              /** @var ArrayCollection<int, string> $tagNames */
 -            $tagNames = new ArrayCollection($rawTask['tag_names'] !== null ? array_values(array_map(fn($x) => (string) $x, (array) \Safe\json_decode((string) $rawTask['tag_names'], true))) : []);
 +            $tagNames = new ArrayCollection($rawTask['tag_names'] !== null ? array_map(fn($x) => (string) $x, (array) \Safe\json_decode((string) $rawTask['tag_names'], true)) : []);
-             $result[$categoryId]?->add(new TaskView(TaskId::fromString((string) $rawTask['id']), CategoryId::fromString($categoryId), (string) $rawTask['title'], $rawTask['assignee_id'] === null ? null : UserId::fromString((string) $rawTask['assignee_id']), $tagNames, (string) $rawTask['state']));
+             $result[$categoryId]?->add(new TaskSummary(TaskId::fromString((string) $rawTask['id']), CategoryId::fromString($categoryId), (string) $rawTask['title'], $rawTask['assignee_id'] === null ? null : UserId::fromString((string) $rawTask['assignee_id']), $tagNames, (string) $rawTask['state']));
          }
          return $result;
      }
  }
 
 
-19) /home/ramona/Projects/monorepo/apps/ras2/src/Task/Query/Executor/AllTasksByCategoryExecutor.php:58    [M] CastString
+18) /home/ramona/Projects/monorepo/apps/ras2/src/Task/Query/Executor/AllTasksByCategoryExecutor.php:58    [M] CastString
 
 @@ @@
                  $result[$categoryId] = new ArrayCollection();
@@ -283,14 +269,14 @@ Not Covered mutants:
              /** @var ArrayCollection<int, string> $tagNames */
 -            $tagNames = new ArrayCollection($rawTask['tag_names'] !== null ? array_values(array_map(fn($x) => (string) $x, (array) \Safe\json_decode((string) $rawTask['tag_names'], true))) : []);
 +            $tagNames = new ArrayCollection($rawTask['tag_names'] !== null ? array_values(array_map(fn($x) => $x, (array) \Safe\json_decode((string) $rawTask['tag_names'], true))) : []);
-             $result[$categoryId]?->add(new TaskView(TaskId::fromString((string) $rawTask['id']), CategoryId::fromString($categoryId), (string) $rawTask['title'], $rawTask['assignee_id'] === null ? null : UserId::fromString((string) $rawTask['assignee_id']), $tagNames, (string) $rawTask['state']));
+             $result[$categoryId]?->add(new TaskSummary(TaskId::fromString((string) $rawTask['id']), CategoryId::fromString($categoryId), (string) $rawTask['title'], $rawTask['assignee_id'] === null ? null : UserId::fromString((string) $rawTask['assignee_id']), $tagNames, (string) $rawTask['state']));
          }
          return $result;
      }
  }
 
 
-20) /home/ramona/Projects/monorepo/apps/ras2/src/Task/Query/Executor/AllTasksByCategoryExecutor.php:59    [M] CastString
+19) /home/ramona/Projects/monorepo/apps/ras2/src/Task/Query/Executor/AllTasksByCategoryExecutor.php:59    [M] CastString
 
 @@ @@
                  $result[$categoryId] = new ArrayCollection();
@@ -298,14 +284,14 @@ Not Covered mutants:
              /** @var ArrayCollection<int, string> $tagNames */
 -            $tagNames = new ArrayCollection($rawTask['tag_names'] !== null ? array_values(array_map(fn($x) => (string) $x, (array) \Safe\json_decode((string) $rawTask['tag_names'], true))) : []);
 +            $tagNames = new ArrayCollection($rawTask['tag_names'] !== null ? array_values(array_map(fn($x) => (string) $x, (array) \Safe\json_decode($rawTask['tag_names'], true))) : []);
-             $result[$categoryId]?->add(new TaskView(TaskId::fromString((string) $rawTask['id']), CategoryId::fromString($categoryId), (string) $rawTask['title'], $rawTask['assignee_id'] === null ? null : UserId::fromString((string) $rawTask['assignee_id']), $tagNames, (string) $rawTask['state']));
+             $result[$categoryId]?->add(new TaskSummary(TaskId::fromString((string) $rawTask['id']), CategoryId::fromString($categoryId), (string) $rawTask['title'], $rawTask['assignee_id'] === null ? null : UserId::fromString((string) $rawTask['assignee_id']), $tagNames, (string) $rawTask['state']));
          }
          return $result;
      }
  }
 
 
-21) /home/ramona/Projects/monorepo/apps/ras2/src/Task/Query/Executor/AllTasksByCategoryExecutor.php:59    [M] CastArray
+20) /home/ramona/Projects/monorepo/apps/ras2/src/Task/Query/Executor/AllTasksByCategoryExecutor.php:59    [M] CastArray
 
 @@ @@
                  $result[$categoryId] = new ArrayCollection();
@@ -313,112 +299,112 @@ Not Covered mutants:
              /** @var ArrayCollection<int, string> $tagNames */
 -            $tagNames = new ArrayCollection($rawTask['tag_names'] !== null ? array_values(array_map(fn($x) => (string) $x, (array) \Safe\json_decode((string) $rawTask['tag_names'], true))) : []);
 +            $tagNames = new ArrayCollection($rawTask['tag_names'] !== null ? array_values(array_map(fn($x) => (string) $x, \Safe\json_decode((string) $rawTask['tag_names'], true))) : []);
-             $result[$categoryId]?->add(new TaskView(TaskId::fromString((string) $rawTask['id']), CategoryId::fromString($categoryId), (string) $rawTask['title'], $rawTask['assignee_id'] === null ? null : UserId::fromString((string) $rawTask['assignee_id']), $tagNames, (string) $rawTask['state']));
+             $result[$categoryId]?->add(new TaskSummary(TaskId::fromString((string) $rawTask['id']), CategoryId::fromString($categoryId), (string) $rawTask['title'], $rawTask['assignee_id'] === null ? null : UserId::fromString((string) $rawTask['assignee_id']), $tagNames, (string) $rawTask['state']));
          }
          return $result;
      }
  }
 
 
-22) /home/ramona/Projects/monorepo/apps/ras2/src/Task/Query/Executor/AllTasksByCategoryExecutor.php:63    [M] NullSafeMethodCall
+21) /home/ramona/Projects/monorepo/apps/ras2/src/Task/Query/Executor/AllTasksByCategoryExecutor.php:63    [M] NullSafeMethodCall
 
 @@ @@
              }
              /** @var ArrayCollection<int, string> $tagNames */
              $tagNames = new ArrayCollection($rawTask['tag_names'] !== null ? array_values(array_map(fn($x) => (string) $x, (array) \Safe\json_decode((string) $rawTask['tag_names'], true))) : []);
--            $result[$categoryId]?->add(new TaskView(TaskId::fromString((string) $rawTask['id']), CategoryId::fromString($categoryId), (string) $rawTask['title'], $rawTask['assignee_id'] === null ? null : UserId::fromString((string) $rawTask['assignee_id']), $tagNames, (string) $rawTask['state']));
-+            $result[$categoryId]->add(new TaskView(TaskId::fromString((string) $rawTask['id']), CategoryId::fromString($categoryId), (string) $rawTask['title'], $rawTask['assignee_id'] === null ? null : UserId::fromString((string) $rawTask['assignee_id']), $tagNames, (string) $rawTask['state']));
+-            $result[$categoryId]?->add(new TaskSummary(TaskId::fromString((string) $rawTask['id']), CategoryId::fromString($categoryId), (string) $rawTask['title'], $rawTask['assignee_id'] === null ? null : UserId::fromString((string) $rawTask['assignee_id']), $tagNames, (string) $rawTask['state']));
++            $result[$categoryId]->add(new TaskSummary(TaskId::fromString((string) $rawTask['id']), CategoryId::fromString($categoryId), (string) $rawTask['title'], $rawTask['assignee_id'] === null ? null : UserId::fromString((string) $rawTask['assignee_id']), $tagNames, (string) $rawTask['state']));
          }
          return $result;
      }
  }
 
 
-23) /home/ramona/Projects/monorepo/apps/ras2/src/Task/Query/Executor/AllTasksByCategoryExecutor.php:64    [M] CastString
+22) /home/ramona/Projects/monorepo/apps/ras2/src/Task/Query/Executor/AllTasksByCategoryExecutor.php:64    [M] CastString
 
 @@ @@
              }
              /** @var ArrayCollection<int, string> $tagNames */
              $tagNames = new ArrayCollection($rawTask['tag_names'] !== null ? array_values(array_map(fn($x) => (string) $x, (array) \Safe\json_decode((string) $rawTask['tag_names'], true))) : []);
--            $result[$categoryId]?->add(new TaskView(TaskId::fromString((string) $rawTask['id']), CategoryId::fromString($categoryId), (string) $rawTask['title'], $rawTask['assignee_id'] === null ? null : UserId::fromString((string) $rawTask['assignee_id']), $tagNames, (string) $rawTask['state']));
-+            $result[$categoryId]?->add(new TaskView(TaskId::fromString($rawTask['id']), CategoryId::fromString($categoryId), (string) $rawTask['title'], $rawTask['assignee_id'] === null ? null : UserId::fromString((string) $rawTask['assignee_id']), $tagNames, (string) $rawTask['state']));
+-            $result[$categoryId]?->add(new TaskSummary(TaskId::fromString((string) $rawTask['id']), CategoryId::fromString($categoryId), (string) $rawTask['title'], $rawTask['assignee_id'] === null ? null : UserId::fromString((string) $rawTask['assignee_id']), $tagNames, (string) $rawTask['state']));
++            $result[$categoryId]?->add(new TaskSummary(TaskId::fromString($rawTask['id']), CategoryId::fromString($categoryId), (string) $rawTask['title'], $rawTask['assignee_id'] === null ? null : UserId::fromString((string) $rawTask['assignee_id']), $tagNames, (string) $rawTask['state']));
          }
          return $result;
      }
  }
 
 
-24) /home/ramona/Projects/monorepo/apps/ras2/src/Task/Query/Executor/AllTasksByCategoryExecutor.php:66    [M] CastString
+23) /home/ramona/Projects/monorepo/apps/ras2/src/Task/Query/Executor/AllTasksByCategoryExecutor.php:66    [M] CastString
 
 @@ @@
              }
              /** @var ArrayCollection<int, string> $tagNames */
              $tagNames = new ArrayCollection($rawTask['tag_names'] !== null ? array_values(array_map(fn($x) => (string) $x, (array) \Safe\json_decode((string) $rawTask['tag_names'], true))) : []);
--            $result[$categoryId]?->add(new TaskView(TaskId::fromString((string) $rawTask['id']), CategoryId::fromString($categoryId), (string) $rawTask['title'], $rawTask['assignee_id'] === null ? null : UserId::fromString((string) $rawTask['assignee_id']), $tagNames, (string) $rawTask['state']));
-+            $result[$categoryId]?->add(new TaskView(TaskId::fromString((string) $rawTask['id']), CategoryId::fromString($categoryId), $rawTask['title'], $rawTask['assignee_id'] === null ? null : UserId::fromString((string) $rawTask['assignee_id']), $tagNames, (string) $rawTask['state']));
+-            $result[$categoryId]?->add(new TaskSummary(TaskId::fromString((string) $rawTask['id']), CategoryId::fromString($categoryId), (string) $rawTask['title'], $rawTask['assignee_id'] === null ? null : UserId::fromString((string) $rawTask['assignee_id']), $tagNames, (string) $rawTask['state']));
++            $result[$categoryId]?->add(new TaskSummary(TaskId::fromString((string) $rawTask['id']), CategoryId::fromString($categoryId), $rawTask['title'], $rawTask['assignee_id'] === null ? null : UserId::fromString((string) $rawTask['assignee_id']), $tagNames, (string) $rawTask['state']));
          }
          return $result;
      }
  }
 
 
-25) /home/ramona/Projects/monorepo/apps/ras2/src/Task/Query/Executor/AllTasksByCategoryExecutor.php:67    [M] Identical
+24) /home/ramona/Projects/monorepo/apps/ras2/src/Task/Query/Executor/AllTasksByCategoryExecutor.php:67    [M] Identical
 
 @@ @@
              }
              /** @var ArrayCollection<int, string> $tagNames */
              $tagNames = new ArrayCollection($rawTask['tag_names'] !== null ? array_values(array_map(fn($x) => (string) $x, (array) \Safe\json_decode((string) $rawTask['tag_names'], true))) : []);
--            $result[$categoryId]?->add(new TaskView(TaskId::fromString((string) $rawTask['id']), CategoryId::fromString($categoryId), (string) $rawTask['title'], $rawTask['assignee_id'] === null ? null : UserId::fromString((string) $rawTask['assignee_id']), $tagNames, (string) $rawTask['state']));
-+            $result[$categoryId]?->add(new TaskView(TaskId::fromString((string) $rawTask['id']), CategoryId::fromString($categoryId), (string) $rawTask['title'], $rawTask['assignee_id'] !== null ? null : UserId::fromString((string) $rawTask['assignee_id']), $tagNames, (string) $rawTask['state']));
+-            $result[$categoryId]?->add(new TaskSummary(TaskId::fromString((string) $rawTask['id']), CategoryId::fromString($categoryId), (string) $rawTask['title'], $rawTask['assignee_id'] === null ? null : UserId::fromString((string) $rawTask['assignee_id']), $tagNames, (string) $rawTask['state']));
++            $result[$categoryId]?->add(new TaskSummary(TaskId::fromString((string) $rawTask['id']), CategoryId::fromString($categoryId), (string) $rawTask['title'], $rawTask['assignee_id'] !== null ? null : UserId::fromString((string) $rawTask['assignee_id']), $tagNames, (string) $rawTask['state']));
          }
          return $result;
      }
  }
 
 
-26) /home/ramona/Projects/monorepo/apps/ras2/src/Task/Query/Executor/AllTasksByCategoryExecutor.php:67    [M] CastString
+25) /home/ramona/Projects/monorepo/apps/ras2/src/Task/Query/Executor/AllTasksByCategoryExecutor.php:67    [M] CastString
 
 @@ @@
              }
              /** @var ArrayCollection<int, string> $tagNames */
              $tagNames = new ArrayCollection($rawTask['tag_names'] !== null ? array_values(array_map(fn($x) => (string) $x, (array) \Safe\json_decode((string) $rawTask['tag_names'], true))) : []);
--            $result[$categoryId]?->add(new TaskView(TaskId::fromString((string) $rawTask['id']), CategoryId::fromString($categoryId), (string) $rawTask['title'], $rawTask['assignee_id'] === null ? null : UserId::fromString((string) $rawTask['assignee_id']), $tagNames, (string) $rawTask['state']));
-+            $result[$categoryId]?->add(new TaskView(TaskId::fromString((string) $rawTask['id']), CategoryId::fromString($categoryId), (string) $rawTask['title'], $rawTask['assignee_id'] === null ? null : UserId::fromString($rawTask['assignee_id']), $tagNames, (string) $rawTask['state']));
+-            $result[$categoryId]?->add(new TaskSummary(TaskId::fromString((string) $rawTask['id']), CategoryId::fromString($categoryId), (string) $rawTask['title'], $rawTask['assignee_id'] === null ? null : UserId::fromString((string) $rawTask['assignee_id']), $tagNames, (string) $rawTask['state']));
++            $result[$categoryId]?->add(new TaskSummary(TaskId::fromString((string) $rawTask['id']), CategoryId::fromString($categoryId), (string) $rawTask['title'], $rawTask['assignee_id'] === null ? null : UserId::fromString($rawTask['assignee_id']), $tagNames, (string) $rawTask['state']));
          }
          return $result;
      }
  }
 
 
-27) /home/ramona/Projects/monorepo/apps/ras2/src/Task/Query/Executor/AllTasksByCategoryExecutor.php:67    [M] Ternary
+26) /home/ramona/Projects/monorepo/apps/ras2/src/Task/Query/Executor/AllTasksByCategoryExecutor.php:67    [M] Ternary
 
 @@ @@
              }
              /** @var ArrayCollection<int, string> $tagNames */
              $tagNames = new ArrayCollection($rawTask['tag_names'] !== null ? array_values(array_map(fn($x) => (string) $x, (array) \Safe\json_decode((string) $rawTask['tag_names'], true))) : []);
--            $result[$categoryId]?->add(new TaskView(TaskId::fromString((string) $rawTask['id']), CategoryId::fromString($categoryId), (string) $rawTask['title'], $rawTask['assignee_id'] === null ? null : UserId::fromString((string) $rawTask['assignee_id']), $tagNames, (string) $rawTask['state']));
-+            $result[$categoryId]?->add(new TaskView(TaskId::fromString((string) $rawTask['id']), CategoryId::fromString($categoryId), (string) $rawTask['title'], $rawTask['assignee_id'] === null ? UserId::fromString((string) $rawTask['assignee_id']) : null, $tagNames, (string) $rawTask['state']));
+-            $result[$categoryId]?->add(new TaskSummary(TaskId::fromString((string) $rawTask['id']), CategoryId::fromString($categoryId), (string) $rawTask['title'], $rawTask['assignee_id'] === null ? null : UserId::fromString((string) $rawTask['assignee_id']), $tagNames, (string) $rawTask['state']));
++            $result[$categoryId]?->add(new TaskSummary(TaskId::fromString((string) $rawTask['id']), CategoryId::fromString($categoryId), (string) $rawTask['title'], $rawTask['assignee_id'] === null ? UserId::fromString((string) $rawTask['assignee_id']) : null, $tagNames, (string) $rawTask['state']));
          }
          return $result;
      }
  }
 
 
-28) /home/ramona/Projects/monorepo/apps/ras2/src/Task/Query/Executor/AllTasksByCategoryExecutor.php:69    [M] CastString
+27) /home/ramona/Projects/monorepo/apps/ras2/src/Task/Query/Executor/AllTasksByCategoryExecutor.php:69    [M] CastString
 
 @@ @@
              }
              /** @var ArrayCollection<int, string> $tagNames */
              $tagNames = new ArrayCollection($rawTask['tag_names'] !== null ? array_values(array_map(fn($x) => (string) $x, (array) \Safe\json_decode((string) $rawTask['tag_names'], true))) : []);
--            $result[$categoryId]?->add(new TaskView(TaskId::fromString((string) $rawTask['id']), CategoryId::fromString($categoryId), (string) $rawTask['title'], $rawTask['assignee_id'] === null ? null : UserId::fromString((string) $rawTask['assignee_id']), $tagNames, (string) $rawTask['state']));
-+            $result[$categoryId]?->add(new TaskView(TaskId::fromString((string) $rawTask['id']), CategoryId::fromString($categoryId), (string) $rawTask['title'], $rawTask['assignee_id'] === null ? null : UserId::fromString((string) $rawTask['assignee_id']), $tagNames, $rawTask['state']));
+-            $result[$categoryId]?->add(new TaskSummary(TaskId::fromString((string) $rawTask['id']), CategoryId::fromString($categoryId), (string) $rawTask['title'], $rawTask['assignee_id'] === null ? null : UserId::fromString((string) $rawTask['assignee_id']), $tagNames, (string) $rawTask['state']));
++            $result[$categoryId]?->add(new TaskSummary(TaskId::fromString((string) $rawTask['id']), CategoryId::fromString($categoryId), (string) $rawTask['title'], $rawTask['assignee_id'] === null ? null : UserId::fromString((string) $rawTask['assignee_id']), $tagNames, $rawTask['state']));
          }
          return $result;
      }
  }
 
 
-29) /home/ramona/Projects/monorepo/apps/ras2/src/Task/TaskDescription.php:49    [M] PublicVisibility
+28) /home/ramona/Projects/monorepo/apps/ras2/src/Task/TaskDescription.php:49    [M] PublicVisibility
 
 @@ @@
          $this->title = $title;
@@ -432,54 +418,55 @@ Not Covered mutants:
  }
 
 
-30) /home/ramona/Projects/monorepo/apps/ras2/src/Task/TaskId.php:24    [M] PublicVisibility
+29) /home/ramona/Projects/monorepo/apps/ras2/src/Task/Web/ListController.php:33    [M] Foreach_
 
 @@ @@
-     {
-         return $this->id->toString();
-     }
--    public static function fromString(string $raw): self
-+    protected static function fromString(string $raw): self
-     {
-         return new self(Uuid::fromString($raw));
-     }
+         $rawTasksByCategory = $this->allTasksByCategoryExecutor->execute(new AllTasksByCategory());
+         /** @var ArrayCollection<int, CategoryView> $categories */
+         $categories = new ArrayCollection();
+-        foreach ($rawTasksByCategory as $categoryId => $rawTasks) {
++        foreach ([] as $categoryId => $rawTasks) {
+             $categories[] = new CategoryView(CategoryId::fromString($categoryId), $rawTasks->map(fn(TaskSummary $t) => new TaskCardView($t)));
+         }
+         $taskListView = new TaskListView($categories);
 
 
-31) /home/ramona/Projects/monorepo/apps/ras2/src/Task/Web/ListController.php:30    [M] MethodCallRemoval
+30) /home/ramona/Projects/monorepo/apps/ras2/src/Task/Web/ListController.php:39    [M] CastString
 
 @@ @@
-     {
+             $categories[] = new CategoryView(CategoryId::fromString($categoryId), $rawTasks->map(fn(TaskSummary $t) => new TaskCardView($t)));
+         }
+         $taskListView = new TaskListView($categories);
+-        $view = new RootView((string) $taskListView);
++        $view = new RootView($taskListView);
          $response = new Response();
-         $tasks = $this->allTasksByCategoryExecutor->execute(new AllTasksByCategory());
--        $response->getBody()->write($this->latte->renderToString('tasks.list.html.latte', ['tasks' => $tasks]));
+         $response->getBody()->write((string) $view);
+         return $response;
+     }
+ }
+
+
+31) /home/ramona/Projects/monorepo/apps/ras2/src/Task/Web/ListController.php:42    [M] MethodCallRemoval
+
+@@ @@
+         $taskListView = new TaskListView($categories);
+         $view = new RootView((string) $taskListView);
+         $response = new Response();
+-        $response->getBody()->write((string) $view);
 +        
          return $response;
      }
  }
 
 
-32) /home/ramona/Projects/monorepo/apps/ras2/src/Task/Web/ListController.php:31    [M] ArrayItemRemoval
+32) /home/ramona/Projects/monorepo/apps/ras2/src/Task/Web/ListController.php:43    [M] CastString
 
 @@ @@
-     {
+         $taskListView = new TaskListView($categories);
+         $view = new RootView((string) $taskListView);
          $response = new Response();
-         $tasks = $this->allTasksByCategoryExecutor->execute(new AllTasksByCategory());
--        $response->getBody()->write($this->latte->renderToString('tasks.list.html.latte', ['tasks' => $tasks]));
-+        $response->getBody()->write($this->latte->renderToString('tasks.list.html.latte', []));
+-        $response->getBody()->write((string) $view);
++        $response->getBody()->write($view);
          return $response;
-     }
- }
-
-
-33) /home/ramona/Projects/monorepo/apps/ras2/src/UserId.php:32    [M] PublicVisibility
-
-@@ @@
-     {
-         return new self(Uuid::uuid7());
-     }
--    public static function fromString(string $raw): self
-+    protected static function fromString(string $raw): self
-     {
-         return new self(Uuid::fromString($raw));
      }
  }
