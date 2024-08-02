@@ -10,15 +10,8 @@ final class TaskDescription
 {
     /**
      * @psalm-suppress UnusedProperty
-     * @phpstan-ignore property.onlyWritten
      */
     private TaskId $id;
-
-    /**
-     * @psalm-suppress UnusedProperty
-     * @phpstan-ignore property.onlyWritten
-     */
-    private CategoryId $categoryId;
 
     /**
      * @todo this should have a type of "UserText"
@@ -38,16 +31,15 @@ final class TaskDescription
     /**
      * @param ArrayCollection<int, TagId> $tags
      */
-    public function __construct(TaskId $id, CategoryId $categoryId, string $title, ArrayCollection $tags)
+    public function __construct(TaskId $id, string $title, ArrayCollection $tags)
     {
         $this->id = $id;
-        $this->categoryId = $categoryId;
         $this->title = $title;
         $this->tags = $tags;
     }
 
     public function id(): TaskId
     {
-        return $this->id();
+        return $this->id;
     }
 }

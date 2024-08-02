@@ -19,5 +19,8 @@
             <directory>public</directory>
             <directory>bin</directory>
         </include>
+        <exclude>
+            <directory>src/Migrations</directory>
+        </exclude>
     </source>
 </phpunit>

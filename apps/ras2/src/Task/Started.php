@@ -10,13 +10,11 @@ final class Started implements Task
 {
     /**
      * @psalm-suppress UnusedProperty
-     * @phpstan-ignore property.onlyWritten
      */
     private TaskDescription $description;
 
     /**
      * @psalm-suppress UnusedProperty
-     * @phpstan-ignore property.onlyWritten
      */
     private UserId $assignee;
 
@@ -24,5 +22,21 @@ final class Started implements Task
     {
         $this->description = $description;
         $this->assignee = $assignee;
+    }
+
+    /**
+     * @psalm-suppress PossiblyUnusedMethod
+     */
+    public function description(): TaskDescription
+    {
+        return $this->description;
+    }
+
+    /**
+     * @psalm-suppress PossiblyUnusedMethod
+     */
+    public function assigneeId(): UserId
+    {
+        return $this->assignee;
     }
 }

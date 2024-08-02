@@ -5,6 +5,9 @@
             "src",
             "bin",
             "public"
+        ],
+        "excludes": [
+            "Migrations"
         ]
     },
     "mutators": {

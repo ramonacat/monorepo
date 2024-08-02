@@ -6,7 +6,6 @@ namespace Tests\Ramona\Ras2\Task\Command\Executor;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use PHPUnit\Framework\TestCase;
-use Ramona\Ras2\Task\CategoryId;
 use Ramona\Ras2\Task\Command\CreateIdea;
 use Ramona\Ras2\Task\Command\Executor\CreateIdeaExecutor;
 use Ramona\Ras2\Task\Idea;
@@ -20,12 +19,11 @@ final class CreateIdeaExecutorTest extends TestCase
     {
         $repository = new MockRepository();
         $id = TaskId::generate();
-        $categoryId = CategoryId::generate();
         $executor = new CreateIdeaExecutor($repository);
-        $executor->execute(new CreateIdea($id, $categoryId, 'This is a great idea', new ArrayCollection()));
+        $executor->execute(new CreateIdea($id, 'This is a great idea', new ArrayCollection()));
 
         self::assertEquals([
-            new Idea(new TaskDescription($id, $categoryId, 'This is a great idea', new ArrayCollection())),
+            new Idea(new TaskDescription($id, 'This is a great idea', new ArrayCollection())),
         ], $repository->tasks());
     }
 }

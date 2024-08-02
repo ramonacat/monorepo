@@ -16,7 +16,7 @@
       enabled,
       all,
     }:
-      enabled ++ [all.pcov];
+      enabled ++ [all.xdebug];
     extraConfig = ''
     '';
   };

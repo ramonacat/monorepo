@@ -9,7 +9,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 final class TaskListView
 {
     /**
-     * @param ArrayCollection<int, CategoryView> $tasks
+     * @param ArrayCollection<int, TaskCardView> $tasks
      */
     public function __construct(
         private ArrayCollection $tasks
@@ -19,6 +19,6 @@ final class TaskListView
 
     public function __toString(): string
     {
-        return implode(' ', $this->tasks->toArray());
+        return implode(PHP_EOL, $this->tasks->toArray());
     }
 }

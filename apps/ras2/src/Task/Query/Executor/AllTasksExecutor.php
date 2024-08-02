@@ -6,16 +6,15 @@ namespace Ramona\Ras2\Task\Query\Executor;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\DBAL\Connection;
-use Ramona\Ras2\Task\CategoryId;
 use Ramona\Ras2\Task\Query\Query;
 use Ramona\Ras2\Task\Query\TaskSummary;
 use Ramona\Ras2\Task\TaskId;
 use Ramona\Ras2\UserId;
 
 /**
- * @implements Executor<ArrayCollection<string, ArrayCollection<int, TaskSummary>>>
+ * @implements Executor<ArrayCollection<int, TaskSummary>>
  */
-class AllTasksByCategoryExecutor implements Executor
+class AllTasksExecutor implements Executor
 {
     private Connection $connection;
 
@@ -41,16 +40,10 @@ class AllTasksByCategoryExecutor implements Executor
             ->executeQuery()
             ->fetchAllAssociative();
 
-        /** @var ArrayCollection<string, ArrayCollection<int, TaskSummary>> $result */
+        /** @var ArrayCollection<int, TaskSummary> $result */
         $result = new ArrayCollection();
 
         foreach ($allTasks as $rawTask) {
-            $categoryId = (string) $rawTask['category_id'];
-
-            if (! isset($result[$categoryId])) {
-                $result[$categoryId] = new ArrayCollection();
-            }
-
             /** @var ArrayCollection<int, string> $tagNames */
             $tagNames = new ArrayCollection(
                 $rawTask['tag_names'] !== null
@@ -60,9 +53,8 @@ class AllTasksByCategoryExecutor implements Executor
                     ))
                     : []
             );
-            $result[$categoryId]?->add(new TaskSummary(
+            $result->add(new TaskSummary(
                 TaskId::fromString((string) $rawTask['id']),
-                CategoryId::fromString($categoryId),
                 (string) $rawTask['title'],
                 $rawTask['assignee_id'] === null ? null : UserId::fromString((string) $rawTask['assignee_id']),
                 $tagNames,

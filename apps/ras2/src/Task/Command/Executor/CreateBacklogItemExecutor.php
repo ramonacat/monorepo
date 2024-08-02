@@ -13,20 +13,17 @@ use Ramona\Ras2\Task\TaskDescription;
  * @implements Executor<CreateBacklogItem>
  * @psalm-suppress UnusedClass
  */
-final class CreateBacklogItemExecutor implements Executor
+final readonly class CreateBacklogItemExecutor implements Executor
 {
-    private Repository $repository;
-
-    public function __construct(Repository $repository)
-    {
-        $this->repository = $repository;
+    public function __construct(
+        private Repository $repository
+    ) {
     }
 
     public function execute(object $command): void
     {
         $task = new BacklogItem(new TaskDescription(
             $command->id,
-            $command->categoryId,
             $command->title,
             $command->tags
         ), $command->assignee);

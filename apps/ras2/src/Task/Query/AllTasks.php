@@ -7,8 +7,8 @@ namespace Ramona\Ras2\Task\Query;
 use Doctrine\Common\Collections\ArrayCollection;
 
 /**
- * @implements Query<ArrayCollection<string, ArrayCollection<int, TaskSummary>>>
+ * @implements Query<ArrayCollection<int, TaskSummary>>
  */
-final class AllTasksByCategory implements Query
+final class AllTasks implements Query
 {
 }
