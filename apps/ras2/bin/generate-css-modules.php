@@ -2,6 +2,8 @@
 
 declare(strict_types=1);
 
+use Safe\Exceptions\FilesystemException;
+
 require_once __DIR__ . '/../vendor/autoload.php';
 
 /** @var list<string> $modules */
@@ -11,10 +13,10 @@ foreach ($modules as $modulePath) {
     $moduleName = str_replace('.css.json', '', basename($modulePath));
 
     $moduleFile = new Nette\PhpGenerator\PhpFile();
-    $moduleFile->addNamespace('Generated\Ramona\Ras2\CSSModules');
+    $namespace = $moduleFile->addNamespace('Generated\\Ramona\\Ras2\\CSSModules');
 
     $className = ucfirst($moduleName);
-    $moduleClass = $moduleFile
+    $moduleClass = $namespace
         ->addClass($className);
 
     /** @var array<string, string> $parsedMapping */
@@ -31,6 +33,12 @@ foreach ($modules as $modulePath) {
 
     $generatedCode = (string) $moduleFile;
 
-    @\Safe\mkdir(__DIR__ . '/../src-generated/CSSModules/', recursive: true);
+    try {
+        @\Safe\mkdir(__DIR__ . '/../src-generated/CSSModules/', recursive: true);
+    } catch (FilesystemException $e) {
+        if (! str_contains($e->getMessage(), 'File exists')) {
+            throw $e;
+        }
+    }
     \Safe\file_put_contents(__DIR__ . '/../src-generated/CSSModules/' . $className . '.php', $generatedCode);
 }
