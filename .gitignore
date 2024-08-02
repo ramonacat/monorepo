@@ -8,3 +8,6 @@ result
 target/
 terraform/.terraform/
 vendor/
+public/assets/
+node_modules/
+*.css.json

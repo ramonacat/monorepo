@@ -193,6 +193,7 @@
         postgresql_16
         nil
         nodejs_22
+        nodePackages.gulp-cli
 
         (pkgs.php82.withExtensions ({
           enabled,
