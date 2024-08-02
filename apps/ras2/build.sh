@@ -3,6 +3,7 @@
 set -euo pipefail
 set -x
 
+gulp
 if [[ "${1:-}" == "--no-fix" ]]; then
   php ./vendor/bin/ecs
 else
