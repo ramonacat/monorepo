@@ -18,6 +18,7 @@
     }:
       enabled ++ [all.xdebug];
     extraConfig = ''
+      xdebug.mode=coverage
     '';
   };
   devPackage = pkgs.php.buildComposerProject (_: ({
@@ -43,7 +44,15 @@
 in rec {
   package = pkgs.php.buildComposerProject (_: packageAttributes);
   # FIXME: actually get the coverage here...
-  coverage = pkgs.runCommand "${package.name}--coverage" {} "touch $out";
+  coverage = let
+    rawCoverage = pkgs.runCommand "${package.name}--coverage" {buildInputs = [devPhp];} "
+  cd ${devPackage}/share/php/ras2/
+  php ./vendor/bin/phpunit --coverage-clover $out
+  ";
+  in
+    pkgs.runCommand "${devPackage.name}--clover" {} ''
+      cat ${rawCoverage} | sed "s#${devPackage}/share/php/#apps/#g" > $out
+    '';
   checks = {
     "${package.name}--ecs" =
       pkgs.runCommand "${devPackage.name}--ecs" {
