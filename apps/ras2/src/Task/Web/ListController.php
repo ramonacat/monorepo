@@ -4,33 +4,43 @@ declare(strict_types=1);
 
 namespace Ramona\Ras2\Task\Web;
 
+use Doctrine\Common\Collections\ArrayCollection;
 use Laminas\Diactoros\Response;
 use Psr\Http\Message\ResponseInterface;
+use Ramona\Ras2\Task\CategoryId;
 use Ramona\Ras2\Task\Query\AllTasksByCategory;
 use Ramona\Ras2\Task\Query\Executor\AllTasksByCategoryExecutor;
+use Ramona\Ras2\Task\Query\TaskSummary;
 
 final class ListController
 {
     private AllTasksByCategoryExecutor $allTasksByCategoryExecutor;
 
-    private \Latte\Engine $latte;
-
     public function __construct(
-        \Latte\Engine $latte,
         AllTasksByCategoryExecutor $allTasksByCategoryExecutor
     ) {
         $this->allTasksByCategoryExecutor = $allTasksByCategoryExecutor;
-        $this->latte = $latte;
     }
 
     public function __invoke(): ResponseInterface
     {
+        $rawTasksByCategory = $this
+            ->allTasksByCategoryExecutor
+            ->execute(new AllTasksByCategory());
+
+        /** @var ArrayCollection<int, CategoryView> $categories */
+        $categories = new ArrayCollection();
+        foreach ($rawTasksByCategory as $categoryId => $rawTasks) {
+            $categories[] = new CategoryView(CategoryId::fromString($categoryId), $rawTasks->map(
+                fn (TaskSummary $t) => new TaskCardView($t)
+            ));
+        }
+        $taskListView = new TaskListView($categories);
+        $view = new RootView((string) $taskListView);
+
         $response = new Response();
-        $tasks = $this->allTasksByCategoryExecutor->execute(new AllTasksByCategory());
         $response->getBody()
-            ->write($this ->latte->renderToString('tasks.list.html.latte', [
-                'tasks' => $tasks,
-            ]));
+            ->write((string) $view);
         return $response;
     }
 }

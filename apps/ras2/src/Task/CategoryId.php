@@ -7,17 +7,21 @@ namespace Ramona\Ras2\Task;
 use Ramsey\Uuid\Uuid;
 use Ramsey\Uuid\UuidInterface;
 
-final class CategoryId
+final class CategoryId implements \Stringable
 {
     /**
      * @psalm-suppress UnusedProperty
-     * @phpstan-ignore property.onlyWritten
      */
     private UuidInterface $id;
 
     public function __construct(UuidInterface $id)
     {
         $this->id = $id;
+    }
+
+    public function __toString(): string
+    {
+        return $this->id->toString();
     }
 
     /**

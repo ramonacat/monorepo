@@ -32,13 +32,11 @@
         "thecodingmachine/safe": "^2.5",
         "doctrine/collections": "^2.2",
         "ramsey/uuid": "^4.7",
-        "symfony/translation": "^7.1",
         "league/route": "^5.1",
         "laminas/laminas-diactoros": "^3.3",
         "laminas/laminas-httphandlerrunner": "^2.10",
         "doctrine/dbal": "^4.0",
         "doctrine/migrations": "^3.8",
-        "latte/latte": "^3.0",
         "nette/php-generator": "^4.1"
     },
     "require-dev": {
@@ -49,7 +47,8 @@
         "psalm/phar": "^5.25",
         "phpunit/phpunit": "^11.0",
         "infection/infection": "^0.29.6",
-        "thecodingmachine/phpstan-safe-rule": "^1.2"
+        "thecodingmachine/phpstan-safe-rule": "^1.2",
+        "spatie/phpunit-snapshot-assertions": "^5.1"
     },
     "config": {
         "allow-plugins": {

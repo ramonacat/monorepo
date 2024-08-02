@@ -9,7 +9,7 @@ use Ramona\Ras2\Task\CategoryId;
 use Ramona\Ras2\Task\TaskId;
 use Ramona\Ras2\UserId;
 
-final readonly class TaskView
+final readonly class TaskSummary
 {
     /**
      * @psalm-suppress UnusedProperty
