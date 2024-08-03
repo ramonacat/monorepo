@@ -200,7 +200,7 @@
           enabled,
           all,
         }:
-          enabled ++ [all.pcov]))
+          enabled ++ [all.xdebug]))
         (pkgs.rust-bin.stable.latest.default.override {
           extensions = ["rust-src" "llvm-tools-preview"];
           targets = ["aarch64-unknown-linux-gnu" "wasm32-unknown-unknown"];

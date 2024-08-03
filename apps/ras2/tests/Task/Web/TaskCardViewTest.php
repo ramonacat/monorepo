@@ -6,7 +6,6 @@ namespace Tests\Ramona\Ras2\Task\Web;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use PHPUnit\Framework\TestCase;
-use Ramona\Ras2\Task\CategoryId;
 use Ramona\Ras2\Task\Query\TaskSummary;
 use Ramona\Ras2\Task\TaskId;
 use Ramona\Ras2\Task\Web\TaskCardView;
@@ -21,7 +20,6 @@ final class TaskCardViewTest extends TestCase
     {
         $summary = new TaskSummary(
             TaskId::fromString('fd3d88d3-a1e2-4d52-9946-65f58089ed9a'),
-            CategoryId::fromString('6cc53d67-cff1-4e2d-95dc-4dbfbce44295'),
             'this is a title',
             UserId::fromString('22283ca9-1c8f-47ec-b738-77ce22539609'),
             new ArrayCollection(['tag1', 'tag2', 'tag3']),

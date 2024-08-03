@@ -39,7 +39,8 @@ jobs:
           path: result
 
       - name: Give coverage files codecov-friendly names
-        run: for f in result/*; do mv "$f" "$f.lcov"; done
+        #run: 
+        run: ./.github/scripts/rename_coverage_files.sh
 
       - name: List coverage files
         run: echo "files=$(find result/* | tr \\\"\\n\\\" \\\",\\\" | head -c -1)" >> $GITHUB_OUTPUT

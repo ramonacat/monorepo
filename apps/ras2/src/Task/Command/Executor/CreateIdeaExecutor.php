@@ -13,18 +13,16 @@ use Ramona\Ras2\Task\TaskDescription;
  * @implements Executor<CreateIdea>
  * @psalm-suppress UnusedClass
  */
-final class CreateIdeaExecutor implements Executor
+final readonly class CreateIdeaExecutor implements Executor
 {
-    private Repository $repository;
-
-    public function __construct(Repository $repository)
-    {
-        $this->repository = $repository;
+    public function __construct(
+        private Repository $repository
+    ) {
     }
 
     public function execute(object $command): void
     {
-        $idea = new Idea(new TaskDescription($command->id, $command->categoryId, $command->title, $command->tags));
+        $idea = new Idea(new TaskDescription($command->id, $command->title, $command->tags));
         $this
             ->repository
             ->save($idea);
