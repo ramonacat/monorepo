@@ -67,6 +67,7 @@
       ras2 = import ./packages/ras2.nix;
       rat = import ./packages/rat.nix;
       ratweb = import ./packages/ratweb.nix;
+      ratweb2 = import ./packages/ratweb2.nix;
     };
     libraries = {
       ratlib = import ./packages/libraries/ratlib.nix;
@@ -158,21 +159,23 @@
       }
       // (pkgs.lib.mergeAttrsList (pkgs.lib.mapAttrsToList (_: value: (value {inherit craneLib pkgs;}).checks) libraries))
       // (pkgs.lib.mergeAttrsList (pkgs.lib.mapAttrsToList (_: value: (value {inherit craneLib pkgs;}).checks) packages));
-    packages.x86_64-linux = rec {
-      coverage = let
-        paths = pkgs.lib.mapAttrsToList (_: value: (value {inherit craneLib pkgs;}).coverage) (libraries // packages);
-      in
-        pkgs.runCommand "coverage" {} ("mkdir $out\n" + (pkgs.lib.concatStringsSep "\n" (builtins.map (p: "ln -s ${p} $out/${p.name}") paths)) + "\n");
-      everything = let
-        allClosures = builtins.mapAttrs (_: value: value.config.system.build.toplevel) self.nixosConfigurations;
-      in
-        pkgs.runCommand "everything" {} (
-          "mkdir -p $out/hosts\n"
-          + (pkgs.lib.concatStringsSep "\n" (pkgs.lib.mapAttrsToList (k: p: "ln -s ${p} $out/hosts/${k}") allClosures))
-          + "\nln -s ${self.nixosConfigurations.iso.config.system.build.isoImage} $out/iso\n"
-        );
-      default = coverage;
-    };
+    packages.x86_64-linux =
+      rec {
+        coverage = let
+          paths = pkgs.lib.mapAttrsToList (_: value: (value {inherit craneLib pkgs;}).coverage) (libraries // packages);
+        in
+          pkgs.runCommand "coverage" {} ("mkdir $out\n" + (pkgs.lib.concatStringsSep "\n" (builtins.map (p: "ln -s ${p} $out/${p.name}") paths)) + "\n");
+        everything = let
+          allClosures = builtins.mapAttrs (_: value: value.config.system.build.toplevel) self.nixosConfigurations;
+        in
+          pkgs.runCommand "everything" {} (
+            "mkdir -p $out/hosts\n"
+            + (pkgs.lib.concatStringsSep "\n" (pkgs.lib.mapAttrsToList (k: p: "ln -s ${p} $out/hosts/${k}") allClosures))
+            + "\nln -s ${self.nixosConfigurations.iso.config.system.build.isoImage} $out/iso\n"
+          );
+        default = coverage;
+      }
+      // (builtins.mapAttrs (_: v: (v {inherit pkgs craneLib;}).package) packages);
     devShells.x86_64-linux.default = pkgs.mkShell {
       packages = with pkgs; [
         alsaLib.dev
@@ -228,17 +231,18 @@
           (import ./modules/base.nix {inherit nixpkgs;})
 
           ./machines/hallewell/arrsuite.nix
-          ./machines/hallewell/navidrome.nix
           ./machines/hallewell/grafana.nix
           ./machines/hallewell/hardware.nix
           ./machines/hallewell/minio.nix
           ./machines/hallewell/nas.nix
+          ./machines/hallewell/navidrome.nix
           ./machines/hallewell/networking.nix
           ./machines/hallewell/paperless.nix
           ./machines/hallewell/photoprism.nix
           ./machines/hallewell/postgresql.nix
           ./machines/hallewell/ras.nix
           ./machines/hallewell/ratweb.nix
+          ./machines/hallewell/ratweb2.nix
           ./machines/hallewell/syncthing.nix
           ./machines/hallewell/tempo.nix
           ./machines/hallewell/users/ramona.nix
