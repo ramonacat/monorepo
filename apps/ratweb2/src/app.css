@@ -1,0 +1,99 @@
+:root {
+	--color-background: #071013;
+	--color-background-secondary: #20282b;
+	--color-background-bright: #51585a;
+
+	--color-text: #d8dbe2;
+	--color-text-inverted: var(--color-background);
+
+	--color-accent-3: #f0c808;
+	--color-accent-3-dark-8: #302802;
+	--color-accent-3-light-4: #f6de6b;
+
+	--color-accent-4: #DD1C1A;
+	--color-danger: var(--color-accent-4);
+
+	--height-unit: 1.5rem;
+	--height-input: var(--height-unit);
+	--height-heading: calc(var(--height-unit) * 3);
+
+	--width-input: 200px;
+	--width-border: 1px;
+
+	--spacing-xs: 3px;
+	--spacing-s: 5px;
+	--spacing-m: 10px;
+	--spacing-l: 20px;
+
+	--font-size: 1rem;
+	--font-size-s: 0.75rem;
+
+	--radius: 5px;
+}
+
+*,
+*::before,
+*::after {
+	box-sizing: border-box;
+}
+*:focus {
+	outline: 0 none transparent;
+}
+
+body {
+	font-family: system-ui, sans-serif;
+	background-color: var(--color-background);
+	color: var(--color-text);
+	margin: 0;
+	padding: 0;
+}
+
+form .row {
+	margin: var(--spacing-m) 0;
+	width: calc(var(--width-input) + var(--width-border) * 2);
+}
+
+label {
+	display: block;
+	margin-bottom: var(--spacing-xs);
+}
+
+input:not([type='hidden']),
+button {
+	display: inline-block;
+	border: 1px solid #fefae6;
+	background-color: var(--color-background-secondary);
+	color: var(--color-text);
+	height: var(--height-unit);
+	margin: 0;
+	padding: 0 var(--spacing-xs);
+	font-size: var(--font-size);
+}
+
+input:not([type='hidden']) {
+	width: var(--width-input);
+}
+
+button {
+	display: block;
+	padding: 0 var(--spacing-l);
+	margin: 0 auto;
+}
+
+h1 {
+	font-size: 2rem;
+}
+
+h2 {
+	font-size: 1.5rem;
+}
+
+h3,h4,h5,h6 {
+	font-size: 1rem;
+}
+
+h1,h2,h3,h4,h5,h6 {
+	margin: 0;
+	padding: 0;
+}
+
