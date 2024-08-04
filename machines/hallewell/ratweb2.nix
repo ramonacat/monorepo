@@ -10,7 +10,6 @@
           PORT=8069
         '';
         ExecStart = "${pkgs.ramona.ratweb2}/bin/ratweb2";
-        WorkingDirectory = "${pkgs.ramona.ratweb2}/lib/node_modules/ratweb2/";
       };
     };
     networking.firewall.allowedTCPPorts = [8069];
