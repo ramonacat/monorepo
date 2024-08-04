@@ -5,10 +5,10 @@
       description = "ratweb2";
       serviceConfig = {
         DynamicUser = true;
-        Environment = ''
-          HOST=0.0.0.0
-          PORT=8069
-        '';
+        Environment = [
+          "HOST=0.0.0.0"
+          "PORT=8069"
+        ];
         ExecStart = "${pkgs.ramona.ratweb2}/bin/ratweb2";
       };
     };
