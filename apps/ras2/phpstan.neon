@@ -4,4 +4,3 @@ parameters:
         - src/
         - tests/
         - public/
-        - bin/
