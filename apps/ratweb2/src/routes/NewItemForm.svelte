@@ -1,5 +1,5 @@
 <script>
-	import TagsInput from './TagsInput.svelte';
+	import TagsInput from '$lib/components/TagsInput.svelte';
 </script>
 
 <form method="POST">
@@ -22,5 +22,8 @@
 </form>
 
 <style>
-	form {margin: 0 auto; width: var(--width-input);}
+	form {
+		margin: 0 auto;
+		width: var(--width-input);
+	}
 </style>
