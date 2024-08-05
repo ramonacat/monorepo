@@ -1,6 +1,6 @@
 <script lang="ts">
 	import Icon from '@iconify/svelte';
-	import TagPill from './TagPill.svelte';
+	import TagPill from '$lib/components/TagPill.svelte';
 	export let selectedTags: string[] = [];
 	let inputtedTag: string = '';
 

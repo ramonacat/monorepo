@@ -2,13 +2,13 @@
 	import type { Tab } from '$lib/Tab';
 	import { setContext } from 'svelte';
 
-	export let description:string = '';
+	export let description: string = '';
 
-	let tabs:Tab[] = [];
-	let currentTab:(Tab|undefined);
+	let tabs: Tab[] = [];
+	let currentTab: Tab | undefined;
 
 	function switchTab(tab: Tab) {
-		if(currentTab) {
+		if (currentTab) {
 			currentTab.hide();
 		}
 		tab.show();
@@ -17,12 +17,12 @@
 	}
 	let tabCount = 0;
 	setContext('registry', {
-		register: (name:string, hide:() => void, show:() => void) => {
+		register: (name: string, hide: () => void, show: () => void) => {
 			tabCount++;
-			tabs.push({name, hide, show})
+			tabs.push({ name, hide, show });
 			tabs = tabs;
 
-			if(tabCount > 1) {
+			if (tabCount > 1) {
 				hide();
 			} else {
 				show();
@@ -30,7 +30,6 @@
 			}
 		}
 	});
-
 </script>
 
 <div class="heading">

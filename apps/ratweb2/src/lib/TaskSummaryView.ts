@@ -4,4 +4,5 @@ export interface TaskSummaryView {
 	name: string;
 	deadline?: DateTime<boolean>;
 	pastDeadline: boolean;
+	tags: string[];
 }

@@ -10,7 +10,7 @@
 	--color-accent-3-dark-8: #302802;
 	--color-accent-3-light-4: #f6de6b;
 
-	--color-accent-4: #DD1C1A;
+	--color-accent-4: #dd1c1a;
 	--color-danger: var(--color-accent-4);
 
 	--height-unit: 1.5rem;
@@ -24,6 +24,7 @@
 	--spacing-s: 5px;
 	--spacing-m: 10px;
 	--spacing-l: 20px;
+	--spacing-xl: 40px;
 
 	--font-size: 1rem;
 	--font-size-s: 0.75rem;
@@ -74,7 +75,12 @@ input:not([type='hidden']) {
 	width: var(--width-input);
 }
 
-button {
+button.-danger {
+	color: var(--color-danger);
+	border: var(--width-border) solid var(--color-danger);
+}
+
+form button {
 	display: block;
 	padding: 0 var(--spacing-l);
 	margin: 0 auto;
@@ -88,12 +94,19 @@ h2 {
 	font-size: 1.5rem;
 }
 
-h3,h4,h5,h6 {
+h3,
+h4,
+h5,
+h6 {
 	font-size: 1rem;
 }
 
-h1,h2,h3,h4,h5,h6 {
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
 	margin: 0;
 	padding: 0;
 }
-
