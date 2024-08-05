@@ -21,12 +21,12 @@
 		{/each}
 	</div>
 	<div class="actions">
-		<div class="buttton-group-left">
+		<div class="button-group -left">
 			<button title="edit"><Icon inline icon="mdi:edit" /></button>
 			<button title="start"><Icon inline icon="mdi:stopwatch-start" /></button>
 			<button title="done"><Icon inline icon="mdi:done" /></button>
 		</div>
-		<div class="button-group-right">
+		<div class="button-group -right">
 			<button class="-danger" title="remove"><Icon inline icon="mdi:remove" /></button>
 		</div>
 	</div>
@@ -64,5 +64,9 @@
 
 	.tags {
 		margin-top: var(--spacing-xs);
+	}
+
+	.button-group {
+			display: flex;
 	}
 </style>
