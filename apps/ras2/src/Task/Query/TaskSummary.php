@@ -8,6 +8,9 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Ramona\Ras2\Task\TaskId;
 use Ramona\Ras2\UserId;
 
+/**
+ * @psalm-suppress PossiblyUnusedProperty
+ */
 final readonly class TaskSummary
 {
     /**

@@ -29,4 +29,12 @@ final class BacklogItem implements Task
 
         return new Started($this->description, $assignee);
     }
+
+    /**
+     * @psalm-suppress PossiblyUnusedMethod
+     */
+    public function description(): TaskDescription
+    {
+        return $this->description;
+    }
 }

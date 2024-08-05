@@ -12,6 +12,7 @@ use Ramona\Ras2\Task\Query\Query;
 interface Executor
 {
     /**
+     * @psalm-suppress PossiblyUnusedMethod
      * @param Query<TResult> $query
      * @return TResult
      */

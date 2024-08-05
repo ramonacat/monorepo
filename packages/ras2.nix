@@ -7,8 +7,7 @@
 
     src = ../apps/ras2;
 
-    # The composer vendor hash
-    vendorHash = "sha256-PWi7CLiT6WwMve1m/6tnComNqfOLi9j0+29swcTd3bg=";
+    vendorHash = "sha256-UdsiZvVK3xnuZlneuvDPxQnDU8SvH4Y2r15BbAelzpw=";
     composerNoPlugins = false;
   };
   devPhp = pkgs.php82.buildEnv {
@@ -27,20 +26,6 @@
       php = devPhp;
     }
     // packageAttributes));
-  nodeDependencies = pkgs.runCommand "${packageAttributes.pname}--composer-deps-all" {buildInputs = [pkgs.nodejs_22];} (let
-    npmDeps = pkgs.importNpmLock {
-      npmRoot = ../apps/ras2;
-    };
-  in ''
-    mkdir $out
-    cp ${npmDeps}/* .
-    chmod 777 *.json
-
-    export HOME="$TMPDIR"
-    npm install
-
-    cp -r ./* $out/
-  '');
 in rec {
   package = pkgs.php.buildComposerProject (_: packageAttributes);
   # FIXME: actually get the coverage here...
@@ -60,7 +45,6 @@ in rec {
       } ''
         mkdir -p $out/build/node_modules/
         cp -r ${devPackage}/share/php/ras2/* $out/build/
-        cp -r ${nodeDependencies}/node_modules/* $out/build/node_modules/
         cd $out/build/
         chmod -R a+w .
 

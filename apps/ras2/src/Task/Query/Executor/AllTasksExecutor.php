@@ -12,6 +12,7 @@ use Ramona\Ras2\Task\TaskId;
 use Ramona\Ras2\UserId;
 
 /**
+ * @psalm-suppress UnusedClass
  * @implements Executor<ArrayCollection<int, TaskSummary>>
  */
 class AllTasksExecutor implements Executor
