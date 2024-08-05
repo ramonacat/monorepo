@@ -1,10 +1,12 @@
 <script lang="ts">
-	import { Duration } from 'luxon';
+	import { DateTime } from 'luxon';
 
-	export let duration: Duration;
+	export let since:DateTime;
+
+	let duration = DateTime.now().diff(since);
 
 	setInterval(() => {
-		duration = duration.plus(Duration.fromObject({ second: 1 }));
+		duration = DateTime.now().diff(since);
 	}, 1000);
 </script>
 

@@ -1,6 +1,6 @@
-import type { Duration } from 'luxon';
+import type { DateTime, Duration } from 'luxon';
 
 export interface ActiveTaskView {
 	name: string;
-	timeSpent: Duration;
+	workStartedAt: DateTime;
 }

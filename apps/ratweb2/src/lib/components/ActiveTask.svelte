@@ -7,7 +7,7 @@
 </script>
 
 <span class="name">{task.name}</span>
-<span class="time-spent"><TimeCounter duration={task.timeSpent} /></span>
+<span class="time-spent"><TimeCounter since={task.workStartedAt} /></span>
 
 <div class="buttons">
 	<button title="pause"><Icon inline icon="mdi:pause" /></button>

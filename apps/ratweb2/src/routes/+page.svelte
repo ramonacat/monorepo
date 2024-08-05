@@ -6,7 +6,7 @@
 	import { DateTime, Duration } from 'luxon';
 	import SectionHeading from '$lib/components/SectionHeading.svelte';
 	import Tab from '$lib/components/Tab.svelte';
-	import CurrentTask from '$lib/components/CurrentTask.svelte';
+	import CurrentTask from '$lib/components/ActiveTask.svelte';
 	import type { ActiveTaskView } from '$lib/ActiveTaskView';
 
 	let tasks: TaskSummaryView[] = [
@@ -70,7 +70,7 @@
 		}
 	];
 	let currentTask: ActiveTaskView = {
-		timeSpent: Duration.fromObject({ second: 1000 }),
+		workStartedAt: DateTime.now(),
 		name: 'This is a task'
 	};
 </script>
