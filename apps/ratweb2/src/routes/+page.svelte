@@ -8,6 +8,7 @@
 	import Tab from '$lib/components/Tab.svelte';
 	import CurrentTask from '$lib/components/ActiveTask.svelte';
 	import type { ActiveTaskView } from '$lib/ActiveTaskView';
+	import type { ActionData } from '../../.svelte-kit/types/src/routes/$types';
 
 	let tasks: TaskSummaryView[] = [
 		{
@@ -73,6 +74,8 @@
 		workStartedAt: DateTime.now(),
 		name: 'This is a task'
 	};
+
+	export let form: ActionData;
 </script>
 
 <svelte:head>
@@ -88,7 +91,7 @@
 	<section>
 		<Tabs description="create">
 			<Tab name="task">
-				<NewItemForm />
+				<NewItemForm {form} />
 			</Tab>
 			<Tab name="event">event</Tab>
 			<Tab name="idea">idea</Tab>

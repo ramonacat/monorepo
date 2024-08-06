@@ -32,7 +32,7 @@ $routerStrategy = new JsonStrategy($responseFactory);
 
 $router = new League\Route\Router();
 $router->setStrategy($routerStrategy);
-$router->map('POST', '/tasks/ideas', new CreateTask($commandBus, $serializer));
+$router->map('POST', '/tasks', new CreateTask($commandBus, $serializer));
 $response = $router->dispatch($request);
 
 // send the response to the browser
