@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Ramona\Ras2\Task\Command\Executor;
 
+use Ramona\Ras2\CQRS\Command\Executor;
 use Ramona\Ras2\Task\Command\CreateIdea;
 use Ramona\Ras2\Task\Idea;
 use Ramona\Ras2\Task\Repository;

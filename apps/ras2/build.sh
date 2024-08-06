@@ -12,4 +12,4 @@ php ./vendor/bin/phpstan.phar
 php ./vendor/bin/psalm.phar --no-cache
 php ./vendor/bin/psalm.phar --no-cache --taint-analysis
 php ./vendor/bin/phpunit
-php ./vendor/bin/infection --min-msi=45 --min-covered-msi=100 -j"$(nproc)"
+php ./vendor/bin/infection --min-msi=49 --min-covered-msi=100 -j"$(nproc)"

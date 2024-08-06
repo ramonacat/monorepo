@@ -6,14 +6,16 @@ namespace Ramona\Ras2\Task\Query\Executor;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\DBAL\Connection;
-use Ramona\Ras2\Task\Query\Query;
+use Ramona\Ras2\CQRS\Query\Executor;
+use Ramona\Ras2\CQRS\Query\Query;
+use Ramona\Ras2\Task\Query\AllTasks;
 use Ramona\Ras2\Task\Query\TaskSummary;
 use Ramona\Ras2\Task\TaskId;
 use Ramona\Ras2\UserId;
 
 /**
  * @psalm-suppress UnusedClass
- * @implements Executor<ArrayCollection<int, TaskSummary>>
+ * @implements Executor<ArrayCollection<int, TaskSummary>, AllTasks>
  */
 class AllTasksExecutor implements Executor
 {

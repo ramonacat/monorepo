@@ -2,9 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Ramona\Ras2\Task\Command\Executor;
-
-use Ramona\Ras2\Task\Command\Command;
+namespace Ramona\Ras2\CQRS\Command;
 
 /**
  * @template TCommand of Command

@@ -15,16 +15,11 @@ final class TaskDescription
 
     /**
      * @todo this should have a type of "UserText"
-     * @psalm-suppress UnusedProperty
-     * @phpstan-ignore property.onlyWritten
      */
     private string $title;
 
     /**
      * @var ArrayCollection<int, TagId>
-     *
-     * @psalm-suppress UnusedProperty
-     * @phpstan-ignore property.onlyWritten
      */
     private ArrayCollection $tags;
 
@@ -41,5 +36,18 @@ final class TaskDescription
     public function id(): TaskId
     {
         return $this->id;
+    }
+
+    public function title(): string
+    {
+        return $this->title;
+    }
+
+    /**
+     * @return ArrayCollection<int, TagId>
+     */
+    public function tags(): ArrayCollection
+    {
+        return $this->tags;
     }
 }

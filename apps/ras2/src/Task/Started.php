@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Ramona\Ras2\Task;
 
+use Doctrine\Common\Collections\ArrayCollection;
 use Ramona\Ras2\UserId;
 
 final class Started implements Task
@@ -38,5 +39,20 @@ final class Started implements Task
     public function assigneeId(): UserId
     {
         return $this->assignee;
+    }
+
+    public function id(): TaskId
+    {
+        return $this->description->id();
+    }
+
+    public function title(): string
+    {
+        return $this->description->title();
+    }
+
+    public function tags(): ArrayCollection
+    {
+        return $this->description->tags();
     }
 }
