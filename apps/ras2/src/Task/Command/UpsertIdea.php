@@ -8,7 +8,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Ramona\Ras2\CQRS\Command\Command;
 use Ramona\Ras2\Task\TaskId;
 
-final readonly class CreateIdea implements Command
+final readonly class UpsertIdea implements Command
 {
     /**
      * @param ArrayCollection<int, string> $tags
