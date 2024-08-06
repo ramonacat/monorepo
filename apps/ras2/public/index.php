@@ -27,7 +27,7 @@ $routerStrategy = new JsonStrategy($responseFactory);
 
 $router = new League\Route\Router();
 $router->setStrategy($routerStrategy);
-$router->map('PUT', '/tasks/ideas/{id:uuid}', new CreateIdea($commandBus, $serializer));
+$router->map('POST', '/tasks/ideas', new CreateIdea($commandBus, $serializer));
 $response = $router->dispatch($request);
 
 // send the response to the browser

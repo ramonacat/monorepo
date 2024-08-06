@@ -26,4 +26,14 @@ final class MockRepository implements Repository
     {
         return $this->tasks;
     }
+
+    public function fetchOrCreateTags(array $tags): array
+    {
+        return [];
+    }
+
+    public function transactional(\Closure $action): void
+    {
+        ($action)();
+    }
 }
