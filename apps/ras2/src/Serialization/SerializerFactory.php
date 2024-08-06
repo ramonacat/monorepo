@@ -15,7 +15,7 @@ final class SerializerFactory
         $normalizer->registerConverter(
             TaskId::class,
             fn (TaskId $t) => (string) $t,
-            fn ($r) => TaskId::fromString((string) $r)
+            fn (string $r) => TaskId::fromString($r)
         );
         $normalizer->registerConverter(
             ArrayCollection::class,

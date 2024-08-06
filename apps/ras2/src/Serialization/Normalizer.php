@@ -29,30 +29,41 @@ final class Normalizer
         ];
     }
 
-    /**
-     * @return array<string, mixed>
-     */
-    public function denormalize(object $raw): array
+    public function denormalize(object $raw): mixed
     {
+        if (isset($this->converters[get_class($raw)])) {
+            return $this->converters[get_class($raw)]['from-object']($raw);
+        }
+
         $result = [];
 
         $reflectionClass = new \ReflectionClass($raw);
         foreach ($reflectionClass->getProperties() as $property) {
+            /** @psalm-suppress MixedAssignment $value */
             $value = $property->getValue($raw);
 
-            if (is_scalar($value)) {
-                $result[$property->getName()] = $value;
+            if (is_resource($value)) {
+                throw ConversionNotFound::forValue($value, (string) $property->getType());
+            }
+
+            $propertyName = $property->getName();
+            if (is_scalar($value) || is_array($value)) {
+                $result[$propertyName] = $value;
                 continue;
             }
 
-            assert(is_object($value));
-            if (isset($this->converters[get_class($value)])) {
+            /** @var object|null $value */
+
+            if ($value !== null && isset($this->converters[get_class($value)])) {
                 /**
                  * @psalm-suppress MixedAssignment
                  */
-                $result[$property->getName()] = ($this->converters[get_class($value)]['from-object'])($value);
+                $result[$propertyName] = ($this->converters[get_class($value)]['from-object'])($value);
             } else {
-                $result[$property->getName()] = $this->denormalize($value);
+                /**
+                 * @psalm-suppress MixedAssignment
+                 */
+                $result[$propertyName] = $value === null ? null : $this->denormalize($value);
             }
         }
 

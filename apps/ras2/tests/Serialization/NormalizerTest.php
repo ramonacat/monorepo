@@ -145,4 +145,16 @@ final class NormalizerTest extends TestCase
             'test' => 5432,
         ], WithChild::class);
     }
+
+    public function testCanSetNullInDenormalisation(): void
+    {
+        $normalizer = new Normalizer();
+
+        $result = $normalizer->denormalize(new WithChild(null, 123));
+
+        self::assertEquals([
+            'child' => null,
+            'test' => 123,
+        ], $result);
+    }
 }

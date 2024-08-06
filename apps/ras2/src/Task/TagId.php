@@ -24,6 +24,11 @@ final class TagId implements \Stringable
         return $this->id->toString();
     }
 
+    public static function generate(): self
+    {
+        return new self(Uuid::uuid7());
+    }
+
     /**
      * @psalm-suppress PossiblyUnusedMethod
      */

@@ -42,6 +42,55 @@ final class PostgresRepository implements Repository
         });
     }
 
+    public function fetchOrCreateTags(array $tags): array
+    {
+        $foundTags = $this
+            ->connection
+            ->executeQuery(
+                'SELECT id, name FROM tags WHERE name IN(select value::text from json_array_elements(:tags))',
+                [
+                    'tags' => \Safe\json_encode($tags),
+                ]
+            )
+            ->fetchAllAssociative();
+
+        $result = [];
+        $toCreate = [];
+
+        /** @var array<string, string> $foundMap */
+        $foundMap = [];
+        foreach ($foundTags as $tag) {
+            $foundMap[(string) $tag['name']] = (string) $tag['id'];
+        }
+
+        foreach ($tags as $tag) {
+            if (isset($foundMap[$tag])) {
+                $result[] = TagId::fromString($foundMap[$tag]);
+            } else {
+                $toCreate[] = $tag;
+            }
+        }
+
+        $insert = $this->connection->prepare('INSERT INTO tags(id, name) VALUES(:id, :name)');
+
+        foreach ($toCreate as $tagName) {
+            $id = TagId::generate();
+
+            $insert->bindValue(':id', (string) $id);
+            $insert->bindValue(':name', $tagName);
+            $insert->executeStatement();
+
+            $result[] = $id;
+        }
+
+        return $result;
+    }
+
+    public function transactional(\Closure $action): void
+    {
+        $this->connection->transactional($action);
+    }
+
     private function createStateValue(string $className): string
     {
         switch ($className) {
