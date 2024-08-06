@@ -6,11 +6,13 @@ namespace Tests\Ramona\Ras2\Serialization;
 
 use PHPUnit\Framework\TestCase;
 use Ramona\Ras2\Serialization\ConversionNotFound;
+use Ramona\Ras2\Serialization\MissingDataForField;
 use Ramona\Ras2\Serialization\Normalizer;
 use Tests\Ramona\Ras2\Serialization\Mocks\Simple;
 use Tests\Ramona\Ras2\Serialization\Mocks\UnionType;
 use Tests\Ramona\Ras2\Serialization\Mocks\UntypedProperty;
 use Tests\Ramona\Ras2\Serialization\Mocks\WithChild;
+use Tests\Ramona\Ras2\Serialization\Mocks\WithNullableChild;
 
 final class NormalizerTest extends TestCase
 {
@@ -31,7 +33,7 @@ final class NormalizerTest extends TestCase
         $normalizer = new Normalizer();
 
         $normalizer->registerConverter(Simple::class, fn (Simple $s) => 'simple', fn (string $s) => new Simple());
-        $result = $normalizer->denormalize(new WithChild(new Simple(), 123));
+        $result = $normalizer->denormalize(new WithNullableChild(new Simple(), 123));
 
         self::assertSame([
             'child' => 'simple',
@@ -109,9 +111,9 @@ final class NormalizerTest extends TestCase
         $result = $normalizer->normalize([
             'child' => 'other',
             'test' => 555,
-        ], WithChild::class);
+        ], WithNullableChild::class);
 
-        self::assertEquals(new WithChild(new Simple('oh', 5432), 555), $result);
+        self::assertEquals(new WithNullableChild(new Simple('oh', 5432), 555), $result);
     }
 
     public function testCanNormalizeAChildWithoutAConverter(): void
@@ -123,9 +125,9 @@ final class NormalizerTest extends TestCase
                 'stuff' => 543,
             ],
             'test' => 5432,
-        ], WithChild::class);
+        ], WithNullableChild::class);
 
-        self::assertEquals(new WithChild(new Simple('teest', 543), 5432), $result);
+        self::assertEquals(new WithNullableChild(new Simple('teest', 543), 5432), $result);
     }
 
     public function testCannotNormalizeAChildIfKeysAreNotAllStrings(): void
@@ -143,18 +145,54 @@ final class NormalizerTest extends TestCase
                 1 => 2,
             ],
             'test' => 5432,
-        ], WithChild::class);
+        ], WithNullableChild::class);
     }
 
     public function testCanSetNullInDenormalisation(): void
     {
         $normalizer = new Normalizer();
 
-        $result = $normalizer->denormalize(new WithChild(null, 123));
+        $result = $normalizer->denormalize(new WithNullableChild(null, 123));
 
         self::assertEquals([
             'child' => null,
             'test' => 123,
         ], $result);
+    }
+
+    public function testWillThrowIfNotAllFieldsCanBeInitialized(): void
+    {
+        $normalizer = new Normalizer();
+
+        $this->expectException(MissingDataForField::class);
+        $normalizer->normalize([
+            'child' => [
+                'id' => 'a',
+            ],
+        ], WithNullableChild::class);
+    }
+
+    public function testWillThrowIfFieldIsNotNullableButNullIsProvided(): void
+    {
+        $normalizer = new Normalizer();
+
+        $this->expectException(MissingDataForField::class);
+        $normalizer->normalize([
+            'child' => [
+                'id' => '123',
+                'stuff' => null,
+            ],
+            'test' => null,
+        ], WithNullableChild::class);
+    }
+
+    public function testWillThrowIfFieldIsNotNullableButNullIsProvidedClassVariant(): void
+    {
+        $normalizer = new Normalizer();
+
+        $this->expectException(MissingDataForField::class);
+        $normalizer->normalize([
+            'child' => null,
+        ], WithChild::class);
     }
 }

@@ -88,17 +88,22 @@ final class Normalizer
 
         $reflectionClass = new \ReflectionClass($className);
         $instance = $reflectionClass->newInstanceWithoutConstructor();
+        $properties = $reflectionClass->getProperties();
 
-        /** @var mixed $value */
-        foreach ($raw as $key => $value) {
-            $property = $reflectionClass->getProperty($key);
+        foreach ($properties as $property) {
+            $propertyName = $property->getName();
+            if (! \array_key_exists($propertyName, $raw)) {
+                throw MissingDataForField::field($propertyName);
+            }
+            /** @var mixed $value */
+            $value = $raw[$propertyName];
             $propertyType = $property->getType();
             if ($propertyType === null) {
                 $property->setValue($instance, $value);
             } elseif ($propertyType instanceof \ReflectionNamedType) {
                 $typeName = $propertyType->getName();
 
-                if ($propertyType->isBuiltin()) {
+                if ($propertyType->isBuiltin() && ($propertyType->allowsNull() || $value !== null)) {
                     $property->setValue($instance, $value);
                     continue;
                 }
@@ -109,6 +114,13 @@ final class Normalizer
                     assert(class_exists($typeName));
                     $property->setValue($instance, $this->normalize($value, $typeName));
                     continue;
+                } elseif ($value === null && $propertyType->allowsNull()) {
+                    $property->setValue($instance, null);
+                    continue;
+                }
+
+                if ($value === null) {
+                    throw MissingDataForField::isNull($propertyName);
                 }
 
                 throw ConversionNotFound::forValue($value, $typeName);

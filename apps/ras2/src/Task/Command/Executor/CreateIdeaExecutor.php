@@ -6,13 +6,13 @@ namespace Ramona\Ras2\Task\Command\Executor;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use Ramona\Ras2\CQRS\Command\Executor;
-use Ramona\Ras2\Task\Command\CreateIdea;
+use Ramona\Ras2\Task\Command\UpsertIdea;
 use Ramona\Ras2\Task\Idea;
 use Ramona\Ras2\Task\Repository;
 use Ramona\Ras2\Task\TaskDescription;
 
 /**
- * @implements Executor<CreateIdea>
+ * @implements Executor<UpsertIdea>
  * @psalm-suppress UnusedClass
  */
 final readonly class CreateIdeaExecutor implements Executor
