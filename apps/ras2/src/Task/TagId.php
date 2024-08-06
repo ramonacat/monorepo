@@ -4,14 +4,11 @@ declare(strict_types=1);
 
 namespace Ramona\Ras2\Task;
 
+use Ramsey\Uuid\Uuid;
 use Ramsey\Uuid\UuidInterface;
 
-final class TagId
+final class TagId implements \Stringable
 {
-    /**
-     * @psalm-suppress UnusedProperty
-     * @phpstan-ignore property.onlyWritten
-     */
     private UuidInterface $id;
 
     /**
@@ -20,5 +17,18 @@ final class TagId
     public function __construct(UuidInterface $id)
     {
         $this->id = $id;
+    }
+
+    public function __toString(): string
+    {
+        return $this->id->toString();
+    }
+
+    /**
+     * @psalm-suppress PossiblyUnusedMethod
+     */
+    public static function fromString(string $id): self
+    {
+        return new self(Uuid::fromString($id));
     }
 }

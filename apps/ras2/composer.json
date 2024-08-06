@@ -36,7 +36,8 @@
         "laminas/laminas-diactoros": "^3.3",
         "laminas/laminas-httphandlerrunner": "^2.10",
         "doctrine/dbal": "^4.0",
-        "doctrine/migrations": "^3.8"
+        "doctrine/migrations": "^3.8",
+        "webmozart/assert": "^1.11"
     },
     "require-dev": {
         "phpstan/phpstan": "^1.11",

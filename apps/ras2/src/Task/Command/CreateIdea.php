@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Ramona\Ras2\Task\Command;
 
 use Doctrine\Common\Collections\ArrayCollection;
+use Ramona\Ras2\CQRS\Command\Command;
 use Ramona\Ras2\Task\TagId;
 use Ramona\Ras2\Task\TaskId;
 
