@@ -2,10 +2,14 @@
 
 declare(strict_types=1);
 
-namespace Ramona\Ras2\Serialization;
+namespace Ramona\Ras2\Infrastructure;
 
 use Doctrine\Common\Collections\ArrayCollection;
+use Ramona\Ras2\Serialization\Normalizer;
+use Ramona\Ras2\Serialization\Serializer;
+use Ramona\Ras2\Serialization\SerializerInterface;
 use Ramona\Ras2\Task\TaskId;
+use Ramona\Ras2\User\Token;
 use Ramona\Ras2\User\UserId;
 
 final class SerializerFactory
@@ -27,6 +31,11 @@ final class SerializerFactory
             UserId::class,
             fn (UserId $u) => (string) $u,
             fn (string $r) => UserId::fromString($r)
+        );
+        $normalizer->registerConverter(
+            Token::class,
+            fn (Token $t) => (string) $t,
+            fn (string $t) => Token::fromString($t)
         );
         return new Serializer($normalizer);
     }

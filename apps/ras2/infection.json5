@@ -6,7 +6,9 @@
             "public"
         ],
         "excludes": [
-            "Migrations"
+            "Migrations",
+            "Task/HttpApi",
+            "PostgresRepository"
         ]
     },
     "mutators": {

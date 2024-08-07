@@ -30,4 +30,32 @@ final class PostgresRepository implements Repository
             'name' => $user->name(),
         ]);
     }
+
+    public function assignTokenByUsername(string $name, Token $token): void
+    {
+        $this->databaseConnection->transactional(function () use ($name, $token) {
+            $userId = $this
+                ->databaseConnection
+                ->executeQuery('SELECT id FROM users WHERE name=:name', [
+                    'name' => $name,
+                ])
+                ->fetchOne();
+
+            assert(is_string($userId) || $userId === false);
+
+            if ($userId === false) {
+                throw UserNotFound::forName($name);
+            }
+
+            $this->databaseConnection->executeStatement('
+            INSERT INTO user_tokens(id, token) 
+            VALUES (
+                :id, :value
+            )
+        ', [
+                'id' => $userId,
+                'value' => (string) $token,
+            ]);
+        });
+    }
 }
