@@ -231,4 +231,20 @@ final class NormalizerTest extends TestCase
         self::assertNull($result->child);
         self::assertSame(123, $result->test);
     }
+
+    public function testWillThrowIfNullIsPassedForNonNullableField(): void
+    {
+        $normalizer = new Normalizer();
+        $normalizer->registerConverter(
+            Simple::class,
+            fn (Simple $from) => 'aaaa',
+            fn (string $from) => new Simple($from)
+        );
+
+        $this->expectException(MissingDataForField::class);
+        $normalizer->normalize([
+            'child' => null,
+            'test' => 123,
+        ], WithChild::class);
+    }
 }

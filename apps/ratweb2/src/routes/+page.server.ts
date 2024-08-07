@@ -1,7 +1,15 @@
-import { type Actions, fail } from '@sveltejs/kit';
+import { type Actions, fail, redirect } from '@sveltejs/kit';
+
+export function load({cookies}) {
+	const token = cookies.get('token');
+
+	if(!token) {
+		return redirect(302, '/login');
+	}
+}
 
 export const actions = {
-	create_backlog_item: async ({ request }) => {
+	create_backlog_item: async ({ request, cookies }) => {
 		const data = await request.formData();
 		const title = data.get('title');
 		const rawTags = data.get('tags');
@@ -15,7 +23,8 @@ export const actions = {
 			body: JSON.stringify({ id, title, tags, assignee: null }),
 			headers: {
 				'X-Action': 'upsert:backlog-item',
-				'Content-Type': 'application/json'
+				'Content-Type': 'application/json',
+				'X-User-Token': cookies.get('token') as string,
 			}
 		});
 

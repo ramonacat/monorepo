@@ -10,4 +10,9 @@ final class UserNotFound extends \RuntimeException
     {
         return new self("Cannot find user for name \"{$name}\"");
     }
+
+    public static function withToken(): self
+    {
+        return new self('Cannot find user for the supplied token.');
+    }
 }

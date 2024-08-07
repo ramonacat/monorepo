@@ -101,29 +101,23 @@ final class Normalizer
             if ($propertyType === null) {
                 $property->setValue($instance, $value);
             } elseif ($propertyType instanceof \ReflectionNamedType) {
-                $typeName = $propertyType->getName();
-
-                if ($propertyType->isBuiltin() && ($propertyType->allowsNull() || $value !== null)) {
-                    $property->setValue($instance, $value);
-                    continue;
-                }
-                if (isset($this->converters[$typeName])) {
-                    $property->setValue($instance, $this->converters[$typeName]['to-object']($value));
-                    continue;
-                } elseif (is_array($value) && $this->areAllKeysStrings($value)) {
-                    assert(class_exists($typeName));
-                    $property->setValue($instance, $this->normalize($value, $typeName));
-                    continue;
-                } elseif ($value === null && $propertyType->allowsNull()) {
-                    $property->setValue($instance, null);
-                    continue;
-                }
-
-                if ($value === null) {
+                if ($value === null && ! $propertyType->allowsNull()) {
                     throw MissingDataForField::isNull($propertyName);
                 }
 
-                throw ConversionNotFound::forValue($value, $typeName);
+                $typeName = $propertyType->getName();
+                if ($value === null) {
+                    $property->setValue($instance, null);
+                } elseif ($propertyType->isBuiltin()) {
+                    $property->setValue($instance, $value);
+                } elseif (isset($this->converters[$typeName])) {
+                    $property->setValue($instance, $this->converters[$typeName]['to-object']($value));
+                } elseif (is_array($value) && $this->areAllKeysStrings($value)) {
+                    assert(class_exists($typeName));
+                    $property->setValue($instance, $this->normalize($value, $typeName));
+                } else {
+                    throw ConversionNotFound::forValue($value, $typeName);
+                }
             } else {
                 throw ConversionNotFound::forValue($value, (string) $propertyType);
             }
