@@ -2,6 +2,7 @@
 	import Icon from '@iconify/svelte';
 	import TagPill from '$lib/components/TagPill.svelte';
 	export let selectedTags: string[] = [];
+	export let name: string;
 	let inputtedTag: string = '';
 
 	function addTag(ev: MouseEvent) {
@@ -23,7 +24,7 @@
 </script>
 
 <div class="tags-input">
-	<input type="hidden" name="selected-tags" value={selectedTagsJson} />
+	<input type="hidden" {name} value={selectedTagsJson} />
 	<input type="text" bind:value={inputtedTag} />
 	<button on:click={addTag} class="add-tag">add</button>
 </div>

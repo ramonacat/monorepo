@@ -67,6 +67,6 @@
 	}
 
 	.button-group {
-			display: flex;
+		display: flex;
 	}
 </style>

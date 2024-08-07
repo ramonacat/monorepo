@@ -12,7 +12,7 @@
 		display: inline-flex;
 		border-radius: var(--radius);
 		background-color: var(--color-background-secondary);
-		border: 1px solid var(--color-accent-3);
+		border: var(--width-border) solid var(--color-accent-3-500);
 		font-size: var(--font-size-s);
 		line-height: var(--height-unit);
 		vertical-align: middle;
@@ -23,7 +23,7 @@
 	}
 
 	.addon-right {
-		border-left: 1px solid var(--color-accent-3);
+		border-left: var(--width-border) solid var(--color-accent-3-500);
 		margin: 0;
 		padding-left: var(--spacing-xs);
 		height: var(--height-unit);

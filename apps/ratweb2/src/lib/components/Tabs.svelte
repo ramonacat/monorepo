@@ -68,8 +68,8 @@
 	}
 
 	button {
-		background-color: var(--color-background-secondary);
-		border: var(--width-border) solid var(--color-accent-3);
+		background-color: var(--color-black-300);
+		border: var(--width-border) solid var(--color-accent-3-500);
 		margin: 0;
 		padding: 0 var(--spacing-l);
 		height: 100%;
@@ -80,7 +80,7 @@
 	}
 
 	button.active {
-		background-color: var(--color-accent-3);
+		background-color: var(--color-accent-3-500);
 		color: var(--color-text-inverted);
 	}
 </style>

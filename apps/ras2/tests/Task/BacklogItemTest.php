@@ -10,7 +10,7 @@ use Ramona\Ras2\Task\AssigneeNotProvided;
 use Ramona\Ras2\Task\BacklogItem;
 use Ramona\Ras2\Task\TaskDescription;
 use Ramona\Ras2\Task\TaskId;
-use Ramona\Ras2\UserId;
+use Ramona\Ras2\User\UserId;
 
 final class BacklogItemTest extends TestCase
 {

@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { DateTime } from 'luxon';
 
-	export let since:DateTime;
+	export let since: DateTime;
 
 	let duration = DateTime.now().diff(since);
 
