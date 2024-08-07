@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Ramona\Ras2\User\Command;
 
-use Ramona\Ras2\CQRS\Command\Command;
+use Ramona\Ras2\SharedCore\Infrastructure\CQRS\Command\Command;
 use Ramona\Ras2\User\UserId;
 
 final readonly class UpsertUser implements Command

@@ -8,9 +8,9 @@ use Laminas\Diactoros\Response;
 use League\Route\Http\Exception\BadRequestException;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
-use Ramona\Ras2\CQRS\Command\Bus;
-use Ramona\Ras2\HTTP\AssertRequest;
-use Ramona\Ras2\Serialization\SerializerInterface;
+use Ramona\Ras2\SharedCore\Infrastructure\CQRS\Command\Bus;
+use Ramona\Ras2\SharedCore\Infrastructure\HTTP\AssertRequest;
+use Ramona\Ras2\SharedCore\Infrastructure\Serialization\SerializerInterface;
 use Ramona\Ras2\Task\Command\UpsertBacklogItem;
 use Ramona\Ras2\Task\Command\UpsertIdea;
 

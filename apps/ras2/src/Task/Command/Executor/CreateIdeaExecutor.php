@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Ramona\Ras2\Task\Command\Executor;
 
 use Doctrine\Common\Collections\ArrayCollection;
-use Ramona\Ras2\CQRS\Command\Executor;
+use Ramona\Ras2\SharedCore\Infrastructure\CQRS\Command\Executor;
 use Ramona\Ras2\Task\Command\UpsertIdea;
 use Ramona\Ras2\Task\Idea;
 use Ramona\Ras2\Task\Repository;

@@ -12,4 +12,6 @@ interface Repository
     public function transactional(\Closure $callable): void;
 
     public function save(User $user): void;
+
+    public function assignTokenByUsername(string $name, Token $token): void;
 }

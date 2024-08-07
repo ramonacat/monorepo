@@ -7,7 +7,7 @@
 
     src = ../apps/ras2;
 
-    vendorHash = "sha256-fZmWtgn1LxTwZ1d3nTuv30l8bzbObbPv/V5vDzUFcO4=";
+    vendorHash = "sha256-03pXXj4gVdO3ulnYDDAxagGCASp9zJBPnRJKaRHOzh4=";
     composerNoPlugins = false;
   };
   devPhp = pkgs.php82.buildEnv {
@@ -43,10 +43,9 @@ in rec {
       pkgs.runCommand "${devPackage.name}--ecs" {
         buildInputs = [devPhp pkgs.bash pkgs.nodePackages.gulp-cli pkgs.nodejs_22];
       } ''
-        mkdir -p $out/build/node_modules/
-        cp -r ${devPackage}/share/php/ras2/* $out/build/
-        cd $out/build/
-        chmod -R a+w .
+        mkdir $out
+        cp -r ${devPackage}/share/php/ras2/* $out/
+        cd $out/
 
         # this is an awful hack
         # We generally want to allow nix to patch shebangs, but phars can have signatures
