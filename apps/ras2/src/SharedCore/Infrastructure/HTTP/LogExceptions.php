@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Ramona\Ras2\SharedCore\Application\HttpApi;
+namespace Ramona\Ras2\SharedCore\Infrastructure\HTTP;
 
 use Laminas\Diactoros\Response;
 use Psr\Http\Message\ResponseInterface;

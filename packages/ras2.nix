@@ -46,7 +46,6 @@ in rec {
         mkdir $out
         cp -r ${devPackage}/share/php/ras2/* $out/
         cd $out/
-        chmod -R a+w .
 
         # this is an awful hack
         # We generally want to allow nix to patch shebangs, but phars can have signatures

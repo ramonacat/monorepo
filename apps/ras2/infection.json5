@@ -7,9 +7,6 @@
         ],
         "excludes": [
             "Migrations",
-            "Task/HttpApi",
-            "Application/HttpApi",
-            "User/HttpApi",
             "PostgresRepository"
         ]
     },

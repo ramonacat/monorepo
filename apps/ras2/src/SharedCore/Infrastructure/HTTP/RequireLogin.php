@@ -16,6 +16,8 @@ use Ramona\Ras2\User\UserNotFound;
 
 final class RequireLogin implements MiddlewareInterface
 {
+    public const SESSION_ATTRIBUTE = 'session';
+
     public function __construct(
         private readonly Bus $queryBus
     ) {
@@ -38,7 +40,7 @@ final class RequireLogin implements MiddlewareInterface
         } catch (UserNotFound) {
             return new Response(status: 403);
         }
-        $request = $request->withAttribute('user-context', $user);
+        $request = $request->withAttribute(self::SESSION_ATTRIBUTE, $user);
 
         return $handler->handle($request);
     }
