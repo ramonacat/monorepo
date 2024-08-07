@@ -135,5 +135,4 @@ vim.keymap.set("n", "<leader>fb", builtin.buffers, {})
 vim.keymap.set("n", "<leader>fh", builtin.help_tags, {})
 
 require("nvim-treesitter").setup({})
-require("which-key").register({})
 require("kanagawa").setup({})

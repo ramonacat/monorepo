@@ -90,6 +90,7 @@
     viAlias = true;
     vimAlias = true;
     vimdiffAlias = true;
+    defaultEditor = true;
 
     plugins = with pkgs.vimPlugins; [
       auto-save-nvim
@@ -102,7 +103,6 @@
       nvim-lspconfig
       telescope-nvim
       vim-vsnip
-      which-key-nvim
 
       nvim-treesitter
       nvim-treesitter-parsers.terraform
