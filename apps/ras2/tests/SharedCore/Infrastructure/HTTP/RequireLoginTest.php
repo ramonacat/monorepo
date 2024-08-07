@@ -11,6 +11,7 @@ use Ramona\Ras2\SharedCore\Infrastructure\HTTP\RequireLogin;
 use Ramona\Ras2\User\Query\FindByToken;
 use Ramona\Ras2\User\Session;
 use Ramona\Ras2\User\UserId;
+use Ramona\Ras2\User\UserNotFound;
 
 final class RequireLoginTest extends TestCase
 {
@@ -37,7 +38,10 @@ final class RequireLoginTest extends TestCase
         $bus = new Bus();
         $userId = UserId::generate();
         $username = 'ramona';
-        $bus->installExecutor(FindByToken::class, new FindByTokenExecutorMock($userId, $username));
+        $bus->installExecutor(
+            FindByToken::class,
+            new FindByTokenExecutorMock(fn () => new Session($userId, $username))
+        );
         $requireLogin = new RequireLogin($bus);
 
         $requestHandler = new MockRequestHandler();
@@ -58,5 +62,26 @@ final class RequireLoginTest extends TestCase
 
         self::assertEquals(403, $response->getStatusCode());
         self::assertEquals('', $response->getBody()->getContents());
+    }
+
+    public function testWillFailOnTokenNotFound(): void
+    {
+        $request = new ServerRequest(uri: 'http://localhost:8080/users', headers: [
+            'X-Action' => 'upsert',
+            'X-User-Token' => 'bped6gRpDIP0S+xQMDKkdsfj2qhSUVr/obnOspHdz2rfoR99vCQee3BEx+9GaX6yRIOTMp6lxADW/YRoIrxImA==',
+        ]);
+        $bus = new Bus();
+        $bus->installExecutor(
+            FindByToken::class,
+            new FindByTokenExecutorMock(fn () => throw UserNotFound::withToken())
+        );
+        $requireLogin = new RequireLogin($bus);
+
+        $response = $requireLogin->process($request, new MockRequestHandler());
+        $response->getBody()
+            ->seek(0);
+
+        self::assertEquals('', $response->getBody()->getContents());
+        self::assertEquals(403, $response->getStatusCode());
     }
 }

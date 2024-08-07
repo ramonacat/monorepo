@@ -4,6 +4,7 @@
 	import Icon from '@iconify/svelte';
 	import Message from '$lib/components/forms/Message.svelte';
 	import { MessageType } from '$lib/components/forms/MessageType';
+	import DateTimeInput from '$lib/components/forms/DateTimeInput.svelte';
 
 	export let form: ActionData;
 </script>
@@ -27,7 +28,7 @@
 	</div>
 	<div class="row">
 		<label for="deadline">deadline:</label>
-		<input type="datetime-local" name="deadline" id="deadline" />
+		<DateTimeInput dateName="deadline-date" timeName="deadline-time" />
 	</div>
 
 	<div class="row submit-row">

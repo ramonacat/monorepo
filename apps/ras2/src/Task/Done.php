@@ -6,24 +6,21 @@ namespace Ramona\Ras2\Task;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use Ramona\Ras2\User\UserId;
+use Safe\DateTimeImmutable;
 
 /**
  * @psalm-suppress UnusedClass
  */
 class Done implements Task
 {
-    private TaskDescription $description;
-
-    private UserId $assignee;
-
     /**
      * @psalm-suppress PossiblyUnusedMethod
      */
-    public function __construct(TaskDescription $description, UserId $assignee)
-    {
+    public function __construct(
+        private TaskDescription $description,
+        private UserId $assignee
+    ) {
 
-        $this->description = $description;
-        $this->assignee = $assignee;
     }
 
     public function id(): TaskId
@@ -44,5 +41,10 @@ class Done implements Task
     public function tags(): ArrayCollection
     {
         return $this->description->tags();
+    }
+
+    public function deadline(): ?DateTimeImmutable
+    {
+        return null; // TODO: should we keep it so we have history???
     }
 }

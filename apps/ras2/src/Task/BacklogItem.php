@@ -6,19 +6,15 @@ namespace Ramona\Ras2\Task;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use Ramona\Ras2\User\UserId;
+use Safe\DateTimeImmutable;
 
 final class BacklogItem implements Task
 {
-    private TaskDescription $description;
-
-    private ?UserId $assignee;
-
     public function __construct(
-        TaskDescription $description,
-        ?UserId $assigneeId
+        private TaskDescription $description,
+        private ?UserId $assigneeId,
+        private ?DateTimeImmutable $deadline
     ) {
-        $this->description = $description;
-        $this->assignee = $assigneeId;
     }
 
     /**
@@ -26,9 +22,9 @@ final class BacklogItem implements Task
      */
     public function start(?UserId $assignee): Started
     {
-        $assignee = $assignee ?? $this->assignee ?? throw AssigneeNotProvided::forTask($this->description->id());
+        $assignee = $assignee ?? $this->assigneeId ?? throw AssigneeNotProvided::forTask($this->description->id());
 
-        return new Started($this->description, $assignee);
+        return new Started($this->description, $assignee, $this->deadline);
     }
 
     /**
@@ -51,11 +47,16 @@ final class BacklogItem implements Task
 
     public function assigneeId(): ?UserId
     {
-        return $this->assignee;
+        return $this->assigneeId;
     }
 
     public function tags(): ArrayCollection
     {
         return $this->description->tags();
+    }
+
+    public function deadline(): ?DateTimeImmutable
+    {
+        return $this->deadline;
     }
 }

@@ -14,13 +14,17 @@ export const actions = {
 		const title = data.get('title');
 		const rawTags = data.get('tags');
 		const tags = typeof rawTags !== 'string' ? [] : JSON.parse(rawTags.toString());
-		// const deadline = data.get('deadline');
+		// TODO this is a hack, we should use the timezonstored in user's profile
+		const deadlineDate = data.get('deadline-date');
+		const deadlineTime = data.get('deadline-time') ?? '00:00:00';
+		const deadline = deadlineDate === null
+			? null
+			: new Date(deadlineDate + 'T' + deadlineTime +'+00:00');
 
 		const id = crypto.randomUUID();
 		const response = await fetch('http://localhost:8080/tasks', {
 			method: 'POST',
-			// todo also send the deadline here!
-			body: JSON.stringify({ id, title, tags, assignee: null }),
+			body: JSON.stringify({ id, title, tags, deadline, assignee: null }),
 			headers: {
 				'X-Action': 'upsert:backlog-item',
 				'Content-Type': 'application/json',

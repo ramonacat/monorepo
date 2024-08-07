@@ -10,7 +10,7 @@ return [
     ],
 
     'migrations_paths' => [
-        'Ramona\Ras2\Migrations' => __DIR__.'/src/Migrations',
+        'Ramona\Ras2\SharedCore\Infrastructure\Migrations' => __DIR__.'/src/SharedCore/Infrastructure/Migrations',
     ],
 
     'all_or_nothing' => true,

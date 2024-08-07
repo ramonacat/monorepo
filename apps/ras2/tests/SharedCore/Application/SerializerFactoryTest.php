@@ -10,6 +10,7 @@ use Ramona\Ras2\SharedCore\Application\SerializerFactory;
 use Ramona\Ras2\Task\TaskId;
 use Ramona\Ras2\User\Token;
 use Ramona\Ras2\User\UserId;
+use Safe\DateTimeImmutable;
 
 final class SerializerFactoryTest extends TestCase
 {
@@ -55,5 +56,20 @@ final class SerializerFactoryTest extends TestCase
         $result = $serializer->serialize($token);
 
         self::assertJsonStringEqualsJsonString(\Safe\json_encode((string) $token), $result);
+    }
+
+    public function testUnderstandsDateTimeImmutable(): void
+    {
+        $datetime = \Safe\DateTimeImmutable::createFromFormat('Y-m-d H:i:s', '2024-05-05 05:05:05');
+
+        $serializer = (new SerializerFactory())->create();
+
+        $result = $serializer->serialize($datetime);
+
+        self::assertJsonStringEqualsJsonString(
+            \Safe\json_encode($datetime->format(DateTimeImmutable::RFC3339_EXTENDED)),
+            $result
+        );
+
     }
 }

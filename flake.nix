@@ -32,10 +32,6 @@
       url = "github:ryantm/agenix";
       inputs.nixpkgs.follows = "nixpkgs";
     };
-    alacritty-theme = {
-      url = "github:alexghr/alacritty-theme.nix";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
     nix-minecraft = {
       url = "github:Infinidoge/nix-minecraft";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -49,7 +45,6 @@
 
   outputs = {
     agenix,
-    alacritty-theme,
     crane,
     home-manager,
     lix-module,
@@ -93,7 +88,6 @@
         common
         ++ [
           nix-minecraft.overlay
-          alacritty-theme.overlays.default
           (mine "x86_64" {inherit pkgs craneLib;})
         ];
     };
@@ -199,11 +193,16 @@
         nodePackages.gulp-cli
         nodePackages.ts-node
 
-        (pkgs.php82.withExtensions ({
-          enabled,
-          all,
-        }:
-          enabled ++ [all.xdebug]))
+        (pkgs.php82.buildEnv {
+          extensions = {
+            enabled,
+            all,
+          }:
+            enabled ++ [all.xdebug];
+          extraConfig = ''
+            zend.exception_string_param_max_len=128
+          '';
+        })
         (pkgs.rust-bin.stable.latest.default.override {
           extensions = ["rust-src" "llvm-tools-preview"];
           targets = ["aarch64-unknown-linux-gnu" "wasm32-unknown-unknown"];

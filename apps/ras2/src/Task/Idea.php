@@ -6,6 +6,7 @@ namespace Ramona\Ras2\Task;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use Ramona\Ras2\User\UserId;
+use Safe\DateTimeImmutable;
 
 class Idea implements Task
 {
@@ -21,7 +22,7 @@ class Idea implements Task
      */
     public function toBacklog(?UserId $assignee): BacklogItem
     {
-        return new BacklogItem($this->description, $assignee);
+        return new BacklogItem($this->description, $assignee, null);
     }
 
     public function id(): TaskId
@@ -42,5 +43,10 @@ class Idea implements Task
     public function tags(): ArrayCollection
     {
         return $this->description->tags();
+    }
+
+    public function deadline(): ?DateTimeImmutable
+    {
+        return null;
     }
 }
