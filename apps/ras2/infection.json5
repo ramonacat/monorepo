@@ -15,6 +15,12 @@
             ignore: [
                 "Ramona\\Ras2\\Serialization\\Normalizer"
             ]
+        },
+        "CastString": {
+            ignore: [
+                "Ramona\\Ras2\\Serialization\\Normalizer",
+                "Ramona\\Ras2\\Serialization\\ConversionNotFound"
+            ]
         }
     },
     "logs": {

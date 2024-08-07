@@ -6,6 +6,7 @@ namespace Ramona\Ras2\Serialization;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use Ramona\Ras2\Task\TaskId;
+use Ramona\Ras2\User\UserId;
 
 final class SerializerFactory
 {
@@ -21,6 +22,11 @@ final class SerializerFactory
             ArrayCollection::class,
             fn (ArrayCollection $a) => $a->toArray(),
             fn (array $a) => new ArrayCollection($a)
+        );
+        $normalizer->registerConverter(
+            UserId::class,
+            fn (UserId $u) => (string) $u,
+            fn (string $r) => UserId::fromString($r)
         );
         return new Serializer($normalizer);
     }

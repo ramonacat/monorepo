@@ -195,4 +195,40 @@ final class NormalizerTest extends TestCase
             'child' => null,
         ], WithChild::class);
     }
+
+    public function testWillThrowOnResource(): void
+    {
+        $normalizer = new Normalizer();
+
+        $this->expectException(ConversionNotFound::class);
+        $this->expectExceptionMessageMatches(
+            '/No conversion found for value "(.*)" of type "resource \\(stream\\)" to ""/'
+        );
+        $normalizer->denormalize(new UntypedProperty(\Safe\tmpfile()));
+    }
+
+    public function testWillSetNullablePropertyToNullBuiltinType(): void
+    {
+        $normalizer = new Normalizer();
+
+        $result = $normalizer->normalize([
+            'id' => 'stuff',
+            'stuff' => null,
+        ], Simple::class);
+
+        self::assertNull($result->stuff);
+    }
+
+    public function testWillSetNullablePropertyToNull(): void
+    {
+        $normalizer = new Normalizer();
+
+        $result = $normalizer->normalize([
+            'child' => null,
+            'test' => 123,
+        ], WithNullableChild::class);
+
+        self::assertNull($result->child);
+        self::assertSame(123, $result->test);
+    }
 }

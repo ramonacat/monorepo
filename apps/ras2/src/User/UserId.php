@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Ramona\Ras2;
+namespace Ramona\Ras2\User;
 
 use Ramsey\Uuid\Uuid;
 use Ramsey\Uuid\UuidInterface;

@@ -8,7 +8,7 @@ final class Simple
 {
     public function __construct(
         public string $id = 'test',
-        public int $stuff = 1234
+        public ?int $stuff = 1234
     ) {
     }
 }

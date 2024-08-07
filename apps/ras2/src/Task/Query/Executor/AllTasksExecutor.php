@@ -11,7 +11,7 @@ use Ramona\Ras2\CQRS\Query\Query;
 use Ramona\Ras2\Task\Query\AllTasks;
 use Ramona\Ras2\Task\Query\TaskSummary;
 use Ramona\Ras2\Task\TaskId;
-use Ramona\Ras2\UserId;
+use Ramona\Ras2\User\UserId;
 
 /**
  * @psalm-suppress UnusedClass

@@ -11,7 +11,7 @@ use Ramona\Ras2\Task\Command\Executor\CreateBacklogItemExecutor;
 use Ramona\Ras2\Task\Command\UpsertBacklogItem;
 use Ramona\Ras2\Task\TaskDescription;
 use Ramona\Ras2\Task\TaskId;
-use Ramona\Ras2\UserId;
+use Ramona\Ras2\User\UserId;
 use Tests\Ramona\Ras2\Task\Mocks\MockRepository;
 
 final class CreateBacklogItemExecutorTest extends TestCase

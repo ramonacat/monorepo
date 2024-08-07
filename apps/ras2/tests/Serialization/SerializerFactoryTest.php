@@ -8,6 +8,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use PHPUnit\Framework\TestCase;
 use Ramona\Ras2\Serialization\SerializerFactory;
 use Ramona\Ras2\Task\TaskId;
+use Ramona\Ras2\User\UserId;
 
 final class SerializerFactoryTest extends TestCase
 {
@@ -31,5 +32,16 @@ final class SerializerFactoryTest extends TestCase
         $result = $serializer->serialize($collection);
 
         self::assertJsonStringEqualsJsonString(\Safe\json_encode([1, 2, 3]), $result);
+    }
+
+    public function testUnderstandsUserId(): void
+    {
+        $id = UserId::generate();
+
+        $serializer = (new SerializerFactory())->create();
+
+        $result = $serializer->serialize($id);
+
+        self::assertJsonStringEqualsJsonString(\Safe\json_encode((string) $id), $result);
     }
 }

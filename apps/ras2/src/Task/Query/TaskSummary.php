@@ -6,7 +6,7 @@ namespace Ramona\Ras2\Task\Query;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use Ramona\Ras2\Task\TaskId;
-use Ramona\Ras2\UserId;
+use Ramona\Ras2\User\UserId;
 
 /**
  * @psalm-suppress PossiblyUnusedProperty

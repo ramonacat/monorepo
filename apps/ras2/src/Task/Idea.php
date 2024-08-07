@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Ramona\Ras2\Task;
 
 use Doctrine\Common\Collections\ArrayCollection;
-use Ramona\Ras2\UserId;
+use Ramona\Ras2\User\UserId;
 
 class Idea implements Task
 {
