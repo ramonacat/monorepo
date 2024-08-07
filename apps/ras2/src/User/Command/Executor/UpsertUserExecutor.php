@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Ramona\Ras2\User\Command\Executor;
 
-use Ramona\Ras2\CQRS\Command\Command;
-use Ramona\Ras2\CQRS\Command\Executor;
+use Ramona\Ras2\SharedCore\Infrastructure\CQRS\Command\Command;
+use Ramona\Ras2\SharedCore\Infrastructure\CQRS\Command\Executor;
 use Ramona\Ras2\User\Command\UpsertUser;
 use Ramona\Ras2\User\Repository;
 use Ramona\Ras2\User\User;

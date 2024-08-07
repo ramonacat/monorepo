@@ -15,13 +15,13 @@
         "@default": true,
         "LogicalAndAllSubExprNegation": {
             ignore: [
-                "Ramona\\Ras2\\Serialization\\Normalizer"
+                "Ramona\\Ras2\\SharedCore\\Infrastructure\\Serialization\\Normalizer"
             ]
         },
         "CastString": {
             ignore: [
-                "Ramona\\Ras2\\Serialization\\Normalizer",
-                "Ramona\\Ras2\\Serialization\\ConversionNotFound"
+                "Ramona\\Ras2\\SharedCore\\Infrastructure\\Serialization\\Normalizer",
+                "Ramona\\Ras2\\SharedCore\\Infrastructure\\Serialization\\ConversionNotFound"
             ]
         }
     },
