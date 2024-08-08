@@ -8,6 +8,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Ramona\Ras2\SharedCore\Infrastructure\CQRS\Command\Command;
 use Ramona\Ras2\Task\TaskId;
 use Ramona\Ras2\User\UserId;
+use Safe\DateTimeImmutable;
 
 final readonly class UpsertBacklogItem implements Command
 {
@@ -19,7 +20,8 @@ final readonly class UpsertBacklogItem implements Command
         public TaskId $id,
         public string $title,
         public ArrayCollection $tags,
-        public ?UserId $assignee
+        public ?UserId $assignee,
+        public ?DateTimeImmutable $deadline
     ) {
     }
 }

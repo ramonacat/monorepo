@@ -8,7 +8,6 @@ use Ramona\Ras2\SharedCore\Infrastructure\CQRS\Query\Executor;
 use Ramona\Ras2\SharedCore\Infrastructure\CQRS\Query\Query;
 use Ramona\Ras2\User\Query\FindByToken;
 use Ramona\Ras2\User\Session;
-use Ramona\Ras2\User\UserId;
 
 /**
  * @implements Executor<Session, FindByToken>
@@ -16,13 +15,12 @@ use Ramona\Ras2\User\UserId;
 class FindByTokenExecutorMock implements Executor
 {
     public function __construct(
-        private UserId $userId,
-        private string $username
+        private \Closure $callback
     ) {
     }
 
     public function execute(Query $query): mixed
     {
-        return new Session($this->userId, $this->username);
+        return ($this->callback)();
     }
 }

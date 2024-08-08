@@ -17,7 +17,7 @@ final class BacklogItemTest extends TestCase
     public function testCanBeStarted(): void
     {
         $description = new TaskDescription(TaskId::generate(), 'title', new ArrayCollection([]));
-        $item = new BacklogItem($description, null);
+        $item = new BacklogItem($description, null, null);
 
         $assigneeId = UserId::generate();
 
@@ -31,7 +31,7 @@ final class BacklogItemTest extends TestCase
     {
         $description = new TaskDescription(TaskId::generate(), 'title', new ArrayCollection([]));
         $assigneeId = UserId::generate();
-        $item = new BacklogItem($description, $assigneeId);
+        $item = new BacklogItem($description, $assigneeId, null);
 
         $result = $item->start(null);
 
@@ -42,7 +42,7 @@ final class BacklogItemTest extends TestCase
     {
 
         $description = new TaskDescription(TaskId::generate(), 'title', new ArrayCollection([]));
-        $item = new BacklogItem($description, UserId::generate());
+        $item = new BacklogItem($description, UserId::generate(), null);
 
         $assigneeId = UserId::generate();
 
@@ -54,7 +54,7 @@ final class BacklogItemTest extends TestCase
     public function testThrowsIfNoAssigneeIsSetAndNoneIsProvided(): void
     {
         $description = new TaskDescription(TaskId::generate(), 'title', new ArrayCollection([]));
-        $item = new BacklogItem($description, null);
+        $item = new BacklogItem($description, null, null);
 
         $this->expectException(AssigneeNotProvided::class);
         $item->start(null);

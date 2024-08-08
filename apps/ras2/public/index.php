@@ -13,8 +13,8 @@ use Ramona\Ras2\SharedCore\Infrastructure\CQRS\Query\Bus as QueryBus;
 use Ramona\Ras2\SharedCore\Infrastructure\HTTP\LogExceptions;
 use Ramona\Ras2\SharedCore\Infrastructure\HTTP\RequireLogin;
 use Ramona\Ras2\SharedCore\Infrastructure\HTTP\RouteStrategy;
-use Ramona\Ras2\Task\Command\Executor\CreateBacklogItemExecutor;
 use Ramona\Ras2\Task\Command\Executor\CreateIdeaExecutor;
+use Ramona\Ras2\Task\Command\Executor\UpsertBacklogItemExecutor;
 use Ramona\Ras2\Task\Command\UpsertBacklogItem;
 use Ramona\Ras2\Task\Command\UpsertIdea;
 use Ramona\Ras2\Task\HttpApi\CreateTask;
@@ -40,7 +40,7 @@ $postgresRepository = new PostgresRepository($databaseConnection);
 $postgresUserRepository = new \Ramona\Ras2\User\PostgresRepository($databaseConnection);
 $commandBus = new CommandBus();
 $commandBus->installExecutor(UpsertIdea::class, new CreateIdeaExecutor($postgresRepository));
-$commandBus->installExecutor(UpsertBacklogItem::class, new CreateBacklogItemExecutor($postgresRepository));
+$commandBus->installExecutor(UpsertBacklogItem::class, new UpsertBacklogItemExecutor($postgresRepository));
 $commandBus->installExecutor(UpsertUser::class, new UpsertUserExecutor($postgresUserRepository));
 $commandBus->installExecutor(Login::class, new LoginExecutor($postgresUserRepository));
 

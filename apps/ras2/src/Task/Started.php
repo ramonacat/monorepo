@@ -6,23 +6,15 @@ namespace Ramona\Ras2\Task;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use Ramona\Ras2\User\UserId;
+use Safe\DateTimeImmutable;
 
 final class Started implements Task
 {
-    /**
-     * @psalm-suppress UnusedProperty
-     */
-    private TaskDescription $description;
-
-    /**
-     * @psalm-suppress UnusedProperty
-     */
-    private UserId $assignee;
-
-    public function __construct(TaskDescription $description, UserId $assignee)
-    {
-        $this->description = $description;
-        $this->assignee = $assignee;
+    public function __construct(
+        private TaskDescription $description,
+        private UserId $assignee,
+        private ?DateTimeImmutable $deadline
+    ) {
     }
 
     /**
@@ -54,5 +46,13 @@ final class Started implements Task
     public function tags(): ArrayCollection
     {
         return $this->description->tags();
+    }
+
+    /**
+     * @psalm-suppress PossiblyUnusedMethod
+     */
+    public function deadline(): ?DateTimeImmutable
+    {
+        return $this->deadline;
     }
 }

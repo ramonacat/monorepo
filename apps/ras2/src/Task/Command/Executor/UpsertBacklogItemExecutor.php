@@ -15,7 +15,7 @@ use Ramona\Ras2\Task\TaskDescription;
  * @implements Executor<UpsertBacklogItem>
  * @psalm-suppress UnusedClass
  */
-final readonly class CreateBacklogItemExecutor implements Executor
+final readonly class UpsertBacklogItemExecutor implements Executor
 {
     public function __construct(
         private Repository $repository
@@ -26,11 +26,11 @@ final readonly class CreateBacklogItemExecutor implements Executor
     {
         $this->repository->transactional(function () use ($command) {
             $tags = $this->repository->fetchOrCreateTags($command->tags->toArray());
-            $task = new BacklogItem(new TaskDescription(
-                $command->id,
-                $command->title,
-                new ArrayCollection($tags)
-            ), $command->assignee);
+            $task = new BacklogItem(
+                new TaskDescription($command->id, $command->title, new ArrayCollection($tags)),
+                $command->assignee,
+                $command->deadline
+            );
             $this->repository->save($task);
         });
     }

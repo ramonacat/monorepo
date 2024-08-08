@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Ramona\Ras2\Task;
 
 use Doctrine\DBAL\Connection;
+use Safe\DateTimeImmutable;
 
 final class PostgresRepository implements Repository
 {
@@ -17,15 +18,16 @@ final class PostgresRepository implements Repository
     {
         $this->connection->transactional(function () use ($task) {
             $this->connection->executeQuery('
-                INSERT INTO tasks(id, title, assignee_id, state) 
-                VALUES (:id, :title, :assignee_id, :state) 
+                INSERT INTO tasks(id, title, assignee_id, state, deadline) 
+                VALUES (:id, :title, :assignee_id, :state, :deadline) 
                 ON CONFLICT (id) DO UPDATE
-                    SET title=:title, assignee_id=:assignee_id, state=:state
+                    SET title=:title, assignee_id=:assignee_id, state=:state, deadline=:deadline
             ', [
                 'id' => (string) $task->id(),
                 'title' => $task->title(),
                 'assignee_id' => $task->assigneeId(),
                 'state' => $this->createStateValue(get_class($task)),
+                'deadline' => $task->deadline()?->format(DateTimeImmutable::RFC3339),
             ]);
 
             $this->connection->executeQuery('DELETE FROM tasks_tags WHERE task_id=:task_id', [

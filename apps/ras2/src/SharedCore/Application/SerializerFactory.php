@@ -11,6 +11,7 @@ use Ramona\Ras2\SharedCore\Infrastructure\Serialization\SerializerInterface;
 use Ramona\Ras2\Task\TaskId;
 use Ramona\Ras2\User\Token;
 use Ramona\Ras2\User\UserId;
+use Safe\DateTimeImmutable;
 
 final class SerializerFactory
 {
@@ -36,6 +37,11 @@ final class SerializerFactory
             Token::class,
             fn (Token $t) => (string) $t,
             fn (string $t) => Token::fromString($t)
+        );
+        $normalizer->registerConverter(
+            DateTimeImmutable::class,
+            fn (DateTimeImmutable $d) => $d->format(DateTimeImmutable::RFC3339_EXTENDED),
+            fn (string $s) => DateTimeImmutable::createFromFormat(DateTimeImmutable::RFC3339_EXTENDED, $s)
         );
         return new Serializer($normalizer);
     }
