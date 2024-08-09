@@ -4,45 +4,37 @@ declare(strict_types=1);
 
 namespace Ramona\Ras2\SharedCore\Application;
 
-use Doctrine\Common\Collections\ArrayCollection;
-use Ramona\Ras2\SharedCore\Infrastructure\Serialization\Normalizer;
+use Ramona\Ras2\SharedCore\Infrastructure\Serialization\ArrayCollectionDehydrator;
+use Ramona\Ras2\SharedCore\Infrastructure\Serialization\DateTimeImmutableDehydrator;
+use Ramona\Ras2\SharedCore\Infrastructure\Serialization\DefaultDehydrator;
+use Ramona\Ras2\SharedCore\Infrastructure\Serialization\DefaultSerializer;
+use Ramona\Ras2\SharedCore\Infrastructure\Serialization\ObjectDehydrator;
+use Ramona\Ras2\SharedCore\Infrastructure\Serialization\ScalarDehydrator;
 use Ramona\Ras2\SharedCore\Infrastructure\Serialization\Serializer;
-use Ramona\Ras2\SharedCore\Infrastructure\Serialization\SerializerInterface;
-use Ramona\Ras2\Task\TaskId;
-use Ramona\Ras2\User\Token;
-use Ramona\Ras2\User\UserId;
-use Safe\DateTimeImmutable;
+use Ramona\Ras2\SharedCore\Infrastructure\Serialization\UuidDehydrator;
+use Ramona\Ras2\Task\TaskIdDehydrator;
+use Ramona\Ras2\Task\TaskView;
+use Ramona\Ras2\User\Command\LoginResponse;
+use Ramona\Ras2\User\TokenDehydrator;
+use Ramona\Ras2\User\UserIdDehydrator;
 
 final class SerializerFactory
 {
-    public function create(): SerializerInterface
+    public function create(): Serializer
     {
-        $normalizer = new Normalizer();
-        $normalizer->registerConverter(
-            TaskId::class,
-            fn (TaskId $t) => (string) $t,
-            fn (string $r) => TaskId::fromString($r)
-        );
-        $normalizer->registerConverter(
-            ArrayCollection::class,
-            fn (ArrayCollection $a) => $a->toArray(),
-            fn (array $a) => new ArrayCollection($a)
-        );
-        $normalizer->registerConverter(
-            UserId::class,
-            fn (UserId $u) => (string) $u,
-            fn (string $r) => UserId::fromString($r)
-        );
-        $normalizer->registerConverter(
-            Token::class,
-            fn (Token $t) => (string) $t,
-            fn (string $t) => Token::fromString($t)
-        );
-        $normalizer->registerConverter(
-            DateTimeImmutable::class,
-            fn (DateTimeImmutable $d) => $d->format(DateTimeImmutable::RFC3339_EXTENDED),
-            fn (string $s) => DateTimeImmutable::createFromFormat(DateTimeImmutable::RFC3339_EXTENDED, $s)
-        );
-        return new Serializer($normalizer);
+        $dehydrator = new DefaultDehydrator();
+        $dehydrator->installValueDehydrator(new ArrayCollectionDehydrator());
+        $dehydrator->installValueDehydrator(new ScalarDehydrator('integer'));
+        $dehydrator->installValueDehydrator(new ScalarDehydrator('string'));
+        $dehydrator->installValueDehydrator(new ScalarDehydrator('NULL'));
+        $dehydrator->installValueDehydrator(new UuidDehydrator());
+        $dehydrator->installValueDehydrator(new UserIdDehydrator());
+        $dehydrator->installValueDehydrator(new DateTimeImmutableDehydrator());
+        $dehydrator->installValueDehydrator(new TokenDehydrator());
+        $dehydrator->installValueDehydrator(new TaskIdDehydrator());
+        $dehydrator->installValueDehydrator(new ObjectDehydrator(TaskView::class));
+        $dehydrator->installValueDehydrator(new ObjectDehydrator(LoginResponse::class));
+
+        return new DefaultSerializer($dehydrator);
     }
 }

@@ -8,12 +8,17 @@ use Doctrine\Common\Collections\ArrayCollection;
 use PHPUnit\Framework\TestCase;
 use Ramona\Ras2\SharedCore\Application\SerializerFactory;
 use Ramona\Ras2\Task\TaskId;
+use Ramona\Ras2\Task\TaskView;
+use Ramona\Ras2\User\Command\LoginResponse;
 use Ramona\Ras2\User\Token;
 use Ramona\Ras2\User\UserId;
-use Safe\DateTimeImmutable;
+use Ramsey\Uuid\Uuid;
+use Spatie\Snapshots\MatchesSnapshots;
 
 final class SerializerFactoryTest extends TestCase
 {
+    use MatchesSnapshots;
+
     public function testCanGenerateSerializerThatUnderstandsTaskId(): void
     {
         $taskId = TaskId::generate();
@@ -67,9 +72,68 @@ final class SerializerFactoryTest extends TestCase
         $result = $serializer->serialize($datetime);
 
         self::assertJsonStringEqualsJsonString(
-            \Safe\json_encode($datetime->format(DateTimeImmutable::RFC3339_EXTENDED)),
+            \Safe\json_encode([
+                'timestamp' => 1714885505,
+                'timezone' => 'UTC',
+            ]),
             $result
         );
+    }
 
+    public function testUnderstandsString(): void
+    {
+        $text = 'test';
+
+        $serializer = (new SerializerFactory())->create();
+
+        $result = $serializer->serialize($text);
+
+        self::assertJsonStringEqualsJsonString('"test"', $result);
+    }
+
+    public function testUnderstandsNull(): void
+    {
+        $serializer = (new SerializerFactory())->create();
+
+        $result = $serializer->serialize(null);
+
+        self::assertJsonStringEqualsJsonString('null', $result);
+    }
+
+    public function testUnderstandsUuid(): void
+    {
+        $serializer = (new SerializerFactory())->create();
+
+        $uuid = Uuid::uuid7();
+        $result = $serializer->serialize($uuid);
+
+        self::assertJsonStringEqualsJsonString("\"{$uuid}\"", $result);
+    }
+
+    public function testUnderstandsTaskView(): void
+    {
+        $taskView = new TaskView(
+            TaskId::fromString('01913564-5b13-7867-93bc-fcb4649456f1'),
+            'Some title',
+            null,
+            new ArrayCollection(['tag1', 'tag2']),
+            null
+        );
+
+        $serializer = (new SerializerFactory())->create();
+        $result = $serializer->serialize($taskView);
+
+        $this->assertMatchesJsonSnapshot($result);
+    }
+
+    public function testUnderstandsLoginResponse(): void
+    {
+        $loginResponse = new LoginResponse(Token::fromString(
+            'xGl8rnQidHJ0ih37Svzknzu4ZkXiuhmNDP6EqL7X2fnT0EIBvmnXWtAZVBt/8ESoNZmswKhXniyPU9DHGmIR9Q=='
+        ));
+        $serializer = (new SerializerFactory())->create();
+        $result = $serializer->serialize($loginResponse);
+
+        $this->assertMatchesJsonSnapshot($result);
     }
 }

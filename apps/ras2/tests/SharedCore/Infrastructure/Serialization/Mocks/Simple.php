@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Tests\Ramona\Ras2\SharedCore\Infrastructure\Serialization\Mocks;
 
-final class Simple
+final class Simple implements SimpleInterface
 {
     public function __construct(
         public string $id = 'test',
