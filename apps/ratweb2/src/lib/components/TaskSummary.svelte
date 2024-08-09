@@ -7,7 +7,7 @@
 </script>
 
 <button class="title" on:click={() => (showDetails = !showDetails)}>
-	{task.name}
+	{task.title}
 	{#if task.deadline}
 		<span class="deadline">
 			({task.deadline.toLocaleString({ timeStyle: 'medium', dateStyle: 'medium' })})

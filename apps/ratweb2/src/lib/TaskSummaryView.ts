@@ -1,7 +1,7 @@
 import { DateTime } from 'luxon';
 
 export interface TaskSummaryView {
-	name: string;
+	title: string;
 	deadline?: DateTime<boolean>;
 	pastDeadline: boolean;
 	tags: string[];

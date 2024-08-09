@@ -9,42 +9,11 @@
 	import CurrentTask from '$lib/components/ActiveTask.svelte';
 	import type { ActiveTaskView } from '$lib/ActiveTaskView';
 	import type { ActionData } from '../../.svelte-kit/types/src/routes/$types';
-
-	let tasks: TaskSummaryView[] = [
-		{
-			name: 'test 123',
-			deadline: DateTime.now()
-				.minus(Duration.fromObject({ days: -10 }))
-				.setLocale('en-GB'),
-			pastDeadline: true,
-			tags: ['housework', 'cleaning']
-		},
-		{
-			name: 'test 123',
-			deadline: DateTime.now()
-				.minus(Duration.fromObject({ days: 0 }))
-				.setLocale('en-GB'),
-			pastDeadline: true,
-			tags: ['housework', 'garden']
-		},
-		{
-			name: 'test 123',
-			pastDeadline: false,
-			tags: ['software', 'maintenance']
-		},
-		{
-			name: 'test 123',
-			deadline: DateTime.now()
-				.minus(Duration.fromObject({ days: 11 }))
-				.setLocale('en-GB'),
-			pastDeadline: false,
-			tags: ['network', 'performance']
-		}
-	];
+	import type { PageData } from './$types';
 
 	let tasks2: TaskSummaryView[] = [
 		{
-			name: 'test 123',
+			title: 'test 123',
 			deadline: DateTime.now()
 				.minus(Duration.fromObject({ days: 100 }))
 				.setLocale('en-GB'),
@@ -52,7 +21,7 @@
 			tags: ['network', 'stability']
 		},
 		{
-			name: 'test 123',
+			title: 'test 123',
 			deadline: DateTime.now()
 				.minus(Duration.fromObject({ days: 50 }))
 				.setLocale('en-GB'),
@@ -60,12 +29,12 @@
 			tags: ['hardware', 'design']
 		},
 		{
-			name: 'test 123',
+			title: 'test 123',
 			pastDeadline: false,
 			tags: ['important', 'drawing']
 		},
 		{
-			name: 'test 123',
+			title: 'test 123',
 			pastDeadline: false,
 			tags: ['alpha', 'beta', 'gamma', 'delta']
 		}
@@ -76,6 +45,18 @@
 	};
 
 	export let form: ActionData;
+	export let data: PageData;
+
+	const upcomingTasks = data.upcomingTasks.map(
+		(x: { title: string; tags: string[]; deadline: string; pastDeadline: boolean }) => {
+			return {
+				title: x.title,
+				tags: x.tags,
+				deadline: DateTime.fromISO(x.deadline),
+				pastDeadline: x.pastDeadline
+			} satisfies TaskSummaryView;
+		}
+	);
 </script>
 
 <svelte:head>
@@ -99,7 +80,7 @@
 	</section>
 	<section>
 		<SectionHeading>To do this week</SectionHeading>
-		<TaskList {tasks}></TaskList>
+		<TaskList tasks={upcomingTasks}></TaskList>
 	</section>
 	<section>
 		<SectionHeading>Todos from watched tags</SectionHeading>
