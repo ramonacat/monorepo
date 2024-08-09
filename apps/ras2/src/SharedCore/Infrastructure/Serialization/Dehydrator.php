@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Ramona\Ras2\SharedCore\Infrastructure\Serialization;
 
-interface Serializer
+interface Dehydrator
 {
-    public function serialize(mixed $value): string;
+    public function dehydrate(mixed $value): mixed;
 }

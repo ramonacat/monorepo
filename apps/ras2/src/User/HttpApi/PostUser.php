@@ -11,7 +11,8 @@ use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Ramona\Ras2\SharedCore\Infrastructure\CQRS\Command\Bus;
 use Ramona\Ras2\SharedCore\Infrastructure\HTTP\AssertRequest;
-use Ramona\Ras2\SharedCore\Infrastructure\Serialization\SerializerInterface;
+use Ramona\Ras2\SharedCore\Infrastructure\Serialization\Deserializer;
+use Ramona\Ras2\SharedCore\Infrastructure\Serialization\Serializer;
 use Ramona\Ras2\User\Command\Login;
 use Ramona\Ras2\User\Command\LoginRequest;
 use Ramona\Ras2\User\Command\LoginResponse;
@@ -22,7 +23,8 @@ final class PostUser
 {
     public function __construct(
         private Bus $commandBus,
-        private SerializerInterface $serializer
+        private Serializer $serializer,
+        private Deserializer $deserializer
     ) {
     }
 
@@ -43,7 +45,7 @@ final class PostUser
 
     public function upsert(ServerRequestInterface $serverRequest): EmptyResponse
     {
-        $command = $this->serializer->deserialize($serverRequest->getBody() ->getContents(), UpsertUser::class);
+        $command = $this->deserializer->deserialize(UpsertUser::class, $serverRequest->getBody() ->getContents());
 
         $this->commandBus->execute($command);
 
@@ -52,7 +54,7 @@ final class PostUser
 
     private function login(ServerRequestInterface $request): ResponseInterface
     {
-        $request = $this->serializer->deserialize($request->getBody()->getContents(), LoginRequest::class);
+        $request = $this->deserializer->deserialize(LoginRequest::class, $request->getBody()->getContents());
 
         $token = Token::generate();
 

@@ -10,15 +10,15 @@ use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Ramona\Ras2\SharedCore\Infrastructure\CQRS\Command\Bus;
 use Ramona\Ras2\SharedCore\Infrastructure\HTTP\AssertRequest;
-use Ramona\Ras2\SharedCore\Infrastructure\Serialization\SerializerInterface;
+use Ramona\Ras2\SharedCore\Infrastructure\Serialization\Deserializer;
 use Ramona\Ras2\Task\Command\UpsertBacklogItem;
 use Ramona\Ras2\Task\Command\UpsertIdea;
 
-final class CreateTask
+final class PostTasks
 {
     public function __construct(
         private Bus $commandBus,
-        private SerializerInterface $serializer
+        private Deserializer $deserializer
     ) {
     }
 
@@ -38,7 +38,7 @@ final class CreateTask
 
     public function upsertIdea(ServerRequestInterface $request): Response\EmptyResponse
     {
-        $requestData = $this->serializer->deserialize($request->getBody() ->getContents(), UpsertIdea::class);
+        $requestData = $this->deserializer->deserialize(UpsertIdea::class, $request->getBody() ->getContents());
         $this->commandBus->execute($requestData);
 
         return new Response\EmptyResponse(204);
@@ -46,7 +46,7 @@ final class CreateTask
 
     public function upsertBacklogItem(ServerRequestInterface $request): ResponseInterface
     {
-        $requestData = $this->serializer->deserialize($request->getBody()->getContents(), UpsertBacklogItem::class);
+        $requestData = $this->deserializer->deserialize(UpsertBacklogItem::class, $request->getBody()->getContents());
         $this->commandBus->execute($requestData);
 
         return new Response\EmptyResponse(204);
