@@ -11,34 +11,6 @@
 	import type { ActionData } from '../../.svelte-kit/types/src/routes/$types';
 	import type { PageData } from './$types';
 
-	let tasks2: TaskSummaryView[] = [
-		{
-			title: 'test 123',
-			deadline: DateTime.now()
-				.minus(Duration.fromObject({ days: 100 }))
-				.setLocale('en-GB'),
-			pastDeadline: false,
-			tags: ['network', 'stability']
-		},
-		{
-			title: 'test 123',
-			deadline: DateTime.now()
-				.minus(Duration.fromObject({ days: 50 }))
-				.setLocale('en-GB'),
-			pastDeadline: false,
-			tags: ['hardware', 'design']
-		},
-		{
-			title: 'test 123',
-			pastDeadline: false,
-			tags: ['important', 'drawing']
-		},
-		{
-			title: 'test 123',
-			pastDeadline: false,
-			tags: ['alpha', 'beta', 'gamma', 'delta']
-		}
-	];
 	let currentTask: ActiveTaskView = {
 		workStartedAt: DateTime.now(),
 		name: 'This is a task'
@@ -47,16 +19,21 @@
 	export let form: ActionData;
 	export let data: PageData;
 
-	const upcomingTasks = data.upcomingTasks.map(
-		(x: { title: string; tags: string[]; deadline: string; pastDeadline: boolean }) => {
-			return {
-				title: x.title,
-				tags: x.tags,
-				deadline: DateTime.fromISO(x.deadline),
-				pastDeadline: x.pastDeadline
-			} satisfies TaskSummaryView;
-		}
-	);
+	let convertApiTask = (x: {
+		title: string;
+		tags: string[];
+		deadline?: string | null;
+		pastDeadline: boolean;
+	}) => {
+		return {
+			title: x.title,
+			tags: x.tags,
+			deadline: x.deadline ? DateTime.fromISO(x.deadline) : null,
+			pastDeadline: x.pastDeadline
+		} satisfies TaskSummaryView;
+	};
+	const upcomingTasks: TaskSummaryView[] = data.upcomingTasks.map(convertApiTask);
+	const watchedTasks: TaskSummaryView[] = data.watchedTasks.map(convertApiTask);
 </script>
 
 <svelte:head>
@@ -79,12 +56,12 @@
 		</Tabs>
 	</section>
 	<section>
-		<SectionHeading>To do this week</SectionHeading>
+		<SectionHeading>Upcoming</SectionHeading>
 		<TaskList tasks={upcomingTasks}></TaskList>
 	</section>
 	<section>
 		<SectionHeading>Todos from watched tags</SectionHeading>
-		<TaskList tasks={tasks2}></TaskList>
+		<TaskList tasks={watchedTasks}></TaskList>
 	</section>
 </div>
 

@@ -22,6 +22,11 @@
                 "Ramona\\Ras2\\SharedCore\\Infrastructure\\Serialization\\Normalizer",
                 "Ramona\\Ras2\\SharedCore\\Infrastructure\\Serialization\\ConversionNotFound"
             ]
+        },
+        "CastInt": {
+            ignore: [
+                "Ramona\\Ras2\\Task\\HttpApi\\GetTasks"
+            ]
         }
     },
     "logs": {

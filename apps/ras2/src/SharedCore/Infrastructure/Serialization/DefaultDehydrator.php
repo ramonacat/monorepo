@@ -27,10 +27,6 @@ final class DefaultDehydrator implements Dehydrator
 
     public function dehydrate(mixed $value): mixed
     {
-        if (is_resource($value)) {
-            throw CannotDehydrateType::for('resource');
-        }
-
         $typeName = is_object($value) ? get_class($value) : gettype($value);
 
         if (is_object($value)) {

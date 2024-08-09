@@ -22,13 +22,16 @@ use Ramona\Ras2\Task\Command\UpsertIdea;
 use Ramona\Ras2\Task\HttpApi\GetTasks;
 use Ramona\Ras2\Task\HttpApi\PostTasks;
 use Ramona\Ras2\Task\PostgresRepository;
+use Ramona\Ras2\Task\Query\Executor\FindRandomExecutor;
 use Ramona\Ras2\Task\Query\Executor\FindUpcomingExecutor;
+use Ramona\Ras2\Task\Query\FindRandom;
 use Ramona\Ras2\Task\Query\FindUpcoming;
 use Ramona\Ras2\User\Command\Executor\LoginExecutor;
 use Ramona\Ras2\User\Command\Executor\UpsertUserExecutor;
 use Ramona\Ras2\User\Command\Login;
 use Ramona\Ras2\User\Command\UpsertUser;
-use Ramona\Ras2\User\HttpApi\PostUser;
+use Ramona\Ras2\User\HttpApi\GetUsers;
+use Ramona\Ras2\User\HttpApi\PostUsers;
 use Ramona\Ras2\User\Query\Executor\FindByTokenExecutor;
 use Ramona\Ras2\User\Query\FindByToken;
 
@@ -52,6 +55,7 @@ $commandBus->installExecutor(Login::class, new LoginExecutor($postgresUserReposi
 $queryBus = new QueryBus();
 $queryBus->installExecutor(FindByToken::class, new FindByTokenExecutor($databaseConnection));
 $queryBus->installExecutor(FindUpcoming::class, new FindUpcomingExecutor($databaseConnection));
+$queryBus->installExecutor(FindRandom::class, new FindRandomExecutor($databaseConnection));
 $request = Laminas\Diactoros\ServerRequestFactory::fromGlobals($_SERVER, $_GET, $_POST, $_COOKIE, $_FILES);
 
 $serializer = (new SerializerFactory())->create();
@@ -65,7 +69,8 @@ $router->setStrategy($routerStrategy);
 $router->prependMiddleware(new RequireLogin($queryBus));
 $router->map('GET', '/tasks', new GetTasks($queryBus, $serializer));
 $router->map('POST', '/tasks', new PostTasks($commandBus, $deserializer));
-$router->map('POST', '/users', new PostUser($commandBus, $serializer, $deserializer));
+$router->map('GET', '/users', new GetUsers($serializer));
+$router->map('POST', '/users', new PostUsers($commandBus, $serializer, $deserializer));
 $response = $router->dispatch($request);
 
 // send the response to the browser

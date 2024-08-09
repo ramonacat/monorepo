@@ -15,6 +15,7 @@ use Ramona\Ras2\SharedCore\Infrastructure\Serialization\UuidDehydrator;
 use Ramona\Ras2\Task\TaskIdDehydrator;
 use Ramona\Ras2\Task\TaskView;
 use Ramona\Ras2\User\Command\LoginResponse;
+use Ramona\Ras2\User\Session;
 use Ramona\Ras2\User\TokenDehydrator;
 use Ramona\Ras2\User\UserIdDehydrator;
 
@@ -34,6 +35,7 @@ final class SerializerFactory
         $dehydrator->installValueDehydrator(new TaskIdDehydrator());
         $dehydrator->installValueDehydrator(new ObjectDehydrator(TaskView::class));
         $dehydrator->installValueDehydrator(new ObjectDehydrator(LoginResponse::class));
+        $dehydrator->installValueDehydrator(new ObjectDehydrator(Session::class));
 
         return new DefaultSerializer($dehydrator);
     }

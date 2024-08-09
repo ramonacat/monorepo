@@ -10,6 +10,7 @@ use Ramona\Ras2\SharedCore\Application\SerializerFactory;
 use Ramona\Ras2\Task\TaskId;
 use Ramona\Ras2\Task\TaskView;
 use Ramona\Ras2\User\Command\LoginResponse;
+use Ramona\Ras2\User\Session;
 use Ramona\Ras2\User\Token;
 use Ramona\Ras2\User\UserId;
 use Ramsey\Uuid\Uuid;
@@ -133,6 +134,16 @@ final class SerializerFactoryTest extends TestCase
         ));
         $serializer = (new SerializerFactory())->create();
         $result = $serializer->serialize($loginResponse);
+
+        $this->assertMatchesJsonSnapshot($result);
+    }
+
+    public function testUnderstandsSession(): void
+    {
+        $session = new Session(UserId::fromString('01913763-3947-73e2-9406-b7efbcf560b3'), 'ramona');
+
+        $serializer = (new SerializerFactory())->create();
+        $result = $serializer->serialize($session);
 
         $this->assertMatchesJsonSnapshot($result);
     }
