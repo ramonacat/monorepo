@@ -1,6 +1,6 @@
 <script lang="ts">
-	export let dateName:string = 'date';
-	export let timeName:string = 'time';
+	export let dateName: string = 'date';
+	export let timeName: string = 'time';
 </script>
 
 <div class="datetime">
@@ -9,6 +9,10 @@
 </div>
 
 <style>
-	.datetime {display: flex;}
-	.time {border-left: 0;}
+	.datetime {
+		display: flex;
+	}
+	.time {
+		border-left: 0;
+	}
 </style>
