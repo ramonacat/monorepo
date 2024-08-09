@@ -11,6 +11,7 @@ use Ramona\Ras2\SharedCore\Infrastructure\Serialization\ArrayCollectionHydrator;
 use Ramona\Ras2\SharedCore\Infrastructure\Serialization\CannotHydrateType;
 use Ramona\Ras2\SharedCore\Infrastructure\Serialization\Hydrator;
 use Ramona\Ras2\SharedCore\Infrastructure\Serialization\InvalidArrayDeclaration;
+use Ramona\Ras2\SharedCore\Infrastructure\Serialization\MissingInputValue;
 use Ramona\Ras2\SharedCore\Infrastructure\Serialization\ObjectHydrator;
 use Ramona\Ras2\SharedCore\Infrastructure\Serialization\ScalarHydrator;
 use Ramona\Ras2\SharedCore\Infrastructure\Serialization\ValueHydrator;
@@ -145,5 +146,26 @@ final class HydratorTest extends TestCase
             'child' => null,
             'test' => 1234,
         ]);
+    }
+
+    public function testThrowsOnMissingHydrator(): void
+    {
+        $this->expectException(CannotHydrateType::class);
+        $this->expectExceptionMessage(
+            "Cannot hydrate type 'Tests\Ramona\Ras2\SharedCore\Infrastructure\Serialization\Mocks\Simple'"
+        );
+
+        $this->hydrator->hydrate(Simple::class, [
+            'test' => 1234,
+        ]);
+    }
+
+    public function testThrowsOnMissingValue(): void
+    {
+        $this->hydrator->installValueHydrator(new ObjectHydrator(Simple::class));
+
+        $this->expectException(MissingInputValue::class);
+        $this->expectExceptionMessage("No value was provided for field 'id'");
+        $this->hydrator->hydrate(Simple::class, []);
     }
 }

@@ -19,7 +19,7 @@ use Ramona\Ras2\User\Command\LoginResponse;
 use Ramona\Ras2\User\Command\UpsertUser;
 use Ramona\Ras2\User\Token;
 
-final class PostUser
+final class PostUsers
 {
     public function __construct(
         private Bus $commandBus,

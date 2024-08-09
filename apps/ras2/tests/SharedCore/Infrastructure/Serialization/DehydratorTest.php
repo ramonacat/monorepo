@@ -56,6 +56,13 @@ final class DehydratorTest extends TestCase
         $this->dehydrator->dehydrate(new Simple());
     }
 
+    public function testThrowsOnMissingDehydratorForAScalar(): void
+    {
+        $this->expectException(CannotDehydrateType::class);
+        $this->expectExceptionMessage('Cannot dehydrate type \'resource\'');
+        $this->dehydrator->dehydrate(\Safe\tmpfile());
+    }
+
     public function testCanDehydrateSpecificClass(): void
     {
         $this->dehydrator->installValueDehydrator(new ObjectDehydrator(A::class));

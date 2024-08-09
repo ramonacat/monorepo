@@ -26,9 +26,7 @@ final class Hydrator
      */
     public function hydrate(string $targetType, mixed $input, array $attributes = []): mixed
     {
-        if ($targetType === 'resource') {
-            throw CannotHydrateType::for($targetType);
-        } elseif ($targetType === 'int') {
+        if ($targetType === 'int') {
             $targetType = 'integer';
         } elseif ($targetType === 'bool') {
             $targetType = 'boolean';

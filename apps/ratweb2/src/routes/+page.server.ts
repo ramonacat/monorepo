@@ -1,5 +1,21 @@
 import { type Actions, fail, redirect } from '@sveltejs/kit';
 import { DateTime } from 'luxon';
+import ApiClient from '$lib/ApiClient';
+
+interface ServerTaskView {
+	title: string;
+	deadline: {
+		timestamp: number;
+		timezone: string;
+	};
+	assigneeName: string;
+	tags: string[];
+}
+
+interface Session {
+	userId: string;
+	username: string;
+}
 
 export async function load({ cookies }) {
 	const token = cookies.get('token');
@@ -8,27 +24,33 @@ export async function load({ cookies }) {
 		return redirect(302, '/login');
 	}
 
-	const upcomingTasks = await fetch('http://localhost:8080/tasks?upcoming', {
-		headers: {
-			'X-User-Token': token
-		}
-	});
-	if (upcomingTasks.ok) {
-		return {
-			upcomingTasks: (await upcomingTasks.json()).map(
-				(x: { deadline: { timestamp: number }; title: string; tags: string }) => {
-					console.log(x.deadline);
-					const deadline = DateTime.fromSeconds(x.deadline.timestamp);
-					return {
-						title: x.title,
-						tags: x.tags,
-						deadline: deadline.toISO(), // TODO handle timezone!
-						pastDeadline: deadline < DateTime.now()
-					};
-				}
-			)
+	const apiClient: ApiClient = new ApiClient(token);
+
+	const session: Session = (await apiClient.call('users?action=session')) as Session;
+
+	const upcomingTasks: ServerTaskView[] = (await apiClient.call(
+		'tasks?action=upcoming&limit=10&assigneeId=' + session.userId
+	)) as ServerTaskView[];
+	const watchedTasks: ServerTaskView[] = (await apiClient.call(
+		'tasks?action=watched&limit=10'
+	)) as ServerTaskView[];
+
+	function convertApiTask() {
+		return (x: ServerTaskView) => {
+			const deadline = x.deadline === null ? null : DateTime.fromSeconds(x.deadline.timestamp);
+			return {
+				title: x.title,
+				tags: x.tags,
+				deadline: deadline?.toISO(), // TODO handle timezone!
+				pastDeadline: deadline === null ? false : deadline < DateTime.now()
+			};
 		};
 	}
+
+	return {
+		upcomingTasks: upcomingTasks.map(convertApiTask()),
+		watchedTasks: watchedTasks.map(convertApiTask())
+	};
 }
 
 export const actions = {

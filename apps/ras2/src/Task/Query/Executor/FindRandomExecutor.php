@@ -8,21 +8,21 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\DBAL\Connection;
 use Ramona\Ras2\SharedCore\Infrastructure\CQRS\Query\Executor;
 use Ramona\Ras2\SharedCore\Infrastructure\CQRS\Query\Query;
-use Ramona\Ras2\Task\Query\FindUpcoming;
+use Ramona\Ras2\Task\Query\FindRandom;
 use Ramona\Ras2\Task\TaskId;
 use Ramona\Ras2\Task\TaskView;
 
 /**
- * @implements Executor<ArrayCollection<int, TaskView>, FindUpcoming>
+ * @implements Executor<ArrayCollection<int, TaskView>, FindRandom>
  */
-final class FindUpcomingExecutor implements Executor
+final class FindRandomExecutor implements Executor
 {
     public function __construct(
         private Connection $connection
     ) {
     }
 
-    public function execute(Query $query): ArrayCollection
+    public function execute(Query $query): mixed
     {
         /** @var list<array{id:string, title:string, assignee_name:string, tags:string, deadline: ?string}> $rawTasks */
         $rawTasks = $this
@@ -43,14 +43,12 @@ final class FindUpcomingExecutor implements Executor
                 FROM tasks t
                 LEFT JOIN users u ON u.id = t.assignee_id
                 WHERE 
-                    deadline IS NOT NULL 
+                    deadline IS NULL 
                     AND state = \'BACKLOG_ITEM\'
-                    AND (assignee_id IS NULL OR assignee_id=:assignee_id)
-                ORDER BY deadline DESC
+                ORDER BY random()
                 LIMIT :limit
             ', [
                 'limit' => $query->limit,
-                'assignee_id' => $query->assigneeId,
             ]);
         /** @var array<int, TaskView> $result */
         $result = [];
