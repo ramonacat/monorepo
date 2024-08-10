@@ -7,15 +7,15 @@ namespace Tests\Ramona\Ras2\Task\Mocks;
 use Doctrine\Common\Collections\ArrayCollection;
 use Ramona\Ras2\SharedCore\Infrastructure\CQRS\Query\Executor;
 use Ramona\Ras2\SharedCore\Infrastructure\CQRS\Query\Query;
-use Ramona\Ras2\Task\Application\Query\FindRandom;
+use Ramona\Ras2\Task\Application\Query\Random;
 use Ramona\Ras2\Task\Application\TaskView;
 
 /**
- * @implements Executor<ArrayCollection<int, TaskView>, FindRandom>
+ * @implements Executor<ArrayCollection<int, TaskView>, Random>
  */
 final class MockFindRandomExecutor implements Executor
 {
-    public ?FindRandom $query = null;
+    public ?Random $query = null;
 
     /**
      * @param list<TaskView> $result

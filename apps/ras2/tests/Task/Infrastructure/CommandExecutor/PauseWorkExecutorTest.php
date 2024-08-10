@@ -34,8 +34,14 @@ final class PauseWorkExecutorTest extends TestCase
         );
 
         $repositoryMock = $this->createMock(Repository::class);
-        $repositoryMock->method('getById')
+        $repositoryMock
+            ->method('getById')
             ->willReturn($task);
+
+        $repositoryMock
+            ->method('transactional')
+            ->willReturnCallback(fn ($x) => ($x)());
+
         $repositoryMock
             ->expects(self::once())
             ->method('save')
@@ -65,8 +71,13 @@ final class PauseWorkExecutorTest extends TestCase
         );
 
         $repositoryMock = $this->createMock(Repository::class);
-        $repositoryMock->method('getById')
+        $repositoryMock
+            ->method('getById')
             ->willReturn($task);
+
+        $repositoryMock
+            ->method('transactional')
+            ->willReturnCallback(fn ($x) => ($x)());
 
         $clockMock = $this->createMock(ClockInterface::class);
 

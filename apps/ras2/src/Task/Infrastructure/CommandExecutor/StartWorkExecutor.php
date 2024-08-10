@@ -36,6 +36,8 @@ final class StartWorkExecutor implements Executor
                 $task = $task->toStarted($command->userId, $this->clock->now());
             } elseif ($task instanceof Started) {
                 $task->startRecordingTime($this->clock->now());
+            } else {
+                throw InvalidTaskState::for($task);
             }
 
             $this->repository->save($task);

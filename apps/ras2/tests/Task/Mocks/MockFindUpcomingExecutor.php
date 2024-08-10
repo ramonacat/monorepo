@@ -7,15 +7,15 @@ namespace Tests\Ramona\Ras2\Task\Mocks;
 use Doctrine\Common\Collections\ArrayCollection;
 use Ramona\Ras2\SharedCore\Infrastructure\CQRS\Query\Executor;
 use Ramona\Ras2\SharedCore\Infrastructure\CQRS\Query\Query;
-use Ramona\Ras2\Task\Application\Query\FindUpcoming;
+use Ramona\Ras2\Task\Application\Query\Upcoming;
 use Ramona\Ras2\Task\Application\TaskView;
 
 /**
- * @implements Executor<ArrayCollection<int, TaskView>, FindUpcoming>
+ * @implements Executor<ArrayCollection<int, TaskView>, Upcoming>
  */
 final class MockFindUpcomingExecutor implements Executor
 {
-    public ?FindUpcoming $query = null;
+    public ?Upcoming $query = null;
 
     /**
      * @param list<TaskView> $result

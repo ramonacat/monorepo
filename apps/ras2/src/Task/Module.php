@@ -24,8 +24,9 @@ use Ramona\Ras2\Task\Application\Command\UpsertIdea;
 use Ramona\Ras2\Task\Application\HttpApi\GetTasks;
 use Ramona\Ras2\Task\Application\HttpApi\PostTasks;
 use Ramona\Ras2\Task\Application\HttpApi\StartWorkRequest;
-use Ramona\Ras2\Task\Application\Query\FindRandom;
-use Ramona\Ras2\Task\Application\Query\FindUpcoming;
+use Ramona\Ras2\Task\Application\Query\Current;
+use Ramona\Ras2\Task\Application\Query\Random;
+use Ramona\Ras2\Task\Application\Query\Upcoming;
 use Ramona\Ras2\Task\Application\TaskView;
 use Ramona\Ras2\Task\Business\TimeRecord;
 use Ramona\Ras2\Task\Infrastructure\CommandExecutor\CreateIdeaExecutor;
@@ -33,11 +34,13 @@ use Ramona\Ras2\Task\Infrastructure\CommandExecutor\PauseWorkExecutor;
 use Ramona\Ras2\Task\Infrastructure\CommandExecutor\StartWorkExecutor;
 use Ramona\Ras2\Task\Infrastructure\CommandExecutor\UpsertBacklogItemExecutor;
 use Ramona\Ras2\Task\Infrastructure\PostgresRepository;
-use Ramona\Ras2\Task\Infrastructure\QueryExecutor\FindRandomExecutor;
-use Ramona\Ras2\Task\Infrastructure\QueryExecutor\FindUpcomingExecutor;
+use Ramona\Ras2\Task\Infrastructure\QueryExecutor\CurrentExecutor;
+use Ramona\Ras2\Task\Infrastructure\QueryExecutor\RandomExecutor;
+use Ramona\Ras2\Task\Infrastructure\QueryExecutor\UpcomingExecutor;
 use Ramona\Ras2\Task\Infrastructure\Repository;
 use Ramona\Ras2\Task\Infrastructure\TaskIdDehydrator;
 use Ramona\Ras2\Task\Infrastructure\TaskIdHydrator;
+use Ramona\Ras2\Task\Infrastructure\TaskViewHydrator;
 
 final class Module implements \Ramona\Ras2\SharedCore\Infrastructure\Module\Module
 {
@@ -70,6 +73,7 @@ final class Module implements \Ramona\Ras2\SharedCore\Infrastructure\Module\Modu
         $hydrator->installValueHydrator(new ObjectHydrator(StartWorkRequest::class));
         $hydrator->installValueHydrator(new ObjectHydrator(PauseWork::class));
         $hydrator->installValueHydrator(new ObjectHydrator(TimeRecord::class));
+        $hydrator->installValueHydrator(new TaskViewHydrator());
         $hydrator->installValueHydrator(new TaskIdHydrator());
 
         $dehydrator = $container->get(Dehydrator::class);
@@ -94,8 +98,18 @@ final class Module implements \Ramona\Ras2\SharedCore\Infrastructure\Module\Modu
         );
 
         $queryBus = $container->get(QueryBus::class);
-        $queryBus->installExecutor(FindUpcoming::class, new FindUpcomingExecutor($container->get(Connection::class)));
-        $queryBus->installExecutor(FindRandom::class, new FindRandomExecutor($container->get(Connection::class)));
+        $queryBus->installExecutor(
+            Upcoming::class,
+            new UpcomingExecutor($container->get(Connection::class), $container->get(Hydrator::class))
+        );
+        $queryBus->installExecutor(
+            Random::class,
+            new RandomExecutor($container->get(Connection::class), $container->get(Hydrator::class))
+        );
+        $queryBus->installExecutor(
+            Current::class,
+            new CurrentExecutor($container->get(Connection::class), $container->get(Hydrator::class))
+        );
 
         $router = $container->get(Router::class);
         $router->map('GET', '/tasks', GetTasks::class);

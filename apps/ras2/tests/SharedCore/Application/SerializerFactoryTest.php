@@ -110,7 +110,8 @@ final class SerializerFactoryTest extends TestCase
             'Some title',
             null,
             new ArrayCollection(['tag1', 'tag2']),
-            null
+            null,
+            new ArrayCollection()
         );
 
         $result = $this->serializer->serialize($taskView);

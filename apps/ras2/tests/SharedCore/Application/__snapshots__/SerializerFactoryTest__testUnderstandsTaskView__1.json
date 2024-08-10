@@ -6,5 +6,6 @@
         "tag1",
         "tag2"
     ],
-    "deadline": null
+    "deadline": null,
+    "timeRecords": []
 }

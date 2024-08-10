@@ -21,8 +21,13 @@ final class Hydrator
     }
 
     /**
+     * @template T
      * @psalm-suppress ArgumentTypeCoercion
-     * @param list<HydrationAttribute> $attributes;
+     * @psalm-suppress MixedInferredReturnType
+     * @psalm-suppress MixedReturnStatement
+     * @param class-string<T>|'float'|'integer'|'int'|'bool'|'string'|'array'|'boolean'|'resource'|'NULL' $targetType
+     * @param list<HydrationAttribute> $attributes
+     * @return T
      */
     public function hydrate(string $targetType, mixed $input, array $attributes = []): mixed
     {
