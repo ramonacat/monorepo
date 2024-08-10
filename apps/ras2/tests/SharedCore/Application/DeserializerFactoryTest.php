@@ -6,20 +6,21 @@ namespace Tests\Ramona\Ras2\SharedCore\Application;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use PHPUnit\Framework\TestCase;
-use Ramona\Ras2\SharedCore\Application\DeserializerFactory;
-use Ramona\Ras2\Task\Command\UpsertBacklogItem;
-use Ramona\Ras2\Task\Command\UpsertIdea;
-use Ramona\Ras2\Task\TaskId;
-use Ramona\Ras2\User\Command\LoginRequest;
-use Ramona\Ras2\User\UserId;
+use Ramona\Ras2\SharedCore\Infrastructure\Serialization\Deserializer;
+use Ramona\Ras2\Task\Application\Command\UpsertBacklogItem;
+use Ramona\Ras2\Task\Application\Command\UpsertIdea;
+use Ramona\Ras2\Task\Business\TaskId;
+use Ramona\Ras2\User\Application\Command\LoginRequest;
+use Ramona\Ras2\User\Business\UserId;
 
 final class DeserializerFactoryTest extends TestCase
 {
-    private \Ramona\Ras2\SharedCore\Infrastructure\Serialization\Deserializer $deserializer;
+    private Deserializer $deserializer;
 
     protected function setUp(): void
     {
-        $this->deserializer = (new DeserializerFactory())->create();
+        $container = require __DIR__ . '/../../../src/container.php';
+        $this->deserializer = $container->get(Deserializer::class);
     }
 
     public function testCanDeserializeAString(): void

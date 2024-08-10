@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace Tests\Ramona\Ras2\SharedCore\Infrastructure\Serialization\Mocks;
 
 use Doctrine\Common\Collections\ArrayCollection;
-use Ramona\Ras2\SharedCore\Infrastructure\Serialization\KeyType;
-use Ramona\Ras2\SharedCore\Infrastructure\Serialization\ValueType;
+use Ramona\Ras2\SharedCore\Infrastructure\Hydration\KeyType;
+use Ramona\Ras2\SharedCore\Infrastructure\Hydration\ValueType;
 
 final class WithArrayCollection
 {

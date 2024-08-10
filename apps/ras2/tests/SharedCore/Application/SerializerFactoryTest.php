@@ -2,17 +2,17 @@
 
 declare(strict_types=1);
 
-namespace Tests\Ramona\Ras2\Infrastructure\Application;
+namespace Tests\Ramona\Ras2\SharedCore\Application;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use PHPUnit\Framework\TestCase;
-use Ramona\Ras2\SharedCore\Application\SerializerFactory;
-use Ramona\Ras2\Task\TaskId;
-use Ramona\Ras2\Task\TaskView;
-use Ramona\Ras2\User\Command\LoginResponse;
-use Ramona\Ras2\User\Session;
-use Ramona\Ras2\User\Token;
-use Ramona\Ras2\User\UserId;
+use Ramona\Ras2\SharedCore\Infrastructure\Serialization\Serializer;
+use Ramona\Ras2\Task\Application\TaskView;
+use Ramona\Ras2\Task\Business\TaskId;
+use Ramona\Ras2\User\Application\Command\LoginResponse;
+use Ramona\Ras2\User\Application\Session;
+use Ramona\Ras2\User\Business\Token;
+use Ramona\Ras2\User\Business\UserId;
 use Ramsey\Uuid\Uuid;
 use Spatie\Snapshots\MatchesSnapshots;
 
@@ -20,13 +20,19 @@ final class SerializerFactoryTest extends TestCase
 {
     use MatchesSnapshots;
 
+    private Serializer $serializer;
+
+    protected function setUp(): void
+    {
+        $container = require __DIR__ . '/../../../src/container.php';
+        $this->serializer = $container->get(Serializer::class);
+    }
+
     public function testCanGenerateSerializerThatUnderstandsTaskId(): void
     {
         $taskId = TaskId::generate();
 
-        $serializer = (new SerializerFactory())->create();
-
-        $result = $serializer->serialize($taskId);
+        $result = $this->serializer->serialize($taskId);
 
         self::assertJsonStringEqualsJsonString(\Safe\json_encode((string) $taskId), $result);
     }
@@ -35,9 +41,7 @@ final class SerializerFactoryTest extends TestCase
     {
         $collection = new ArrayCollection([1, 2, 3]);
 
-        $serializer = (new SerializerFactory())->create();
-
-        $result = $serializer->serialize($collection);
+        $result = $this->serializer->serialize($collection);
 
         self::assertJsonStringEqualsJsonString(\Safe\json_encode([1, 2, 3]), $result);
     }
@@ -46,9 +50,7 @@ final class SerializerFactoryTest extends TestCase
     {
         $id = UserId::generate();
 
-        $serializer = (new SerializerFactory())->create();
-
-        $result = $serializer->serialize($id);
+        $result = $this->serializer->serialize($id);
 
         self::assertJsonStringEqualsJsonString(\Safe\json_encode((string) $id), $result);
     }
@@ -57,9 +59,7 @@ final class SerializerFactoryTest extends TestCase
     {
         $token = Token::generate();
 
-        $serializer = (new SerializerFactory())->create();
-
-        $result = $serializer->serialize($token);
+        $result = $this->serializer->serialize($token);
 
         self::assertJsonStringEqualsJsonString(\Safe\json_encode((string) $token), $result);
     }
@@ -68,9 +68,7 @@ final class SerializerFactoryTest extends TestCase
     {
         $datetime = \Safe\DateTimeImmutable::createFromFormat('Y-m-d H:i:s', '2024-05-05 05:05:05');
 
-        $serializer = (new SerializerFactory())->create();
-
-        $result = $serializer->serialize($datetime);
+        $result = $this->serializer->serialize($datetime);
 
         self::assertJsonStringEqualsJsonString(
             \Safe\json_encode([
@@ -85,28 +83,22 @@ final class SerializerFactoryTest extends TestCase
     {
         $text = 'test';
 
-        $serializer = (new SerializerFactory())->create();
-
-        $result = $serializer->serialize($text);
+        $result = $this->serializer->serialize($text);
 
         self::assertJsonStringEqualsJsonString('"test"', $result);
     }
 
     public function testUnderstandsNull(): void
     {
-        $serializer = (new SerializerFactory())->create();
-
-        $result = $serializer->serialize(null);
+        $result = $this->serializer->serialize(null);
 
         self::assertJsonStringEqualsJsonString('null', $result);
     }
 
     public function testUnderstandsUuid(): void
     {
-        $serializer = (new SerializerFactory())->create();
-
         $uuid = Uuid::uuid7();
-        $result = $serializer->serialize($uuid);
+        $result = $this->serializer->serialize($uuid);
 
         self::assertJsonStringEqualsJsonString("\"{$uuid}\"", $result);
     }
@@ -121,8 +113,7 @@ final class SerializerFactoryTest extends TestCase
             null
         );
 
-        $serializer = (new SerializerFactory())->create();
-        $result = $serializer->serialize($taskView);
+        $result = $this->serializer->serialize($taskView);
 
         $this->assertMatchesJsonSnapshot($result);
     }
@@ -132,8 +123,7 @@ final class SerializerFactoryTest extends TestCase
         $loginResponse = new LoginResponse(Token::fromString(
             'xGl8rnQidHJ0ih37Svzknzu4ZkXiuhmNDP6EqL7X2fnT0EIBvmnXWtAZVBt/8ESoNZmswKhXniyPU9DHGmIR9Q=='
         ));
-        $serializer = (new SerializerFactory())->create();
-        $result = $serializer->serialize($loginResponse);
+        $result = $this->serializer->serialize($loginResponse);
 
         $this->assertMatchesJsonSnapshot($result);
     }
@@ -142,8 +132,7 @@ final class SerializerFactoryTest extends TestCase
     {
         $session = new Session(UserId::fromString('01913763-3947-73e2-9406-b7efbcf560b3'), 'ramona');
 
-        $serializer = (new SerializerFactory())->create();
-        $result = $serializer->serialize($session);
+        $result = $this->serializer->serialize($session);
 
         $this->assertMatchesJsonSnapshot($result);
     }

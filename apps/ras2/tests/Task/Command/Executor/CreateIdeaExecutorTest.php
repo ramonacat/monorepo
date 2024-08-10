@@ -6,11 +6,11 @@ namespace Tests\Ramona\Ras2\Task\Command\Executor;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use PHPUnit\Framework\TestCase;
-use Ramona\Ras2\Task\Command\Executor\CreateIdeaExecutor;
-use Ramona\Ras2\Task\Command\UpsertIdea;
-use Ramona\Ras2\Task\Idea;
-use Ramona\Ras2\Task\TaskDescription;
-use Ramona\Ras2\Task\TaskId;
+use Ramona\Ras2\Task\Application\Command\UpsertIdea;
+use Ramona\Ras2\Task\Business\Idea;
+use Ramona\Ras2\Task\Business\TaskDescription;
+use Ramona\Ras2\Task\Business\TaskId;
+use Ramona\Ras2\Task\Infrastructure\CommandExecutor\CreateIdeaExecutor;
 use Tests\Ramona\Ras2\Task\Mocks\MockRepository;
 
 final class CreateIdeaExecutorTest extends TestCase

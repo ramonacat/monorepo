@@ -5,12 +5,12 @@ declare(strict_types=1);
 namespace Tests\Ramona\Ras2\SharedCore\Infrastructure\Serialization;
 
 use PHPUnit\Framework\TestCase;
-use Ramona\Ras2\SharedCore\Infrastructure\Serialization\CannotDehydrateType;
-use Ramona\Ras2\SharedCore\Infrastructure\Serialization\DefaultDehydrator;
-use Ramona\Ras2\SharedCore\Infrastructure\Serialization\Dehydrator;
-use Ramona\Ras2\SharedCore\Infrastructure\Serialization\ObjectDehydrator;
-use Ramona\Ras2\SharedCore\Infrastructure\Serialization\ScalarDehydrator;
-use Ramona\Ras2\SharedCore\Infrastructure\Serialization\ValueDehydrator;
+use Ramona\Ras2\SharedCore\Infrastructure\Hydration\CannotDehydrateType;
+use Ramona\Ras2\SharedCore\Infrastructure\Hydration\DefaultDehydrator;
+use Ramona\Ras2\SharedCore\Infrastructure\Hydration\Dehydrator;
+use Ramona\Ras2\SharedCore\Infrastructure\Hydration\Dehydrator\ObjectDehydrator;
+use Ramona\Ras2\SharedCore\Infrastructure\Hydration\Dehydrator\ScalarDehydrator;
+use Ramona\Ras2\SharedCore\Infrastructure\Hydration\ValueDehydrator;
 use Tests\Ramona\Ras2\SharedCore\Infrastructure\Serialization\Mocks\DeepInheritance\A;
 use Tests\Ramona\Ras2\SharedCore\Infrastructure\Serialization\Mocks\DeepInheritance\B;
 use Tests\Ramona\Ras2\SharedCore\Infrastructure\Serialization\Mocks\Simple;

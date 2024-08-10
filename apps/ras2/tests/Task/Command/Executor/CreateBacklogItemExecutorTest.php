@@ -6,12 +6,12 @@ namespace Tests\Ramona\Ras2\Task\Command\Executor;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use PHPUnit\Framework\TestCase;
-use Ramona\Ras2\Task\BacklogItem;
-use Ramona\Ras2\Task\Command\Executor\UpsertBacklogItemExecutor;
-use Ramona\Ras2\Task\Command\UpsertBacklogItem;
-use Ramona\Ras2\Task\TaskDescription;
-use Ramona\Ras2\Task\TaskId;
-use Ramona\Ras2\User\UserId;
+use Ramona\Ras2\Task\Application\Command\UpsertBacklogItem;
+use Ramona\Ras2\Task\Business\BacklogItem;
+use Ramona\Ras2\Task\Business\TaskDescription;
+use Ramona\Ras2\Task\Business\TaskId;
+use Ramona\Ras2\Task\Infrastructure\CommandExecutor\UpsertBacklogItemExecutor;
+use Ramona\Ras2\User\Business\UserId;
 use Tests\Ramona\Ras2\Task\Mocks\MockRepository;
 
 final class CreateBacklogItemExecutorTest extends TestCase

@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Tests\Ramona\Ras2\SharedCore\Infrastructure\HTTP;
 
 use Laminas\Diactoros\ServerRequest;
+use League\Route\Http\Exception\NotFoundException;
 use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
@@ -47,11 +48,21 @@ final class LogExceptionsTest extends TestCase
         self::assertEquals(500, $result->getStatusCode());
     }
 
-    public function createRequestHandler(\RuntimeException $exception): RequestHandlerInterface
+    public function testWillSetStatusCodeFromLeagueException(): void
+    {
+        $loggerMock = new LoggerMock();
+        $logExceptions = new LogExceptions($loggerMock);
+        $exception = new NotFoundException();
+        $result = $logExceptions->process(new ServerRequest(), $this->createRequestHandler($exception));
+
+        self::assertEquals(404, $result->getStatusCode());
+    }
+
+    private function createRequestHandler(\Exception $exception): RequestHandlerInterface
     {
         return new class($exception) implements RequestHandlerInterface {
             public function __construct(
-                private \RuntimeException $exception
+                private \Exception $exception
             ) {
             }
 

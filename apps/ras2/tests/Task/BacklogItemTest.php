@@ -6,11 +6,11 @@ namespace Task;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use PHPUnit\Framework\TestCase;
-use Ramona\Ras2\Task\AssigneeNotProvided;
-use Ramona\Ras2\Task\BacklogItem;
-use Ramona\Ras2\Task\TaskDescription;
-use Ramona\Ras2\Task\TaskId;
-use Ramona\Ras2\User\UserId;
+use Ramona\Ras2\Task\Business\AssigneeNotProvided;
+use Ramona\Ras2\Task\Business\BacklogItem;
+use Ramona\Ras2\Task\Business\TaskDescription;
+use Ramona\Ras2\Task\Business\TaskId;
+use Ramona\Ras2\User\Business\UserId;
 
 final class BacklogItemTest extends TestCase
 {
