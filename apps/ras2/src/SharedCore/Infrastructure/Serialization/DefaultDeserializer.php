@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Ramona\Ras2\SharedCore\Infrastructure\Serialization;
 
+use Ramona\Ras2\SharedCore\Infrastructure\Hydration\Hydrator;
+
 final class DefaultDeserializer implements Deserializer
 {
     public function __construct(

@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Tests\Ramona\Ras2\Task\Mocks;
 
-use Ramona\Ras2\Task\Repository;
-use Ramona\Ras2\Task\Task;
+use Ramona\Ras2\Task\Business\Task;
+use Ramona\Ras2\Task\Infrastructure\Repository;
 
 final class MockRepository implements Repository
 {

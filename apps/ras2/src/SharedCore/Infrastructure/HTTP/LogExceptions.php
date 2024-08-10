@@ -36,7 +36,8 @@ final class LogExceptions implements MiddlewareInterface
                 ]));
 
             $response = $response->withAddedHeader('content-type', 'application/json');
-            return $response->withStatus(500);
+
+            return $response->withStatus(($e instanceof \League\Route\Http\Exception) ? $e->getStatusCode() : 500);
         }
     }
 }

@@ -6,12 +6,12 @@ namespace Tests\Ramona\Ras2\SharedCore\Infrastructure\HTTP;
 
 use Laminas\Diactoros\ServerRequest;
 use PHPUnit\Framework\TestCase;
-use Ramona\Ras2\SharedCore\Infrastructure\CQRS\Query\Bus;
+use Ramona\Ras2\SharedCore\Infrastructure\CQRS\Query\QueryBus;
 use Ramona\Ras2\SharedCore\Infrastructure\HTTP\RequireLogin;
-use Ramona\Ras2\User\Query\FindByToken;
-use Ramona\Ras2\User\Session;
-use Ramona\Ras2\User\UserId;
-use Ramona\Ras2\User\UserNotFound;
+use Ramona\Ras2\User\Application\Query\FindByToken;
+use Ramona\Ras2\User\Application\Session;
+use Ramona\Ras2\User\Business\UserId;
+use Ramona\Ras2\User\Infrastructure\UserNotFound;
 
 final class RequireLoginTest extends TestCase
 {
@@ -20,7 +20,7 @@ final class RequireLoginTest extends TestCase
         $request = new ServerRequest(uri: 'http://localhost:8080/users', headers: [
             'X-Action' => 'login',
         ]);
-        $requireLogin = new RequireLogin(new Bus());
+        $requireLogin = new RequireLogin(new QueryBus());
 
         $response = $requireLogin->process($request, new MockRequestHandler());
         $response->getBody()
@@ -35,7 +35,7 @@ final class RequireLoginTest extends TestCase
             'X-Action' => 'upsert',
             'X-User-Token' => 'bped6gRpDIP0S+xQMDKkdsfj2qhSUVr/obnOspHdz2rfoR99vCQee3BEx+9GaX6yRIOTMp6lxADW/YRoIrxImA==',
         ]);
-        $bus = new Bus();
+        $bus = new QueryBus();
         $userId = UserId::generate();
         $username = 'ramona';
         $bus->installExecutor(
@@ -54,7 +54,7 @@ final class RequireLoginTest extends TestCase
     {
         $request = new ServerRequest(uri: 'http://localhost:8080/users');
 
-        $requireLogin = new RequireLogin(new Bus());
+        $requireLogin = new RequireLogin(new QueryBus());
 
         $response = $requireLogin->process($request, new MockRequestHandler());
         $response->getBody()
@@ -70,7 +70,7 @@ final class RequireLoginTest extends TestCase
             'X-Action' => 'upsert',
             'X-User-Token' => 'bped6gRpDIP0S+xQMDKkdsfj2qhSUVr/obnOspHdz2rfoR99vCQee3BEx+9GaX6yRIOTMp6lxADW/YRoIrxImA==',
         ]);
-        $bus = new Bus();
+        $bus = new QueryBus();
         $bus->installExecutor(
             FindByToken::class,
             new FindByTokenExecutorMock(fn () => throw UserNotFound::withToken())
