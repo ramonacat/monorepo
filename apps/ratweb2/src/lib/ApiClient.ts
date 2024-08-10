@@ -3,7 +3,13 @@ import { merge } from 'lodash-es';
 export default class ApiClient {
 	constructor(private token: string) {}
 
-	async call(path: string, options?: RequestInit): Promise<object> {
+	public async query(path: string, options?: RequestInit): Promise<object> {
+		const response = await this.call(path, options);
+
+		return await response.json();
+	}
+
+	public async call(path: string, options: RequestInit | undefined) {
 		const response = await fetch(
 			'http://localhost:8080/' + path,
 			merge(
@@ -19,7 +25,6 @@ export default class ApiClient {
 		if (!response.ok) {
 			throw new Error('Failed to execute query to path: ' + path);
 		}
-
-		return await response.json();
+		return response;
 	}
 }

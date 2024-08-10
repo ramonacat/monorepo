@@ -27,7 +27,12 @@ final class CreateBacklogItemExecutorTest extends TestCase
         );
 
         self::assertEquals([
-            new BacklogItem(new TaskDescription($id, 'This is a great idea', new ArrayCollection()), $assigneeId, null),
+            new BacklogItem(
+                new TaskDescription($id, 'This is a great idea', new ArrayCollection()),
+                $assigneeId,
+                null,
+                new ArrayCollection()
+            ),
         ], $repository->tasks());
     }
 }

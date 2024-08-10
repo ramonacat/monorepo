@@ -4,8 +4,11 @@ declare(strict_types=1);
 
 namespace Tests\Ramona\Ras2\Task\Mocks;
 
+use Doctrine\Common\Collections\ArrayCollection;
 use Ramona\Ras2\Task\Business\Task;
+use Ramona\Ras2\Task\Business\TaskId;
 use Ramona\Ras2\Task\Infrastructure\Repository;
+use Ramona\Ras2\User\Business\UserId;
 
 final class MockRepository implements Repository
 {
@@ -35,5 +38,15 @@ final class MockRepository implements Repository
     public function transactional(\Closure $action): void
     {
         ($action)();
+    }
+
+    public function getById(TaskId $taskId): Task
+    {
+        throw new \Exception('NOT IMPLEMENTED');
+    }
+
+    public function findStartedTasks(UserId $userId): ArrayCollection
+    {
+        throw new \Exception('NOT IMPLEMENTED');
     }
 }

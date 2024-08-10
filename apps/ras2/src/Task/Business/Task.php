@@ -22,4 +22,9 @@ interface Task
     public function tags(): ArrayCollection;
 
     public function deadline(): ?DateTimeImmutable;
+
+    /**
+     * @return ArrayCollection<int, TimeRecord>
+     */
+    public function timeRecords(): ArrayCollection;
 }

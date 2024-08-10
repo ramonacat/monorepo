@@ -18,10 +18,10 @@ final class DefaultDeserializer implements Deserializer
      * @psalm-suppress MixedAssignment
      * @psalm-suppress MixedReturnStatement
      */
-    public function deserialize(string $targetType, string $raw): mixed
+    public function deserialize(string $targetType, string $raw, array $attributes = []): mixed
     {
         $decoded = \Safe\json_decode($raw, true);
 
-        return $this->hydrator->hydrate($targetType, $decoded, []);
+        return $this->hydrator->hydrate($targetType, $decoded, $attributes);
     }
 }

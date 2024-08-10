@@ -13,18 +13,25 @@ final class BacklogItem implements Task
     public function __construct(
         private TaskDescription $description,
         private ?UserId $assigneeId,
-        private ?DateTimeImmutable $deadline
+        private ?DateTimeImmutable $deadline,
+        /**
+         * @var ArrayCollection<int,TimeRecord>
+         */
+        private ArrayCollection $timeRecords
     ) {
     }
 
     /**
      * @psalm-suppress PossiblyUnusedMethod
      */
-    public function start(?UserId $assignee): Started
+    public function toStarted(?UserId $assignee, DateTimeImmutable $now): Started
     {
         $assignee = $assignee ?? $this->assigneeId ?? throw AssigneeNotProvided::forTask($this->description->id());
 
-        return new Started($this->description, $assignee, $this->deadline);
+        $started = new Started($this->description, $assignee, $this->deadline, $this->timeRecords);
+        $started->startRecordingTime($now);
+
+        return $started;
     }
 
     /**
@@ -58,5 +65,10 @@ final class BacklogItem implements Task
     public function deadline(): ?DateTimeImmutable
     {
         return $this->deadline;
+    }
+
+    public function timeRecords(): ArrayCollection
+    {
+        return $this->timeRecords;
     }
 }

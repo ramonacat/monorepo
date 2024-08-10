@@ -3,6 +3,7 @@ import { DateTime } from 'luxon';
 import ApiClient from '$lib/ApiClient';
 
 interface ServerTaskView {
+	id: string;
 	title: string;
 	deadline: {
 		timestamp: number;
@@ -26,12 +27,12 @@ export async function load({ cookies }) {
 
 	const apiClient: ApiClient = new ApiClient(token);
 
-	const session: Session = (await apiClient.call('users?action=session')) as Session;
+	const session: Session = (await apiClient.query('users?action=session')) as Session;
 
-	const upcomingTasks: ServerTaskView[] = (await apiClient.call(
+	const upcomingTasks: ServerTaskView[] = (await apiClient.query(
 		'tasks?action=upcoming&limit=10&assigneeId=' + session.userId
 	)) as ServerTaskView[];
-	const watchedTasks: ServerTaskView[] = (await apiClient.call(
+	const watchedTasks: ServerTaskView[] = (await apiClient.query(
 		'tasks?action=watched&limit=10'
 	)) as ServerTaskView[];
 
@@ -39,6 +40,7 @@ export async function load({ cookies }) {
 		return (x: ServerTaskView) => {
 			const deadline = x.deadline === null ? null : DateTime.fromSeconds(x.deadline.timestamp);
 			return {
+				id: x.id,
 				title: x.title,
 				tags: x.tags,
 				deadline: deadline?.toISO(), // TODO handle timezone!
@@ -54,6 +56,18 @@ export async function load({ cookies }) {
 }
 
 export const actions = {
+	start_task: async ({ request, cookies }) => {
+		const data = await request.formData();
+		const id = data.get('task-id');
+
+		await new ApiClient(cookies.get('token') as string).call('tasks', {
+			method: 'POST',
+			body: JSON.stringify({ taskId: id }),
+			headers: {
+				'X-Action': 'start-work'
+			}
+		});
+	},
 	create_backlog_item: async ({ request, cookies }) => {
 		const data = await request.formData();
 		const title = data.get('title');
