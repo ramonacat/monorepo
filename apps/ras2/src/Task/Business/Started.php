@@ -12,8 +12,12 @@ final class Started implements Task
 {
     public function __construct(
         private TaskDescription $description,
-        private UserId $assignee,
-        private ?DateTimeImmutable $deadline
+        private UserId $assigneeId,
+        private ?DateTimeImmutable $deadline,
+        /**
+         * @var ArrayCollection<int,TimeRecord>
+         */
+        private ArrayCollection $timeRecords
     ) {
     }
 
@@ -30,7 +34,7 @@ final class Started implements Task
      */
     public function assigneeId(): UserId
     {
-        return $this->assignee;
+        return $this->assigneeId;
     }
 
     public function id(): TaskId
@@ -54,5 +58,42 @@ final class Started implements Task
     public function deadline(): ?DateTimeImmutable
     {
         return $this->deadline;
+    }
+
+    public function timeRecords(): ArrayCollection
+    {
+        return $this->timeRecords;
+    }
+
+    public function startRecordingTime(\Safe\DateTimeImmutable $now): void
+    {
+        $last = $this->timeRecords->last();
+
+        if ($last !== false && $last->ended() === null) {
+            throw PreviousTimerStillRunning::create();
+        }
+
+        $this->timeRecords->add(new TimeRecord($now));
+    }
+
+    public function stopRecordingTime(\Safe\DateTimeImmutable $now): void
+    {
+        $last = $this->timeRecords->last();
+
+        if ($last === false || $last->ended() !== null) {
+            throw NoRunningTimer::create();
+        }
+
+        $last->finish($now);
+    }
+
+    public function toBacklog(\Safe\DateTimeImmutable $now): BacklogItem
+    {
+        $lastTimeRecord = $this->timeRecords->last();
+        if ($lastTimeRecord !== false) {
+            $lastTimeRecord->finish($now);
+        }
+
+        return new BacklogItem($this->description, $this->assigneeId, $this->deadline, $this->timeRecords);
     }
 }

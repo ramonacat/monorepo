@@ -18,7 +18,11 @@ class Done implements Task
      */
     public function __construct(
         private TaskDescription $description,
-        private UserId $assignee
+        private UserId $assignee,
+        /**
+         * @var ArrayCollection<int,TimeRecord>
+         */
+        private ArrayCollection $timeRecords
     ) {
 
     }
@@ -46,5 +50,10 @@ class Done implements Task
     public function deadline(): ?DateTimeImmutable
     {
         return null; // TODO: should we keep it so we have history???
+    }
+
+    public function timeRecords(): ArrayCollection
+    {
+        return $this->timeRecords;
     }
 }

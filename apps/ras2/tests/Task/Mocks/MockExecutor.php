@@ -6,14 +6,17 @@ namespace Tests\Ramona\Ras2\Task\Mocks;
 
 use Ramona\Ras2\SharedCore\Infrastructure\CQRS\Command\Command;
 use Ramona\Ras2\SharedCore\Infrastructure\CQRS\Command\Executor;
-use Ramona\Ras2\Task\Application\Command\UpsertIdea;
 
 /**
- * @implements Executor<UpsertIdea>
+ * @template T of Command
+ * @implements Executor<T>
  */
-final class MockUpsertIdeaExecutor implements Executor
+final class MockExecutor implements Executor
 {
-    public ?UpsertIdea $command;
+    /**
+     * @var ?T
+     */
+    public ?Command $command;
 
     public function execute(Command $command): void
     {

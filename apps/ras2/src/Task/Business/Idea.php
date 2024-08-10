@@ -22,7 +22,7 @@ class Idea implements Task
      */
     public function toBacklog(?UserId $assignee): BacklogItem
     {
-        return new BacklogItem($this->description, $assignee, null);
+        return new BacklogItem($this->description, $assignee, null, new ArrayCollection());
     }
 
     public function id(): TaskId
@@ -48,5 +48,10 @@ class Idea implements Task
     public function deadline(): ?DateTimeImmutable
     {
         return null;
+    }
+
+    public function timeRecords(): ArrayCollection
+    {
+        return new ArrayCollection();
     }
 }

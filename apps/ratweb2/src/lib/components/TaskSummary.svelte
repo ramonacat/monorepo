@@ -23,7 +23,10 @@
 	<div class="actions">
 		<div class="button-group -left">
 			<button title="edit"><Icon inline icon="mdi:edit" /></button>
-			<button title="start"><Icon inline icon="mdi:stopwatch-start" /></button>
+			<form method="POST" action="/?/start_task">
+				<input type="hidden" name="task-id" value={task.id} />
+				<button title="start"><Icon inline icon="mdi:stopwatch-start" /></button>
+			</form>
 			<button title="done"><Icon inline icon="mdi:done" /></button>
 		</div>
 		<div class="button-group -right">

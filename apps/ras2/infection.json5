@@ -21,12 +21,18 @@
         "CastString": {
             ignore: [
                 "Ramona\\Ras2\\SharedCore\\Infrastructure\\Serialization\\Normalizer",
-                "Ramona\\Ras2\\SharedCore\\Infrastructure\\Serialization\\ConversionNotFound"
+                "Ramona\\Ras2\\SharedCore\\Infrastructure\\Serialization\\ConversionNotFound",
+                "Ramona\\Ras2\\SharedCore\\Infrastructure\\Hydration\\Hydrator\\DateTimeImmutableHydrator"
             ]
         },
         "CastInt": {
             ignore: [
                 "Ramona\\Ras2\\Task\\Application\\HttpApi\\GetTasks"
+            ]
+        },
+        "FalseValue": {
+            ignore: [
+                "Ramona\\Ras2\\Task\\Business\\Started"
             ]
         }
     },

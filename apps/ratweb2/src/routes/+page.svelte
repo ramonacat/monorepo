@@ -20,12 +20,14 @@
 	export let data: PageData;
 
 	let convertApiTask = (x: {
+		id: string;
 		title: string;
 		tags: string[];
 		deadline?: string | null;
 		pastDeadline: boolean;
 	}) => {
 		return {
+			id: x.id,
 			title: x.title,
 			tags: x.tags,
 			deadline: x.deadline ? DateTime.fromISO(x.deadline) : null,

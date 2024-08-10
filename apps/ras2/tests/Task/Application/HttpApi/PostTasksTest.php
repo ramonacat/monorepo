@@ -13,13 +13,16 @@ use Ramona\Ras2\SharedCore\Infrastructure\CQRS\Command\CommandBus;
 use Ramona\Ras2\SharedCore\Infrastructure\Hydration\Hydrator;
 use Ramona\Ras2\SharedCore\Infrastructure\Serialization\DefaultDeserializer;
 use Ramona\Ras2\SharedCore\Infrastructure\Serialization\Deserializer;
+use Ramona\Ras2\Task\Application\Command\PauseWork;
+use Ramona\Ras2\Task\Application\Command\StartWork;
 use Ramona\Ras2\Task\Application\Command\UpsertBacklogItem;
 use Ramona\Ras2\Task\Application\Command\UpsertIdea;
 use Ramona\Ras2\Task\Application\HttpApi\PostTasks;
 use Ramona\Ras2\Task\Business\TaskId;
+use Ramona\Ras2\User\Application\Session;
+use Ramona\Ras2\User\Business\UserId;
 use Tests\Ramona\Ras2\EndpointCase;
-use Tests\Ramona\Ras2\Task\Mocks\MockUpsertBacklogItemExecutor;
-use Tests\Ramona\Ras2\Task\Mocks\MockUpsertIdeaExecutor;
+use Tests\Ramona\Ras2\Task\Mocks\MockExecutor;
 
 final class PostTasksTest extends EndpointCase
 {
@@ -51,7 +54,7 @@ final class PostTasksTest extends EndpointCase
     public function testCanUpsertIdea(): void
     {
         $commandBus = new CommandBus();
-        $executor = new MockUpsertIdeaExecutor();
+        $executor = new MockExecutor();
         $commandBus->installExecutor(UpsertIdea::class, $executor);
         $handler = new PostTasks($commandBus, $this->container->get(Deserializer::class));
 
@@ -87,7 +90,7 @@ final class PostTasksTest extends EndpointCase
     public function testCanUpsertBacklogItem(): void
     {
         $commandBus = new CommandBus();
-        $executor = new MockUpsertBacklogItemExecutor();
+        $executor = new MockExecutor();
         $commandBus->installExecutor(UpsertBacklogItem::class, $executor);
         $handler = new PostTasks($commandBus, $this->container->get(Deserializer::class));
 
@@ -119,6 +122,61 @@ final class PostTasksTest extends EndpointCase
                 null,
                 null
             ),
+            $executor->command
+        );
+        self::assertEquals(204, $response->getStatusCode());
+    }
+
+    public function testCanStartWork(): void
+    {
+        $commandBus = new CommandBus();
+        $executor = new MockExecutor();
+        $commandBus->installExecutor(StartWork::class, $executor);
+        $handler = new PostTasks($commandBus, $this->container->get(Deserializer::class));
+        $request = new ServerRequest(method: 'POST', body: new Stream('php://memory', 'rw'), headers: [
+            'Content-Type' => 'application/json',
+            'X-Action' => 'start-work',
+        ]);
+        $request = $request->withAttribute(
+            'session',
+            new Session(UserId::fromString('01913b35-3470-7d9f-b7b9-79f91406d048'), 'ramona')
+        );
+        $request->getBody()
+            ->write('{
+                    "taskId": "01913a3e-9bfe-771f-b45b-3093cd7f0dda"
+                }');
+        $request->getBody()
+            ->seek(0);
+        $response = ($handler)($request);
+        self::assertEquals(
+            new StartWork(
+                TaskId::fromString('01913a3e-9bfe-771f-b45b-3093cd7f0dda'),
+                UserId::fromString('01913b35-3470-7d9f-b7b9-79f91406d048')
+            ),
+            $executor->command
+        );
+        self::assertEquals(204, $response->getStatusCode());
+    }
+
+    public function testCanPauseWork(): void
+    {
+        $commandBus = new CommandBus();
+        $executor = new MockExecutor();
+        $commandBus->installExecutor(PauseWork::class, $executor);
+        $handler = new PostTasks($commandBus, $this->container->get(Deserializer::class));
+        $request = new ServerRequest(method: 'POST', body: new Stream('php://memory', 'rw'), headers: [
+            'Content-Type' => 'application/json',
+            'X-Action' => 'pause-work',
+        ]);
+        $request->getBody()
+            ->write('{
+                    "taskId": "01913a3e-9bfe-771f-b45b-3093cd7f0dda"
+                }');
+        $request->getBody()
+            ->seek(0);
+        $response = ($handler)($request);
+        self::assertEquals(
+            new PauseWork(TaskId::fromString('01913a3e-9bfe-771f-b45b-3093cd7f0dda')),
             $executor->command
         );
         self::assertEquals(204, $response->getStatusCode());

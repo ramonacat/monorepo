@@ -29,7 +29,8 @@ final readonly class UpsertBacklogItemExecutor implements Executor
             $task = new BacklogItem(
                 new TaskDescription($command->id, $command->title, new ArrayCollection($tags)),
                 $command->assignee,
-                $command->deadline
+                $command->deadline,
+                new ArrayCollection()
             );
             $this->repository->save($task);
         });
