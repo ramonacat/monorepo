@@ -73,6 +73,7 @@ $containerBuilder->register(Dehydrator::class, function () {
     $dehydrator->installValueDehydrator(new ArrayCollectionDehydrator());
     $dehydrator->installValueDehydrator(new ScalarDehydrator('integer'));
     $dehydrator->installValueDehydrator(new ScalarDehydrator('string'));
+    $dehydrator->installValueDehydrator(new ScalarDehydrator('boolean'));
     $dehydrator->installValueDehydrator(new ScalarDehydrator('NULL'));
     $dehydrator->installValueDehydrator(new UuidDehydrator());
     $dehydrator->installValueDehydrator(new DateTimeImmutableDehydrator());

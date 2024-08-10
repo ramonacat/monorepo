@@ -6,18 +6,23 @@ namespace Tests\Ramona\Ras2\Task\Application\HttpApi;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use Laminas\Diactoros\ServerRequest;
+use Laminas\Diactoros\Stream;
 use League\Route\Http\Exception\NotFoundException;
 use Ramona\Ras2\SharedCore\Infrastructure\CQRS\Query\QueryBus;
 use Ramona\Ras2\SharedCore\Infrastructure\Hydration\DefaultDehydrator;
 use Ramona\Ras2\SharedCore\Infrastructure\Serialization\DefaultSerializer;
 use Ramona\Ras2\SharedCore\Infrastructure\Serialization\Serializer;
 use Ramona\Ras2\Task\Application\HttpApi\GetTasks;
+use Ramona\Ras2\Task\Application\Query\Current;
 use Ramona\Ras2\Task\Application\Query\Random;
 use Ramona\Ras2\Task\Application\Query\Upcoming;
 use Ramona\Ras2\Task\Application\TaskView;
 use Ramona\Ras2\Task\Business\TaskId;
+use Ramona\Ras2\Task\Infrastructure\QueryExecutor\CurrentTaskView;
+use Ramona\Ras2\User\Application\Session;
 use Ramona\Ras2\User\Business\UserId;
 use Tests\Ramona\Ras2\EndpointCase;
+use Tests\Ramona\Ras2\Task\Mocks\MockCurrentExecutor;
 use Tests\Ramona\Ras2\Task\Mocks\MockFindRandomExecutor;
 use Tests\Ramona\Ras2\Task\Mocks\MockFindUpcomingExecutor;
 
@@ -74,6 +79,43 @@ final class GetTasksTest extends EndpointCase
     }
 
     public function testWatched(): void
+    {
+        $request = new ServerRequest(body: new Stream('php://memory', 'rw'), queryParams: [
+            'action' => 'current',
+        ]);
+
+        $request = $request->withAttribute(
+            'session',
+            new Session(UserId::fromString('01913d57-1546-79b6-9ecb-9fa6da779199'), 'ramona')
+        );
+
+        $bus = new QueryBus();
+        $result = new CurrentTaskView(TaskId::generate(), 'Title', new \Safe\DateTimeImmutable(), true);
+        $executor = new MockCurrentExecutor($result);
+
+        $bus->installExecutor(Current::class, $executor);
+        $serializer = $this->container->get(Serializer::class);
+
+        $controller = new GetTasks($bus, $serializer);
+
+        $response = ($controller)($request);
+        $response->getBody()
+            ->seek(0);
+
+        self::assertEquals(
+            new Current(UserId::fromString('01913d57-1546-79b6-9ecb-9fa6da779199')),
+            $executor->
+            query
+        );
+        self::assertJsonStringEqualsJsonString(
+            $serializer->serialize($result),
+            $response->getBody()
+                ->getContents()
+        );
+        self::assertEquals('application/json', $response->getHeaderLine('Content-Type'));
+    }
+
+    public function testCurrent(): void
     {
         $request = new ServerRequest(queryParams: [
             'limit' => 123,
