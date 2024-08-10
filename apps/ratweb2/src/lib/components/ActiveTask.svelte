@@ -2,12 +2,16 @@
 	import type { ActiveTaskView } from '$lib/ActiveTaskView';
 	import Icon from '@iconify/svelte';
 	import TimeCounter from '$lib/components/TimeCounter.svelte';
+	import type { TaskSummaryView } from '$lib/TaskSummaryView';
+	import { DateTime } from 'luxon';
 
-	export let task: ActiveTaskView;
+	export let task: TaskSummaryView;
+
+	const since = DateTime.fromSeconds(task.timeRecords[task.timeRecords.length-1].started.timestamp);
 </script>
 
-<span class="name">{task.name}</span>
-<span class="time-spent"><TimeCounter since={task.workStartedAt} /></span>
+<span class="name">{task.title}</span>
+<span class="time-spent"><TimeCounter since={since} /></span>
 
 <div class="buttons">
 	<button title="pause"><Icon inline icon="mdi:pause" /></button>

@@ -8,23 +8,24 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\DBAL\Connection;
 use Ramona\Ras2\SharedCore\Infrastructure\CQRS\Query\Executor;
 use Ramona\Ras2\SharedCore\Infrastructure\CQRS\Query\Query;
-use Ramona\Ras2\Task\Application\Query\FindRandom;
+use Ramona\Ras2\SharedCore\Infrastructure\Hydration\Hydrator;
+use Ramona\Ras2\Task\Application\Query\Random;
 use Ramona\Ras2\Task\Application\TaskView;
-use Ramona\Ras2\Task\Business\TaskId;
 
 /**
- * @implements Executor<ArrayCollection<int, TaskView>, FindRandom>
+ * @implements Executor<ArrayCollection<int, TaskView>, Random>
  */
-final class FindRandomExecutor implements Executor
+final class RandomExecutor implements Executor
 {
     public function __construct(
-        private Connection $connection
+        private Connection $connection,
+        private Hydrator $hydrator
     ) {
     }
 
     public function execute(Query $query): mixed
     {
-        /** @var list<array{id:string, title:string, assignee_name:string, tags:string, deadline: ?string}> $rawTasks */
+        /** @var list<array{id:string, title:string, assignee_name:string, tags:string, deadline: ?string, time_records: string}> $rawTasks */
         $rawTasks = $this
             ->connection
             ->fetchAllAssociative('
@@ -39,7 +40,8 @@ final class FindRandomExecutor implements Executor
                             INNER JOIN tasks_tags tt ON ta.id = tt.tag_id 
                         WHERE tt.task_id = t.id
                     ) AS tags, 
-                    deadline
+                    deadline,
+                    time_records
                 FROM tasks t
                 LEFT JOIN users u ON u.id = t.assignee_id
                 WHERE 
@@ -50,24 +52,13 @@ final class FindRandomExecutor implements Executor
             ', [
                 'limit' => $query->limit,
             ]);
-        /** @var array<int, TaskView> $result */
-        $result = [];
 
-        foreach ($rawTasks as $task) {
-            /** @var array<int, string> $tags */
-            $tags = \Safe\json_decode($task['tags']);
-            $result[] = new TaskView(
-                TaskId::fromString($task['id']),
-                $task['title'],
-                $task['assignee_name'],
-                new ArrayCollection($tags),
-                $task['deadline'] === null ? null : \Safe\DateTimeImmutable::createFromFormat(
-                    'Y-m-d H:i:sP',
-                    $task['deadline']
-                )
-            );
-        }
-
-        return new ArrayCollection($result);
+        return (new ArrayCollection($rawTasks))
+            ->map(function (array $rawTask) {
+                $rawTask['tags'] = \Safe\json_decode($rawTask['tags'], true);
+                $rawTask['time_records'] = \Safe\json_decode($rawTask['time_records'], true);
+                return $rawTask;
+            })
+            ->map(fn (array $raw) => $this->hydrator->hydrate(TaskView::class, $raw));
     }
 }

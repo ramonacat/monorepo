@@ -10,11 +10,7 @@
 	import type { ActiveTaskView } from '$lib/ActiveTaskView';
 	import type { ActionData } from '../../.svelte-kit/types/src/routes/$types';
 	import type { PageData } from './$types';
-
-	let currentTask: ActiveTaskView = {
-		workStartedAt: DateTime.now(),
-		name: 'This is a task'
-	};
+	import type { ServerDateTime } from '$lib/ServerDateTime';
 
 	export let form: ActionData;
 	export let data: PageData;
@@ -25,27 +21,32 @@
 		tags: string[];
 		deadline?: string | null;
 		pastDeadline: boolean;
+		timeRecords: {started:ServerDateTime, ended:ServerDateTime|undefined}[]
 	}) => {
 		return {
 			id: x.id,
 			title: x.title,
 			tags: x.tags,
 			deadline: x.deadline ? DateTime.fromISO(x.deadline) : null,
-			pastDeadline: x.pastDeadline
+			pastDeadline: x.pastDeadline,
+			timeRecords: x.timeRecords
 		} satisfies TaskSummaryView;
 	};
 	const upcomingTasks: TaskSummaryView[] = data.upcomingTasks.map(convertApiTask);
 	const watchedTasks: TaskSummaryView[] = data.watchedTasks.map(convertApiTask);
+	const currentTask: TaskSummaryView|null = data.currentTask ? convertApiTask(data.currentTask) : null;
 </script>
 
 <svelte:head>
 	<title>Ramona's Service</title>
 </svelte:head>
 
-<section>
-	<SectionHeading>Currently doing</SectionHeading>
-	<CurrentTask task={currentTask}></CurrentTask>
-</section>
+{#if currentTask}
+	<section>
+		<SectionHeading>Currently doing</SectionHeading>
+		<CurrentTask task={currentTask}></CurrentTask>
+	</section>
+{/if}
 
 <div class="container">
 	<section>

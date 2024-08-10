@@ -61,7 +61,9 @@ final class ObjectHydrator implements ValueHydrator
 
             $value = null;
             if ($input[$propertyName] !== null) {
-                $value = $hydrator->hydrate($type->getName(), $input[$propertyName], $newAttributes);
+                $targetType = $type->getName();
+                /** @var class-string $targetType */
+                $value = $hydrator->hydrate($targetType, $input[$propertyName], $newAttributes);
             }
             $property->setValue($instance, $value);
         }

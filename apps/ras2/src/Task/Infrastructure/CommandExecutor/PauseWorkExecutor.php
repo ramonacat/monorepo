@@ -24,14 +24,16 @@ final class PauseWorkExecutor implements Executor
 
     public function execute(Command $command): void
     {
-        $task = $this->repository->getById($command->taskId);
+        $this->repository->transactional(function () use ($command) {
+            $task = $this->repository->getById($command->taskId);
 
-        if (! ($task instanceof Started)) {
-            throw InvalidTaskState::for($task);
-        }
+            if (! ($task instanceof Started)) {
+                throw InvalidTaskState::for($task);
+            }
 
-        $task->stopRecordingTime($this->clock->now());
+            $task->stopRecordingTime($this->clock->now());
 
-        $this->repository->save($task);
+            $this->repository->save($task);
+        });
     }
 }

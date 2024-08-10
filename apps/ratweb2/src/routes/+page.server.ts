@@ -1,6 +1,7 @@
 import { type Actions, fail, redirect } from '@sveltejs/kit';
 import { DateTime } from 'luxon';
 import ApiClient from '$lib/ApiClient';
+import type { ServerDateTime } from '$lib/ServerDateTime';
 
 interface ServerTaskView {
 	id: string;
@@ -11,6 +12,7 @@ interface ServerTaskView {
 	};
 	assigneeName: string;
 	tags: string[];
+	timeRecords: {started:ServerDateTime, ended:ServerDateTime|undefined}[]
 }
 
 interface Session {
@@ -35,6 +37,7 @@ export async function load({ cookies }) {
 	const watchedTasks: ServerTaskView[] = (await apiClient.query(
 		'tasks?action=watched&limit=10'
 	)) as ServerTaskView[];
+	const currentTask: ServerTaskView|undefined = (await apiClient.query('tasks?action=current')) as ServerTaskView|undefined;
 
 	function convertApiTask() {
 		return (x: ServerTaskView) => {
@@ -44,14 +47,16 @@ export async function load({ cookies }) {
 				title: x.title,
 				tags: x.tags,
 				deadline: deadline?.toISO(), // TODO handle timezone!
-				pastDeadline: deadline === null ? false : deadline < DateTime.now()
+				pastDeadline: deadline === null ? false : deadline < DateTime.now(),
+				timeRecords: x.timeRecords
 			};
 		};
 	}
 
 	return {
 		upcomingTasks: upcomingTasks.map(convertApiTask()),
-		watchedTasks: watchedTasks.map(convertApiTask())
+		watchedTasks: watchedTasks.map(convertApiTask()),
+		currentTask: currentTask === undefined ? null : convertApiTask()(currentTask)
 	};
 }
 

@@ -12,8 +12,8 @@ use Ramona\Ras2\SharedCore\Infrastructure\Hydration\DefaultDehydrator;
 use Ramona\Ras2\SharedCore\Infrastructure\Serialization\DefaultSerializer;
 use Ramona\Ras2\SharedCore\Infrastructure\Serialization\Serializer;
 use Ramona\Ras2\Task\Application\HttpApi\GetTasks;
-use Ramona\Ras2\Task\Application\Query\FindRandom;
-use Ramona\Ras2\Task\Application\Query\FindUpcoming;
+use Ramona\Ras2\Task\Application\Query\Random;
+use Ramona\Ras2\Task\Application\Query\Upcoming;
 use Ramona\Ras2\Task\Application\TaskView;
 use Ramona\Ras2\Task\Business\TaskId;
 use Ramona\Ras2\User\Business\UserId;
@@ -42,10 +42,17 @@ final class GetTasksTest extends EndpointCase
         ]);
 
         $bus = new QueryBus();
-        $result = new TaskView(TaskId::generate(), 'Title', 'ramona', new ArrayCollection(['tag1', 'tag2']), null);
+        $result = new TaskView(
+            TaskId::generate(),
+            'Title',
+            'ramona',
+            new ArrayCollection(['tag1', 'tag2']),
+            null,
+            new ArrayCollection()
+        );
         $executor = new MockFindUpcomingExecutor([$result]);
 
-        $bus->installExecutor(FindUpcoming::class, $executor);
+        $bus->installExecutor(Upcoming::class, $executor);
         $serializer = $this->container->get(Serializer::class);
 
         $controller = new GetTasks($bus, $serializer);
@@ -55,7 +62,7 @@ final class GetTasksTest extends EndpointCase
             ->seek(0);
 
         self::assertEquals(
-            new FindUpcoming(123, UserId::fromString('019137b7-d4da-7d6f-9200-400eb263f3fb')),
+            new Upcoming(123, UserId::fromString('019137b7-d4da-7d6f-9200-400eb263f3fb')),
             $executor->query
         );
         self::assertJsonStringEqualsJsonString(
@@ -74,10 +81,17 @@ final class GetTasksTest extends EndpointCase
         ]);
 
         $bus = new QueryBus();
-        $result = new TaskView(TaskId::generate(), 'Title', 'ramona', new ArrayCollection(['tag1', 'tag2']), null);
+        $result = new TaskView(
+            TaskId::generate(),
+            'Title',
+            'ramona',
+            new ArrayCollection(['tag1', 'tag2']),
+            null,
+            new ArrayCollection()
+        );
         $executor = new MockFindRandomExecutor([$result]);
 
-        $bus->installExecutor(FindRandom::class, $executor);
+        $bus->installExecutor(Random::class, $executor);
         $serializer = $this->container->get(Serializer::class);
 
         $controller = new GetTasks($bus, $serializer);
@@ -86,7 +100,7 @@ final class GetTasksTest extends EndpointCase
         $response->getBody()
             ->seek(0);
 
-        self::assertEquals(new FindRandom(123), $executor->query);
+        self::assertEquals(new Random(123), $executor->query);
         self::assertJsonStringEqualsJsonString(
             $serializer->serialize(new ArrayCollection([$result])),
             $response->getBody()

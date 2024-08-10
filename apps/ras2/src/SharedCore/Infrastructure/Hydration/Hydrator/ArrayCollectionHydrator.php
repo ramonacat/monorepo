@@ -17,6 +17,10 @@ use Ramona\Ras2\SharedCore\Infrastructure\Hydration\ValueType;
  */
 final class ArrayCollectionHydrator implements ValueHydrator
 {
+    /**
+     * @psalm-suppress InvalidReturnStatement
+     * @psalm-suppress InvalidReturnType
+     */
     public function hydrate(Hydrator $hydrator, mixed $input, array $serializationAttributes): mixed
     {
         $keyType = null;
@@ -38,8 +42,14 @@ final class ArrayCollectionHydrator implements ValueHydrator
 
         $result = [];
         foreach ($input as $key => $value) {
-            /** @psalm-suppress MixedArrayOffset */
-            $result[$hydrator->hydrate($keyType, $key, [])] = $hydrator->hydrate($valueType, $value, []);
+            /**
+             * @psalm-suppress MixedArrayOffset
+             * @var class-string $keyType
+             * @var class-string $valueType
+             * @var array-key $hydratedKey
+             */
+            $hydratedKey = $hydrator->hydrate($keyType, $key);
+            $result[$hydratedKey] = $hydrator->hydrate($valueType, $value);
         }
 
         return new ArrayCollection($result);
