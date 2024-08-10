@@ -1,20 +1,27 @@
 <script lang="ts">
-	import type { ActiveTaskView } from '$lib/ActiveTaskView';
 	import Icon from '@iconify/svelte';
 	import TimeCounter from '$lib/components/TimeCounter.svelte';
-	import type { TaskSummaryView } from '$lib/TaskSummaryView';
-	import { DateTime } from 'luxon';
+	import type { CurrentTaskView } from '$lib/CurrentTaskView';
 
-	export let task: TaskSummaryView;
-
-	const since = DateTime.fromSeconds(task.timeRecords[task.timeRecords.length-1].started.timestamp);
+	export let task: CurrentTaskView;
 </script>
 
 <span class="name">{task.title}</span>
-<span class="time-spent"><TimeCounter since={since} /></span>
+<span class="time-spent"><TimeCounter since={task.startTime} isPaused={task.isPaused} /></span>
 
 <div class="buttons">
-	<button title="pause"><Icon inline icon="mdi:pause" /></button>
+	{#if !task.isPaused}
+		<form method="POST" action="?/pause_task">
+			<input type="hidden" name="task-id" value={task.id} />
+			<button title="pause"><Icon inline icon="mdi:pause" /></button>
+		</form>
+	{/if}
+	{#if task.isPaused}
+		<form method="POST" action="?/start_task">
+			<input type="hidden" name="task-id" value={task.id} />
+			<button title="pause"><Icon inline icon="mdi:play" /></button>
+		</form>
+	{/if}
 	<button title="done"><Icon inline icon="mdi:done" /></button>
 	<button title="return to todos"><Icon inline icon="mdi:assignment-return" /></button>
 </div>

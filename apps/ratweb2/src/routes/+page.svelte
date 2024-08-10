@@ -3,14 +3,14 @@
 	import NewItemForm from './NewItemForm.svelte';
 	import TaskList from '$lib/components/TaskList.svelte';
 	import type { TaskSummaryView } from '$lib/TaskSummaryView';
-	import { DateTime, Duration } from 'luxon';
+	import { DateTime } from 'luxon';
 	import SectionHeading from '$lib/components/SectionHeading.svelte';
 	import Tab from '$lib/components/Tab.svelte';
 	import CurrentTask from '$lib/components/ActiveTask.svelte';
-	import type { ActiveTaskView } from '$lib/ActiveTaskView';
 	import type { ActionData } from '../../.svelte-kit/types/src/routes/$types';
 	import type { PageData } from './$types';
 	import type { ServerDateTime } from '$lib/ServerDateTime';
+	import type { CurrentTaskView } from '$lib/CurrentTaskView';
 
 	export let form: ActionData;
 	export let data: PageData;
@@ -21,7 +21,7 @@
 		tags: string[];
 		deadline?: string | null;
 		pastDeadline: boolean;
-		timeRecords: {started:ServerDateTime, ended:ServerDateTime|undefined}[]
+		timeRecords: { started: ServerDateTime; ended: ServerDateTime | undefined }[];
 	}) => {
 		return {
 			id: x.id,
@@ -34,7 +34,15 @@
 	};
 	const upcomingTasks: TaskSummaryView[] = data.upcomingTasks.map(convertApiTask);
 	const watchedTasks: TaskSummaryView[] = data.watchedTasks.map(convertApiTask);
-	const currentTask: TaskSummaryView|null = data.currentTask ? convertApiTask(data.currentTask) : null;
+
+	const currentTask: CurrentTaskView | null = data.currentTask
+		? {
+				id: data.currentTask.id,
+				title: data.currentTask.title,
+				startTime: DateTime.fromISO(data.currentTask.startTime),
+				isPaused: data.currentTask.isPaused
+			}
+		: null;
 </script>
 
 <svelte:head>

@@ -7,5 +7,5 @@ export interface TaskSummaryView {
 	deadline?: DateTime<boolean> | null;
 	pastDeadline: boolean;
 	tags: string[];
-	timeRecords: {started:ServerDateTime, ended:ServerDateTime|undefined}[]
+	timeRecords: { started: ServerDateTime; ended: ServerDateTime | undefined }[];
 }

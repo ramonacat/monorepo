@@ -35,6 +35,7 @@ use Ramona\Ras2\Task\Infrastructure\CommandExecutor\StartWorkExecutor;
 use Ramona\Ras2\Task\Infrastructure\CommandExecutor\UpsertBacklogItemExecutor;
 use Ramona\Ras2\Task\Infrastructure\PostgresRepository;
 use Ramona\Ras2\Task\Infrastructure\QueryExecutor\CurrentExecutor;
+use Ramona\Ras2\Task\Infrastructure\QueryExecutor\CurrentTaskView;
 use Ramona\Ras2\Task\Infrastructure\QueryExecutor\RandomExecutor;
 use Ramona\Ras2\Task\Infrastructure\QueryExecutor\UpcomingExecutor;
 use Ramona\Ras2\Task\Infrastructure\Repository;
@@ -79,6 +80,7 @@ final class Module implements \Ramona\Ras2\SharedCore\Infrastructure\Module\Modu
         $dehydrator = $container->get(Dehydrator::class);
         $dehydrator->installValueDehydrator(new ObjectDehydrator(TaskView::class));
         $dehydrator->installValueDehydrator(new ObjectDehydrator(TimeRecord::class));
+        $dehydrator->installValueDehydrator(new ObjectDehydrator(CurrentTaskView::class));
         $dehydrator->installValueDehydrator(new TaskIdDehydrator());
 
         $commandBus = $container->get(CommandBus::class);
@@ -106,10 +108,7 @@ final class Module implements \Ramona\Ras2\SharedCore\Infrastructure\Module\Modu
             Random::class,
             new RandomExecutor($container->get(Connection::class), $container->get(Hydrator::class))
         );
-        $queryBus->installExecutor(
-            Current::class,
-            new CurrentExecutor($container->get(Connection::class), $container->get(Hydrator::class))
-        );
+        $queryBus->installExecutor(Current::class, new CurrentExecutor($container->get(Connection::class)));
 
         $router = $container->get(Router::class);
         $router->map('GET', '/tasks', GetTasks::class);

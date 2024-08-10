@@ -12,7 +12,14 @@ interface ServerTaskView {
 	};
 	assigneeName: string;
 	tags: string[];
-	timeRecords: {started:ServerDateTime, ended:ServerDateTime|undefined}[]
+	timeRecords: { started: ServerDateTime; ended: ServerDateTime | undefined }[];
+}
+
+interface ServerCurrentTaskView {
+	id: string;
+	title: string;
+	startTime: ServerDateTime;
+	isPaused: boolean;
 }
 
 interface Session {
@@ -37,11 +44,18 @@ export async function load({ cookies }) {
 	const watchedTasks: ServerTaskView[] = (await apiClient.query(
 		'tasks?action=watched&limit=10'
 	)) as ServerTaskView[];
-	const currentTask: ServerTaskView|undefined = (await apiClient.query('tasks?action=current')) as ServerTaskView|undefined;
+	const currentTask: ServerCurrentTaskView | undefined = (await apiClient.query(
+		'tasks?action=current'
+	)) as ServerCurrentTaskView | undefined;
+
+	function serverDateToDateTime(value: ServerDateTime) {
+		// FIXME this has to handle timezones!
+		return DateTime.fromSeconds(value.timestamp);
+	}
 
 	function convertApiTask() {
 		return (x: ServerTaskView) => {
-			const deadline = x.deadline === null ? null : DateTime.fromSeconds(x.deadline.timestamp);
+			const deadline = x.deadline === null ? null : serverDateToDateTime(x.deadline);
 			return {
 				id: x.id,
 				title: x.title,
@@ -56,7 +70,15 @@ export async function load({ cookies }) {
 	return {
 		upcomingTasks: upcomingTasks.map(convertApiTask()),
 		watchedTasks: watchedTasks.map(convertApiTask()),
-		currentTask: currentTask === undefined ? null : convertApiTask()(currentTask)
+		currentTask:
+			currentTask === undefined
+				? null
+				: {
+						id: currentTask.id,
+						title: currentTask.title,
+						startTime: serverDateToDateTime(currentTask.startTime).toISO(),
+						isPaused: currentTask.isPaused
+					}
 	};
 }
 
@@ -70,6 +92,18 @@ export const actions = {
 			body: JSON.stringify({ taskId: id }),
 			headers: {
 				'X-Action': 'start-work'
+			}
+		});
+	},
+	pause_task: async ({ request, cookies }) => {
+		const data = await request.formData();
+		const taskId = data.get('task-id');
+
+		await new ApiClient(cookies.get('token') as string).call('tasks', {
+			method: 'POST',
+			body: JSON.stringify({ taskId }),
+			headers: {
+				'X-Action': 'pause-work'
 			}
 		});
 	},
