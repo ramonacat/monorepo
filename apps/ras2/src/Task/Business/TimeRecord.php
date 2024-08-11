@@ -29,4 +29,9 @@ final class TimeRecord
     {
         $this->ended = $now;
     }
+
+    public function isFinished(): bool
+    {
+        return $this->ended !== null;
+    }
 }

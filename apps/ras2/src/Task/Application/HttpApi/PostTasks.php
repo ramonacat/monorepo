@@ -12,6 +12,7 @@ use Ramona\Ras2\SharedCore\Infrastructure\CQRS\Command\CommandBus;
 use Ramona\Ras2\SharedCore\Infrastructure\HTTP\AssertRequest;
 use Ramona\Ras2\SharedCore\Infrastructure\HTTP\RequireLogin;
 use Ramona\Ras2\SharedCore\Infrastructure\Serialization\Deserializer;
+use Ramona\Ras2\Task\Application\Command\FinishWork;
 use Ramona\Ras2\Task\Application\Command\PauseWork;
 use Ramona\Ras2\Task\Application\Command\StartWork;
 use Ramona\Ras2\Task\Application\Command\UpsertBacklogItem;
@@ -40,6 +41,7 @@ final class PostTasks
             'upsert:backlog-item' => $this->upsertBacklogItem($request),
             'start-work' => $this->startWork($request),
             'pause-work' => $this->pauseWork($request),
+            'finish-work' => $this->finishWork($request),
             default => throw new BadRequestException()
         };
     }
@@ -77,6 +79,15 @@ final class PostTasks
         $requestData = $this->deserializer->deserialize(PauseWork::class, $request->getBody()->getContents());
 
         $this->commandBus->execute($requestData);
+
+        return new Response\EmptyResponse(204);
+    }
+
+    private function finishWork(ServerRequestInterface $request): ResponseInterface
+    {
+        $command = $this->deserializer->deserialize(FinishWork::class, $request->getBody()->getContents());
+
+        $this->commandBus->execute($command);
 
         return new Response\EmptyResponse(204);
     }

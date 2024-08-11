@@ -13,6 +13,7 @@ use Ramona\Ras2\SharedCore\Infrastructure\CQRS\Command\CommandBus;
 use Ramona\Ras2\SharedCore\Infrastructure\Hydration\Hydrator;
 use Ramona\Ras2\SharedCore\Infrastructure\Serialization\DefaultDeserializer;
 use Ramona\Ras2\SharedCore\Infrastructure\Serialization\Deserializer;
+use Ramona\Ras2\Task\Application\Command\FinishWork;
 use Ramona\Ras2\Task\Application\Command\PauseWork;
 use Ramona\Ras2\Task\Application\Command\StartWork;
 use Ramona\Ras2\Task\Application\Command\UpsertBacklogItem;
@@ -177,6 +178,30 @@ final class PostTasksTest extends EndpointCase
         $response = ($handler)($request);
         self::assertEquals(
             new PauseWork(TaskId::fromString('01913a3e-9bfe-771f-b45b-3093cd7f0dda')),
+            $executor->command
+        );
+        self::assertEquals(204, $response->getStatusCode());
+    }
+
+    public function testCanFinishWork(): void
+    {
+        $commandBus = new CommandBus();
+        $executor = new MockExecutor();
+        $commandBus->installExecutor(FinishWork::class, $executor);
+        $handler = new PostTasks($commandBus, $this->container->get(Deserializer::class));
+        $request = new ServerRequest(method: 'POST', body: new Stream('php://memory', 'rw'), headers: [
+            'Content-Type' => 'application/json',
+            'X-Action' => 'finish-work',
+        ]);
+        $request->getBody()
+            ->write('{
+                    "taskId": "01913a3e-9bfe-771f-b45b-3093cd7f0dda"
+                }');
+        $request->getBody()
+            ->seek(0);
+        $response = ($handler)($request);
+        self::assertEquals(
+            new FinishWork(TaskId::fromString('01913a3e-9bfe-771f-b45b-3093cd7f0dda')),
             $executor->command
         );
         self::assertEquals(204, $response->getStatusCode());
