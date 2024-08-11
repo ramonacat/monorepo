@@ -6,7 +6,7 @@
 	import { DateTime } from 'luxon';
 	import SectionHeading from '$lib/components/SectionHeading.svelte';
 	import Tab from '$lib/components/Tab.svelte';
-	import CurrentTask from '$lib/components/ActiveTask.svelte';
+	import CurrentTask from './ActiveTask.svelte';
 	import type { ActionData } from '../../.svelte-kit/types/src/routes/$types';
 	import type { PageData } from './$types';
 	import type { ServerDateTime } from '$lib/ServerDateTime';

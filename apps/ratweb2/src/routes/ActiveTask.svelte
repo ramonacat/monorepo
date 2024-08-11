@@ -22,7 +22,10 @@
 			<button title="pause"><Icon inline icon="mdi:play" /></button>
 		</form>
 	{/if}
-	<button title="done"><Icon inline icon="mdi:done" /></button>
+	<form method="POST" action="?/finish_task">
+		<input type="hidden" name="task-id" value={task.id} />
+		<button title="done"><Icon inline icon="mdi:done" /></button>
+	</form>
 	<button title="return to todos"><Icon inline icon="mdi:assignment-return" /></button>
 </div>
 

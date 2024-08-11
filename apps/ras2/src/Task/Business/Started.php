@@ -96,4 +96,15 @@ final class Started implements Task
 
         return new BacklogItem($this->description, $this->assigneeId, $this->deadline, $this->timeRecords);
     }
+
+    public function toDone(DateTimeImmutable $now): Done
+    {
+        $lastTimeRecord = $this->timeRecords()
+            ->last();
+        if ($lastTimeRecord !== false && ! $lastTimeRecord->isFinished()) {
+            $lastTimeRecord->finish($now);
+        }
+
+        return new Done($this->description, $this->assigneeId, $this->timeRecords);
+    }
 }

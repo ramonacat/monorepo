@@ -70,15 +70,14 @@ export async function load({ cookies }) {
 	return {
 		upcomingTasks: upcomingTasks.map(convertApiTask()),
 		watchedTasks: watchedTasks.map(convertApiTask()),
-		currentTask:
-			currentTask === undefined
-				? null
-				: {
-						id: currentTask.id,
-						title: currentTask.title,
-						startTime: serverDateToDateTime(currentTask.startTime).toISO(),
-						isPaused: currentTask.isPaused
-					}
+		currentTask: currentTask
+			? {
+					id: currentTask.id,
+					title: currentTask.title,
+					startTime: serverDateToDateTime(currentTask.startTime).toISO(),
+					isPaused: currentTask.isPaused
+				}
+			: null
 	};
 }
 
@@ -104,6 +103,18 @@ export const actions = {
 			body: JSON.stringify({ taskId }),
 			headers: {
 				'X-Action': 'pause-work'
+			}
+		});
+	},
+	finish_task:async ({ request, cookies }) => {
+		const data = await request.formData();
+		const taskId = data.get('task-id');
+
+		await new ApiClient(cookies.get('token') as string).call('tasks', {
+			method: 'POST',
+			body: JSON.stringify({ taskId }),
+			headers: {
+				'X-Action': 'finish-work'
 			}
 		});
 	},
