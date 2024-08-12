@@ -81,42 +81,42 @@ export async function load({ cookies }) {
 	};
 }
 
+async function sendCommand(token: string, name: string, data: object) {
+	const result = await new ApiClient(token).call('tasks', {
+		method: 'POST',
+		body: JSON.stringify(data),
+		headers: {
+			'X-Action': name
+		}
+	});
+	if(!result.ok) {
+		throw new Error('Failed to execute command');
+	}
+}
+
 export const actions = {
 	start_task: async ({ request, cookies }) => {
-		const data = await request.formData();
-		const id = data.get('task-id');
+		const session: Session = (await (new ApiClient(cookies.get('token') as string)).query('users?action=session')) as Session;
 
-		await new ApiClient(cookies.get('token') as string).call('tasks', {
-			method: 'POST',
-			body: JSON.stringify({ taskId: id }),
-			headers: {
-				'X-Action': 'start-work'
-			}
-		});
+		const data = await request.formData();
+		const taskId = data.get('task-id');
+		const userId = session.userId;
+		await sendCommand(cookies.get('token') as string, 'start-work', { taskId: taskId, userId });
 	},
 	pause_task: async ({ request, cookies }) => {
 		const data = await request.formData();
 		const taskId = data.get('task-id');
-
-		await new ApiClient(cookies.get('token') as string).call('tasks', {
-			method: 'POST',
-			body: JSON.stringify({ taskId }),
-			headers: {
-				'X-Action': 'pause-work'
-			}
-		});
+		await sendCommand(cookies.get('token') as string, 'pause-work', { taskId: taskId });
 	},
 	finish_task:async ({ request, cookies }) => {
 		const data = await request.formData();
 		const taskId = data.get('task-id');
-
-		await new ApiClient(cookies.get('token') as string).call('tasks', {
-			method: 'POST',
-			body: JSON.stringify({ taskId }),
-			headers: {
-				'X-Action': 'finish-work'
-			}
-		});
+		await sendCommand(cookies.get('token') as string, 'finish-work', { taskId: taskId });
+	},
+	return_to_backlog:async ({ request, cookies }) => {
+		const data = await request.formData();
+		const taskId = data.get('task-id');
+		await sendCommand(cookies.get('token') as string, 'return-to-backlog', { taskId: taskId });
 	},
 	create_backlog_item: async ({ request, cookies }) => {
 		const data = await request.formData();
