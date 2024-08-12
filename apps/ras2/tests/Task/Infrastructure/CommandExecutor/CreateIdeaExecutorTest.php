@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Tests\Ramona\Ras2\Task\Command\Executor;
+namespace Tests\Ramona\Ras2\Task\Infrastructure\CommandExecutor;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use PHPUnit\Framework\TestCase;

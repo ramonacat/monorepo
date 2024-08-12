@@ -62,4 +62,32 @@ final class StartedTest extends TestCase
 
         self::assertEquals([new TimeRecord($startTime, $endTime)], $backlog->timeRecords()->toArray());
     }
+
+    public function testCanBeMovedToDone1(): void
+    {
+        $description = new TaskDescription(TaskId::generate(), 'title', new ArrayCollection());
+        $startTime = new \Safe\DateTimeImmutable();
+        $record = new TimeRecord($startTime);
+        $started = new Started($description, UserId::generate(), null, new ArrayCollection([$record]));
+
+        $endTime = new \Safe\DateTimeImmutable();
+
+        $doneItem = $started->toDone($endTime);
+
+        self::assertEquals([new TimeRecord($startTime, $endTime)], $doneItem->timeRecords()->toArray());
+    }
+
+    public function testCanBeMovedToDone2(): void
+    {
+        $description = new TaskDescription(TaskId::generate(), 'title', new ArrayCollection());
+        $startTime = new \Safe\DateTimeImmutable();
+        $record = new TimeRecord($startTime);
+        $started = new Started($description, UserId::generate(), null, new ArrayCollection());
+
+        $endTime = new \Safe\DateTimeImmutable();
+
+        $doneItem = $started->toDone($endTime);
+
+        self::assertEquals([], $doneItem->timeRecords()->toArray());
+    }
 }

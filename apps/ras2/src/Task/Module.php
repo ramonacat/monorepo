@@ -19,6 +19,7 @@ use Ramona\Ras2\SharedCore\Infrastructure\Serialization\Deserializer;
 use Ramona\Ras2\SharedCore\Infrastructure\Serialization\Serializer;
 use Ramona\Ras2\Task\Application\Command\FinishWork;
 use Ramona\Ras2\Task\Application\Command\PauseWork;
+use Ramona\Ras2\Task\Application\Command\ReturnToBacklog;
 use Ramona\Ras2\Task\Application\Command\StartWork;
 use Ramona\Ras2\Task\Application\Command\UpsertBacklogItem;
 use Ramona\Ras2\Task\Application\Command\UpsertIdea;
@@ -33,6 +34,7 @@ use Ramona\Ras2\Task\Business\TimeRecord;
 use Ramona\Ras2\Task\Infrastructure\CommandExecutor\CreateIdeaExecutor;
 use Ramona\Ras2\Task\Infrastructure\CommandExecutor\FinishWorkExecutor;
 use Ramona\Ras2\Task\Infrastructure\CommandExecutor\PauseWorkExecutor;
+use Ramona\Ras2\Task\Infrastructure\CommandExecutor\ReturnToBacklogExecutor;
 use Ramona\Ras2\Task\Infrastructure\CommandExecutor\StartWorkExecutor;
 use Ramona\Ras2\Task\Infrastructure\CommandExecutor\UpsertBacklogItemExecutor;
 use Ramona\Ras2\Task\Infrastructure\PostgresRepository;
@@ -77,6 +79,8 @@ final class Module implements \Ramona\Ras2\SharedCore\Infrastructure\Module\Modu
         $hydrator->installValueHydrator(new ObjectHydrator(PauseWork::class));
         $hydrator->installValueHydrator(new ObjectHydrator(TimeRecord::class));
         $hydrator->installValueHydrator(new ObjectHydrator(FinishWork::class));
+        $hydrator->installValueHydrator(new ObjectHydrator(StartWork::class));
+        $hydrator->installValueHydrator(new ObjectHydrator(ReturnToBacklog::class));
         $hydrator->installValueHydrator(new TaskViewHydrator());
         $hydrator->installValueHydrator(new TaskIdHydrator());
 
@@ -104,6 +108,10 @@ final class Module implements \Ramona\Ras2\SharedCore\Infrastructure\Module\Modu
         $commandBus->installExecutor(
             FinishWork::class,
             new FinishWorkExecutor($container->get(Repository::class), $container->get(ClockInterface::class))
+        );
+        $commandBus->installExecutor(
+            ReturnToBacklog::class,
+            new ReturnToBacklogExecutor($container->get(Repository::class), $container->get(ClockInterface::class))
         );
 
         $queryBus = $container->get(QueryBus::class);

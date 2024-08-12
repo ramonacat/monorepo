@@ -26,7 +26,10 @@
 		<input type="hidden" name="task-id" value={task.id} />
 		<button title="done"><Icon inline icon="mdi:done" /></button>
 	</form>
-	<button title="return to todos"><Icon inline icon="mdi:assignment-return" /></button>
+	<form method="POST" action="?/return_to_backlog">
+		<input type="hidden" name="task-id" value={task.id} />
+		<button title="return to backlog"><Icon inline icon="mdi:assignment-return" /></button>
+	</form>
 </div>
 
 <style>
