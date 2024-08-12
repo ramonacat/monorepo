@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Tests\Ramona\Ras2\Task\Infrastructure\CommandExecutor;
 
 use Doctrine\Common\Collections\ArrayCollection;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 use Ramona\Ras2\SharedCore\Infrastructure\ClockInterface;
 use Ramona\Ras2\Task\Application\Command\FinishWork;
@@ -12,6 +13,7 @@ use Ramona\Ras2\Task\Business\BacklogItem;
 use Ramona\Ras2\Task\Business\Done;
 use Ramona\Ras2\Task\Business\Started;
 use Ramona\Ras2\Task\Business\TagId;
+use Ramona\Ras2\Task\Business\Task;
 use Ramona\Ras2\Task\Business\TaskDescription;
 use Ramona\Ras2\Task\Business\TaskId;
 use Ramona\Ras2\Task\Business\TimeRecord;
@@ -22,18 +24,42 @@ use Ramona\Ras2\User\Business\UserId;
 
 final class FinishWorkExecutorTest extends TestCase
 {
-    public function testWillSave(): void
+    /**
+     * @return iterable<array{0:Task, 1:\Safe\DateTimeImmutable, 2:\Safe\DateTimeImmutable, 3:TimeRecord[]}>
+     */
+    public static function dataWillSave(): iterable
     {
-
-        $startTime = new \Safe\DateTimeImmutable();
-        $endTime = new \Safe\DateTimeImmutable('+1 hour');
+        $now = new \Safe\DateTimeImmutable();
+        $startTime = new \Safe\DateTimeImmutable('-1 hour');
         $taskId = TaskId::generate();
-        $task = new Started(
+        $startedTask = new Started(
             new TaskDescription($taskId, 'title', new ArrayCollection([TagId::generate(), TagId::generate()])),
             UserId::generate(),
             null,
             new ArrayCollection([new TimeRecord($startTime)])
         );
+        yield [$startedTask, $startTime, $now, [new TimeRecord($startTime, $now)]];
+
+        $backlogItem = new BacklogItem(
+            new TaskDescription($taskId, 'title', new ArrayCollection([TagId::generate(), TagId::generate()])),
+            UserId::generate(),
+            null,
+            new ArrayCollection(),
+        );
+        yield [$backlogItem, $startTime, $now, []];
+    }
+
+    /**
+     * @param TimeRecord[] $expectedTimeRecords
+     */
+    #[DataProvider('dataWillSave')]
+    public function testWillSave(
+        Task $task,
+        \Safe\DateTimeImmutable $startTime,
+        \Safe\DateTimeImmutable $now,
+        array $expectedTimeRecords
+    ): void {
+        $taskId = $task->id();
 
         $repositoryMock = $this->createMock(Repository::class);
         $repositoryMock
@@ -47,17 +73,17 @@ final class FinishWorkExecutorTest extends TestCase
         $repositoryMock
             ->expects(self::once())
             ->method('save')
-            ->willReturnCallback(function (Done $doneItem) use ($startTime, $endTime) {
-                self::assertEquals([new TimeRecord($startTime, $endTime)], $doneItem->timeRecords()->toArray());
+            ->willReturnCallback(function (Done $doneItem) use ($expectedTimeRecords) {
+                self::assertEquals($expectedTimeRecords, $doneItem->timeRecords()->toArray());
             });
 
         $clockMock = $this->createMock(ClockInterface::class);
         $clockMock->method('now')
-            ->willReturn($endTime);
+            ->willReturn($now);
 
         $executor = new FinishWorkExecutor($repositoryMock, $clockMock);
 
-        $executor->execute(new FinishWork($taskId));
+        $executor->execute(new FinishWork($taskId, UserId::generate()));
     }
 
     public function testWillThrowIfTaskIsNotStarted(): void
@@ -65,10 +91,9 @@ final class FinishWorkExecutorTest extends TestCase
         $startTime = new \Safe\DateTimeImmutable();
         $endTime = new \Safe\DateTimeImmutable('+1 hour');
         $taskId = TaskId::fromString('01913b63-4817-728e-ad7b-e769dd133af3');
-        $task = new BacklogItem(
+        $task = new Done(
             new TaskDescription($taskId, 'title', new ArrayCollection([TagId::generate(), TagId::generate()])),
             UserId::generate(),
-            null,
             new ArrayCollection([new TimeRecord($startTime)])
         );
 
@@ -87,8 +112,8 @@ final class FinishWorkExecutorTest extends TestCase
 
         $this->expectException(InvalidTaskState::class);
         $this->expectExceptionMessage(
-            "Task 01913b63-4817-728e-ad7b-e769dd133af3 is in unexpected state: Ramona\Ras2\Task\Business\BacklogItem"
+            "Task 01913b63-4817-728e-ad7b-e769dd133af3 is in unexpected state: Ramona\Ras2\Task\Business\Done"
         );
-        $executor->execute(new FinishWork($taskId));
+        $executor->execute(new FinishWork($taskId, UserId::generate()));
     }
 }

@@ -34,6 +34,11 @@ final class BacklogItem implements Task
         return $started;
     }
 
+    public function toDone(UserId $userId): Done
+    {
+        return new Done($this->description(), $userId, $this->timeRecords);
+    }
+
     /**
      * @psalm-suppress PossiblyUnusedMethod
      */

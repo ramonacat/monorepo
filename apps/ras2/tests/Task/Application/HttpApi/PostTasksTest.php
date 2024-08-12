@@ -109,9 +109,15 @@ final class PostTasksTest extends EndpointCase
         ];
 
         yield [
-            new FinishWork(TaskId::fromString('01913a3e-9bfe-771f-b45b-3093cd7f0dda')),
+            new FinishWork(
+                TaskId::fromString('01913a3e-9bfe-771f-b45b-3093cd7f0dda'),
+                UserId::fromString('01913b35-3470-7d9f-b7b9-79f91406d048')
+            ),
             'finish-work',
-            '{"taskId": "01913a3e-9bfe-771f-b45b-3093cd7f0dda"}',
+            '{
+                "taskId": "01913a3e-9bfe-771f-b45b-3093cd7f0dda",
+                "userId": "01913b35-3470-7d9f-b7b9-79f91406d048"
+            }',
         ];
 
         yield [

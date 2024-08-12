@@ -18,7 +18,7 @@ class Done implements Task
      */
     public function __construct(
         private TaskDescription $description,
-        private UserId $assignee,
+        private UserId $assigneeId,
         /**
          * @var ArrayCollection<int,TimeRecord>
          */
@@ -39,7 +39,7 @@ class Done implements Task
 
     public function assigneeId(): ?UserId
     {
-        return $this->assignee;
+        return $this->assigneeId;
     }
 
     public function tags(): ArrayCollection
