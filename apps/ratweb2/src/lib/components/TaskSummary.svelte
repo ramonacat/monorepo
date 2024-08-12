@@ -27,7 +27,10 @@
 				<input type="hidden" name="task-id" value={task.id} />
 				<button title="start"><Icon inline icon="mdi:stopwatch-start" /></button>
 			</form>
-			<button title="done"><Icon inline icon="mdi:done" /></button>
+			<form method="POST" action="/?/finish_task">
+				<input type="hidden" name="task-id" value={task.id} />
+				<button title="done"><Icon inline icon="mdi:done" /></button>
+			</form>
 		</div>
 		<div class="button-group -right">
 			<button class="-danger" title="remove"><Icon inline icon="mdi:remove" /></button>

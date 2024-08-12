@@ -8,6 +8,7 @@ use Ramona\Ras2\SharedCore\Infrastructure\ClockInterface;
 use Ramona\Ras2\SharedCore\Infrastructure\CQRS\Command\Command;
 use Ramona\Ras2\SharedCore\Infrastructure\CQRS\Command\Executor;
 use Ramona\Ras2\Task\Application\Command\FinishWork;
+use Ramona\Ras2\Task\Business\BacklogItem;
 use Ramona\Ras2\Task\Business\Started;
 use Ramona\Ras2\Task\Infrastructure\Repository;
 
@@ -27,12 +28,14 @@ final class FinishWorkExecutor implements Executor
     {
         $task = $this->repository->getById($command->taskId);
 
-        if (! ($task instanceof Started)) {
+        if ($task instanceof Started) {
+            $task = $task->toDone($this->clock->now());
+        } elseif ($task instanceof BacklogItem) {
+            $task = $task->toDone($command->userId);
+        } else {
             throw InvalidTaskState::for($task);
         }
 
-        $doneTask = $task->toDone($this->clock->now());
-
-        $this->repository->save($doneTask);
+        $this->repository->save($task);
     }
 }

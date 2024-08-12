@@ -2,6 +2,8 @@ import { type Actions, fail, redirect } from '@sveltejs/kit';
 import { DateTime } from 'luxon';
 import ApiClient from '$lib/ApiClient';
 import type { ServerDateTime } from '$lib/ServerDateTime';
+import type { Session } from '$lib/Session';
+import { fetchSession, getToken } from '$lib/UserInfo';
 
 interface ServerTaskView {
 	id: string;
@@ -22,11 +24,6 @@ interface ServerCurrentTaskView {
 	isPaused: boolean;
 }
 
-interface Session {
-	userId: string;
-	username: string;
-}
-
 export async function load({ cookies }) {
 	const token = cookies.get('token');
 
@@ -35,8 +32,7 @@ export async function load({ cookies }) {
 	}
 
 	const apiClient: ApiClient = new ApiClient(token);
-
-	const session: Session = (await apiClient.query('users?action=session')) as Session;
+	const session: Session = await fetchSession(apiClient);
 
 	const upcomingTasks: ServerTaskView[] = (await apiClient.query(
 		'tasks?action=upcoming&limit=10&assigneeId=' + session.userId
@@ -111,7 +107,10 @@ export const actions = {
 	finish_task:async ({ request, cookies }) => {
 		const data = await request.formData();
 		const taskId = data.get('task-id');
-		await sendCommand(cookies.get('token') as string, 'finish-work', { taskId: taskId });
+
+		const apiClient = new ApiClient(getToken(cookies));
+		const session = await fetchSession(apiClient);
+		await sendCommand(cookies.get('token') as string, 'finish-work', { taskId, userId: session.userId });
 	},
 	return_to_backlog:async ({ request, cookies }) => {
 		const data = await request.formData();
@@ -127,7 +126,9 @@ export const actions = {
 		const deadlineDate = data.get('deadline-date');
 		const deadlineTime = data.get('deadline-time') ?? '00:00:00';
 		const deadline =
-			deadlineDate === null ? null : new Date(deadlineDate + 'T' + deadlineTime + '+00:00');
+			deadlineDate === null
+				? null
+				: new Date(deadlineDate + 'T' + deadlineTime + '+00:00');
 
 		const id = crypto.randomUUID();
 		const response = await fetch('http://localhost:8080/tasks', {
