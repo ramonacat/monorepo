@@ -8,7 +8,7 @@
 
 	setInterval(() => {
 		if (isPaused) {
-			duration = Duration.fromObject({second: 0});
+			duration = Duration.fromObject({ second: 0 });
 			return;
 		}
 

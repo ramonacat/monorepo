@@ -23,9 +23,12 @@ use Ramona\Ras2\Task\Application\Command\ReturnToBacklog;
 use Ramona\Ras2\Task\Application\Command\StartWork;
 use Ramona\Ras2\Task\Application\Command\UpsertBacklogItem;
 use Ramona\Ras2\Task\Application\Command\UpsertIdea;
+use Ramona\Ras2\Task\Application\CurrentTaskView;
+use Ramona\Ras2\Task\Application\HttpApi\GetTaskById;
 use Ramona\Ras2\Task\Application\HttpApi\GetTasks;
 use Ramona\Ras2\Task\Application\HttpApi\PostTasks;
 use Ramona\Ras2\Task\Application\HttpApi\StartWorkRequest;
+use Ramona\Ras2\Task\Application\Query\ById;
 use Ramona\Ras2\Task\Application\Query\Current;
 use Ramona\Ras2\Task\Application\Query\Random;
 use Ramona\Ras2\Task\Application\Query\Upcoming;
@@ -38,8 +41,8 @@ use Ramona\Ras2\Task\Infrastructure\CommandExecutor\ReturnToBacklogExecutor;
 use Ramona\Ras2\Task\Infrastructure\CommandExecutor\StartWorkExecutor;
 use Ramona\Ras2\Task\Infrastructure\CommandExecutor\UpsertBacklogItemExecutor;
 use Ramona\Ras2\Task\Infrastructure\PostgresRepository;
+use Ramona\Ras2\Task\Infrastructure\QueryExecutor\ByIdExecutor;
 use Ramona\Ras2\Task\Infrastructure\QueryExecutor\CurrentExecutor;
-use Ramona\Ras2\Task\Infrastructure\QueryExecutor\CurrentTaskView;
 use Ramona\Ras2\Task\Infrastructure\QueryExecutor\RandomExecutor;
 use Ramona\Ras2\Task\Infrastructure\QueryExecutor\UpcomingExecutor;
 use Ramona\Ras2\Task\Infrastructure\Repository;
@@ -63,6 +66,10 @@ final class Module implements \Ramona\Ras2\SharedCore\Infrastructure\Module\Modu
         $containerBuilder->register(
             GetTasks::class,
             fn (Container $c) => new GetTasks($c->get(QueryBus::class), $c->get(Serializer::class))
+        );
+        $containerBuilder->register(
+            GetTaskById::class,
+            fn (Container $c) => new GetTaskById($c->get(QueryBus::class), $c->get(Serializer::class))
         );
         $containerBuilder->register(
             PostTasks::class,
@@ -124,9 +131,14 @@ final class Module implements \Ramona\Ras2\SharedCore\Infrastructure\Module\Modu
             new RandomExecutor($container->get(Connection::class), $container->get(Hydrator::class))
         );
         $queryBus->installExecutor(Current::class, new CurrentExecutor($container->get(Connection::class)));
+        $queryBus->installExecutor(
+            ById::class,
+            new ByIdExecutor($container->get(Connection::class), $container->get(Hydrator::class))
+        );
 
         $router = $container->get(Router::class);
         $router->map('GET', '/tasks', GetTasks::class);
+        $router->map('GET', '/tasks/{id:uuid}', GetTaskById::class);
         $router->map('POST', '/tasks', PostTasks::class);
     }
 }
