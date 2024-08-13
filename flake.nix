@@ -242,6 +242,7 @@
           ./machines/hallewell/ras.nix
           ./machines/hallewell/ratweb.nix
           ./machines/hallewell/ratweb2.nix
+          ./machines/hallewell/ras2.nix
           ./machines/hallewell/syncthing.nix
           ./machines/hallewell/tempo.nix
           ./machines/hallewell/users/ramona.nix
