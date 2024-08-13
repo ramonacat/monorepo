@@ -52,13 +52,7 @@ $containerBuilder->register(LoggerInterface::class, function () {
 $containerBuilder->register(
     Connection::class,
     function () {
-        $configPath = getenv('DATABASE_CONFIG');
-
-        if ($configPath !== false) {
-            $config = require $configPath;
-        } else {
-            $config = require __DIR__ . '/../migrations-db.php';
-        }
+        $config = require __DIR__ . '/../migrations-db.php';
 
         return DriverManager::getConnection($config);
     }
