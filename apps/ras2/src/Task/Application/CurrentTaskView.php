@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Ramona\Ras2\Task\Infrastructure\QueryExecutor;
+namespace Ramona\Ras2\Task\Application;
 
 use Ramona\Ras2\Task\Business\TaskId;
 

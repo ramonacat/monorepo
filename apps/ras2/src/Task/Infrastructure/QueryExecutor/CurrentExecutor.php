@@ -8,6 +8,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\DBAL\Connection;
 use Ramona\Ras2\SharedCore\Infrastructure\CQRS\Query\Executor;
 use Ramona\Ras2\SharedCore\Infrastructure\CQRS\Query\Query;
+use Ramona\Ras2\Task\Application\CurrentTaskView;
 use Ramona\Ras2\Task\Application\Query\Current;
 use Ramona\Ras2\Task\Business\TaskId;
 

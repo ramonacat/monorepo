@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Ramona\Ras2\Task\Application\Query;
 
 use Ramona\Ras2\SharedCore\Infrastructure\CQRS\Query\Query;
-use Ramona\Ras2\Task\Infrastructure\QueryExecutor\CurrentTaskView;
+use Ramona\Ras2\Task\Application\CurrentTaskView;
 use Ramona\Ras2\User\Business\UserId;
 
 /**

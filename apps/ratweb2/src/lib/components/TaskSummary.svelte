@@ -1,16 +1,16 @@
 <script lang="ts">
 	import TagPill from '$lib/components/TagPill.svelte';
-	import type { TaskSummaryView } from '$lib/TaskSummaryView';
 	import Icon from '@iconify/svelte';
+	import type { ServerTaskSummary } from '$lib/ServerTaskSummary';
 	export let showDetails = false;
-	export let task: TaskSummaryView;
+	export let task: ServerTaskSummary;
 </script>
 
 <button class="title" on:click={() => (showDetails = !showDetails)}>
 	{task.title}
 	{#if task.deadline}
 		<span class="deadline">
-			({task.deadline.toLocaleString({ timeStyle: 'medium', dateStyle: 'medium' })})
+			({task.deadline.toDateTime().toLocaleString({ timeStyle: 'medium', dateStyle: 'medium' })})
 		</span>
 	{/if}
 </button>
@@ -22,7 +22,9 @@
 	</div>
 	<div class="actions">
 		<div class="button-group -left">
-			<button title="edit"><Icon inline icon="mdi:edit" /></button>
+			<a class="button" href="/todo-edit?task-id={task.id}" title="edit"
+				><Icon inline icon="mdi:edit" /></a
+			>
 			<form method="POST" action="/?/start_task">
 				<input type="hidden" name="task-id" value={task.id} />
 				<button title="start"><Icon inline icon="mdi:stopwatch-start" /></button>
@@ -39,9 +41,11 @@
 {/if}
 
 <style>
-	button {
+	button,
+	.button {
 		cursor: pointer;
 	}
+
 	button.title {
 		border: 0;
 		margin: 0;
@@ -62,8 +66,10 @@
 		border-right: 0;
 	}
 
-	.actions button {
+	.actions button,
+	.actions .button {
 		font-size: 2rem;
+		line-height: 1.25;
 		width: auto;
 		height: auto;
 	}

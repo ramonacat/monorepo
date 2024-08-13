@@ -1,79 +1,18 @@
-import { type Actions, fail, redirect } from '@sveltejs/kit';
-import { DateTime } from 'luxon';
-import ApiClient from '$lib/ApiClient';
-import type { ServerDateTime } from '$lib/ServerDateTime';
-import type { Session } from '$lib/Session';
-import { fetchSession, getToken } from '$lib/UserInfo';
-
-interface ServerTaskView {
-	id: string;
-	title: string;
-	deadline: {
-		timestamp: number;
-		timezone: string;
-	};
-	assigneeName: string;
-	tags: string[];
-	timeRecords: { started: ServerDateTime; ended: ServerDateTime | undefined }[];
-}
-
-interface ServerCurrentTaskView {
-	id: string;
-	title: string;
-	startTime: ServerDateTime;
-	isPaused: boolean;
-}
+import { type Actions, fail } from '@sveltejs/kit';
+import { ensureAuthenticated } from '$lib/ensureAuthenticated';
+import { ApiClient } from '$lib/Api';
 
 export async function load({ cookies }) {
-	const token = cookies.get('token');
+	const { apiClient, session } = await ensureAuthenticated(cookies);
 
-	if (!token) {
-		return redirect(302, '/login');
-	}
-
-	const apiClient: ApiClient = new ApiClient(token);
-	const session: Session = await fetchSession(apiClient);
-
-	const upcomingTasks: ServerTaskView[] = (await apiClient.query(
-		'tasks?action=upcoming&limit=10&assigneeId=' + session.userId
-	)) as ServerTaskView[];
-	const watchedTasks: ServerTaskView[] = (await apiClient.query(
-		'tasks?action=watched&limit=10'
-	)) as ServerTaskView[];
-	const currentTask: ServerCurrentTaskView | undefined = (await apiClient.query(
-		'tasks?action=current'
-	)) as ServerCurrentTaskView | undefined;
-
-	function serverDateToDateTime(value: ServerDateTime) {
-		// FIXME this has to handle timezones!
-		return DateTime.fromSeconds(value.timestamp);
-	}
-
-	function convertApiTask() {
-		return (x: ServerTaskView) => {
-			const deadline = x.deadline === null ? null : serverDateToDateTime(x.deadline);
-			return {
-				id: x.id,
-				title: x.title,
-				tags: x.tags,
-				deadline: deadline?.toISO(), // TODO handle timezone!
-				pastDeadline: deadline === null ? false : deadline < DateTime.now(),
-				timeRecords: x.timeRecords
-			};
-		};
-	}
+	const upcomingTasks = await apiClient.findUpcomingTasks(session.userId);
+	const watchedTasks = await apiClient.findWatchedTasks();
+	const currentTask = await apiClient.findCurrentTask();
 
 	return {
-		upcomingTasks: upcomingTasks.map(convertApiTask()),
-		watchedTasks: watchedTasks.map(convertApiTask()),
-		currentTask: currentTask
-			? {
-					id: currentTask.id,
-					title: currentTask.title,
-					startTime: serverDateToDateTime(currentTask.startTime).toISO(),
-					isPaused: currentTask.isPaused
-				}
-			: null
+		upcomingTasks: upcomingTasks.map((x) => x.toPojo()),
+		watchedTasks: watchedTasks.map((x) => x.toPojo()),
+		currentTask: currentTask?.toPojo()
 	};
 }
 
@@ -85,14 +24,14 @@ async function sendCommand(token: string, name: string, data: object) {
 			'X-Action': name
 		}
 	});
-	if(!result.ok) {
+	if (!result.ok) {
 		throw new Error('Failed to execute command');
 	}
 }
 
 export const actions = {
 	start_task: async ({ request, cookies }) => {
-		const session: Session = (await (new ApiClient(cookies.get('token') as string)).query('users?action=session')) as Session;
+		const { session } = await ensureAuthenticated(cookies);
 
 		const data = await request.formData();
 		const taskId = data.get('task-id');
@@ -100,24 +39,33 @@ export const actions = {
 		await sendCommand(cookies.get('token') as string, 'start-work', { taskId: taskId, userId });
 	},
 	pause_task: async ({ request, cookies }) => {
+		await ensureAuthenticated(cookies);
+
 		const data = await request.formData();
 		const taskId = data.get('task-id');
 		await sendCommand(cookies.get('token') as string, 'pause-work', { taskId: taskId });
 	},
-	finish_task:async ({ request, cookies }) => {
+	finish_task: async ({ request, cookies }) => {
+		const { session } = await ensureAuthenticated(cookies);
+
 		const data = await request.formData();
 		const taskId = data.get('task-id');
 
-		const apiClient = new ApiClient(getToken(cookies));
-		const session = await fetchSession(apiClient);
-		await sendCommand(cookies.get('token') as string, 'finish-work', { taskId, userId: session.userId });
+		await sendCommand(cookies.get('token') as string, 'finish-work', {
+			taskId,
+			userId: session.userId
+		});
 	},
-	return_to_backlog:async ({ request, cookies }) => {
+	return_to_backlog: async ({ request, cookies }) => {
+		await ensureAuthenticated(cookies);
+
 		const data = await request.formData();
 		const taskId = data.get('task-id');
 		await sendCommand(cookies.get('token') as string, 'return-to-backlog', { taskId: taskId });
 	},
 	create_backlog_item: async ({ request, cookies }) => {
+		await ensureAuthenticated(cookies);
+
 		const data = await request.formData();
 		const title = data.get('title');
 		const rawTags = data.get('tags');
@@ -126,9 +74,7 @@ export const actions = {
 		const deadlineDate = data.get('deadline-date');
 		const deadlineTime = data.get('deadline-time') ?? '00:00:00';
 		const deadline =
-			deadlineDate === null
-				? null
-				: new Date(deadlineDate + 'T' + deadlineTime + '+00:00');
+			deadlineDate === null ? null : new Date(deadlineDate + 'T' + deadlineTime + '+00:00');
 
 		const id = crypto.randomUUID();
 		const response = await fetch('http://localhost:8080/tasks', {

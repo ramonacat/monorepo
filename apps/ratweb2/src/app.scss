@@ -84,7 +84,8 @@ label {
 }
 
 input:not([type='hidden']),
-button {
+button,
+.button {
 	display: inline-block;
 	border: 1px solid #fefae6;
 	background-color: var(--color-background-secondary);
@@ -104,7 +105,8 @@ button.-danger {
 	border: var(--width-border) solid var(--color-danger);
 }
 
-form button {
+form button,
+form .button {
 	display: block;
 	padding: 0 var(--spacing-l);
 	margin: 0 auto;

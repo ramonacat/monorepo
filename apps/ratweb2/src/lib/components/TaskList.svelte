@@ -1,7 +1,8 @@
 <script lang="ts">
-	export let tasks: TaskSummaryView[] = [];
+	import type { ServerTaskSummary } from '$lib/ServerTaskSummary';
 
-	import type { TaskSummaryView } from '$lib/TaskSummaryView';
+	export let tasks: ServerTaskSummary[] = [];
+
 	import TaskSummary from '$lib/components/TaskSummary.svelte';
 </script>
 

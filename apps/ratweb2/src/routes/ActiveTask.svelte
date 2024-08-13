@@ -1,13 +1,15 @@
 <script lang="ts">
 	import Icon from '@iconify/svelte';
 	import TimeCounter from '$lib/components/TimeCounter.svelte';
-	import type { CurrentTaskView } from '$lib/CurrentTaskView';
+	import type { ServerCurrentTaskView } from '$lib/ServerCurrentTaskView';
 
-	export let task: CurrentTaskView;
+	export let task: ServerCurrentTaskView;
 </script>
 
 <span class="name">{task.title}</span>
-<span class="time-spent"><TimeCounter since={task.startTime} isPaused={task.isPaused} /></span>
+<span class="time-spent"
+	><TimeCounter since={task.startTime.toDateTime()} isPaused={task.isPaused} /></span
+>
 
 <div class="buttons">
 	{#if !task.isPaused}

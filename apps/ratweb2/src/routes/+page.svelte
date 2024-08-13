@@ -2,47 +2,20 @@
 	import Tabs from '$lib/components/Tabs.svelte';
 	import NewItemForm from './NewItemForm.svelte';
 	import TaskList from '$lib/components/TaskList.svelte';
-	import type { TaskSummaryView } from '$lib/TaskSummaryView';
-	import { DateTime } from 'luxon';
 	import SectionHeading from '$lib/components/SectionHeading.svelte';
 	import Tab from '$lib/components/Tab.svelte';
 	import CurrentTask from './ActiveTask.svelte';
 	import type { ActionData } from '../../.svelte-kit/types/src/routes/$types';
 	import type { PageData } from './$types';
-	import type { ServerDateTime } from '$lib/ServerDateTime';
-	import type { CurrentTaskView } from '$lib/CurrentTaskView';
+	import { ServerTaskSummary } from '$lib/ServerTaskSummary';
+	import { ServerCurrentTaskView } from '$lib/ServerCurrentTaskView';
 
 	export let form: ActionData;
 	export let data: PageData;
 
-	let convertApiTask = (x: {
-		id: string;
-		title: string;
-		tags: string[];
-		deadline?: string | null;
-		pastDeadline: boolean;
-		timeRecords: { started: ServerDateTime; ended: ServerDateTime | undefined }[];
-	}) => {
-		return {
-			id: x.id,
-			title: x.title,
-			tags: x.tags,
-			deadline: x.deadline ? DateTime.fromISO(x.deadline) : null,
-			pastDeadline: x.pastDeadline,
-			timeRecords: x.timeRecords
-		} satisfies TaskSummaryView;
-	};
-	const upcomingTasks: TaskSummaryView[] = data.upcomingTasks.map(convertApiTask);
-	const watchedTasks: TaskSummaryView[] = data.watchedTasks.map(convertApiTask);
-
-	const currentTask: CurrentTaskView | null = data.currentTask
-		? {
-				id: data.currentTask.id,
-				title: data.currentTask.title,
-				startTime: DateTime.fromISO(data.currentTask.startTime),
-				isPaused: data.currentTask.isPaused
-			}
-		: null;
+	const upcomingTasks = data.upcomingTasks.map(ServerTaskSummary.fromPojo);
+	const watchedTasks = data.watchedTasks.map(ServerTaskSummary.fromPojo);
+	const currentTask = data.currentTask ? ServerCurrentTaskView.fromPojo(data.currentTask) : null;
 </script>
 
 <svelte:head>
