@@ -40,7 +40,8 @@
         "webmozart/assert": "^1.11",
         "monolog/monolog": "^3.7",
         "psr/log": "^3.0",
-        "psr/container": "^2.0"
+        "psr/container": "^2.0",
+        "thecsea/simple-caldav-client": "^0.1.15"
     },
     "require-dev": {
         "phpstan/phpstan": "^1.11",

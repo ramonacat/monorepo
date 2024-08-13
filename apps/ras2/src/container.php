@@ -11,6 +11,7 @@ use Monolog\Formatter\LineFormatter;
 use Monolog\Handler\StreamHandler;
 use Monolog\Logger;
 use Psr\Log\LoggerInterface;
+use Ramona\Ras2\Event\Module as EventModule;
 use Ramona\Ras2\SharedCore\Infrastructure\ClockInterface;
 use Ramona\Ras2\SharedCore\Infrastructure\CQRS\Command\CommandBus as CommandBus;
 use Ramona\Ras2\SharedCore\Infrastructure\CQRS\Query\QueryBus as QueryBus;
@@ -34,6 +35,7 @@ use Ramona\Ras2\SharedCore\Infrastructure\Serialization\DefaultSerializer;
 use Ramona\Ras2\SharedCore\Infrastructure\Serialization\Deserializer;
 use Ramona\Ras2\SharedCore\Infrastructure\Serialization\Serializer;
 use Ramona\Ras2\SharedCore\Infrastructure\SystemClock;
+use Ramona\Ras2\StoredCredential\Module as StoredCredentialModule;
 use Ramona\Ras2\Task\Module as TaskModule;
 use Ramona\Ras2\User\Module as UserModule;
 
@@ -98,7 +100,7 @@ $containerBuilder->register(Router::class, function (Container $diContainer) {
     return $router;
 });
 
-$modules = [new TaskModule(), new UserModule()];
+$modules = [new TaskModule(), new UserModule(), new StoredCredentialModule(), new EventModule()];
 
 foreach ($modules as $module) {
     $module->install($containerBuilder);
