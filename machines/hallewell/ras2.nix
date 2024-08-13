@@ -54,6 +54,6 @@
   users.groups.ras2 = {};
 
   systemd.services.phpfpm-ras2 = {
-    preStart = "mkdir -p /tmp/migrations; cd /tmp/migrations/; cp ${config.age.secrets.ras2-db-config.path} db-migrations.php ${pkgs.ramona.ras2}/share/php/ras2/vendor/bin/doctrine-migrations.php migrate; rm -r /tmp/migrations";
+    preStart = "mkdir -p /tmp/migrations; cd /tmp/migrations/; cp ${config.age.secrets.ras2-db-config.path} db-migrations.php; ${pkgs.ramona.ras2}/share/php/ras2/vendor/bin/doctrine-migrations.php migrate; rm -r /tmp/migrations";
   };
 }
