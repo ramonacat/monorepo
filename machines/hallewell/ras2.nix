@@ -16,7 +16,7 @@
       "pm" = "dynamic";
       "pm.max_children" = 32;
       "pm.max_requests" = 500;
-      "pm.start_sercers" = 2;
+      "pm.start_servers" = 2;
       "php_admin_value[error_log]" = "stderr";
       "php_admin_flag[log_errors]" = true;
       "catch_workers_output" = true;
@@ -52,4 +52,8 @@
   };
 
   users.groups.ras2 = {};
+
+  systemd.services.phpfpm-ras2 = {
+    preStart = "mkdir -p /tmp/migrations; cd /tmp/migrations/; cp ${config.age.secrets.ras2-db-config.path} db-migrations.php ${pkgs.ramona.ras2}/share/php/ras2/vendor/bin/doctrine-migrations.php migrate; rm -r /tmp/migrations";
+  };
 }

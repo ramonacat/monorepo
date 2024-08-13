@@ -3,6 +3,11 @@ variable "blackwood_ip_address" {
   default = "37.27.125.251"
 }
 
+variable "hallewell_tailscale_ip_address" {
+    type = string
+    default = "100.109.240.138"
+}
+
 resource "google_dns_managed_zone" "ramona-fun" {
   name        = "ramona-fun"
   dns_name    = "ramona.fun."
@@ -26,6 +31,15 @@ resource "google_dns_record_set" "minecraft-services-ramona-fun" {
   managed_zone = google_dns_managed_zone.ramona-fun.name
 
   rrdatas = [var.blackwood_ip_address]
+}
+
+resource "google_dns_record_set" "ras2-ramona-fun" {
+    name = "ras2.${google_dns_managed_zone.ramona-fun.dns_name}"
+    type = "A"
+    ttl = "60"
+    managed_zone = google_dns_managed_zone.ramona-fun.name
+
+    rrdatas = [var.hallewell_tailscale_ip_address]
 }
 
 resource "google_dns_record_set" "ramona-fun" {
