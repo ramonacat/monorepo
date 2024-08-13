@@ -13,3 +13,4 @@ node_modules/
 *.css.json
 src-generated/
 infection.log
+.env

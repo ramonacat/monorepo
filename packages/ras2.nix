@@ -7,7 +7,7 @@
 
     src = ../apps/ras2;
 
-    vendorHash = "sha256-iga5kED44bIkHywf6hrOBojgPL9eowLXdBvffPVnQJc=";
+    vendorHash = "sha256-ui7idXxYqrkfNkxtABzM4p+EGG7Tu3nMXCAdYHIxv24=";
     composerNoPlugins = false;
   };
   devPhp = pkgs.php82.buildEnv {

@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "5ce9f845bfd61a1d1d6338470c5122a6",
+    "content-hash": "d81fd2423de0eaf583717786210f046e",
     "packages": [
         {
             "name": "brick/math",
@@ -2486,6 +2486,54 @@
                 "source": "https://github.com/thecodingmachine/safe/tree/v2.5.0"
             },
             "time": "2023-04-05T11:54:14+00:00"
+        },
+        {
+            "name": "thecsea/simple-caldav-client",
+            "version": "v0.1.15",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/thecsea/simpleCalDAV.git",
+                "reference": "b71d63cf16b0de62a46d5924eb157538c481e894"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/thecsea/simpleCalDAV/zipball/b71d63cf16b0de62a46d5924eb157538c481e894",
+                "reference": "b71d63cf16b0de62a46d5924eb157538c481e894",
+                "shasum": ""
+            },
+            "require": {
+                "ext-curl": "*",
+                "ext-xml": "*",
+                "php": ">=5.3.0"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "it\\thecsea\\simple_caldav_client\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "GPL-2.0"
+            ],
+            "authors": [
+                {
+                    "name": "claudio cardinale",
+                    "email": "cardi@thecsea.it",
+                    "homepage": "http://thecsea.it"
+                }
+            ],
+            "description": "A simple and complete php caldav client",
+            "homepage": "http://www.thecsea.it",
+            "keywords": [
+                "CalDAV",
+                "Simple",
+                "client"
+            ],
+            "support": {
+                "source": "https://github.com/thecsea/simpleCalDAV/tree/v0.1.15"
+            },
+            "time": "2024-05-21T23:00:48+00:00"
         },
         {
             "name": "webmozart/assert",
