@@ -37,6 +37,9 @@ $colors: (
 	--color-success: var(--color-accent-2-500);
 	--color-background-success: var(j--color-accent-2-900);
 
+	--color-link-default: var(--color-accent-1-500);
+	--color-link-hover: var(--color-accent-1-300);
+
 	--height-unit: 1.5rem;
 	--height-input: var(--height-unit);
 	--height-heading: calc(var(--height-unit) * 3);
@@ -81,6 +84,15 @@ form .row {
 label {
 	display: block;
 	margin-bottom: var(--spacing-xs);
+}
+
+a {
+	color: var(--color-link-default);
+}
+
+a:hover {
+	color: var(--color-link-hover);
+	text-shadow: var(--color-accent-1-400) 0 0 3px;
 }
 
 input:not([type='hidden']),
