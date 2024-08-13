@@ -51,7 +51,17 @@ $containerBuilder->register(LoggerInterface::class, function () {
 });
 $containerBuilder->register(
     Connection::class,
-    fn () => DriverManager::getConnection(require __DIR__ . '/../migrations-db.php')
+    function () {
+        $configPath = getenv('DATABASE_CONFIG');
+
+        if ($configPath !== false) {
+            $config = require $configPath;
+        } else {
+            $config = require __DIR__ . '/../migrations-db.php';
+        }
+
+        return DriverManager::getConnection($config);
+    }
 );
 $containerBuilder->register(CommandBus::class, fn () => new CommandBus());
 $containerBuilder->register(QueryBus::class, fn () => new QueryBus());
