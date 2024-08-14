@@ -77,7 +77,7 @@ export const actions = {
 			deadlineDate === null ? null : new Date(deadlineDate + 'T' + deadlineTime + '+00:00');
 
 		const id = crypto.randomUUID();
-		const response = await fetch('http://localhost:8080/tasks', {
+		const response = await fetch((process?.env?.RAS2_SERVICE_URL ?? 'http://localhost:8080/') + 'tasks', {
 			method: 'POST',
 			body: JSON.stringify({ id, title, tags, deadline, assignee: null }),
 			headers: {

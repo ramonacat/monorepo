@@ -52,7 +52,7 @@ export class ApiClient {
 	// FIXME make everything call through more specific APIs and make this private
 	public async call(path: string, options: RequestInit | undefined) {
 		const response = await fetch(
-			'http://localhost:8080/' + path,
+			(process?.env?.RAS2_SERVICE_URL ?? 'http://localhost:8080/')  + path,
 			merge(
 				{
 					headers: {
