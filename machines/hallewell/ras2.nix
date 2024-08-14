@@ -37,6 +37,7 @@
   };
 
   services.nginx = {
+    enable = true;
     virtualHosts."ras2.ramona.fun".locations."/" = {
       root = "${pkgs.ramona.ras2}/share/php/ras2/public/";
       extraConfig = ''
@@ -54,6 +55,6 @@
   users.groups.ras2 = {};
 
   systemd.services.phpfpm-ras2 = {
-    preStart = "DATABASE_CONFIG=${config.age.secrets.ras2-db-config.path} ${pkgs.ramona.ras2}/share/php/ras2/vendor/bin/doctrine-migrations migrate";
+    preStart = "cd ${pkgs.ramona.ras2}/share/php/ras2/; DATABASE_CONFIG=${config.age.secrets.ras2-db-config.path} ${pkgs.ramona.ras2}/share/php/ras2/vendor/bin/doctrine-migrations migrate";
   };
 }
