@@ -54,6 +54,8 @@
     group = "ras2";
   };
 
+  networking.firewall.interfaces.tailscale0.allowedTCPPorts = [80 443];
+
   users.groups.ras2 = {};
 
   systemd.services.phpfpm-ras2 = {
