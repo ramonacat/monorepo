@@ -16,7 +16,7 @@ export const actions = {
 		if (response.ok) {
 			const token = await response.json();
 
-			cookies.set('token', token.token, { path: '/' });
+			cookies.set('token', token.token, { path: '/', secure: false });
 
 			return redirect(302, '/');
 		} else {
