@@ -6,6 +6,7 @@
       serviceConfig = {
         DynamicUser = true;
         Environment = [
+          "ORIGIN=http://hallewell:8069"
           "HOST=0.0.0.0"
           "PORT=8069"
         ];
