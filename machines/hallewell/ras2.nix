@@ -42,8 +42,10 @@
     enable = true;
     virtualHosts."ras2.ramona.fun".locations."/" = {
       root = "${pkgs.ramona.ras2}/share/php/ras2/public/";
+
       extraConfig = ''
-                fastcgi_split_path_info ^(.+\.php)(/.+)$;
+        try_files $uri $uri/ /index.php$is_args$args;
+        fastcgi_split_path_info ^(.+\.php)(/.+)$;
         fastcgi_pass unix:${config.services.phpfpm.pools.ras2.socket};
         include ${pkgs.nginx}/conf/fastcgi.conf;
       '';

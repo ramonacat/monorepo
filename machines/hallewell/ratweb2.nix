@@ -8,6 +8,7 @@
         Environment = [
           "HOST=0.0.0.0"
           "PORT=8069"
+          "RAS2_SERVICE_URL=http://ras2.services.ramona.fun/"
         ];
         ExecStart = "${pkgs.ramona.ratweb2}/bin/ratweb2";
       };
