@@ -44,8 +44,12 @@ $containerBuilder = new ContainerBuilder();
 $containerBuilder->register(ClockInterface::class, fn () => new SystemClock());
 $containerBuilder->register(LoggerInterface::class, function () {
     $logger = new Logger('ras2');
-    $handler = new StreamHandler('php://stderr');
-    $handler->setFormatter(new LineFormatter(includeStacktraces: true));
+    if (getenv('APPLICATION_MODE') !== 'prod') {
+        $handler = new StreamHandler('php://stderr');
+        $handler->setFormatter(new LineFormatter(includeStacktraces: true));
+    } else {
+        $handler = new \Monolog\Handler\SyslogHandler('ras2');
+    }
     $logger->pushHandler($handler);
 
     return $logger;
