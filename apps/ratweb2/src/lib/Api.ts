@@ -27,8 +27,7 @@ export class ServerDateTime {
 	}
 
 	public toDateTime(): DateTime {
-		// FIXME definitely should support timezones...
-		return DateTime.fromFormat(this.timestamp, 'yyyy-MM-dd HH:mm:ss');
+		return DateTime.fromFormat(this.timestamp, 'yyyy-MM-dd HH:mm:ss', {zone: this.timezone});
 	}
 
 	public toPojo() {
