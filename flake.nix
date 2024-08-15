@@ -61,7 +61,6 @@
       ras = import ./packages/ras.nix;
       ras2 = import ./packages/ras2.nix;
       rat = import ./packages/rat.nix;
-      ratweb = import ./packages/ratweb.nix;
       ratweb2 = import ./packages/ratweb2.nix;
     };
     libraries = {
@@ -240,7 +239,6 @@
           ./machines/hallewell/photoprism.nix
           ./machines/hallewell/postgresql.nix
           ./machines/hallewell/ras.nix
-          ./machines/hallewell/ratweb.nix
           ./machines/hallewell/ratweb2.nix
           ./machines/hallewell/ras2.nix
           ./machines/hallewell/syncthing.nix
