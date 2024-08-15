@@ -75,9 +75,9 @@ export const actions = {
 		const deadlineDate = data.get('deadline-date');
 		const deadlineTime = data.get('deadline-time') ?? '00:00:00';
 		const deadline =
-			deadlineDate === null
-				? null
-				: DateTime.fromJSDate(new Date(deadlineDate + 'T' + deadlineTime + '+00:00'));
+			deadlineDate
+				? DateTime.fromJSDate(new Date(deadlineDate + 'T' + deadlineTime + '+00:00'))
+				: null;
 
 		const id = crypto.randomUUID();
 		const response = await fetch(
