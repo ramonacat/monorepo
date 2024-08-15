@@ -61,8 +61,8 @@ updates:
       development-dependencies:
         dependency-type: "development"
 
-  - package-ecosystem: "cargo"
-    directory: "apps/ratweb"
+  - package-ecosystem: "composer"
+    directory: "apps/ratweb2"
     schedule:
       interval: "daily"
     groups:
