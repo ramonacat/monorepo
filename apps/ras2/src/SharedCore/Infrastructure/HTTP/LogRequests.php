@@ -11,7 +11,7 @@ use Psr\Http\Server\MiddlewareInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 use Psr\Log\LoggerInterface;
 
-final class LogExceptions implements MiddlewareInterface
+final class LogRequests implements MiddlewareInterface
 {
     public function __construct(
         private LoggerInterface $logger
@@ -21,7 +21,14 @@ final class LogExceptions implements MiddlewareInterface
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {
         try {
-            return $handler->handle($request);
+            $this->logger->info('Request received', [
+                'request' => $request,
+            ]);
+            $response = $handler->handle($request);
+            $this->logger->info('Sending response', [
+                'response' => $response,
+            ]);
+            return $response;
         } catch (\Exception $e) {
             $this->logger->error('Request failed', [
                 'exception' => $e,

@@ -16,7 +16,7 @@ final class RouteStrategy implements StrategyInterface
 {
     public function __construct(
         private StrategyInterface $inner,
-        private LogExceptions $logExceptions
+        private LogRequests $logExceptions
     ) {
     }
 
