@@ -10,7 +10,7 @@ use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\RequestHandlerInterface;
-use Ramona\Ras2\SharedCore\Infrastructure\HTTP\LogExceptions;
+use Ramona\Ras2\SharedCore\Infrastructure\HTTP\LogRequests;
 use Tests\Ramona\Ras2\LoggerMock;
 
 final class LogExceptionsTest extends TestCase
@@ -18,23 +18,32 @@ final class LogExceptionsTest extends TestCase
     public function testWillLogTheException(): void
     {
         $loggerMock = new LoggerMock();
-        $logExceptions = new LogExceptions($loggerMock);
+        $logExceptions = new LogRequests($loggerMock);
         $exception = new \RuntimeException('woops');
-        $logExceptions->process(new ServerRequest(), $this->createRequestHandler($exception));
+        $request = new ServerRequest();
+        $logExceptions->process($request, $this->createRequestHandler($exception));
 
         self::assertEquals([[
-            'level' => 'error',
-            'message' => 'Request failed',
+            'level' => 'info',
+            'message' => 'Request received',
             'context' => [
-                'exception' => $exception,
+                'request' => $request,
             ],
-        ]], $loggerMock->messages);
+        ],
+            [
+                'level' => 'error',
+                'message' => 'Request failed',
+                'context' => [
+                    'exception' => $exception,
+                ],
+            ],
+        ], $loggerMock->messages);
     }
 
     public function testWillSetResponseBody(): void
     {
         $loggerMock = new LoggerMock();
-        $logExceptions = new LogExceptions($loggerMock);
+        $logExceptions = new LogRequests($loggerMock);
         $exception = new \RuntimeException('woops');
         $result = $logExceptions->process(new ServerRequest(), $this->createRequestHandler($exception));
 
@@ -51,7 +60,7 @@ final class LogExceptionsTest extends TestCase
     public function testWillSetStatusCodeFromLeagueException(): void
     {
         $loggerMock = new LoggerMock();
-        $logExceptions = new LogExceptions($loggerMock);
+        $logExceptions = new LogRequests($loggerMock);
         $exception = new NotFoundException();
         $result = $logExceptions->process(new ServerRequest(), $this->createRequestHandler($exception));
 

@@ -18,7 +18,7 @@ use Ramona\Ras2\SharedCore\Infrastructure\CQRS\Query\QueryBus as QueryBus;
 use Ramona\Ras2\SharedCore\Infrastructure\DependencyInjection\Container;
 use Ramona\Ras2\SharedCore\Infrastructure\DependencyInjection\ContainerBuilder;
 use Ramona\Ras2\SharedCore\Infrastructure\HTTP\JsonResponseFactory;
-use Ramona\Ras2\SharedCore\Infrastructure\HTTP\LogExceptions;
+use Ramona\Ras2\SharedCore\Infrastructure\HTTP\LogRequests;
 use Ramona\Ras2\SharedCore\Infrastructure\HTTP\RequireLogin;
 use Ramona\Ras2\SharedCore\Infrastructure\HTTP\RouteStrategy;
 use Ramona\Ras2\SharedCore\Infrastructure\Hydration\DefaultDehydrator;
@@ -98,9 +98,7 @@ $containerBuilder->register(Router::class, function (Container $diContainer) {
     $responseFactory = new ResponseFactory();
     $jsonStrategy = new JsonStrategy($responseFactory);
     $jsonStrategy->setContainer($diContainer);
-    $routerStrategy = new RouteStrategy($jsonStrategy, new LogExceptions($diContainer->get(
-        LoggerInterface::class
-    )));
+    $routerStrategy = new RouteStrategy($jsonStrategy, new LogRequests($diContainer->get(LoggerInterface::class)));
 
     $router = new League\Route\Router();
     $router->setStrategy($routerStrategy);
