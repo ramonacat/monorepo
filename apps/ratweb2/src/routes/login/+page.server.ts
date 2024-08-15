@@ -4,14 +4,17 @@ export const actions = {
 		const data = await request.formData();
 
 		const username = data.get('username');
-		const response = await fetch((process?.env?.RAS2_SERVICE_URL ?? 'http://localhost:8080/') + 'users', {
-			method: 'POST',
-			body: JSON.stringify({ username }),
-			headers: {
-				'X-Action': 'login',
-				'Content-Type': 'application/json'
+		const response = await fetch(
+			(process?.env?.RAS2_SERVICE_URL ?? 'http://localhost:8080/') + 'users',
+			{
+				method: 'POST',
+				body: JSON.stringify({ username }),
+				headers: {
+					'X-Action': 'login',
+					'Content-Type': 'application/json'
+				}
 			}
-		});
+		);
 
 		if (response.ok) {
 			const token = await response.json();
