@@ -8,7 +8,7 @@
 
 <ul>
 	{#each tasks as task}
-		<li class:past-deadline={task.pastDeadline}>
+		<li class:past-deadline={task.pastDeadline()}>
 			<TaskSummary {task} />
 		</li>
 	{/each}
