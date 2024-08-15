@@ -1,6 +1,7 @@
 import { type Actions, fail } from '@sveltejs/kit';
 import { ensureAuthenticated } from '$lib/ensureAuthenticated';
 import { ApiClient } from '$lib/Api';
+import { DateTime } from 'luxon';
 
 export async function load({ cookies }) {
 	const { apiClient, session } = await ensureAuthenticated(cookies);
@@ -74,14 +75,27 @@ export const actions = {
 		const deadlineDate = data.get('deadline-date');
 		const deadlineTime = data.get('deadline-time') ?? '00:00:00';
 		const deadline =
-			deadlineDate === null ? null : new Date(deadlineDate + 'T' + deadlineTime + '+00:00');
+			deadlineDate === null
+				? null
+				: DateTime.fromJSDate(new Date(deadlineDate + 'T' + deadlineTime + '+00:00'));
 
 		const id = crypto.randomUUID();
 		const response = await fetch(
 			(process?.env?.RAS2_SERVICE_URL ?? 'http://localhost:8080/') + 'tasks',
 			{
 				method: 'POST',
-				body: JSON.stringify({ id, title, tags, deadline, assignee: null }),
+				body: JSON.stringify({
+					id,
+					title,
+					tags,
+					deadline: deadline
+						? {
+								timezone: 'Europe/Berlin', // FIXME take this from the user profile!
+								timestamp: deadline.toFormat('yyyy-LL-dd HH:mm:ss')
+							}
+						: null,
+					assignee: null
+				}), // FIXME create a picker for assignees
 				headers: {
 					'X-Action': 'upsert:backlog-item',
 					'Content-Type': 'application/json',
