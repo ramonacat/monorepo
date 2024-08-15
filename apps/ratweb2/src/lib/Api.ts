@@ -27,7 +27,7 @@ export class ServerDateTime {
 	}
 
 	public toDateTime(): DateTime {
-		return DateTime.fromFormat(this.timestamp, 'yyyy-MM-dd HH:mm:ss', {zone: this.timezone});
+		return DateTime.fromFormat(this.timestamp, 'yyyy-MM-dd HH:mm:ss', { zone: this.timezone });
 	}
 
 	public toPojo() {
@@ -63,7 +63,9 @@ export class ApiClient {
 			)
 		);
 		if (!response.ok) {
-			throw new Error('Failed to execute query to path: ' + path + ', response: ' + (await response.text()));
+			throw new Error(
+				'Failed to execute query to path: ' + path + ', response: ' + (await response.text())
+			);
 		}
 		return response;
 	}
