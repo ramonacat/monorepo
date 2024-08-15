@@ -58,4 +58,10 @@
 	section {
 		margin-bottom: var(--spacing-xl);
 	}
+
+	@media (max-width: 500px) {
+		.container {
+			display: block;
+		}
+	}
 </style>

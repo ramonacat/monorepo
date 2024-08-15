@@ -77,15 +77,18 @@ export const actions = {
 			deadlineDate === null ? null : new Date(deadlineDate + 'T' + deadlineTime + '+00:00');
 
 		const id = crypto.randomUUID();
-		const response = await fetch((process?.env?.RAS2_SERVICE_URL ?? 'http://localhost:8080/') + 'tasks', {
-			method: 'POST',
-			body: JSON.stringify({ id, title, tags, deadline, assignee: null }),
-			headers: {
-				'X-Action': 'upsert:backlog-item',
-				'Content-Type': 'application/json',
-				'X-User-Token': cookies.get('token') as string
+		const response = await fetch(
+			(process?.env?.RAS2_SERVICE_URL ?? 'http://localhost:8080/') + 'tasks',
+			{
+				method: 'POST',
+				body: JSON.stringify({ id, title, tags, deadline, assignee: null }),
+				headers: {
+					'X-Action': 'upsert:backlog-item',
+					'Content-Type': 'application/json',
+					'X-User-Token': cookies.get('token') as string
+				}
 			}
-		});
+		);
 
 		if (response.ok) {
 			return { id: id, success: true };
