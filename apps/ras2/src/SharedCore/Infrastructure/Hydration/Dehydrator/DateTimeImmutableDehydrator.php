@@ -17,7 +17,7 @@ final class DateTimeImmutableDehydrator implements ValueDehydrator
         $timezone = $value->getTimezone();
 
         return [
-            'timestamp' => $value->getTimestamp(),
+            'timestamp' => $value->format('Y-m-d H:i:s'),
             'timezone' => $timezone->getName(),
         ];
     }

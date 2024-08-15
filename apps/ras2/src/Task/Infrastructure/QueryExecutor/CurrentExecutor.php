@@ -52,7 +52,7 @@ final class CurrentExecutor implements Executor
             TaskId::fromString($results[0]['id']),
             $results[0]['title'],
             \Safe\DateTimeImmutable::createFromFormat(
-                'U',
+                'Y-m-d H:i:s',
                 $lastRecord['started']['timestamp'],
                 new \DateTimeZone($lastRecord['started']['timezone'])
             ),

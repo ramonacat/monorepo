@@ -5,7 +5,7 @@ import { type PojoDateTime, ServerTaskSummary } from '$lib/ServerTaskSummary';
 import { ServerCurrentTaskView } from '$lib/ServerCurrentTaskView';
 
 interface RawServerDateTime {
-	timestamp: number;
+	timestamp: string;
 	timezone: string;
 }
 
@@ -18,7 +18,7 @@ interface RawTask {
 }
 
 export class ServerDateTime {
-	private timestamp: number;
+	private timestamp: string;
 	private timezone: string;
 
 	public constructor(raw: RawServerDateTime) {
@@ -28,7 +28,7 @@ export class ServerDateTime {
 
 	public toDateTime(): DateTime {
 		// FIXME definitely should support timezones...
-		return DateTime.fromSeconds(this.timestamp);
+		return DateTime.fromFormat(this.timestamp, 'yyyy-MM-dd HH:mm:ss');
 	}
 
 	public toPojo() {
@@ -52,7 +52,7 @@ export class ApiClient {
 	// FIXME make everything call through more specific APIs and make this private
 	public async call(path: string, options: RequestInit | undefined) {
 		const response = await fetch(
-			(process?.env?.RAS2_SERVICE_URL ?? 'http://localhost:8080/')  + path,
+			(process?.env?.RAS2_SERVICE_URL ?? 'http://localhost:8080/') + path,
 			merge(
 				{
 					headers: {
@@ -64,7 +64,7 @@ export class ApiClient {
 			)
 		);
 		if (!response.ok) {
-			throw new Error('Failed to execute query to path: ' + path);
+			throw new Error('Failed to execute query to path: ' + path + ', response: ' + (await response.text()));
 		}
 		return response;
 	}
@@ -85,7 +85,7 @@ export class ApiClient {
 				id,
 				title,
 				tags,
-				deadline: { timestamp: deadline?.toSeconds(), timezone: deadline?.zoneName },
+				deadline: { timestamp: deadline?.toString(), timezone: deadline?.zoneName },
 				assignee: null
 			}),
 			headers: {

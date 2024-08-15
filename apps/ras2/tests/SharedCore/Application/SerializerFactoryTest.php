@@ -72,7 +72,7 @@ final class SerializerFactoryTest extends TestCase
 
         self::assertJsonStringEqualsJsonString(
             \Safe\json_encode([
-                'timestamp' => 1714885505,
+                'timestamp' => '2024-05-05 05:05:05',
                 'timezone' => 'UTC',
             ]),
             $result

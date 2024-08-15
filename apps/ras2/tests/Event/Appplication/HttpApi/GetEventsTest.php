@@ -48,11 +48,11 @@ final class GetEventsTest extends EndpointCase
             "id": "019154ca-d3e1-72bb-b395-cd222d62acdc",
             "title": "test",
             "start": {
-                "timestamp": 1580608922,
+                "timestamp": "2020-02-02 02:02:02",
                 "timezone": "UTC"
             },
             "end": {
-                "timestamp": 1580608922,
+                "timestamp": "2020-02-02 02:02:02",
                 "timezone": "UTC"
             }
         }]', $response->getBody()->getContents());

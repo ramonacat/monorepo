@@ -2,7 +2,7 @@ import { DateTime } from 'luxon';
 import { ServerDateTime } from '$lib/Api';
 
 export interface PojoDateTime {
-	timestamp: number;
+	timestamp: string;
 	timezone: string;
 }
 
