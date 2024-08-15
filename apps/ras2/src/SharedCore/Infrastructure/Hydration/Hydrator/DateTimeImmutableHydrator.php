@@ -20,7 +20,7 @@ final class DateTimeImmutableHydrator implements ValueHydrator
     {
         $timezone = new \DateTimeZone((string) $input['timezone']);
 
-        return \Safe\DateTimeImmutable::createFromFormat('U', (string) $input['timestamp'], $timezone);
+        return \Safe\DateTimeImmutable::createFromFormat('Y-m-d H:i:s', (string) $input['timestamp'], $timezone);
     }
 
     public function handles(): string

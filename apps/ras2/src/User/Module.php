@@ -10,6 +10,7 @@ use Ramona\Ras2\SharedCore\Infrastructure\CQRS\Command\CommandBus;
 use Ramona\Ras2\SharedCore\Infrastructure\CQRS\Query\QueryBus;
 use Ramona\Ras2\SharedCore\Infrastructure\DependencyInjection\Container;
 use Ramona\Ras2\SharedCore\Infrastructure\DependencyInjection\ContainerBuilder;
+use Ramona\Ras2\SharedCore\Infrastructure\HTTP\JsonResponseFactory;
 use Ramona\Ras2\SharedCore\Infrastructure\Hydration\Dehydrator;
 use Ramona\Ras2\SharedCore\Infrastructure\Hydration\Dehydrator\ObjectDehydrator;
 use Ramona\Ras2\SharedCore\Infrastructure\Hydration\Hydrator;
@@ -43,7 +44,7 @@ final class Module implements \Ramona\Ras2\SharedCore\Infrastructure\Module\Modu
         );
         $containerBuilder->register(
             GetUsers::class,
-            fn (Container $container) => new GetUsers($container->get(Serializer::class))
+            fn (Container $container) => new GetUsers($container->get(JsonResponseFactory::class))
         );
         $containerBuilder->register(
             PostUsers::class,

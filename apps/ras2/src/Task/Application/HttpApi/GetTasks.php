@@ -4,13 +4,12 @@ declare(strict_types=1);
 
 namespace Ramona\Ras2\Task\Application\HttpApi;
 
-use Laminas\Diactoros\Response;
 use League\Route\Http\Exception\NotFoundException;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Ramona\Ras2\SharedCore\Infrastructure\CQRS\Query\QueryBus;
+use Ramona\Ras2\SharedCore\Infrastructure\HTTP\JsonResponseFactory;
 use Ramona\Ras2\SharedCore\Infrastructure\HTTP\RequireLogin;
-use Ramona\Ras2\SharedCore\Infrastructure\Serialization\Serializer;
 use Ramona\Ras2\Task\Application\Query\Current;
 use Ramona\Ras2\Task\Application\Query\Random;
 use Ramona\Ras2\Task\Application\Query\Upcoming;
@@ -21,7 +20,7 @@ final class GetTasks
 {
     public function __construct(
         private QueryBus $queryBus,
-        private Serializer $serializer
+        private JsonResponseFactory $responseFactory
     ) {
     }
 
@@ -41,24 +40,17 @@ final class GetTasks
         }
     }
 
-    private function getWatched(int $limit): Response
+    private function getWatched(int $limit): ResponseInterface
     {
         // TODO we don't have the concept of "watched tags" yet, but once we do, this will have to be adjusted
         $result = $this->queryBus->execute(new Random($limit));
-        $response = new Response(headers: [
-            'Content-Type' => 'application/json',
-        ]);
-
-        $response->getBody()
-            ->write($this->serializer->serialize($result));
-
-        return $response;
+        return $this->responseFactory->create($result);
     }
 
     /** @psalm-suppress MixedArgument
      * @param array<mixed> $queryParams
      */
-    private function getUpcoming(array $queryParams): Response
+    private function getUpcoming(array $queryParams): ResponseInterface
     {
         $assigneeId = isset($queryParams['assigneeId'])
             ? UserId::fromString($queryParams['assigneeId'])
@@ -66,13 +58,7 @@ final class GetTasks
 
         $result = $this->queryBus->execute(new Upcoming((int) $queryParams['limit'], $assigneeId));
 
-        $response = new Response(headers: [
-            'Content-Type' => 'application/json',
-        ]);
-
-        $response->getBody()
-            ->write($this->serializer->serialize($result));
-        return $response;
+        return $this->responseFactory->create($result);
     }
 
     private function getCurrent(ServerRequestInterface $request): ResponseInterface
@@ -82,12 +68,6 @@ final class GetTasks
         $query = new Current($session->userId);
 
         $result = $this->queryBus->execute($query);
-        $response = new Response(headers: [
-            'Content-Type' => 'application/json',
-        ]);
-
-        $response->getBody()
-            ->write($this->serializer->serialize($result));
-        return $response;
+        return $this->responseFactory->create($result);
     }
 }

@@ -17,6 +17,7 @@ use Ramona\Ras2\SharedCore\Infrastructure\CQRS\Command\CommandBus as CommandBus;
 use Ramona\Ras2\SharedCore\Infrastructure\CQRS\Query\QueryBus as QueryBus;
 use Ramona\Ras2\SharedCore\Infrastructure\DependencyInjection\Container;
 use Ramona\Ras2\SharedCore\Infrastructure\DependencyInjection\ContainerBuilder;
+use Ramona\Ras2\SharedCore\Infrastructure\HTTP\JsonResponseFactory;
 use Ramona\Ras2\SharedCore\Infrastructure\HTTP\LogExceptions;
 use Ramona\Ras2\SharedCore\Infrastructure\HTTP\RequireLogin;
 use Ramona\Ras2\SharedCore\Infrastructure\HTTP\RouteStrategy;
@@ -103,6 +104,8 @@ $containerBuilder->register(Router::class, function (Container $diContainer) {
 
     return $router;
 });
+
+$containerBuilder->register(JsonResponseFactory::class, fn ($c) => new JsonResponseFactory($c->get(Serializer::class)));
 
 $modules = [new TaskModule(), new UserModule(), new StoredCredentialModule(), new EventModule()];
 

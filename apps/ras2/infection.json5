@@ -28,7 +28,8 @@
         },
         "CastInt": {
             ignore: [
-                "Ramona\\Ras2\\Task\\Application\\HttpApi\\GetTasks"
+                "Ramona\\Ras2\\Task\\Application\\HttpApi\\GetTasks",
+                "Ramona\\Ras2\\Event\\Application\\HttpApi\\GetEvents"
             ]
         },
         "FalseValue": {

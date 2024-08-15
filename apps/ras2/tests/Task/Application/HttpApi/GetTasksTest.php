@@ -9,6 +9,7 @@ use Laminas\Diactoros\ServerRequest;
 use Laminas\Diactoros\Stream;
 use League\Route\Http\Exception\NotFoundException;
 use Ramona\Ras2\SharedCore\Infrastructure\CQRS\Query\QueryBus;
+use Ramona\Ras2\SharedCore\Infrastructure\HTTP\JsonResponseFactory;
 use Ramona\Ras2\SharedCore\Infrastructure\Hydration\DefaultDehydrator;
 use Ramona\Ras2\SharedCore\Infrastructure\Serialization\DefaultSerializer;
 use Ramona\Ras2\SharedCore\Infrastructure\Serialization\Serializer;
@@ -32,7 +33,9 @@ final class GetTasksTest extends EndpointCase
     {
         $request = new ServerRequest();
 
-        $controller = new GetTasks(new QueryBus(), new DefaultSerializer(new DefaultDehydrator()));
+        $controller = new GetTasks(new QueryBus(), new JsonResponseFactory(new DefaultSerializer(
+            new DefaultDehydrator()
+        )));
 
         $this->expectException(NotFoundException::class);
         ($controller)($request);
@@ -60,7 +63,7 @@ final class GetTasksTest extends EndpointCase
         $bus->installExecutor(Upcoming::class, $executor);
         $serializer = $this->container->get(Serializer::class);
 
-        $controller = new GetTasks($bus, $serializer);
+        $controller = new GetTasks($bus, new JsonResponseFactory($serializer));
 
         $response = ($controller)($request);
         $response->getBody()
@@ -96,7 +99,7 @@ final class GetTasksTest extends EndpointCase
         $bus->installExecutor(Current::class, $executor);
         $serializer = $this->container->get(Serializer::class);
 
-        $controller = new GetTasks($bus, $serializer);
+        $controller = new GetTasks($bus, new JsonResponseFactory($serializer));
 
         $response = ($controller)($request);
         $response->getBody()
@@ -136,7 +139,7 @@ final class GetTasksTest extends EndpointCase
         $bus->installExecutor(Random::class, $executor);
         $serializer = $this->container->get(Serializer::class);
 
-        $controller = new GetTasks($bus, $serializer);
+        $controller = new GetTasks($bus, new JsonResponseFactory($serializer));
 
         $response = ($controller)($request);
         $response->getBody()
