@@ -81,4 +81,16 @@
 
 		font-size: 2rem;
 	}
+
+	@media (max-width: 500px) {
+		th {
+			writing-mode: vertical-rl;
+		}
+
+		th,
+		td {
+			font-size: 1.5rem;
+			height: auto;
+		}
+	}
 </style>

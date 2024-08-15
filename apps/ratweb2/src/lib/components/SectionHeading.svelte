@@ -10,4 +10,10 @@
 
 		border-right: var(--width-border) solid var(--color-background);
 	}
+
+	@media (max-width: 500px) {
+		h1 {
+			font-size: 1.5rem;
+		}
+	}
 </style>

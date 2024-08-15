@@ -39,4 +39,18 @@
 	.active {
 		color: var(--color-link-hover);
 	}
+
+	@media (max-width: 500px) {
+		menu {
+			display: block;
+			height: auto;
+			margin: 0;
+			text-align: center;
+		}
+
+		menu li a {
+			display: block;
+			margin: var(--spacing-xl) auto;
+		}
+	}
 </style>
