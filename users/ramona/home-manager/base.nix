@@ -14,6 +14,7 @@
       jq
       ripgrep
       unzip
+      _1password
       ramona.rat
     ];
   };

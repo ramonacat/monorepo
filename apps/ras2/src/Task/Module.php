@@ -11,6 +11,7 @@ use Ramona\Ras2\SharedCore\Infrastructure\CQRS\Command\CommandBus as CommandBus;
 use Ramona\Ras2\SharedCore\Infrastructure\CQRS\Query\QueryBus;
 use Ramona\Ras2\SharedCore\Infrastructure\DependencyInjection\Container;
 use Ramona\Ras2\SharedCore\Infrastructure\DependencyInjection\ContainerBuilder;
+use Ramona\Ras2\SharedCore\Infrastructure\HTTP\JsonResponseFactory;
 use Ramona\Ras2\SharedCore\Infrastructure\Hydration\Dehydrator;
 use Ramona\Ras2\SharedCore\Infrastructure\Hydration\Dehydrator\ObjectDehydrator;
 use Ramona\Ras2\SharedCore\Infrastructure\Hydration\Hydrator;
@@ -65,11 +66,11 @@ final class Module implements \Ramona\Ras2\SharedCore\Infrastructure\Module\Modu
 
         $containerBuilder->register(
             GetTasks::class,
-            fn (Container $c) => new GetTasks($c->get(QueryBus::class), $c->get(Serializer::class))
+            fn (Container $c) => new GetTasks($c->get(QueryBus::class), $c->get(JsonResponseFactory::class))
         );
         $containerBuilder->register(
             GetTaskById::class,
-            fn (Container $c) => new GetTaskById($c->get(QueryBus::class), $c->get(Serializer::class))
+            fn (Container $c) => new GetTaskById($c->get(QueryBus::class), $c->get(JsonResponseFactory::class))
         );
         $containerBuilder->register(
             PostTasks::class,
