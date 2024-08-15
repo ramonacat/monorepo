@@ -23,19 +23,22 @@
       "php_admin_flag[log_errors]" = true;
       "catch_workers_output" = true;
     };
-    phpEnv."PATH" = lib.makeBinPath [
-      (pkgs.php82.buildEnv {
-        extensions = {
-          enabled,
-          all,
-        }:
-          enabled ++ [all.xdebug];
-        extraConfig = ''
-          zend.exception_string_param_max_len=128
-        '';
-      })
-    ];
-    phpEnv."DATABASE_CONFIG" = config.age.secrets.ras2-db-config.path;
+    phpEnv = {
+      "APPLICATION_MODE" = "prod";
+      "PATH" = lib.makeBinPath [
+        (pkgs.php82.buildEnv {
+          extensions = {
+            enabled,
+            all,
+          }:
+            enabled ++ [all.xdebug];
+          extraConfig = ''
+            zend.exception_string_param_max_len=128
+          '';
+        })
+      ];
+      "DATABASE_CONFIG" = config.age.secrets.ras2-db-config.path;
+    };
   };
 
   services.nginx = {
