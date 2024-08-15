@@ -14,7 +14,7 @@ tracing = "0.1.40"
 tracing-opentelemetry = "0.25.0"
 tracing-subscriber = { version = "0.3.18", features = ["env-filter"] }
 ratlib = { path = "../../libs/rust/ratlib/" }
-serde = { version = "1.0.207", features = ["derive"] }
+serde = { version = "1.0.208", features = ["derive"] }
 chrono = { version = "0.4.38", features = ["serde"] }
 chrono-tz = { version = "0.9", features = ["serde"] }
 thiserror = "1.0.63"
