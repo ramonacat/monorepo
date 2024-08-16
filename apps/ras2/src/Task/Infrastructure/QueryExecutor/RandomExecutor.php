@@ -25,7 +25,7 @@ final class RandomExecutor implements Executor
 
     public function execute(Query $query): mixed
     {
-        /** @var list<array{id:string, title:string, assignee_name:string, tags:string, deadline: ?string, time_records: string}> $rawTasks */
+        /** @var list<array{id:string, title:string, assignee_name:string, tags:?string, deadline: ?string, time_records: string}> $rawTasks */
         $rawTasks = $this
             ->connection
             ->fetchAllAssociative('
@@ -55,7 +55,7 @@ final class RandomExecutor implements Executor
 
         return (new ArrayCollection($rawTasks))
             ->map(function (array $rawTask) {
-                $rawTask['tags'] = \Safe\json_decode($rawTask['tags'], true);
+                $rawTask['tags'] = \Safe\json_decode($rawTask['tags'] ?? '[]', true);
                 $rawTask['time_records'] = \Safe\json_decode($rawTask['time_records'], true);
                 return $rawTask;
             })
