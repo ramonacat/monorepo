@@ -11,7 +11,7 @@ use Ramona\Ras2\User\Business\Token;
 /**
  * @implements Query<Session>
  */
-final readonly class FindByToken implements Query
+final readonly class ByToken implements Query
 {
     public function __construct(
         public Token $token

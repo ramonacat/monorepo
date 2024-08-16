@@ -23,12 +23,15 @@ use Ramona\Ras2\User\Application\Command\LoginResponse;
 use Ramona\Ras2\User\Application\Command\UpsertUser;
 use Ramona\Ras2\User\Application\HttpApi\GetUsers;
 use Ramona\Ras2\User\Application\HttpApi\PostUsers;
-use Ramona\Ras2\User\Application\Query\FindByToken;
+use Ramona\Ras2\User\Application\Query\All;
+use Ramona\Ras2\User\Application\Query\ByToken;
 use Ramona\Ras2\User\Application\Session;
+use Ramona\Ras2\User\Application\UserView;
 use Ramona\Ras2\User\Infrastructure\CommandExecutor\LoginExecutor;
 use Ramona\Ras2\User\Infrastructure\CommandExecutor\UpsertUserExecutor;
 use Ramona\Ras2\User\Infrastructure\PostgresRepository;
-use Ramona\Ras2\User\Infrastructure\QueryExecutor\FindByTokenExecutor;
+use Ramona\Ras2\User\Infrastructure\QueryExecutor\AllExecutor;
+use Ramona\Ras2\User\Infrastructure\QueryExecutor\ByTokenExecutor;
 use Ramona\Ras2\User\Infrastructure\Repository;
 use Ramona\Ras2\User\Infrastructure\TokenDehydrator;
 use Ramona\Ras2\User\Infrastructure\UserIdDehydrator;
@@ -44,7 +47,9 @@ final class Module implements \Ramona\Ras2\SharedCore\Infrastructure\Module\Modu
         );
         $containerBuilder->register(
             GetUsers::class,
-            fn (Container $container) => new GetUsers($container->get(JsonResponseFactory::class))
+            fn (Container $container) => new GetUsers($container->get(JsonResponseFactory::class), $container->get(
+                QueryBus::class
+            ))
         );
         $containerBuilder->register(
             PostUsers::class,
@@ -59,12 +64,14 @@ final class Module implements \Ramona\Ras2\SharedCore\Infrastructure\Module\Modu
     {
         $hydrator = $container->get(Hydrator::class);
         $hydrator->installValueHydrator(new ObjectHydrator(LoginRequest::class));
+        $hydrator->installValueHydrator(new ObjectHydrator(UserView::class));
         $hydrator->installValueHydrator(new UserIdHydrator());
 
         $dehydrator = $container->get(Dehydrator::class);
         $dehydrator->installValueDehydrator(new UserIdDehydrator());
         $dehydrator->installValueDehydrator(new ObjectDehydrator(LoginResponse::class));
         $dehydrator->installValueDehydrator(new ObjectDehydrator(Session::class));
+        $dehydrator->installValueDehydrator(new ObjectDehydrator(UserView::class));
         $dehydrator->installValueDehydrator(new TokenDehydrator());
 
         $commandBus = $container->get(CommandBus::class);
@@ -72,7 +79,11 @@ final class Module implements \Ramona\Ras2\SharedCore\Infrastructure\Module\Modu
         $commandBus->installExecutor(Login::class, new LoginExecutor($container->get(Repository::class)));
 
         $queryBus = $container->get(QueryBus::class);
-        $queryBus->installExecutor(FindByToken::class, new FindByTokenExecutor($container->get(Connection::class)));
+        $queryBus->installExecutor(ByToken::class, new ByTokenExecutor($container->get(Connection::class)));
+        $queryBus->installExecutor(
+            All::class,
+            new AllExecutor($container->get(Connection::class), $container->get(Hydrator::class))
+        );
 
         $router = $container->get(Router::class);
         $router->map('GET', '/users', GetUsers::class);

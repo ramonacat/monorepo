@@ -7,15 +7,15 @@ namespace Ramona\Ras2\User\Infrastructure\QueryExecutor;
 use Doctrine\DBAL\Connection;
 use Ramona\Ras2\SharedCore\Infrastructure\CQRS\Query\Executor;
 use Ramona\Ras2\SharedCore\Infrastructure\CQRS\Query\Query;
-use Ramona\Ras2\User\Application\Query\FindByToken;
+use Ramona\Ras2\User\Application\Query\ByToken;
 use Ramona\Ras2\User\Application\Session;
 use Ramona\Ras2\User\Business\UserId;
 use Ramona\Ras2\User\Infrastructure\UserNotFound;
 
 /**
- * @implements Executor<Session, FindByToken>
+ * @implements Executor<Session, ByToken>
  */
-final class FindByTokenExecutor implements Executor
+final class ByTokenExecutor implements Executor
 {
     public function __construct(
         private Connection $databaseConnection

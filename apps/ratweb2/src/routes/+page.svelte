@@ -9,6 +9,7 @@
 	import type { PageData } from './$types';
 	import { ServerTaskSummary } from '$lib/ServerTaskSummary';
 	import { ServerCurrentTaskView } from '$lib/ServerCurrentTaskView';
+	import { ServerUserView } from '$lib/ServerUserView';
 
 	export let form: ActionData;
 	export let data: PageData;
@@ -16,6 +17,7 @@
 	const upcomingTasks = data.upcomingTasks.map(ServerTaskSummary.fromPojo);
 	const watchedTasks = data.watchedTasks.map(ServerTaskSummary.fromPojo);
 	const currentTask = data.currentTask ? ServerCurrentTaskView.fromPojo(data.currentTask) : null;
+	const allUsers = data.allUsers.map(ServerUserView.fromPojo);
 </script>
 
 <svelte:head>
@@ -33,7 +35,7 @@
 	<section>
 		<Tabs description="create">
 			<Tab name="task">
-				<NewItemForm {form} />
+				<NewItemForm {form} {allUsers} />
 			</Tab>
 			<Tab name="event">event</Tab>
 			<Tab name="idea">idea</Tab>

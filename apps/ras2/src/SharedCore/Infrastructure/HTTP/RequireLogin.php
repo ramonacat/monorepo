@@ -10,7 +10,7 @@ use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\MiddlewareInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 use Ramona\Ras2\SharedCore\Infrastructure\CQRS\Query\QueryBus;
-use Ramona\Ras2\User\Application\Query\FindByToken;
+use Ramona\Ras2\User\Application\Query\ByToken;
 use Ramona\Ras2\User\Business\Token;
 use Ramona\Ras2\User\Infrastructure\UserNotFound;
 
@@ -36,7 +36,7 @@ final class RequireLogin implements MiddlewareInterface
         }
 
         try {
-            $user = $this->queryBus->execute(new FindByToken(Token::fromString($token)));
+            $user = $this->queryBus->execute(new ByToken(Token::fromString($token)));
         } catch (UserNotFound) {
             return new Response(status: 403);
         }

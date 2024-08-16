@@ -5,8 +5,11 @@
 	import Message from '$lib/components/forms/Message.svelte';
 	import { MessageType } from '$lib/components/forms/MessageType';
 	import DateTimeInput from '$lib/components/forms/DateTimeInput.svelte';
+	import type { ServerUserView } from '$lib/ServerUserView';
+	import UserInput from '$lib/components/forms/UserInput.svelte';
 
 	export let form: ActionData;
+	export let allUsers: ServerUserView[];
 </script>
 
 <form method="POST" action="?/create_backlog_item">
@@ -29,6 +32,11 @@
 	<div class="row">
 		<label for="deadline">deadline:</label>
 		<DateTimeInput dateName="deadline-date" timeName="deadline-time" />
+	</div>
+
+	<div class="row">
+		<label for="assignee">assignee:</label>
+		<UserInput {allUsers} name="assignee" />
 	</div>
 
 	<div class="row submit-row">

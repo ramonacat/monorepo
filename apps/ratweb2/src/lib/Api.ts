@@ -3,6 +3,7 @@ import { DateTime } from 'luxon';
 import type { Session } from '$lib/Session';
 import { type PojoDateTime, ServerTaskSummary } from '$lib/ServerTaskSummary';
 import { ServerCurrentTaskView } from '$lib/ServerCurrentTaskView';
+import { ServerUserView } from '$lib/ServerUserView';
 
 interface RawServerDateTime {
 	timestamp: string;
@@ -37,6 +38,11 @@ export class ServerDateTime {
 	public static fromPojo(deadline: PojoDateTime) {
 		return new ServerDateTime({ timestamp: deadline.timestamp, timezone: deadline.timezone });
 	}
+}
+
+interface RawUser {
+	id: string;
+	username: string;
 }
 
 export class ApiClient {
@@ -111,6 +117,12 @@ export class ApiClient {
 				};
 			})
 		);
+	}
+
+	public async findAllUsers() {
+		const raw: RawUser[] = (await this.query('users')) as RawUser[];
+
+		return raw.map((x) => new ServerUserView(x.id, x.username));
 	}
 
 	public async findUpcomingTasks(

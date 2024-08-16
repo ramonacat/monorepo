@@ -8,7 +8,7 @@ use Laminas\Diactoros\ServerRequest;
 use PHPUnit\Framework\TestCase;
 use Ramona\Ras2\SharedCore\Infrastructure\CQRS\Query\QueryBus;
 use Ramona\Ras2\SharedCore\Infrastructure\HTTP\RequireLogin;
-use Ramona\Ras2\User\Application\Query\FindByToken;
+use Ramona\Ras2\User\Application\Query\ByToken;
 use Ramona\Ras2\User\Application\Session;
 use Ramona\Ras2\User\Business\UserId;
 use Ramona\Ras2\User\Infrastructure\UserNotFound;
@@ -39,7 +39,7 @@ final class RequireLoginTest extends TestCase
         $userId = UserId::generate();
         $username = 'ramona';
         $bus->installExecutor(
-            FindByToken::class,
+            ByToken::class,
             new FindByTokenExecutorMock(fn () => new Session($userId, $username))
         );
         $requireLogin = new RequireLogin($bus);
@@ -72,7 +72,7 @@ final class RequireLoginTest extends TestCase
         ]);
         $bus = new QueryBus();
         $bus->installExecutor(
-            FindByToken::class,
+            ByToken::class,
             new FindByTokenExecutorMock(fn () => throw UserNotFound::withToken())
         );
         $requireLogin = new RequireLogin($bus);
