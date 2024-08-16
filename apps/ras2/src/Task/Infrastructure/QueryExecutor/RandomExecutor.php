@@ -34,12 +34,12 @@ final class RandomExecutor implements Executor
                     title, 
                     u.name as assignee_name,
                     (
-                        SELECT 
-                            json_agg(ta.name) 
+                        SELECT
+                            json_agg(ta.name)
                         FROM tags ta 
                             INNER JOIN tasks_tags tt ON ta.id = tt.tag_id 
                         WHERE tt.task_id = t.id
-                    ) AS tags, 
+                    ) AS tags,
                     deadline,
                     time_records
                 FROM tasks t

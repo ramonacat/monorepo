@@ -73,7 +73,7 @@ export const actions = {
 		const title = data.get('title');
 		const rawTags = data.get('tags');
 		const tags = typeof rawTags !== 'string' ? [] : JSON.parse(rawTags.toString());
-		// TODO this is a hack, we should use the timezone stored in user's profile
+
 		const deadlineDate = data.get('deadline-date');
 		const deadlineTime = data.get('deadline-time') ?? '00:00:00';
 		const deadline = deadlineDate
@@ -82,6 +82,7 @@ export const actions = {
 		const assignee = data.get('assignee') !== '' ? data.get('assignee') : null;
 
 		const id = crypto.randomUUID();
+		// FIXME use the API client here
 		const response = await fetch(
 			(process?.env?.RAS2_SERVICE_URL ?? 'http://localhost:8080/') + 'tasks',
 			{
@@ -97,7 +98,7 @@ export const actions = {
 							}
 						: null,
 					assignee
-				}), // FIXME create a picker for assignees
+				}),
 				headers: {
 					'X-Action': 'upsert:backlog-item',
 					'Content-Type': 'application/json',
@@ -107,9 +108,50 @@ export const actions = {
 		);
 
 		if (response.ok) {
-			return { id: id, success: true };
+			return {
+				currentTab: 0,
+				id: id,
+				success: true
+			};
 		} else {
-			return fail(response.status, { failed: true });
+			return fail(response.status, { currentTab: 0, failed: true });
+		}
+	},
+	create_idea: async ({ request, cookies }) => {
+		await ensureAuthenticated(cookies);
+
+		const data = await request.formData();
+		const title = data.get('title');
+		const rawTags = data.get('tags');
+		const tags = typeof rawTags !== 'string' ? [] : JSON.parse(rawTags.toString());
+
+		const id = crypto.randomUUID();
+		const response = await fetch(
+			// FIXME use the API client here
+			(process?.env?.RAS2_SERVICE_URL ?? 'http://localhost:8080/') + 'tasks',
+			{
+				method: 'POST',
+				body: JSON.stringify({
+					id,
+					title,
+					tags
+				}),
+				headers: {
+					'X-Action': 'upsert:idea',
+					'Content-Type': 'application/json',
+					'X-User-Token': cookies.get('token') as string
+				}
+			}
+		);
+
+		if (response.ok) {
+			return {
+				currentTab: 2,
+				id: id,
+				success: true
+			};
+		} else {
+			return fail(response.status, { currentTab: 2, failed: true });
 		}
 	}
 } satisfies Actions;
