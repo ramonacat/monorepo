@@ -97,7 +97,8 @@ a:hover {
 
 input:not([type='hidden']),
 button,
-.button {
+.button,
+select {
 	display: inline-block;
 	border: 1px solid #fefae6;
 	background-color: var(--color-background-secondary);
@@ -108,7 +109,8 @@ button,
 	font-size: var(--font-size);
 }
 
-input:not([type='hidden']) {
+input:not([type='hidden']),
+select {
 	width: var(--width-input);
 }
 

@@ -9,11 +9,13 @@ export async function load({ cookies }) {
 	const upcomingTasks = await apiClient.findUpcomingTasks(session.userId);
 	const watchedTasks = await apiClient.findWatchedTasks();
 	const currentTask = await apiClient.findCurrentTask();
+	const allUsers = await apiClient.findAllUsers();
 
 	return {
 		upcomingTasks: upcomingTasks.map((x) => x.toPojo()),
 		watchedTasks: watchedTasks.map((x) => x.toPojo()),
-		currentTask: currentTask?.toPojo()
+		currentTask: currentTask?.toPojo(),
+		allUsers: allUsers.map((x) => x.toPojo())
 	};
 }
 
@@ -74,10 +76,10 @@ export const actions = {
 		// TODO this is a hack, we should use the timezone stored in user's profile
 		const deadlineDate = data.get('deadline-date');
 		const deadlineTime = data.get('deadline-time') ?? '00:00:00';
-		const deadline =
-			deadlineDate
-				? DateTime.fromJSDate(new Date(deadlineDate + 'T' + deadlineTime + '+00:00'))
-				: null;
+		const deadline = deadlineDate
+			? DateTime.fromJSDate(new Date(deadlineDate + 'T' + deadlineTime + '+00:00'))
+			: null;
+		const assignee = data.get('assignee') !== '' ? data.get('assignee') : null;
 
 		const id = crypto.randomUUID();
 		const response = await fetch(
@@ -94,7 +96,7 @@ export const actions = {
 								timestamp: deadline.toFormat('yyyy-LL-dd HH:mm:ss')
 							}
 						: null,
-					assignee: null
+					assignee
 				}), // FIXME create a picker for assignees
 				headers: {
 					'X-Action': 'upsert:backlog-item',

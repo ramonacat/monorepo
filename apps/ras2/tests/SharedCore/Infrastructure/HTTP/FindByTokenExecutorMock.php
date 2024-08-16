@@ -6,11 +6,11 @@ namespace Tests\Ramona\Ras2\SharedCore\Infrastructure\HTTP;
 
 use Ramona\Ras2\SharedCore\Infrastructure\CQRS\Query\Executor;
 use Ramona\Ras2\SharedCore\Infrastructure\CQRS\Query\Query;
-use Ramona\Ras2\User\Application\Query\FindByToken;
+use Ramona\Ras2\User\Application\Query\ByToken;
 use Ramona\Ras2\User\Application\Session;
 
 /**
- * @implements Executor<Session, FindByToken>
+ * @implements Executor<Session, ByToken>
  */
 class FindByTokenExecutorMock implements Executor
 {
