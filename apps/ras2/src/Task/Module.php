@@ -49,7 +49,6 @@ use Ramona\Ras2\Task\Infrastructure\QueryExecutor\UpcomingExecutor;
 use Ramona\Ras2\Task\Infrastructure\Repository;
 use Ramona\Ras2\Task\Infrastructure\TaskIdDehydrator;
 use Ramona\Ras2\Task\Infrastructure\TaskIdHydrator;
-use Ramona\Ras2\Task\Infrastructure\TaskViewHydrator;
 
 final class Module implements \Ramona\Ras2\SharedCore\Infrastructure\Module\Module
 {
@@ -89,7 +88,7 @@ final class Module implements \Ramona\Ras2\SharedCore\Infrastructure\Module\Modu
         $hydrator->installValueHydrator(new ObjectHydrator(FinishWork::class));
         $hydrator->installValueHydrator(new ObjectHydrator(StartWork::class));
         $hydrator->installValueHydrator(new ObjectHydrator(ReturnToBacklog::class));
-        $hydrator->installValueHydrator(new TaskViewHydrator());
+        $hydrator->installValueHydrator(new ObjectHydrator(TaskView::class));
         $hydrator->installValueHydrator(new TaskIdHydrator());
 
         $dehydrator = $container->get(Dehydrator::class);

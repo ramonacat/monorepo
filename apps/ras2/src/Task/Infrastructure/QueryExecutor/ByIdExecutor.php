@@ -25,7 +25,7 @@ final readonly class ByIdExecutor implements Executor
 
     public function execute(Query $query): mixed
     {
-        /** @var array{id:string, title:string, assignee_name:string, tags:string, deadline: ?string, time_records: string}|false $rawTask */
+        /** @var array{id:string, title:string, assignee_name:?string, assignee_id:?string, tags:?string, deadline: ?string, time_records: string}|false $rawTask */
         $rawTask = $this
             ->connection
             ->fetchAssociative('
@@ -54,8 +54,10 @@ final readonly class ByIdExecutor implements Executor
             throw NotFound::forId($query->taskId);
         }
 
-        $rawTask['tags'] = \Safe\json_decode($rawTask['tags'], true);
-        $rawTask['time_records'] = \Safe\json_decode($rawTask['time_records'], true);
+        $rawTask['tags'] = \Safe\json_decode($rawTask['tags'] ?? '[]', true);
+        $rawTask['timeRecords'] = \Safe\json_decode($rawTask['time_records'], true);
+        $rawTask['assigneeId'] = $rawTask['assignee_id'];
+        $rawTask['assigneeName'] = $rawTask['assignee_name'];
 
         return $this->hydrator->hydrate(TaskView::class, $rawTask);
     }
