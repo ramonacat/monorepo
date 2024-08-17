@@ -8,6 +8,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Laminas\Diactoros\ServerRequest;
 use Laminas\Diactoros\Stream;
 use League\Route\Http\Exception\NotFoundException;
+use Psr\Log\NullLogger;
 use Ramona\Ras2\SharedCore\Infrastructure\CQRS\Query\QueryBus;
 use Ramona\Ras2\SharedCore\Infrastructure\HTTP\JsonResponseFactory;
 use Ramona\Ras2\SharedCore\Infrastructure\Hydration\DefaultDehydrator;
@@ -34,7 +35,8 @@ final class GetTasksTest extends EndpointCase
         $request = new ServerRequest();
 
         $controller = new GetTasks(new QueryBus(), new JsonResponseFactory(new DefaultSerializer(
-            new DefaultDehydrator()
+            new DefaultDehydrator(),
+            new NullLogger()
         )));
 
         $this->expectException(NotFoundException::class);

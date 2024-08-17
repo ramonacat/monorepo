@@ -1,6 +1,6 @@
 <script lang="ts">
 	import Tabs from '$lib/components/Tabs.svelte';
-	import NewItemForm from './NewItemForm.svelte';
+	import CreateBacklogItemForm from './CreateBacklogItemForm.svelte';
 	import TaskList from '$lib/components/TaskList.svelte';
 	import SectionHeading from '$lib/components/SectionHeading.svelte';
 	import Tab from '$lib/components/Tab.svelte';
@@ -10,6 +10,8 @@
 	import { ServerTaskSummary } from '$lib/ServerTaskSummary';
 	import { ServerCurrentTaskView } from '$lib/ServerCurrentTaskView';
 	import { ServerUserView } from '$lib/ServerUserView';
+	import CreateIdeaForm from './CreateIdeaForm.svelte';
+	import CreateEventForm from './CreateEventForm.svelte';
 
 	export let form: ActionData;
 	export let data: PageData;
@@ -33,12 +35,16 @@
 
 <div class="container">
 	<section>
-		<Tabs description="create">
+		<Tabs description="create" currentTabIndex={form?.currentTab ?? 0}>
 			<Tab name="task">
-				<NewItemForm {form} {allUsers} />
+				<CreateBacklogItemForm {form} {allUsers} />
 			</Tab>
-			<Tab name="event">event</Tab>
-			<Tab name="idea">idea</Tab>
+			<Tab name="event">
+				<CreateEventForm {form} {allUsers} />
+			</Tab>
+			<Tab name="idea">
+				<CreateIdeaForm {form} />
+			</Tab>
 		</Tabs>
 	</section>
 	<section>

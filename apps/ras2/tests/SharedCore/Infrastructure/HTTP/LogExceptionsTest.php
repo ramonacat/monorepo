@@ -27,7 +27,8 @@ final class LogExceptionsTest extends TestCase
             'level' => 'info',
             'message' => 'Request received',
             'context' => [
-                'request' => $request,
+                'uri' => $request->getUri(),
+                'method' => 'GET',
             ],
         ],
             [

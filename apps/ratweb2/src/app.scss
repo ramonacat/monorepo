@@ -119,6 +119,10 @@ button.-danger {
 	border: var(--width-border) solid var(--color-danger);
 }
 
+select[multiple] {
+	height: calc(5 * var(--height-unit));
+}
+
 form button,
 form .button {
 	display: block;

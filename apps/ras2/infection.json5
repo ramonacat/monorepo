@@ -36,6 +36,18 @@
             ignore: [
                 "Ramona\\Ras2\\Task\\Business\\Started"
             ]
+        },
+        "MethodCallRemoval": {
+            "ignore": [
+                "Ramona\\Ras2\\SharedCore\\Infrastructure\\Serialization\\DefaultDeserializer",
+                "Ramona\\Ras2\\SharedCore\\Infrastructure\\Serialization\\DefaultSerializer"
+            ]
+        },
+        "ArrayItemRemoval": {
+            "ignore": [
+                "Ramona\\Ras2\\SharedCore\\Infrastructure\\Serialization\\DefaultDeserializer",
+                "Ramona\\Ras2\\SharedCore\\Infrastructure\\Serialization\\DefaultSerializer"
+            ]
         }
     },
     "logs": {

@@ -4,16 +4,16 @@ declare(strict_types=1);
 
 namespace Ramona\Ras2\Event\Infrastructure\CommandExecutor;
 
-use Ramona\Ras2\Event\Application\Command\CreateEvent;
+use Ramona\Ras2\Event\Application\Command\UpsertEvent;
 use Ramona\Ras2\Event\Business\Event;
 use Ramona\Ras2\Event\Infrastructure\Repository;
 use Ramona\Ras2\SharedCore\Infrastructure\CQRS\Command\Command;
 use Ramona\Ras2\SharedCore\Infrastructure\CQRS\Command\Executor;
 
 /**
- * @implements Executor<CreateEvent>
+ * @implements Executor<UpsertEvent>
  */
-final readonly class CreateEventExecutor implements Executor
+final readonly class UpsertEventExecutor implements Executor
 {
     public function __construct(
         private Repository $repository

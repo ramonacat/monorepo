@@ -3,6 +3,7 @@
 	import { setContext } from 'svelte';
 
 	export let description: string = '';
+	export let currentTabIndex: number = 0;
 
 	let tabs: Tab[] = [];
 	let currentTab: Tab | undefined;
@@ -15,21 +16,25 @@
 
 		currentTab = tab;
 	}
+
 	let tabCount = 0;
 	setContext('registry', {
 		register: (name: string, hide: () => void, show: () => void) => {
-			tabCount++;
-			tabs.push({ name, hide, show });
+			tabs.push({ name, hide, show, index: tabCount });
 			tabs = tabs;
 
-			if (tabCount > 1) {
-				hide();
-			} else {
+			if (tabCount === currentTabIndex) {
 				show();
-				currentTab = tabs[0];
+				currentTab = tabs[currentTabIndex];
+			} else {
+				hide();
 			}
+
+			tabCount++;
 		}
 	});
+
+	$: if (tabs[currentTabIndex]) switchTab(tabs[currentTabIndex]);
 </script>
 
 <div class="heading">
