@@ -22,7 +22,8 @@
             <directory>public</directory>
         </include>
         <exclude>
-            <directory>src/Migrations</directory>
+            <directory>src/SharedCore/Infrastructure/Migrations</directory>
+            <directory>src/Task/Infrastructure/QueryExecutor</directory>
         </exclude>
     </source>
 </phpunit>

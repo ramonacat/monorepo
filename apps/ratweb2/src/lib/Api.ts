@@ -16,6 +16,7 @@ interface RawTask {
 	tags: string[];
 	deadline: RawServerDateTime | undefined;
 	timeRecords: { started: RawServerDateTime; ended: RawServerDateTime | undefined }[];
+	assigneeId: string | undefined;
 }
 
 export class ServerDateTime {
@@ -84,7 +85,8 @@ export class ApiClient {
 		id: string,
 		title: string,
 		tags: string[],
-		deadline: DateTime | null
+		deadline: DateTime | undefined,
+		assignee: string | undefined
 	): Promise<void> {
 		await this.call('tasks', {
 			method: 'POST',
@@ -92,8 +94,10 @@ export class ApiClient {
 				id,
 				title,
 				tags,
-				deadline: { timestamp: deadline?.toString(), timezone: deadline?.zoneName },
-				assignee: null
+				deadline: deadline
+					? { timestamp: deadline.toFormat('yyyy-LL-dd HH:mm:ss'), timezone: deadline.zoneName }
+					: null,
+				assignee: assignee
 			}),
 			headers: {
 				'X-Action': 'upsert:backlog-item',
@@ -115,7 +119,8 @@ export class ApiClient {
 					started: new ServerDateTime(x.started),
 					ended: x.ended ? new ServerDateTime(x.ended) : undefined
 				};
-			})
+			}),
+			raw.assigneeId
 		);
 	}
 
@@ -171,7 +176,8 @@ export class ApiClient {
 					started: new ServerDateTime(x.started),
 					ended: x.ended ? new ServerDateTime(x.ended) : undefined
 				};
-			})
+			}),
+			raw.assigneeId
 		);
 	}
 }

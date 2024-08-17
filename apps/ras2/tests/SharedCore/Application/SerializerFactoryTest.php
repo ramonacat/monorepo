@@ -109,6 +109,7 @@ final class SerializerFactoryTest extends TestCase
             TaskId::fromString('01913564-5b13-7867-93bc-fcb4649456f1'),
             'Some title',
             null,
+            null,
             new ArrayCollection(['tag1', 'tag2']),
             null,
             new ArrayCollection()

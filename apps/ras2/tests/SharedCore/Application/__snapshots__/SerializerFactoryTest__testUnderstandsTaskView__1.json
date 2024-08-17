@@ -1,6 +1,7 @@
 {
     "id": "01913564-5b13-7867-93bc-fcb4649456f1",
     "title": "Some title",
+    "assigneeId": null,
     "assigneeName": null,
     "tags": [
         "tag1",

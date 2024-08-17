@@ -6,8 +6,13 @@ export async function load({ url, cookies }) {
 	const { apiClient } = await ensureAuthenticated(cookies);
 	const taskId = url.searchParams.get('task-id') as string;
 
+	const rawTask = await apiClient.getTaskByID(taskId);
+	console.log(rawTask);
+	const task = rawTask.toPojo();
+	console.log(task);
 	return {
-		task: (await apiClient.getTaskByID(taskId)).toPojo()
+		task,
+		allUsers: (await apiClient.findAllUsers()).map((x) => x.toPojo())
 	};
 }
 
@@ -21,15 +26,18 @@ export const actions: Actions = {
 		// TODO this is a hack, we should use the timezone stored in user's profile
 		const deadlineDate = data.get('deadline-date');
 		const deadlineTime = (data.get('deadline-time') ?? '00:00') + ':00';
-		const deadline =
-			deadlineDate === null ? null : DateTime.fromISO(deadlineDate + 'T' + deadlineTime + '+00:00');
+		const deadline = deadlineDate
+			? DateTime.fromISO(deadlineDate + 'T' + deadlineTime + '+00:00')
+			: undefined;
+		const assignee = data.get('assignee');
 
 		try {
 			await apiClient.upsertBacklogItem(
 				url.searchParams.get('task-id') as string,
 				title as string,
 				tags,
-				deadline
+				deadline,
+				assignee as string | undefined
 			);
 		} catch {
 			return { failure: true };

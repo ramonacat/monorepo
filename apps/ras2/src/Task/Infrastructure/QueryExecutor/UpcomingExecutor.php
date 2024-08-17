@@ -25,7 +25,7 @@ final class UpcomingExecutor implements Executor
 
     public function execute(Query $query): ArrayCollection
     {
-        /** @var list<array{id:string, title:string, assignee_name:string, tags:string, deadline: ?string, time_records:string}> $rawTasks */
+        /** @var list<array{id:string, title:string, assignee_name:?string, assignee_id:?string, tags:?string, deadline: ?string, time_records:string}> $rawTasks */
         $rawTasks = $this
             ->connection
             ->fetchAllAssociative('
@@ -33,6 +33,7 @@ final class UpcomingExecutor implements Executor
                     t.id, 
                     title, 
                     u.name as assignee_name,
+                    u.id as assignee_id,
                     (
                         SELECT 
                             json_agg(ta.name) 
@@ -57,8 +58,11 @@ final class UpcomingExecutor implements Executor
 
         return (new ArrayCollection($rawTasks))
             ->map(function (array $rawTask) {
-                $rawTask['tags'] = \Safe\json_decode($rawTask['tags'], true);
-                $rawTask['time_records'] = \Safe\json_decode($rawTask['time_records'], true);
+                $rawTask['tags'] = \Safe\json_decode($rawTask['tags'] ?? '[]', true);
+                $rawTask['timeRecords'] = \Safe\json_decode($rawTask['time_records'], true);
+                $rawTask['assigneeId'] = $rawTask['assignee_id'];
+                $rawTask['assigneeName'] = $rawTask['assignee_name'];
+
                 return $rawTask;
             })
             ->map(fn (array $raw) => $this->hydrator->hydrate(TaskView::class, $raw));

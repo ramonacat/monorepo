@@ -7,11 +7,14 @@
 	import DateTimeInput from '$lib/components/forms/DateTimeInput.svelte';
 	import type { ActionData } from '../../../.svelte-kit/types/src/routes/$types';
 	import { ServerTaskSummary } from '$lib/ServerTaskSummary';
+	import UserInput from '$lib/components/forms/UserInput.svelte';
+	import { ServerUserView } from '$lib/ServerUserView';
 
 	export let form: ActionData;
 	export let data: PageData;
 
 	const task = ServerTaskSummary.fromPojo(data.task);
+	const allUsers = data.allUsers.map(ServerUserView.fromPojo);
 </script>
 
 <div class="root">
@@ -35,6 +38,10 @@
 		<div class="row">
 			<label for="deadline">deadline:</label>
 			<DateTimeInput dateName="deadline-date" timeName="deadline-time" value={task.getDeadline()} />
+		</div>
+		<div class="row">
+			<label for="assignee">assignee:</label>
+			<UserInput name="assignee" {allUsers} value={task.getAssigneeId()} />
 		</div>
 
 		<div class="row submit-row">

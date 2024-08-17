@@ -55,6 +55,7 @@ final class GetTasksTest extends EndpointCase
         $result = new TaskView(
             TaskId::generate(),
             'Title',
+            UserId::generate(),
             'ramona',
             new ArrayCollection(['tag1', 'tag2']),
             null,
@@ -131,6 +132,7 @@ final class GetTasksTest extends EndpointCase
         $result = new TaskView(
             TaskId::generate(),
             'Title',
+            UserId::generate(),
             'ramona',
             new ArrayCollection(['tag1', 'tag2']),
             null,
