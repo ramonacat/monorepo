@@ -19,7 +19,13 @@ in rec {
   package = pkgs.writeShellScriptBin "ratweb2" ''
     ${pkgs.nodejs_22}/bin/node ${rawPackage}/build
   '';
-  coverage = pkgs.runCommand "${package.name}--coverage" {} "touch $out";
+  coverage = pkgs.runCommand "${package.name}--coverage" {nativeBuildInputs = [pkgs.nodejs_22];} ''
+    cp -r ${rawPackage}/* .
+    chmod a+w node_modules/
+    ./node_modules/.bin/vitest run
+
+    mv coverage/clover.xml $out
+  '';
   checks = {
     "${package.name}--check" = pkgs.runCommand "${package.name}--checks" {nativeBuildInputs = [pkgs.nodejs_22];} ''
       cp -r ${rawPackage}/* .
