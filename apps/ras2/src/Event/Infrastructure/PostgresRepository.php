@@ -30,7 +30,10 @@ final class PostgresRepository implements Repository
                     (:end_datetime, :end_timezone)
                 )
             ON CONFLICT (id) DO UPDATE 
-                SET title=:title, start=:start, "end"=:end
+                SET 
+                    title=:title, 
+                    start=(:start_datetime, :start_timezone), 
+                    "end"=(:end_datetime, :end_timezone)
         ', [
             'id' => (string) $event->id(),
             'title' => $event->title(),

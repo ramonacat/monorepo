@@ -22,11 +22,12 @@ final class LogRequests implements MiddlewareInterface
     {
         try {
             $this->logger->info('Request received', [
-                'request' => $request,
+                'uri' => $request->getUri(),
+                'method' => $request->getMethod(),
             ]);
             $response = $handler->handle($request);
             $this->logger->info('Sending response', [
-                'response' => $response,
+                'status_code' => $response->getStatusCode(),
             ]);
             return $response;
         } catch (\Exception $e) {

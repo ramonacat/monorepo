@@ -7,6 +7,9 @@
          beStrictAboutOutputDuringTests="true"
          failOnRisky="true"
          failOnWarning="true">
+    <php>
+        <env name="APPLICATION_MODE" value="test" />
+    </php>
     <testsuites>
         <testsuite name="default">
             <directory>tests</directory>

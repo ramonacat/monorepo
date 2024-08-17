@@ -10,6 +10,7 @@ use Laminas\Diactoros\Stream;
 use League\Route\Http\Exception\BadRequestException;
 use League\Route\Http\Exception\NotAcceptableException;
 use PHPUnit\Framework\Attributes\DataProvider;
+use Psr\Log\NullLogger;
 use Ramona\Ras2\SharedCore\Infrastructure\CQRS\Command\Command;
 use Ramona\Ras2\SharedCore\Infrastructure\CQRS\Command\CommandBus;
 use Ramona\Ras2\SharedCore\Infrastructure\Hydration\Hydrator;
@@ -31,7 +32,7 @@ final class PostTasksTest extends EndpointCase
 {
     public function testThrowsOnNonJsonRequest(): void
     {
-        $handler = new PostTasks(new CommandBus(), new DefaultDeserializer(new Hydrator()));
+        $handler = new PostTasks(new CommandBus(), new DefaultDeserializer(new Hydrator(), new NullLogger()));
 
         $request = new ServerRequest(headers: [
             'Content-Type' => 'text/plain',
@@ -43,7 +44,7 @@ final class PostTasksTest extends EndpointCase
 
     public function testThrowsOnUnknownAction(): void
     {
-        $handler = new PostTasks(new CommandBus(), new DefaultDeserializer(new Hydrator()));
+        $handler = new PostTasks(new CommandBus(), new DefaultDeserializer(new Hydrator(), new NullLogger()));
 
         $request = new ServerRequest(headers: [
             'Content-Type' => 'application/json',

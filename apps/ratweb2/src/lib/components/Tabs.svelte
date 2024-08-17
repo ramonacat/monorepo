@@ -23,14 +23,14 @@
 			tabs.push({ name, hide, show, index: tabCount });
 			tabs = tabs;
 
-			tabCount++;
-
-			if (tabCount > 1) {
-				hide();
-			} else {
+			if (tabCount === currentTabIndex) {
 				show();
 				currentTab = tabs[currentTabIndex];
+			} else {
+				hide();
 			}
+
+			tabCount++;
 		}
 	});
 

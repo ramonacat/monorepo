@@ -7,9 +7,11 @@ namespace Ramona\Ras2\Event\Application\Command;
 use Doctrine\Common\Collections\ArrayCollection;
 use Ramona\Ras2\Event\Business\EventId;
 use Ramona\Ras2\SharedCore\Infrastructure\CQRS\Command\Command;
+use Ramona\Ras2\SharedCore\Infrastructure\Hydration\KeyType;
+use Ramona\Ras2\SharedCore\Infrastructure\Hydration\ValueType;
 use Ramona\Ras2\User\Business\UserId;
 
-final readonly class CreateEvent implements Command
+final readonly class UpsertEvent implements Command
 {
     /**
      * @param ArrayCollection<int, UserId> $attendees
@@ -19,6 +21,8 @@ final readonly class CreateEvent implements Command
         public string $title,
         public \Safe\DateTimeImmutable $startTime,
         public \Safe\DateTimeImmutable $endTime,
+        #[KeyType('integer')]
+        #[ValueType(UserId::class)]
         public ArrayCollection $attendees,
     ) {
     }

@@ -11,6 +11,7 @@
 	import { ServerCurrentTaskView } from '$lib/ServerCurrentTaskView';
 	import { ServerUserView } from '$lib/ServerUserView';
 	import CreateIdeaForm from './CreateIdeaForm.svelte';
+	import CreateEventForm from './CreateEventForm.svelte';
 
 	export let form: ActionData;
 	export let data: PageData;
@@ -38,7 +39,9 @@
 			<Tab name="task">
 				<CreateBacklogItemForm {form} {allUsers} />
 			</Tab>
-			<Tab name="event">event</Tab>
+			<Tab name="event">
+				<CreateEventForm {form} {allUsers} />
+			</Tab>
 			<Tab name="idea">
 				<CreateIdeaForm {form} />
 			</Tab>

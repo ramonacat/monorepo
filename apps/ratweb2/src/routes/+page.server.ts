@@ -153,5 +153,61 @@ export const actions = {
 		} else {
 			return fail(response.status, { currentTab: 2, failed: true });
 		}
+	},
+	create_event: async ({ request, cookies }) => {
+		await ensureAuthenticated(cookies);
+
+		const data = await request.formData();
+		const title = data.get('title');
+		const startDate = data.get('start-date');
+		const startTime = data.get('start-time') ?? '00:00:00';
+		const start = startDate
+			? DateTime.fromJSDate(new Date(startDate + 'T' + startTime + '+00:00'))
+			: null;
+		const endDate = data.get('start-date');
+		const endTime = data.get('start-time') ?? '00:00:00';
+		const end = endDate ? DateTime.fromJSDate(new Date(endDate + 'T' + endTime + '+00:00')) : null;
+		const attendees = data.get('attendees') ? JSON.parse(data.get('attendees') as string) : null;
+
+		const id = crypto.randomUUID();
+		const response = await fetch(
+			// FIXME use the API client here
+			(process?.env?.RAS2_SERVICE_URL ?? 'http://localhost:8080/') + 'events',
+			{
+				method: 'POST',
+				body: JSON.stringify({
+					id,
+					title,
+					startTime: start
+						? {
+								timezone: 'Europe/Berlin', // FIXME take this from the user profile!
+								timestamp: start.toFormat('yyyy-LL-dd HH:mm:ss')
+							}
+						: null,
+					endTime: end
+						? {
+								timezone: 'Europe/Berlin', // FIXME take this from the user profile!
+								timestamp: end.toFormat('yyyy-LL-dd HH:mm:ss')
+							}
+						: null,
+					attendees
+				}),
+				headers: {
+					'X-Action': 'upsert',
+					'Content-Type': 'application/json',
+					'X-User-Token': cookies.get('token') as string
+				}
+			}
+		);
+
+		if (response.ok) {
+			return {
+				currentTab: 1,
+				id: id,
+				success: true
+			};
+		} else {
+			return fail(response.status, { currentTab: 1, failed: true });
+		}
 	}
 } satisfies Actions;

@@ -43,8 +43,14 @@ use Ramona\Ras2\User\Module as UserModule;
 $containerBuilder = new ContainerBuilder();
 $containerBuilder->register(ClockInterface::class, fn () => new SystemClock());
 $containerBuilder->register(LoggerInterface::class, function () {
+    $applicationMode = getenv('APPLICATION_MODE');
+
+    if ($applicationMode === 'test') {
+        return new \Psr\Log\NullLogger();
+    }
+
     $logger = new Logger('ras2');
-    if (getenv('APPLICATION_MODE') !== 'prod') {
+    if ($applicationMode !== 'prod') {
         $handler = new StreamHandler('php://stderr');
         $handler->setFormatter(new LineFormatter(includeStacktraces: true));
     } else {
@@ -64,7 +70,10 @@ $containerBuilder->register(
 );
 $containerBuilder->register(CommandBus::class, fn () => new CommandBus());
 $containerBuilder->register(QueryBus::class, fn () => new QueryBus());
-$containerBuilder->register(Serializer::class, fn (Container $c) => new DefaultSerializer($c->get(Dehydrator::class)));
+$containerBuilder->register(
+    Serializer::class,
+    fn (Container $c) => new DefaultSerializer($c->get(Dehydrator::class), $c->get(LoggerInterface::class))
+);
 $containerBuilder->register(Hydrator::class, function () {
     $hydrator = new Hydrator();
     $hydrator->installValueHydrator(new ScalarHydrator('string'));
@@ -76,7 +85,7 @@ $containerBuilder->register(Hydrator::class, function () {
 });
 $containerBuilder->register(
     Deserializer::class,
-    fn (Container $c) => new DefaultDeserializer($c->get(Hydrator::class))
+    fn (Container $c) => new DefaultDeserializer($c->get(Hydrator::class), $c->get(LoggerInterface::class))
 );
 
 $containerBuilder->register(Dehydrator::class, function () {
@@ -92,7 +101,10 @@ $containerBuilder->register(Dehydrator::class, function () {
     return $dehydrator;
 });
 
-$containerBuilder->register(Serializer::class, fn (Container $c) => new DefaultSerializer($c->get(Dehydrator::class)));
+$containerBuilder->register(
+    Serializer::class,
+    fn (Container $c) => new DefaultSerializer($c->get(Dehydrator::class), $c->get(LoggerInterface::class))
+);
 
 $containerBuilder->register(Router::class, function (Container $diContainer) {
     $responseFactory = new ResponseFactory();
