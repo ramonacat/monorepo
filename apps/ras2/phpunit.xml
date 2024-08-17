@@ -22,7 +22,7 @@
             <directory>public</directory>
         </include>
         <exclude>
-            <directory>src/Migrations</directory>
+            <directory>src/SharedCore/Infrastructure/Migrations</directory>
         </exclude>
     </source>
 </phpunit>
