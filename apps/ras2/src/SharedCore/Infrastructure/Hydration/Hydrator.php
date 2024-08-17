@@ -22,9 +22,7 @@ final class Hydrator
 
     /**
      * @template T
-     * @psalm-suppress ArgumentTypeCoercion
-     * @psalm-suppress MixedInferredReturnType
-     * @psalm-suppress MixedReturnStatement
+     *
      * @param class-string<T>|'float'|'integer'|'int'|'bool'|'string'|'array'|'boolean'|'resource'|'NULL' $targetType
      * @param list<HydrationAttribute> $attributes
      * @return T

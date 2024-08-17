@@ -10,6 +10,7 @@ use Ramona\Ras2\SharedCore\Infrastructure\Hydration\ValueHydrator;
 use Ramona\Ras2\Task\Application\TaskView;
 use Ramona\Ras2\Task\Business\TaskId;
 use Ramona\Ras2\Task\Business\TimeRecord;
+use Ramona\Ras2\User\Business\UserId;
 
 /**
  * @implements ValueHydrator<TaskView>
@@ -26,6 +27,7 @@ final class TaskViewHydrator implements ValueHydrator
         return new TaskView(
             TaskId::fromString($input['id']),
             $input['title'],
+            $input['assignee_id'] === null ? null : UserId::fromString($input['assignee_id']),
             $input['assignee_name'],
             new ArrayCollection($input['tags']),
 

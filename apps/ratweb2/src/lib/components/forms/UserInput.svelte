@@ -5,10 +5,10 @@
 	export let name: string;
 	export let required: boolean = false;
 	export let multiple: boolean = false;
+	export let value: string | undefined = undefined;
 
 	let checked = new Set();
 	function checkedChange(userID: string, isChecked: boolean) {
-		console.log(userID, isChecked);
 		if (isChecked) {
 			checked.add(userID);
 		} else {
@@ -17,6 +17,8 @@
 
 		checked = checked;
 	}
+
+	console.log(value);
 </script>
 
 {#if multiple}
@@ -35,7 +37,7 @@
 			<option value="">none</option>
 		{/if}
 		{#each allUsers as user}
-			<option value={user.id}>{user.username}</option>
+			<option value={user.id} selected={value === user.id}>{user.username}</option>
 		{/each}
 	</select>
 {/if}

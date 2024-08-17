@@ -33,6 +33,7 @@ final class RandomExecutor implements Executor
                     t.id, 
                     title, 
                     u.name as assignee_name,
+                    u.id as assignee_id,
                     (
                         SELECT
                             json_agg(ta.name)
