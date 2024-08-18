@@ -5,11 +5,9 @@
 
 	export let task: ServerCurrentTaskView;
 </script>
-
+<div class="wrapper">
 <span class="name">{task.title}</span>
-<span class="time-spent"
-	><TimeCounter since={task.startTime.toDateTime()} isPaused={task.isPaused} /></span
->
+<span class="time-spent"><TimeCounter since={task.startTime.toDateTime()} isPaused={task.isPaused} /></span>
 
 <div class="buttons">
 	{#if !task.isPaused}
@@ -33,26 +31,29 @@
 		<button title="return to backlog"><Icon inline icon="mdi:assignment-return" /></button>
 	</form>
 </div>
-
+</div>
 <style>
+		.wrapper {display:flex;}
 	.name,
 	.time-spent {
 		display: block;
-		font-size: 10rem;
+		font-size: 1rem;
 		text-align: center;
 	}
 
 	button {
 		width: auto;
 		height: auto;
-		font-size: 5rem;
-		margin: 0 var(--spacing-xl);
+		margin: 0 var(--spacing-xs);
 		cursor: pointer;
 	}
 
 	.buttons {
-		margin-bottom: var(--spacing-xl);
 		display: flex;
 		justify-content: center;
+	}
+
+	.buttons button, span {
+			padding: var(--spacing-m);
 	}
 </style>

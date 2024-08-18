@@ -26,12 +26,6 @@
 	<title>Ramona's Service</title>
 </svelte:head>
 
-{#if currentTask}
-	<section>
-		<SectionHeading>Currently doing</SectionHeading>
-		<CurrentTask task={currentTask}></CurrentTask>
-	</section>
-{/if}
 
 <div class="container">
 	<section>
