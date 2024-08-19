@@ -21,7 +21,7 @@ use Ramona\Ras2\SharedCore\Infrastructure\CQRS\Command\CommandBus;
 use Ramona\Ras2\SharedCore\Infrastructure\CQRS\Query\QueryBus;
 use Ramona\Ras2\SharedCore\Infrastructure\DependencyInjection\Container;
 use Ramona\Ras2\SharedCore\Infrastructure\DependencyInjection\ContainerBuilder;
-use Ramona\Ras2\SharedCore\Infrastructure\HTTP\DefaultCommandExecutor;
+use Ramona\Ras2\SharedCore\Infrastructure\HTTP\CommandExecutor;
 use Ramona\Ras2\SharedCore\Infrastructure\HTTP\JsonResponseFactory;
 use Ramona\Ras2\SharedCore\Infrastructure\Hydration\Dehydrator;
 use Ramona\Ras2\SharedCore\Infrastructure\Hydration\Hydrator;
@@ -35,10 +35,7 @@ final class Module implements \Ramona\Ras2\SharedCore\Infrastructure\Module\Modu
             GetEvents::class,
             fn ($c) => new GetEvents($c->get(QueryBus::class), $c->get(JsonResponseFactory::class))
         );
-        $containerBuilder->register(
-            PostEvents::class,
-            fn ($c) => new PostEvents($c->get(DefaultCommandExecutor::class))
-        );
+        $containerBuilder->register(PostEvents::class, fn ($c) => new PostEvents($c->get(CommandExecutor::class)));
         $containerBuilder->register(
             Repository::class,
             fn ($c) => new PostgresRepository($c->get(Connection::class))
