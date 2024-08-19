@@ -11,7 +11,7 @@ use Ramona\Ras2\SharedCore\Infrastructure\CQRS\Command\CommandBus as CommandBus;
 use Ramona\Ras2\SharedCore\Infrastructure\CQRS\Query\QueryBus;
 use Ramona\Ras2\SharedCore\Infrastructure\DependencyInjection\Container;
 use Ramona\Ras2\SharedCore\Infrastructure\DependencyInjection\ContainerBuilder;
-use Ramona\Ras2\SharedCore\Infrastructure\HTTP\DefaultCommandExecutor;
+use Ramona\Ras2\SharedCore\Infrastructure\HTTP\CommandExecutor;
 use Ramona\Ras2\SharedCore\Infrastructure\HTTP\JsonResponseFactory;
 use Ramona\Ras2\SharedCore\Infrastructure\Hydration\Dehydrator;
 use Ramona\Ras2\SharedCore\Infrastructure\Hydration\Dehydrator\ObjectDehydrator;
@@ -73,7 +73,7 @@ final class Module implements \Ramona\Ras2\SharedCore\Infrastructure\Module\Modu
         );
         $containerBuilder->register(
             PostTasks::class,
-            fn (Container $c) => new PostTasks($c->get(DefaultCommandExecutor::class))
+            fn (Container $c) => new PostTasks($c->get(CommandExecutor::class))
         );
     }
 

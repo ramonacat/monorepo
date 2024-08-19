@@ -9,7 +9,7 @@ use League\Route\Router;
 use Ramona\Ras2\SharedCore\Infrastructure\CQRS\Command\CommandBus;
 use Ramona\Ras2\SharedCore\Infrastructure\DependencyInjection\Container;
 use Ramona\Ras2\SharedCore\Infrastructure\DependencyInjection\ContainerBuilder;
-use Ramona\Ras2\SharedCore\Infrastructure\HTTP\DefaultCommandExecutor;
+use Ramona\Ras2\SharedCore\Infrastructure\HTTP\CommandExecutor;
 use Ramona\Ras2\SharedCore\Infrastructure\Hydration\Dehydrator;
 use Ramona\Ras2\SharedCore\Infrastructure\Hydration\Hydrator;
 use Ramona\Ras2\SharedCore\Infrastructure\Hydration\Hydrator\EnumHydrator;
@@ -33,10 +33,7 @@ final class Module implements \Ramona\Ras2\SharedCore\Infrastructure\Module\Modu
 {
     public function install(ContainerBuilder $containerBuilder): void
     {
-        $containerBuilder->register(
-            PostSystem::class,
-            fn ($c) => new PostSystem($c->get(DefaultCommandExecutor::class))
-        );
+        $containerBuilder->register(PostSystem::class, fn ($c) => new PostSystem($c->get(CommandExecutor::class)));
 
         $containerBuilder->register(
             Repository::class,
