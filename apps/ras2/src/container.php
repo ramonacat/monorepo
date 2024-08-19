@@ -9,14 +9,18 @@ use League\Route\Router;
 use League\Route\Strategy\JsonStrategy;
 use Monolog\Formatter\LineFormatter;
 use Monolog\Handler\StreamHandler;
+use Monolog\Handler\SyslogHandler;
 use Monolog\Logger;
 use Psr\Log\LoggerInterface;
+use Psr\Log\NullLogger;
 use Ramona\Ras2\Event\Module as EventModule;
 use Ramona\Ras2\SharedCore\Infrastructure\ClockInterface;
-use Ramona\Ras2\SharedCore\Infrastructure\CQRS\Command\CommandBus as CommandBus;
-use Ramona\Ras2\SharedCore\Infrastructure\CQRS\Query\QueryBus as QueryBus;
+use Ramona\Ras2\SharedCore\Infrastructure\CQRS\Command\CommandBus;
+use Ramona\Ras2\SharedCore\Infrastructure\CQRS\Query\QueryBus;
 use Ramona\Ras2\SharedCore\Infrastructure\DependencyInjection\Container;
 use Ramona\Ras2\SharedCore\Infrastructure\DependencyInjection\ContainerBuilder;
+use Ramona\Ras2\SharedCore\Infrastructure\HTTP\CommandExecutor;
+use Ramona\Ras2\SharedCore\Infrastructure\HTTP\DefaultCommandExecutor;
 use Ramona\Ras2\SharedCore\Infrastructure\HTTP\JsonResponseFactory;
 use Ramona\Ras2\SharedCore\Infrastructure\HTTP\LogRequests;
 use Ramona\Ras2\SharedCore\Infrastructure\HTTP\RequireLogin;
@@ -36,7 +40,7 @@ use Ramona\Ras2\SharedCore\Infrastructure\Serialization\DefaultSerializer;
 use Ramona\Ras2\SharedCore\Infrastructure\Serialization\Deserializer;
 use Ramona\Ras2\SharedCore\Infrastructure\Serialization\Serializer;
 use Ramona\Ras2\SharedCore\Infrastructure\SystemClock;
-use Ramona\Ras2\StoredCredential\Module as StoredCredentialModule;
+use Ramona\Ras2\System\Module as SystemModule;
 use Ramona\Ras2\Task\Module as TaskModule;
 use Ramona\Ras2\User\Module as UserModule;
 
@@ -46,7 +50,7 @@ $containerBuilder->register(LoggerInterface::class, function () {
     $applicationMode = getenv('APPLICATION_MODE');
 
     if ($applicationMode === 'test') {
-        return new \Psr\Log\NullLogger();
+        return new NullLogger();
     }
 
     $logger = new Logger('ras2');
@@ -54,7 +58,7 @@ $containerBuilder->register(LoggerInterface::class, function () {
         $handler = new StreamHandler('php://stderr');
         $handler->setFormatter(new LineFormatter(includeStacktraces: true));
     } else {
-        $handler = new \Monolog\Handler\SyslogHandler('ras2');
+        $handler = new SyslogHandler('ras2');
     }
     $logger->pushHandler($handler);
 
@@ -120,8 +124,12 @@ $containerBuilder->register(Router::class, function (Container $diContainer) {
 });
 
 $containerBuilder->register(JsonResponseFactory::class, fn ($c) => new JsonResponseFactory($c->get(Serializer::class)));
+$containerBuilder->register(
+    CommandExecutor::class,
+    fn ($c) => new DefaultCommandExecutor($c->get(Deserializer::class), $c->get(CommandBus::class))
+);
 
-$modules = [new TaskModule(), new UserModule(), new StoredCredentialModule(), new EventModule()];
+$modules = [new TaskModule(), new UserModule(), new EventModule(), new SystemModule()];
 
 foreach ($modules as $module) {
     $module->install($containerBuilder);

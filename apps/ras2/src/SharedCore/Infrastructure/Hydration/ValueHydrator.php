@@ -11,7 +11,7 @@ interface ValueHydrator
 {
     /**
      * @param list<HydrationAttribute> $serializationAttributes
-     * @return T
+     * @return T|null
      */
     public function hydrate(Hydrator $hydrator, mixed $input, array $serializationAttributes): mixed;
 

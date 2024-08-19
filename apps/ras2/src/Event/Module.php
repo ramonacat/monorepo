@@ -21,11 +21,11 @@ use Ramona\Ras2\SharedCore\Infrastructure\CQRS\Command\CommandBus;
 use Ramona\Ras2\SharedCore\Infrastructure\CQRS\Query\QueryBus;
 use Ramona\Ras2\SharedCore\Infrastructure\DependencyInjection\Container;
 use Ramona\Ras2\SharedCore\Infrastructure\DependencyInjection\ContainerBuilder;
+use Ramona\Ras2\SharedCore\Infrastructure\HTTP\DefaultCommandExecutor;
 use Ramona\Ras2\SharedCore\Infrastructure\HTTP\JsonResponseFactory;
 use Ramona\Ras2\SharedCore\Infrastructure\Hydration\Dehydrator;
 use Ramona\Ras2\SharedCore\Infrastructure\Hydration\Hydrator;
 use Ramona\Ras2\SharedCore\Infrastructure\Hydration\Hydrator\ObjectHydrator;
-use Ramona\Ras2\SharedCore\Infrastructure\Serialization\Deserializer;
 
 final class Module implements \Ramona\Ras2\SharedCore\Infrastructure\Module\Module
 {
@@ -37,7 +37,7 @@ final class Module implements \Ramona\Ras2\SharedCore\Infrastructure\Module\Modu
         );
         $containerBuilder->register(
             PostEvents::class,
-            fn ($c) => new PostEvents($c->get(Deserializer::class), $c->get(CommandBus::class))
+            fn ($c) => new PostEvents($c->get(DefaultCommandExecutor::class))
         );
         $containerBuilder->register(
             Repository::class,

@@ -22,7 +22,6 @@ final class ScalarHydrator implements ValueHydrator
 
     public function hydrate(Hydrator $hydrator, mixed $input, array $serializationAttributes): mixed
     {
-        assert(is_scalar($input));
         return $input;
     }
 

@@ -36,11 +36,11 @@ final class ObjectHydrator implements ValueHydrator
             $type = $property->getType();
 
             if (! ($type instanceof \ReflectionNamedType)) {
-
                 throw CannotHydrateType::for((string) ($type ?? '<missing>'));
             }
 
             $propertyName = $property->getName();
+
             if (! array_key_exists($propertyName, $input)) {
                 throw MissingInputValue::forProperty($propertyName);
             }
