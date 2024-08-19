@@ -11,6 +11,7 @@ use Ramona\Ras2\SharedCore\Infrastructure\CQRS\Command\CommandBus as CommandBus;
 use Ramona\Ras2\SharedCore\Infrastructure\CQRS\Query\QueryBus;
 use Ramona\Ras2\SharedCore\Infrastructure\DependencyInjection\Container;
 use Ramona\Ras2\SharedCore\Infrastructure\DependencyInjection\ContainerBuilder;
+use Ramona\Ras2\SharedCore\Infrastructure\HTTP\DefaultCommandExecutor;
 use Ramona\Ras2\SharedCore\Infrastructure\HTTP\JsonResponseFactory;
 use Ramona\Ras2\SharedCore\Infrastructure\Hydration\Dehydrator;
 use Ramona\Ras2\SharedCore\Infrastructure\Hydration\Dehydrator\ObjectDehydrator;
@@ -28,7 +29,6 @@ use Ramona\Ras2\Task\Application\CurrentTaskView;
 use Ramona\Ras2\Task\Application\HttpApi\GetTaskById;
 use Ramona\Ras2\Task\Application\HttpApi\GetTasks;
 use Ramona\Ras2\Task\Application\HttpApi\PostTasks;
-use Ramona\Ras2\Task\Application\HttpApi\StartWorkRequest;
 use Ramona\Ras2\Task\Application\Query\ById;
 use Ramona\Ras2\Task\Application\Query\Current;
 use Ramona\Ras2\Task\Application\Query\Random;
@@ -73,7 +73,7 @@ final class Module implements \Ramona\Ras2\SharedCore\Infrastructure\Module\Modu
         );
         $containerBuilder->register(
             PostTasks::class,
-            fn (Container $c) => new PostTasks($c->get(CommandBus::class), $c->get(Deserializer::class))
+            fn (Container $c) => new PostTasks($c->get(DefaultCommandExecutor::class))
         );
     }
 
@@ -82,7 +82,6 @@ final class Module implements \Ramona\Ras2\SharedCore\Infrastructure\Module\Modu
         $hydrator = $container->get(Hydrator::class);
         $hydrator->installValueHydrator(new ObjectHydrator(UpsertBacklogItem::class));
         $hydrator->installValueHydrator(new ObjectHydrator(UpsertIdea::class));
-        $hydrator->installValueHydrator(new ObjectHydrator(StartWorkRequest::class));
         $hydrator->installValueHydrator(new ObjectHydrator(PauseWork::class));
         $hydrator->installValueHydrator(new ObjectHydrator(TimeRecord::class));
         $hydrator->installValueHydrator(new ObjectHydrator(FinishWork::class));

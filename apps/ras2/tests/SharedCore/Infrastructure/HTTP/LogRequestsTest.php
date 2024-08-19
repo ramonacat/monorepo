@@ -4,7 +4,9 @@ declare(strict_types=1);
 
 namespace Tests\Ramona\Ras2\SharedCore\Infrastructure\HTTP;
 
+use Laminas\Diactoros\Response\EmptyResponse;
 use Laminas\Diactoros\ServerRequest;
+use Laminas\Diactoros\Uri;
 use League\Route\Http\Exception\NotFoundException;
 use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\ResponseInterface;
@@ -13,7 +15,7 @@ use Psr\Http\Server\RequestHandlerInterface;
 use Ramona\Ras2\SharedCore\Infrastructure\HTTP\LogRequests;
 use Tests\Ramona\Ras2\LoggerMock;
 
-final class LogExceptionsTest extends TestCase
+final class LogRequestsTest extends TestCase
 {
     public function testWillLogTheException(): void
     {
@@ -68,17 +70,46 @@ final class LogExceptionsTest extends TestCase
         self::assertEquals(404, $result->getStatusCode());
     }
 
-    private function createRequestHandler(\Exception $exception): RequestHandlerInterface
+    public function testWillLogResponse(): void
+    {
+        $loggerMock = new LoggerMock();
+        $logExceptions = new LogRequests($loggerMock);
+        $result = $logExceptions->process(new ServerRequest(), $this->createRequestHandler(new EmptyResponse()));
+
+        self::assertEquals([
+            [
+                'level' => 'info',
+                'message' => 'Request received',
+                'context' => [
+                    'uri' => new Uri(),
+                    'method' => 'GET',
+                ],
+            ],
+            [
+                'level' => 'info',
+                'message' => 'Sending response',
+                'context' => [
+                    'status_code' => 204,
+                ],
+            ],
+        ], $loggerMock->messages);
+    }
+
+    private function createRequestHandler(\Exception|ResponseInterface $exception): RequestHandlerInterface
     {
         return new class($exception) implements RequestHandlerInterface {
             public function __construct(
-                private \Exception $exception
+                private \Exception|ResponseInterface $result
             ) {
             }
 
             public function handle(ServerRequestInterface $request): ResponseInterface
             {
-                throw $this->exception;
+                if ($this->result instanceof \Exception) {
+                    throw $this->result;
+                }
+
+                return $this->result;
             }
         };
     }

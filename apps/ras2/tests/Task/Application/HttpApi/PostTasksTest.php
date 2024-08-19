@@ -13,6 +13,7 @@ use PHPUnit\Framework\Attributes\DataProvider;
 use Psr\Log\NullLogger;
 use Ramona\Ras2\SharedCore\Infrastructure\CQRS\Command\Command;
 use Ramona\Ras2\SharedCore\Infrastructure\CQRS\Command\CommandBus;
+use Ramona\Ras2\SharedCore\Infrastructure\HTTP\DefaultCommandExecutor;
 use Ramona\Ras2\SharedCore\Infrastructure\Hydration\Hydrator;
 use Ramona\Ras2\SharedCore\Infrastructure\Serialization\DefaultDeserializer;
 use Ramona\Ras2\SharedCore\Infrastructure\Serialization\Deserializer;
@@ -32,7 +33,9 @@ final class PostTasksTest extends EndpointCase
 {
     public function testThrowsOnNonJsonRequest(): void
     {
-        $handler = new PostTasks(new CommandBus(), new DefaultDeserializer(new Hydrator(), new NullLogger()));
+        $handler = new PostTasks(
+            new DefaultCommandExecutor(new DefaultDeserializer(new Hydrator(), new NullLogger()), new CommandBus())
+        );
 
         $request = new ServerRequest(headers: [
             'Content-Type' => 'text/plain',
@@ -44,8 +47,9 @@ final class PostTasksTest extends EndpointCase
 
     public function testThrowsOnUnknownAction(): void
     {
-        $handler = new PostTasks(new CommandBus(), new DefaultDeserializer(new Hydrator(), new NullLogger()));
-
+        $handler = new PostTasks(
+            new DefaultCommandExecutor(new DefaultDeserializer(new Hydrator(), new NullLogger()), new CommandBus())
+        );
         $request = new ServerRequest(headers: [
             'Content-Type' => 'application/json',
             'X-Action' => 'inaction',
@@ -134,7 +138,7 @@ final class PostTasksTest extends EndpointCase
         $commandBus = new CommandBus();
         $executor = new MockExecutor();
         $commandBus->installExecutor(get_class($expectedCommand), $executor);
-        $handler = new PostTasks($commandBus, $this->container->get(Deserializer::class));
+        $handler = new PostTasks(new DefaultCommandExecutor($this->container->get(Deserializer::class), $commandBus));
         $request = new ServerRequest(method: 'POST', body: new Stream('php://memory', 'rw'), headers: [
             'Content-Type' => 'application/json',
             'X-Action' => $actionName,
