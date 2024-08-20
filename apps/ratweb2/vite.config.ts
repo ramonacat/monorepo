@@ -11,5 +11,5 @@ export default defineConfig({
 			clean: true,
 			reporter: 'clover'
 		}
-	},
+	}
 });

@@ -67,14 +67,14 @@ final class PostgresRepository implements Repository
         });
     }
 
-    public function fetchOrCreateTags(array $tags): array
+    public function fetchOrCreateTags(ArrayCollection $tags): ArrayCollection
     {
         $foundTags = $this
             ->connection
             ->executeQuery(
                 'SELECT id, name FROM tags WHERE name IN(select value::text from json_array_elements(:tags))',
                 [
-                    'tags' => \Safe\json_encode($tags),
+                    'tags' => \Safe\json_encode($tags->toArray()),
                 ]
             )
             ->fetchAllAssociative();
@@ -108,7 +108,7 @@ final class PostgresRepository implements Repository
             $result[] = $id;
         }
 
-        return $result;
+        return new ArrayCollection($result);
     }
 
     public function transactional(\Closure $action): void

@@ -9,13 +9,13 @@ use Doctrine\DBAL\Connection;
 use Ramona\Ras2\SharedCore\Infrastructure\CQRS\Query\Executor;
 use Ramona\Ras2\SharedCore\Infrastructure\CQRS\Query\Query;
 use Ramona\Ras2\SharedCore\Infrastructure\Hydration\Hydrator;
-use Ramona\Ras2\Task\Application\Query\Random;
+use Ramona\Ras2\Task\Application\Query\WatchedBy;
 use Ramona\Ras2\Task\Application\TaskView;
 
 /**
- * @implements Executor<ArrayCollection<int, TaskView>, Random>
+ * @implements Executor<ArrayCollection<int, TaskView>, WatchedBy>
  */
-final class RandomExecutor implements Executor
+final class WatchedByExecutor implements Executor
 {
     public function __construct(
         private Connection $connection,
@@ -48,10 +48,20 @@ final class RandomExecutor implements Executor
                 WHERE 
                     deadline IS NULL 
                     AND state = \'BACKLOG_ITEM\'
-                ORDER BY random()
-                LIMIT :limit
+                    AND EXISTS(
+                        SELECT tt.tag_id
+                        FROM tasks_tags tt 
+                        WHERE tt.task_id = t.id
+                            AND tt.tag_id IN (
+                                SELECT 
+                                    jsonb_array_elements_text(tup.watched_tags)::uuid
+                                FROM tasks_user_profile tup
+                                WHERE tup.user_id = :user_id
+                            )
+                    )
             ', [
                 'limit' => $query->limit,
+                'user_id' => $query->userId,
             ]);
 
         return (new ArrayCollection($rawTasks))

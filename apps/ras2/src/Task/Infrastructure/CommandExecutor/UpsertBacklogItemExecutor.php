@@ -25,9 +25,9 @@ final readonly class UpsertBacklogItemExecutor implements Executor
     public function execute(object $command): void
     {
         $this->repository->transactional(function () use ($command) {
-            $tags = $this->repository->fetchOrCreateTags($command->tags->toArray());
+            $tags = $this->repository->fetchOrCreateTags($command->tags);
             $task = new BacklogItem(
-                new TaskDescription($command->id, $command->title, new ArrayCollection($tags)),
+                new TaskDescription($command->id, $command->title, $tags),
                 $command->assignee,
                 $command->deadline,
                 new ArrayCollection()

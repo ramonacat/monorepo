@@ -1,11 +1,10 @@
 import { it, expect, vi } from 'vitest';
 import { ensureAuthenticated } from '$lib/ensureAuthenticated';
-import type { Cookies } from '@sveltejs/kit'
+import type { Cookies } from '@sveltejs/kit';
 
 it('redirects if the cookie is missing', async () => {
-	let noopCookies = new class implements Cookies {
-		delete(name: string, opts: import('cookie').CookieSerializeOptions & { path: string }): void {
-		}
+	let noopCookies = new (class implements Cookies {
+		delete(name: string, opts: import('cookie').CookieSerializeOptions & { path: string }): void {}
 
 		get(name: string, opts?: import('cookie').CookieParseOptions): string | undefined {
 			return undefined;
@@ -15,13 +14,20 @@ it('redirects if the cookie is missing', async () => {
 			return [];
 		}
 
-		serialize(name: string, value: string, opts: import('cookie').CookieSerializeOptions & { path: string }): string {
+		serialize(
+			name: string,
+			value: string,
+			opts: import('cookie').CookieSerializeOptions & { path: string }
+		): string {
 			return '';
 		}
 
-		set(name: string, value: string, opts: import('cookie').CookieSerializeOptions & { path: string }): void {
-		}
-	};
+		set(
+			name: string,
+			value: string,
+			opts: import('cookie').CookieSerializeOptions & { path: string }
+		): void {}
+	})();
 
 	vi.useFakeTimers();
 	const resolveSpy = vi.fn();
@@ -33,4 +39,4 @@ it('redirects if the cookie is missing', async () => {
 
 	expect(resolveSpy).not.toHaveBeenCalled();
 	expect(rejectSpy).toHaveBeenCalledOnce();
-})
+});

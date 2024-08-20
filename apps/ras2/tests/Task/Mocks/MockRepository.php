@@ -30,9 +30,9 @@ final class MockRepository implements Repository
         return $this->tasks;
     }
 
-    public function fetchOrCreateTags(array $tags): array
+    public function fetchOrCreateTags(ArrayCollection $tags): ArrayCollection
     {
-        return [];
+        return new ArrayCollection();
     }
 
     public function transactional(\Closure $action): void

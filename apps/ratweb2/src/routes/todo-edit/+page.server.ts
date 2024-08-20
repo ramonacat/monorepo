@@ -7,9 +7,7 @@ export async function load({ url, cookies }) {
 	const taskId = url.searchParams.get('task-id') as string;
 
 	const rawTask = await apiClient.getTaskByID(taskId);
-	console.log(rawTask);
 	const task = rawTask.toPojo();
-	console.log(task);
 	return {
 		task,
 		allUsers: (await apiClient.findAllUsers()).map((x) => x.toPojo())
