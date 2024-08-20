@@ -10,15 +10,15 @@ export async function load({ cookies }) {
 		return {
 			userProfile: userProfile?.toPojo()
 		};
-	} catch(e) {
-		console.log('No profile was found for the user, allowing creation...', e)
+	} catch (e) {
+		console.log('No profile was found for the user, allowing creation...', e);
 
 		return {
 			userProfile: {
 				userId: session.userId,
 				watchedTags: []
 			}
-		}
+		};
 	}
 }
 

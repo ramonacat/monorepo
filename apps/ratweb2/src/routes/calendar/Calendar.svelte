@@ -1,51 +1,14 @@
 <script lang="ts">
-	import { DateTime } from 'luxon';
-	import { range } from 'lodash-es';
+	import type { CalendarEvent } from '$lib/CalendarEvent';
+	import { generateCalendar } from '$lib/calendar';
 
 	export let year;
 	export let month;
+	export let calendarEvents: { [key: number]: CalendarEvent[] };
 
-	let weekdays = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
-	let firstDay = DateTime.fromObject({ year, month });
-	let firstDayOfNextMonth = firstDay.plus({ month: 1 });
-
-	let daysInThisMonth = firstDayOfNextMonth.diff(firstDay).shiftTo('days').days;
-
-	let startingWeekday = firstDay.weekday as number;
-	let calendar = [];
-	let firstWeek = [];
-	const daysInFirstWeek = 7 - (startingWeekday - 1);
-
-	for (let i = 0; i < 7 - daysInFirstWeek; i++) {
-		firstWeek.push({});
-	}
-
-	for (let day of range(1, daysInFirstWeek + 1)) {
-		firstWeek.push({ dayNumber: day });
-	}
-
-	calendar.push(firstWeek);
-
-	const fullWeeksCount = Math.floor((daysInThisMonth - daysInFirstWeek) / 7);
-	for (let i = 1; i <= fullWeeksCount; i++) {
-		let currentWeek = [];
-		for (let j = 1; j <= 7; j++) {
-			currentWeek.push({ dayNumber: j + (i - 1) * 7 + daysInFirstWeek });
-		}
-		calendar.push(currentWeek);
-	}
-
-	const daysInTheLastWeek = daysInThisMonth - (fullWeeksCount * 7 + daysInFirstWeek);
-
-	let lastWeek = [];
-	for (let i = 1; i <= daysInTheLastWeek; i++) {
-		lastWeek.push({ dayNumber: daysInFirstWeek + fullWeeksCount * 7 + i });
-	}
-
-	for (let i = 0; i < 7 - daysInTheLastWeek; i++) {
-		lastWeek.push({});
-	}
-	calendar.push(lastWeek);
+	const weekdays = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
+	let calendar = generateCalendar(year, month);
+	$: calendar = generateCalendar(year, month);
 </script>
 
 <table>
@@ -60,7 +23,21 @@
 		{#each calendar as row}
 			<tr>
 				{#each row as day}
-					<td>{day.dayNumber ?? ''}</td>
+					<td>
+						{day.dayNumber ?? ''}
+						{#if day.dayNumber && calendarEvents[day.dayNumber]}
+							<ul>
+								{#each calendarEvents[day.dayNumber] as event}
+									<li>
+										{#if event.time}
+											<span class="time">{event.time}</span>
+										{/if}
+										{event.name}
+									</li>
+								{/each}
+							</ul>
+						{/if}
+					</td>
 				{/each}
 			</tr>
 		{/each}
