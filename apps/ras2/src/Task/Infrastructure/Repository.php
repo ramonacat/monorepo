@@ -16,10 +16,10 @@ interface Repository
     public function save(Task $task): void;
 
     /**
-     * @param array<int, string> $tags
-     * @return array<int, TagId>
+     * @param ArrayCollection<int, string> $tags
+     * @return ArrayCollection<int, TagId>
      */
-    public function fetchOrCreateTags(array $tags): array;
+    public function fetchOrCreateTags(ArrayCollection $tags): ArrayCollection;
 
     /**
      * @param \Closure():void $action

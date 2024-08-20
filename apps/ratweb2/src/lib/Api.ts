@@ -4,6 +4,7 @@ import type { Session } from '$lib/Session';
 import { type PojoDateTime, ServerTaskSummary } from '$lib/ServerTaskSummary';
 import { ServerCurrentTaskView } from '$lib/ServerCurrentTaskView';
 import { ServerUserView } from '$lib/ServerUserView';
+import { TaskUserProfile, WatchedTag } from './TaskUserProfile';
 
 interface RawServerDateTime {
 	timestamp: string;
@@ -106,6 +107,20 @@ export class ApiClient {
 		});
 	}
 
+	async updateTagsProfile(userId: string, tags: string[]) {
+		await this.call('tasks/user-profiles', {
+			method: 'POST',
+			body: JSON.stringify({
+				userId,
+				watchedTags: tags
+			}),
+			headers: {
+				'X-Action': 'upsert',
+				'Content-Type': 'application/json'
+			}
+		});
+	}
+
 	public async getTaskByID(id: string): Promise<ServerTaskSummary> {
 		const raw: RawTask = (await this.query(`tasks/${id}`)) as RawTask;
 
@@ -163,6 +178,18 @@ export class ApiClient {
 					raw.isPaused
 				)
 			: undefined;
+	}
+
+	async findTaskUserProfile() {
+		const result = (await this.query('/tasks/user-profiles')) as {
+			userId: string;
+			watchedTags: { id: string; name: string }[];
+		};
+
+		return new TaskUserProfile(
+			result.userId,
+			result.watchedTags.map((x) => new WatchedTag(x.id, x.name))
+		);
 	}
 
 	private rawTaskToObject(raw: RawTask): ServerTaskSummary {

@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Ramona\Ras2\Task\Infrastructure\CommandExecutor;
 
-use Doctrine\Common\Collections\ArrayCollection;
 use Ramona\Ras2\SharedCore\Infrastructure\CQRS\Command\Executor;
 use Ramona\Ras2\Task\Application\Command\UpsertIdea;
 use Ramona\Ras2\Task\Business\Idea;
@@ -25,8 +24,8 @@ final readonly class CreateIdeaExecutor implements Executor
     public function execute(object $command): void
     {
         $this->repository->transactional(function () use ($command) {
-            $tags = $this->repository->fetchOrCreateTags($command->tags->toArray());
-            $idea = new Idea(new TaskDescription($command->id, $command->title, new ArrayCollection($tags)));
+            $tags = $this->repository->fetchOrCreateTags($command->tags);
+            $idea = new Idea(new TaskDescription($command->id, $command->title, $tags));
             $this
                 ->repository
                 ->save($idea);

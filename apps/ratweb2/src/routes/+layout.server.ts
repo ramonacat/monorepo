@@ -6,6 +6,6 @@ export async function load({ cookies }) {
 	const currentTask = await apiClient.findCurrentTask();
 
 	return {
-		currentTask: currentTask?.toPojo(),
+		currentTask: currentTask?.toPojo()
 	};
 }

@@ -11,8 +11,8 @@ use Ramona\Ras2\SharedCore\Infrastructure\CQRS\Query\QueryBus;
 use Ramona\Ras2\SharedCore\Infrastructure\HTTP\JsonResponseFactory;
 use Ramona\Ras2\SharedCore\Infrastructure\HTTP\RequireLogin;
 use Ramona\Ras2\Task\Application\Query\Current;
-use Ramona\Ras2\Task\Application\Query\Random;
 use Ramona\Ras2\Task\Application\Query\Upcoming;
+use Ramona\Ras2\Task\Application\Query\WatchedBy;
 use Ramona\Ras2\User\Application\Session;
 use Ramona\Ras2\User\Business\UserId;
 
@@ -27,12 +27,14 @@ final class GetTasks
     public function __invoke(ServerRequestInterface $request): ResponseInterface
     {
         $queryParams = $request->getQueryParams();
+        /** @var Session $session */
+        $session = $request->getAttribute(RequireLogin::SESSION_ATTRIBUTE);
 
         switch ($queryParams['action'] ?? null) {
             case 'upcoming':
                 return $this->getUpcoming($queryParams);
             case 'watched':
-                return $this->getWatched((int) $queryParams['limit']);
+                return $this->getWatched((int) $queryParams['limit'], $session->userId);
             case 'current':
                 return $this->getCurrent($request);
             default:
@@ -40,10 +42,9 @@ final class GetTasks
         }
     }
 
-    private function getWatched(int $limit): ResponseInterface
+    private function getWatched(int $limit, UserId $userId): ResponseInterface
     {
-        // TODO we don't have the concept of "watched tags" yet, but once we do, this will have to be adjusted
-        $result = $this->queryBus->execute(new Random($limit));
+        $result = $this->queryBus->execute(new WatchedBy($userId, $limit));
         return $this->responseFactory->create($result);
     }
 

@@ -5,35 +5,41 @@
 
 	export let task: ServerCurrentTaskView;
 </script>
-<div class="wrapper">
-<span class="name">{task.title}</span>
-<span class="time-spent"><TimeCounter since={task.startTime.toDateTime()} isPaused={task.isPaused} /></span>
 
-<div class="buttons">
-	{#if !task.isPaused}
-		<form method="POST" action="?/pause_task">
+<div class="wrapper">
+	<span class="name">{task.title}</span>
+	<span class="time-spent"
+		><TimeCounter since={task.startTime.toDateTime()} isPaused={task.isPaused} /></span
+	>
+
+	<div class="buttons">
+		{#if !task.isPaused}
+			<form method="POST" action="?/pause_task">
+				<input type="hidden" name="task-id" value={task.id} />
+				<button title="pause"><Icon inline icon="mdi:pause" /></button>
+			</form>
+		{/if}
+		{#if task.isPaused}
+			<form method="POST" action="?/start_task">
+				<input type="hidden" name="task-id" value={task.id} />
+				<button title="pause"><Icon inline icon="mdi:play" /></button>
+			</form>
+		{/if}
+		<form method="POST" action="?/finish_task">
 			<input type="hidden" name="task-id" value={task.id} />
-			<button title="pause"><Icon inline icon="mdi:pause" /></button>
+			<button title="done"><Icon inline icon="mdi:done" /></button>
 		</form>
-	{/if}
-	{#if task.isPaused}
-		<form method="POST" action="?/start_task">
+		<form method="POST" action="?/return_to_backlog">
 			<input type="hidden" name="task-id" value={task.id} />
-			<button title="pause"><Icon inline icon="mdi:play" /></button>
+			<button title="return to backlog"><Icon inline icon="mdi:assignment-return" /></button>
 		</form>
-	{/if}
-	<form method="POST" action="?/finish_task">
-		<input type="hidden" name="task-id" value={task.id} />
-		<button title="done"><Icon inline icon="mdi:done" /></button>
-	</form>
-	<form method="POST" action="?/return_to_backlog">
-		<input type="hidden" name="task-id" value={task.id} />
-		<button title="return to backlog"><Icon inline icon="mdi:assignment-return" /></button>
-	</form>
+	</div>
 </div>
-</div>
+
 <style>
-		.wrapper {display:flex;}
+	.wrapper {
+		display: flex;
+	}
 	.name,
 	.time-spent {
 		display: block;
@@ -53,7 +59,8 @@
 		justify-content: center;
 	}
 
-	.buttons button, span {
-			padding: var(--spacing-m);
+	.buttons button,
+	span {
+		padding: var(--spacing-m);
 	}
 </style>

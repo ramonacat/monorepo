@@ -17,8 +17,8 @@ use Ramona\Ras2\SharedCore\Infrastructure\Serialization\Serializer;
 use Ramona\Ras2\Task\Application\CurrentTaskView;
 use Ramona\Ras2\Task\Application\HttpApi\GetTasks;
 use Ramona\Ras2\Task\Application\Query\Current;
-use Ramona\Ras2\Task\Application\Query\Random;
 use Ramona\Ras2\Task\Application\Query\Upcoming;
+use Ramona\Ras2\Task\Application\Query\WatchedBy;
 use Ramona\Ras2\Task\Application\TaskView;
 use Ramona\Ras2\Task\Business\TaskId;
 use Ramona\Ras2\User\Application\Session;
@@ -125,8 +125,13 @@ final class GetTasksTest extends EndpointCase
     {
         $request = new ServerRequest(queryParams: [
             'limit' => 123,
+            'userId' => '01916b6b-7aad-76b3-8c88-1962e83a27d8',
             'action' => 'watched',
         ]);
+        $request = $request->withAttribute(
+            'session',
+            new Session(UserId::fromString('01916b6b-7aad-76b3-8c88-1962e83a27d8'), 'ramona')
+        );
 
         $bus = new QueryBus();
         $result = new TaskView(
@@ -140,7 +145,7 @@ final class GetTasksTest extends EndpointCase
         );
         $executor = new MockFindRandomExecutor([$result]);
 
-        $bus->installExecutor(Random::class, $executor);
+        $bus->installExecutor(WatchedBy::class, $executor);
         $serializer = $this->container->get(Serializer::class);
 
         $controller = new GetTasks($bus, new JsonResponseFactory($serializer));
@@ -149,7 +154,10 @@ final class GetTasksTest extends EndpointCase
         $response->getBody()
             ->seek(0);
 
-        self::assertEquals(new Random(123), $executor->query);
+        self::assertEquals(
+            new WatchedBy(UserId::fromString('01916b6b-7aad-76b3-8c88-1962e83a27d8'), 123),
+            $executor->query
+        );
         self::assertJsonStringEqualsJsonString(
             $serializer->serialize(new ArrayCollection([$result])),
             $response->getBody()

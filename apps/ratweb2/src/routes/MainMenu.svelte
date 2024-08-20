@@ -2,7 +2,8 @@
 	import { page } from '$app/stores';
 	const links = [
 		{ path: '/', text: 'Tasks' },
-		{ path: '/calendar', text: 'Calendar' }
+		{ path: '/calendar', text: 'Calendar' },
+		{ path: '/profile', text: 'Profile' }
 	];
 </script>
 
