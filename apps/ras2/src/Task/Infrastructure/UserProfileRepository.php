@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Ramona\Ras2\Task\Infrastructure;
 
-use Ramona\Ras2\Event\Business\UserProfile;
+use Ramona\Ras2\Task\Business\UserProfile;
 
 interface UserProfileRepository
 {

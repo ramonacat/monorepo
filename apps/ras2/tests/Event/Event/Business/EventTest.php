@@ -2,13 +2,14 @@
 
 declare(strict_types=1);
 
-namespace Tests\Ramona\Ras2\Event\Business;
+namespace Tests\Ramona\Ras2\Event\Event\Business;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use PHPUnit\Framework\TestCase;
 use Ramona\Ras2\Event\Business\Event;
 use Ramona\Ras2\Event\Business\EventId;
 use Ramona\Ras2\User\Business\UserId;
+use Safe\DateTimeImmutable;
 
 final class EventTest extends TestCase
 {
@@ -18,8 +19,8 @@ final class EventTest extends TestCase
         $event = new Event(
             $id,
             'This is some title',
-            new \Safe\DateTimeImmutable(),
-            new \Safe\DateTimeImmutable(),
+            new DateTimeImmutable(),
+            new DateTimeImmutable(),
             new ArrayCollection()
         );
 
@@ -31,8 +32,8 @@ final class EventTest extends TestCase
         $event = new Event(
             EventId::generate(),
             'This is some title',
-            new \Safe\DateTimeImmutable(),
-            new \Safe\DateTimeImmutable(),
+            new DateTimeImmutable(),
+            new DateTimeImmutable(),
             new ArrayCollection()
         );
 
@@ -41,12 +42,12 @@ final class EventTest extends TestCase
 
     public function testStart(): void
     {
-        $start = new \Safe\DateTimeImmutable();
+        $start = new DateTimeImmutable();
         $event = new Event(
             EventId::generate(),
             'This is some title',
             $start,
-            new \Safe\DateTimeImmutable(),
+            new DateTimeImmutable(),
             new ArrayCollection()
         );
 
@@ -55,11 +56,11 @@ final class EventTest extends TestCase
 
     public function testEnd(): void
     {
-        $end = new \Safe\DateTimeImmutable();
+        $end = new DateTimeImmutable();
         $event = new Event(
             EventId::generate(),
             'This is some title',
-            new \Safe\DateTimeImmutable(),
+            new DateTimeImmutable(),
             $end,
             new ArrayCollection()
         );
@@ -74,8 +75,8 @@ final class EventTest extends TestCase
         $event = new Event(
             EventId::generate(),
             'This is some title',
-            new \Safe\DateTimeImmutable(),
-            new \Safe\DateTimeImmutable(),
+            new DateTimeImmutable(),
+            new DateTimeImmutable(),
             $attendees
         );
 

@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace Ramona\Ras2\Task\Infrastructure\CommandExecutor;
 
-use Ramona\Ras2\Event\Business\UserProfile;
 use Ramona\Ras2\SharedCore\Infrastructure\CQRS\Command\Command;
 use Ramona\Ras2\SharedCore\Infrastructure\CQRS\Command\Executor;
 use Ramona\Ras2\Task\Application\Command\UpsertUserProfile;
+use Ramona\Ras2\Task\Business\UserProfile;
 use Ramona\Ras2\Task\Infrastructure\Repository;
 use Ramona\Ras2\Task\Infrastructure\UserProfileRepository;
 

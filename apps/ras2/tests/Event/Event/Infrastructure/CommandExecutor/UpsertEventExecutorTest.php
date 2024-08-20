@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Tests\Ramona\Ras2\Event\Infrastructure\CommandExecutor;
+namespace Tests\Ramona\Ras2\Event\Event\Infrastructure\CommandExecutor;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use PHPUnit\Framework\TestCase;
