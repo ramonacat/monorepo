@@ -5,6 +5,7 @@ import { type PojoDateTime, ServerTaskSummary } from '$lib/ServerTaskSummary';
 import { ServerCurrentTaskView } from '$lib/ServerCurrentTaskView';
 import { ServerUserView } from '$lib/ServerUserView';
 import { TaskUserProfile, WatchedTag } from './TaskUserProfile';
+import { EventView } from '$lib/EventView';
 
 interface RawServerDateTime {
 	timestamp: string;
@@ -189,6 +190,27 @@ export class ApiClient {
 		return new TaskUserProfile(
 			result.userId,
 			result.watchedTags.map((x) => new WatchedTag(x.id, x.name))
+		);
+	}
+
+	async findEventsInMonth(year: number, month: number) {
+		const result = (await this.query('/events?year=' + year + '&month=' + month)) as {
+			id: string;
+			title: string;
+			start: RawServerDateTime;
+			end: RawServerDateTime;
+			attendeeUsernames: string[];
+		}[];
+
+		return result.map(
+			(x) =>
+				new EventView(
+					x.id,
+					x.title,
+					new ServerDateTime(x.start),
+					new ServerDateTime(x.end),
+					x.attendeeUsernames
+				)
 		);
 	}
 
