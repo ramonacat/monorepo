@@ -40,14 +40,22 @@ final class RequireLoginTest extends TestCase
         $username = 'ramona';
         $bus->installExecutor(
             ByToken::class,
-            new FindByTokenExecutorMock(fn () => new Session($userId, $username))
+            new FindByTokenExecutorMock(fn () => new Session(
+                $userId,
+                $username,
+                new \DateTimeZone('Europe/Berlin')
+            ))
         );
         $requireLogin = new RequireLogin($bus);
 
         $requestHandler = new MockRequestHandler();
         $requireLogin->process($request, $requestHandler);
 
-        self::assertEquals(new Session($userId, $username), $requestHandler->request?->getAttribute('session'));
+        self::assertEquals(new Session(
+            $userId,
+            $username,
+            new \DateTimeZone('Europe/Berlin')
+        ), $requestHandler->request?->getAttribute('session'));
     }
 
     public function testWillFailOnMissingToken(): void

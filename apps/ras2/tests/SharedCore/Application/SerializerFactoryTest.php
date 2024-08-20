@@ -132,7 +132,11 @@ final class SerializerFactoryTest extends TestCase
 
     public function testUnderstandsSession(): void
     {
-        $session = new Session(UserId::fromString('01913763-3947-73e2-9406-b7efbcf560b3'), 'ramona');
+        $session = new Session(
+            UserId::fromString('01913763-3947-73e2-9406-b7efbcf560b3'),
+            'ramona',
+            new \DateTimeZone('Europe/Berlin')
+        );
 
         $result = $this->serializer->serialize($session);
 

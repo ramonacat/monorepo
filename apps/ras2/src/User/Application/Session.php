@@ -10,7 +10,8 @@ final readonly class Session
 {
     public function __construct(
         public UserId $userId,
-        public string $username
+        public string $username,
+        public \DateTimeZone $timeZone
     ) {
     }
 }

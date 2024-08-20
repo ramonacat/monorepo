@@ -29,6 +29,7 @@ use Ramona\Ras2\SharedCore\Infrastructure\Hydration\DefaultDehydrator;
 use Ramona\Ras2\SharedCore\Infrastructure\Hydration\Dehydrator;
 use Ramona\Ras2\SharedCore\Infrastructure\Hydration\Dehydrator\ArrayCollectionDehydrator;
 use Ramona\Ras2\SharedCore\Infrastructure\Hydration\Dehydrator\DateTimeImmutableDehydrator;
+use Ramona\Ras2\SharedCore\Infrastructure\Hydration\Dehydrator\DateTimeZoneDehydrator;
 use Ramona\Ras2\SharedCore\Infrastructure\Hydration\Dehydrator\ScalarDehydrator;
 use Ramona\Ras2\SharedCore\Infrastructure\Hydration\Dehydrator\UuidDehydrator;
 use Ramona\Ras2\SharedCore\Infrastructure\Hydration\Hydrator;
@@ -101,6 +102,7 @@ $containerBuilder->register(Dehydrator::class, function () {
     $dehydrator->installValueDehydrator(new ScalarDehydrator('NULL'));
     $dehydrator->installValueDehydrator(new UuidDehydrator());
     $dehydrator->installValueDehydrator(new DateTimeImmutableDehydrator());
+    $dehydrator->installValueDehydrator(new DateTimeZoneDehydrator());
 
     return $dehydrator;
 });
