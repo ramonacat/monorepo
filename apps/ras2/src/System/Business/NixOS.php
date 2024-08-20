@@ -11,9 +11,6 @@ final class NixOS implements OperatingSystem
          * @phpstan-ignore property.onlyWritten
          */
         private string $currentClosure,
-        /**
-         * @phpstan-ignore property.onlyWritten
-         */
         private ?string $latestClosure
     ) {
     }
@@ -26,5 +23,10 @@ final class NixOS implements OperatingSystem
     public function updateLatestClosure(string $latestClosure): void
     {
         $this->latestClosure = $latestClosure;
+    }
+
+    public function latestClosure(): ?string
+    {
+        return $this->latestClosure;
     }
 }

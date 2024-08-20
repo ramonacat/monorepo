@@ -72,18 +72,18 @@ final class PostgresRepository implements Repository
         $foundTags = $this
             ->connection
             ->executeQuery(
-                'SELECT id, name FROM tags WHERE name IN(select value::text from json_array_elements(:tags))',
+                'SELECT id, name FROM tags WHERE name IN(select value #>> \'{}\' from json_array_elements(:tags))',
                 [
                     'tags' => \Safe\json_encode($tags->toArray()),
                 ]
             )
             ->fetchAllAssociative();
 
+        /** @var array<string, string> $foundMap */
+        $foundMap = [];
         $result = [];
         $toCreate = [];
 
-        /** @var array<string, string> $foundMap */
-        $foundMap = [];
         foreach ($foundTags as $tag) {
             $foundMap[(string) $tag['name']] = (string) $tag['id'];
         }

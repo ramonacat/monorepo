@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace Ramona\Ras2\Task\Infrastructure;
 
 use Doctrine\DBAL\Connection;
-use Ramona\Ras2\Event\Business\UserProfile;
 use Ramona\Ras2\SharedCore\Infrastructure\Serialization\Serializer;
+use Ramona\Ras2\Task\Business\UserProfile;
 
 final class PostgresUserProfileRepository implements UserProfileRepository
 {

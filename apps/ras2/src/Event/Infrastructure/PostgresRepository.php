@@ -16,11 +16,6 @@ final class PostgresRepository implements Repository
 
     public function save(Event $event): void
     {
-        $eventStartTimezone = $event->start()
-            ->getTimezone();
-        $eventEndTimezone = $event->end()
-            ->getTimezone();
-
         $this->connection->executeQuery('
             INSERT INTO events(id, title, start, "end") 
             VALUES (

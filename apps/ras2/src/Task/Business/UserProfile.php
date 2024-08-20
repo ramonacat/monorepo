@@ -2,10 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Ramona\Ras2\Event\Business;
+namespace Ramona\Ras2\Task\Business;
 
 use Doctrine\Common\Collections\ArrayCollection;
-use Ramona\Ras2\Task\Business\TagId;
 use Ramona\Ras2\User\Business\UserId;
 
 final class UserProfile

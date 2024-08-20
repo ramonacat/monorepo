@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Tests\Ramona\Ras2\Event\Appplication\HttpApi;
+namespace Tests\Ramona\Ras2\Event\Event\Appplication\HttpApi;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use Laminas\Diactoros\ServerRequest;
