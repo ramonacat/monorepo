@@ -92,7 +92,11 @@ final class GetTasksTest extends EndpointCase
 
         $request = $request->withAttribute(
             'session',
-            new Session(UserId::fromString('01913d57-1546-79b6-9ecb-9fa6da779199'), 'ramona')
+            new Session(
+                UserId::fromString('01913d57-1546-79b6-9ecb-9fa6da779199'),
+                'ramona',
+                new \DateTimeZone('Europe/Berlin')
+            )
         );
 
         $bus = new QueryBus();
@@ -130,7 +134,11 @@ final class GetTasksTest extends EndpointCase
         ]);
         $request = $request->withAttribute(
             'session',
-            new Session(UserId::fromString('01916b6b-7aad-76b3-8c88-1962e83a27d8'), 'ramona')
+            new Session(
+                UserId::fromString('01916b6b-7aad-76b3-8c88-1962e83a27d8'),
+                'ramona',
+                new \DateTimeZone('Europe/Berlin')
+            )
         );
 
         $bus = new QueryBus();

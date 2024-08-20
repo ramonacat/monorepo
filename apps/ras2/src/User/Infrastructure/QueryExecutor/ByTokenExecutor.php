@@ -31,14 +31,15 @@ final class ByTokenExecutor implements Executor
             throw UserNotFound::withToken();
         }
 
-        /** @var array{id: string, name: string}|false $rawUser */
-        $rawUser = $this->databaseConnection->fetchAssociative('SELECT id, name FROM users WHERE id=:id', [
+        $rawUser = $this->databaseConnection->fetchAssociative('SELECT id, name, timezone FROM users WHERE id=:id', [
             'id' => $userId,
         ]);
         if ($rawUser === false) {
             throw UserNotFound::withToken();
         }
 
-        return new Session(UserId::fromString($rawUser['id']), $rawUser['name']);
+        return new Session(UserId::fromString($rawUser['id']), $rawUser['name'], new \DateTimeZone(
+            $rawUser['timezone']
+        ));
     }
 }
