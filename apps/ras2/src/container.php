@@ -85,6 +85,7 @@ $containerBuilder->register(Hydrator::class, function () {
     $hydrator->installValueHydrator(new ScalarHydrator('integer'));
     $hydrator->installValueHydrator(new ArrayCollectionHydrator());
     $hydrator->installValueHydrator(new DateTimeImmutableHydrator());
+    $hydrator->installValueHydrator(new Hydrator\DateTimeZoneHydrator());
 
     return $hydrator;
 });
@@ -120,7 +121,9 @@ $containerBuilder->register(Router::class, function (Container $diContainer) {
 
     $router = new League\Route\Router();
     $router->setStrategy($routerStrategy);
-    $router->prependMiddleware(new RequireLogin($diContainer->get(QueryBus::class)));
+    $router->prependMiddleware(
+        new RequireLogin($diContainer->get(QueryBus::class), $diContainer->get(Hydrator::class))
+    );
 
     return $router;
 });
@@ -129,6 +132,13 @@ $containerBuilder->register(JsonResponseFactory::class, fn ($c) => new JsonRespo
 $containerBuilder->register(
     CommandExecutor::class,
     fn ($c) => new DefaultCommandExecutor($c->get(Deserializer::class), $c->get(CommandBus::class))
+);
+
+$containerBuilder->register(
+    \Ramona\Ras2\SharedCore\Infrastructure\HTTP\QueryExecutor::class,
+    fn ($c) => new \Ramona\Ras2\SharedCore\Infrastructure\HTTP\DefaultQueryExecutor($c->get(Hydrator::class), $c->get(
+        QueryBus::class
+    ), $c->get(JsonResponseFactory::class))
 );
 
 $modules = [new TaskModule(), new UserModule(), new EventModule(), new SystemModule()];

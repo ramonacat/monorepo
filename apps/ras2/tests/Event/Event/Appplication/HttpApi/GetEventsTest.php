@@ -11,7 +11,11 @@ use Ramona\Ras2\Event\Application\HttpApi\GetEvents;
 use Ramona\Ras2\Event\Application\Query\InMonth;
 use Ramona\Ras2\Event\Business\EventId;
 use Ramona\Ras2\SharedCore\Infrastructure\CQRS\Query\QueryBus;
+use Ramona\Ras2\SharedCore\Infrastructure\HTTP\DefaultQueryExecutor;
 use Ramona\Ras2\SharedCore\Infrastructure\HTTP\JsonResponseFactory;
+use Ramona\Ras2\SharedCore\Infrastructure\Hydration\Hydrator;
+use Ramona\Ras2\User\Application\Session;
+use Ramona\Ras2\User\Business\UserId;
 use Tests\Ramona\Ras2\EndpointCase;
 
 final class GetEventsTest extends EndpointCase
@@ -30,13 +34,24 @@ final class GetEventsTest extends EndpointCase
         ]));
         $queryBus->installExecutor(InMonth::class, $mockExecutor);
 
-        $controller = new GetEvents($queryBus, $this->container->get(JsonResponseFactory::class));
+        $controller = new GetEvents(
+            new DefaultQueryExecutor(
+                $this->container->get(Hydrator::class),
+                $queryBus,
+                $this->container->get(JsonResponseFactory::class),
+            )
+        );
+
+        $this->container->get(Hydrator::class)->setSession(
+            new Session(UserId::generate(), 'ramona', new \DateTimeZone('Europe/Berlin'))
+        );
 
         $request = new ServerRequest(
             queryParams: [
                 'year' => '2024',
                 'month' => '8',
-            ]
+                'action' => 'in-month',
+            ],
         );
 
         $response = ($controller)($request);

@@ -10,8 +10,10 @@ use Laminas\Diactoros\Stream;
 use League\Route\Http\Exception\NotFoundException;
 use Psr\Log\NullLogger;
 use Ramona\Ras2\SharedCore\Infrastructure\CQRS\Query\QueryBus;
+use Ramona\Ras2\SharedCore\Infrastructure\HTTP\DefaultQueryExecutor;
 use Ramona\Ras2\SharedCore\Infrastructure\HTTP\JsonResponseFactory;
 use Ramona\Ras2\SharedCore\Infrastructure\Hydration\DefaultDehydrator;
+use Ramona\Ras2\SharedCore\Infrastructure\Hydration\Hydrator;
 use Ramona\Ras2\SharedCore\Infrastructure\Serialization\DefaultSerializer;
 use Ramona\Ras2\SharedCore\Infrastructure\Serialization\Serializer;
 use Ramona\Ras2\Task\Application\CurrentTaskView;
@@ -23,6 +25,7 @@ use Ramona\Ras2\Task\Application\TaskView;
 use Ramona\Ras2\Task\Business\TaskId;
 use Ramona\Ras2\User\Application\Session;
 use Ramona\Ras2\User\Business\UserId;
+use Ramona\Ras2\User\Infrastructure\UserIdHydrator;
 use Tests\Ramona\Ras2\EndpointCase;
 use Tests\Ramona\Ras2\Task\Mocks\MockCurrentExecutor;
 use Tests\Ramona\Ras2\Task\Mocks\MockFindRandomExecutor;
@@ -34,16 +37,19 @@ final class GetTasksTest extends EndpointCase
     {
         $request = new ServerRequest();
 
-        $controller = new GetTasks(new QueryBus(), new JsonResponseFactory(new DefaultSerializer(
-            new DefaultDehydrator(),
-            new NullLogger()
-        )));
+        $controller = new GetTasks(
+            new DefaultQueryExecutor(
+                new Hydrator(),
+                new QueryBus(),
+                new JsonResponseFactory(new DefaultSerializer(new DefaultDehydrator(), new NullLogger()))
+            )
+        );
 
         $this->expectException(NotFoundException::class);
         ($controller)($request);
     }
 
-    public function testWillExecuteQueryForUpcoming(): void
+    public function testUpcoming(): void
     {
         $request = new ServerRequest(queryParams: [
             'limit' => 123,
@@ -66,7 +72,11 @@ final class GetTasksTest extends EndpointCase
         $bus->installExecutor(Upcoming::class, $executor);
         $serializer = $this->container->get(Serializer::class);
 
-        $controller = new GetTasks($bus, new JsonResponseFactory($serializer));
+        $hydrator = new Hydrator();
+        $hydrator->installValueHydrator(new Hydrator\ObjectHydrator(Upcoming::class));
+        $hydrator->installValueHydrator(new UserIdHydrator());
+        $hydrator->installValueHydrator(new Hydrator\ScalarHydrator('integer'));
+        $controller = new GetTasks(new DefaultQueryExecutor($hydrator, $bus, new JsonResponseFactory($serializer)));
 
         $response = ($controller)($request);
         $response->getBody()
@@ -84,20 +94,18 @@ final class GetTasksTest extends EndpointCase
         self::assertEquals('application/json', $response->getHeaderLine('Content-Type'));
     }
 
-    public function testWatched(): void
+    public function testCurrent(): void
     {
         $request = new ServerRequest(body: new Stream('php://memory', 'rw'), queryParams: [
             'action' => 'current',
         ]);
 
-        $request = $request->withAttribute(
-            'session',
-            new Session(
-                UserId::fromString('01913d57-1546-79b6-9ecb-9fa6da779199'),
-                'ramona',
-                new \DateTimeZone('Europe/Berlin')
-            )
+        $session = new Session(
+            UserId::fromString('01913d57-1546-79b6-9ecb-9fa6da779199'),
+            'ramona',
+            new \DateTimeZone('Europe/Berlin')
         );
+        $request = $request->withAttribute('session', $session);
 
         $bus = new QueryBus();
         $result = new CurrentTaskView(TaskId::generate(), 'Title', new \Safe\DateTimeImmutable(), true);
@@ -106,7 +114,10 @@ final class GetTasksTest extends EndpointCase
         $bus->installExecutor(Current::class, $executor);
         $serializer = $this->container->get(Serializer::class);
 
-        $controller = new GetTasks($bus, new JsonResponseFactory($serializer));
+        $hydrator = new Hydrator();
+        $hydrator->setSession($session);
+        $hydrator->installValueHydrator(new Hydrator\ObjectHydrator(Current::class));
+        $controller = new GetTasks(new DefaultQueryExecutor($hydrator, $bus, new JsonResponseFactory($serializer)));
 
         $response = ($controller)($request);
         $response->getBody()
@@ -125,7 +136,7 @@ final class GetTasksTest extends EndpointCase
         self::assertEquals('application/json', $response->getHeaderLine('Content-Type'));
     }
 
-    public function testCurrent(): void
+    public function testWatched(): void
     {
         $request = new ServerRequest(queryParams: [
             'limit' => 123,
@@ -156,7 +167,11 @@ final class GetTasksTest extends EndpointCase
         $bus->installExecutor(WatchedBy::class, $executor);
         $serializer = $this->container->get(Serializer::class);
 
-        $controller = new GetTasks($bus, new JsonResponseFactory($serializer));
+        $hydrator = new Hydrator();
+        $hydrator->installValueHydrator(new Hydrator\ObjectHydrator(WatchedBy::class));
+        $hydrator->installValueHydrator(new Hydrator\ScalarHydrator('integer'));
+        $hydrator->installValueHydrator(new UserIdHydrator());
+        $controller = new GetTasks(new DefaultQueryExecutor($hydrator, $bus, new JsonResponseFactory($serializer)));
 
         $response = ($controller)($request);
         $response->getBody()

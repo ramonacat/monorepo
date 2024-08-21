@@ -11,12 +11,14 @@ use Ramona\Ras2\SharedCore\Infrastructure\CQRS\Query\QueryBus;
 use Ramona\Ras2\SharedCore\Infrastructure\DependencyInjection\Container;
 use Ramona\Ras2\SharedCore\Infrastructure\DependencyInjection\ContainerBuilder;
 use Ramona\Ras2\SharedCore\Infrastructure\HTTP\JsonResponseFactory;
+use Ramona\Ras2\SharedCore\Infrastructure\HTTP\QueryExecutor;
 use Ramona\Ras2\SharedCore\Infrastructure\Hydration\Dehydrator;
 use Ramona\Ras2\SharedCore\Infrastructure\Hydration\Dehydrator\ObjectDehydrator;
 use Ramona\Ras2\SharedCore\Infrastructure\Hydration\Hydrator;
 use Ramona\Ras2\SharedCore\Infrastructure\Hydration\Hydrator\ObjectHydrator;
 use Ramona\Ras2\SharedCore\Infrastructure\Serialization\Deserializer;
 use Ramona\Ras2\SharedCore\Infrastructure\Serialization\Serializer;
+use Ramona\Ras2\Task\Application\Query\UserProfileByUserId;
 use Ramona\Ras2\User\Application\Command\Login;
 use Ramona\Ras2\User\Application\Command\LoginRequest;
 use Ramona\Ras2\User\Application\Command\LoginResponse;
@@ -47,9 +49,10 @@ final class Module implements \Ramona\Ras2\SharedCore\Infrastructure\Module\Modu
         );
         $containerBuilder->register(
             GetUsers::class,
-            fn (Container $container) => new GetUsers($container->get(JsonResponseFactory::class), $container->get(
-                QueryBus::class
-            ))
+            fn (Container $container) => new GetUsers(
+                $container->get(JsonResponseFactory::class),
+                $container->get(QueryExecutor::class)
+            )
         );
         $containerBuilder->register(
             PostUsers::class,
@@ -65,6 +68,8 @@ final class Module implements \Ramona\Ras2\SharedCore\Infrastructure\Module\Modu
         $hydrator = $container->get(Hydrator::class);
         $hydrator->installValueHydrator(new ObjectHydrator(LoginRequest::class));
         $hydrator->installValueHydrator(new ObjectHydrator(UserView::class));
+        $hydrator->installValueHydrator(new ObjectHydrator(All::class));
+        $hydrator->installValueHydrator(new ObjectHydrator(UserProfileByUserId::class));
         $hydrator->installValueHydrator(new UserIdHydrator());
 
         $dehydrator = $container->get(Dehydrator::class);

@@ -7,26 +7,19 @@ namespace Ramona\Ras2\Event\Application\HttpApi;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Ramona\Ras2\Event\Application\Query\InMonth;
-use Ramona\Ras2\SharedCore\Infrastructure\CQRS\Query\QueryBus;
-use Ramona\Ras2\SharedCore\Infrastructure\HTTP\JsonResponseFactory;
+use Ramona\Ras2\SharedCore\Infrastructure\HTTP\QueryExecutor;
 
 final readonly class GetEvents
 {
     public function __construct(
-        private QueryBus $queryBus,
-        private JsonResponseFactory $responseFactory
+        private QueryExecutor $queryExecutor
     ) {
     }
 
     public function __invoke(ServerRequestInterface $serverRequest): ResponseInterface
     {
-        $query = $serverRequest->getQueryParams();
-
-        $year = (int) $query['year'];
-        $month = (int) $query['month'];
-
-        $results = $this->queryBus->execute(new InMonth($year, $month, new \DateTimeZone('Europe/Warsaw')));
-
-        return $this->responseFactory->create($results);
+        return $this->queryExecutor->execute($serverRequest, [
+            'in-month' => InMonth::class,
+        ]);
     }
 }

@@ -14,7 +14,7 @@ use Ramona\Ras2\Task\Business\TaskId;
 final readonly class ById implements Query
 {
     public function __construct(
-        public TaskId $taskId
+        public TaskId $id
     ) {
     }
 }
