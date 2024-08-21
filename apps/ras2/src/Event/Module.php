@@ -22,7 +22,7 @@ use Ramona\Ras2\SharedCore\Infrastructure\CQRS\Query\QueryBus;
 use Ramona\Ras2\SharedCore\Infrastructure\DependencyInjection\Container;
 use Ramona\Ras2\SharedCore\Infrastructure\DependencyInjection\ContainerBuilder;
 use Ramona\Ras2\SharedCore\Infrastructure\HTTP\CommandExecutor;
-use Ramona\Ras2\SharedCore\Infrastructure\HTTP\JsonResponseFactory;
+use Ramona\Ras2\SharedCore\Infrastructure\HTTP\QueryExecutor;
 use Ramona\Ras2\SharedCore\Infrastructure\Hydration\Dehydrator;
 use Ramona\Ras2\SharedCore\Infrastructure\Hydration\Hydrator;
 use Ramona\Ras2\SharedCore\Infrastructure\Hydration\Hydrator\ObjectHydrator;
@@ -31,10 +31,7 @@ final class Module implements \Ramona\Ras2\SharedCore\Infrastructure\Module\Modu
 {
     public function install(ContainerBuilder $containerBuilder): void
     {
-        $containerBuilder->register(
-            GetEvents::class,
-            fn ($c) => new GetEvents($c->get(QueryBus::class), $c->get(JsonResponseFactory::class))
-        );
+        $containerBuilder->register(GetEvents::class, fn ($c) => new GetEvents($c->get(QueryExecutor::class)));
         $containerBuilder->register(PostEvents::class, fn ($c) => new PostEvents($c->get(CommandExecutor::class)));
         $containerBuilder->register(
             Repository::class,
@@ -48,6 +45,7 @@ final class Module implements \Ramona\Ras2\SharedCore\Infrastructure\Module\Modu
         $hydrator->installValueHydrator(new EventIdHydrator());
         $hydrator->installValueHydrator(new ObjectHydrator(EventView::class));
         $hydrator->installValueHydrator(new ObjectHydrator(UpsertEvent::class));
+        $hydrator->installValueHydrator(new ObjectHydrator(InMonth::class));
 
         $dehydrator = $container->get(Dehydrator::class);
         $dehydrator->installValueDehydrator(new EventIdDehydrator());

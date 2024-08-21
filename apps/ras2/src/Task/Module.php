@@ -12,7 +12,7 @@ use Ramona\Ras2\SharedCore\Infrastructure\CQRS\Query\QueryBus;
 use Ramona\Ras2\SharedCore\Infrastructure\DependencyInjection\Container;
 use Ramona\Ras2\SharedCore\Infrastructure\DependencyInjection\ContainerBuilder;
 use Ramona\Ras2\SharedCore\Infrastructure\HTTP\CommandExecutor;
-use Ramona\Ras2\SharedCore\Infrastructure\HTTP\JsonResponseFactory;
+use Ramona\Ras2\SharedCore\Infrastructure\HTTP\QueryExecutor;
 use Ramona\Ras2\SharedCore\Infrastructure\Hydration\Dehydrator;
 use Ramona\Ras2\SharedCore\Infrastructure\Hydration\Dehydrator\ObjectDehydrator;
 use Ramona\Ras2\SharedCore\Infrastructure\Hydration\Hydrator;
@@ -77,11 +77,11 @@ final class Module implements \Ramona\Ras2\SharedCore\Infrastructure\Module\Modu
 
         $containerBuilder->register(
             GetTasks::class,
-            fn (Container $c) => new GetTasks($c->get(QueryBus::class), $c->get(JsonResponseFactory::class))
+            fn (Container $c) => new GetTasks($c->get(QueryExecutor::class))
         );
         $containerBuilder->register(
             GetTaskById::class,
-            fn (Container $c) => new GetTaskById($c->get(QueryBus::class), $c->get(JsonResponseFactory::class))
+            fn (Container $c) => new GetTaskById($c->get(QueryExecutor::class))
         );
         $containerBuilder->register(
             PostTasks::class,
@@ -101,7 +101,7 @@ final class Module implements \Ramona\Ras2\SharedCore\Infrastructure\Module\Modu
 
         $containerBuilder->register(
             GetTasksUserProfiles::class,
-            fn (Container $c) => new GetTasksUserProfiles($c->get(QueryBus::class), $c->get(Serializer::class))
+            fn (Container $c) => new GetTasksUserProfiles($c->get(QueryExecutor::class))
         );
     }
 
@@ -119,6 +119,9 @@ final class Module implements \Ramona\Ras2\SharedCore\Infrastructure\Module\Modu
         $hydrator->installValueHydrator(new ObjectHydrator(UpsertUserProfile::class));
         $hydrator->installValueHydrator(new ObjectHydrator(UserProfileView::class));
         $hydrator->installValueHydrator(new ObjectHydrator(TagView::class));
+        $hydrator->installValueHydrator(new ObjectHydrator(WatchedBy::class));
+        $hydrator->installValueHydrator(new ObjectHydrator(Upcoming::class));
+        $hydrator->installValueHydrator(new ObjectHydrator(Current::class));
         $hydrator->installValueHydrator(new TaskIdHydrator());
         $hydrator->installValueHydrator(new TagIdHydrator());
 

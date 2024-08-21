@@ -10,6 +10,7 @@ use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\MiddlewareInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 use Ramona\Ras2\SharedCore\Infrastructure\CQRS\Query\QueryBus;
+use Ramona\Ras2\SharedCore\Infrastructure\Hydration\Hydrator;
 use Ramona\Ras2\User\Application\Query\ByToken;
 use Ramona\Ras2\User\Business\Token;
 use Ramona\Ras2\User\Infrastructure\UserNotFound;
@@ -19,7 +20,8 @@ final class RequireLogin implements MiddlewareInterface
     public const SESSION_ATTRIBUTE = 'session';
 
     public function __construct(
-        private readonly QueryBus $queryBus
+        private readonly QueryBus $queryBus,
+        private readonly Hydrator $hydrator
     ) {
     }
 
@@ -41,6 +43,7 @@ final class RequireLogin implements MiddlewareInterface
             return new Response(status: 403);
         }
         $request = $request->withAttribute(self::SESSION_ATTRIBUTE, $user);
+        $this->hydrator->setSession($user);
 
         return $handler->handle($request);
     }

@@ -141,7 +141,7 @@ export class ApiClient {
 	}
 
 	public async findAllUsers() {
-		const raw: RawUser[] = (await this.query('users')) as RawUser[];
+		const raw: RawUser[] = (await this.query('users?action=all')) as RawUser[];
 
 		return raw.map((x) => new ServerUserView(x.id, x.username));
 	}
@@ -182,7 +182,7 @@ export class ApiClient {
 	}
 
 	async findTaskUserProfile() {
-		const result = (await this.query('/tasks/user-profiles')) as {
+		const result = (await this.query('/tasks/user-profiles?action=current')) as {
 			userId: string;
 			watchedTags: { id: string; name: string }[];
 		};
@@ -194,7 +194,9 @@ export class ApiClient {
 	}
 
 	async findEventsInMonth(year: number, month: number) {
-		const result = (await this.query('/events?year=' + year + '&month=' + month)) as {
+		const result = (await this.query(
+			'/events?action=in-month&year=' + year + '&month=' + month
+		)) as {
 			id: string;
 			title: string;
 			start: RawServerDateTime;

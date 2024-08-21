@@ -48,10 +48,10 @@ final readonly class ByIdExecutor implements Executor
                 WHERE 
                     t.id = :task_id
             ', [
-                'task_id' => $query->taskId,
+                'task_id' => $query->id,
             ]);
         if ($rawTask === false) {
-            throw NotFound::forId($query->taskId);
+            throw NotFound::forId($query->id);
         }
 
         $rawTask['tags'] = \Safe\json_decode($rawTask['tags'] ?? '[]', true);
