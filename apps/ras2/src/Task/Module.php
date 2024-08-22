@@ -14,9 +14,9 @@ use Ramona\Ras2\SharedCore\Infrastructure\DependencyInjection\ContainerBuilder;
 use Ramona\Ras2\SharedCore\Infrastructure\HTTP\APIDefinition\APIDefinition;
 use Ramona\Ras2\SharedCore\Infrastructure\HTTP\APIDefinition\CommandDefinition;
 use Ramona\Ras2\SharedCore\Infrastructure\HTTP\APIDefinition\QueryDefinition;
-use Ramona\Ras2\SharedCore\Infrastructure\Hydration\DefaultHydrator;
 use Ramona\Ras2\SharedCore\Infrastructure\Hydration\Dehydrator;
 use Ramona\Ras2\SharedCore\Infrastructure\Hydration\Dehydrator\ObjectDehydrator;
+use Ramona\Ras2\SharedCore\Infrastructure\Hydration\Hydrator;
 use Ramona\Ras2\SharedCore\Infrastructure\Hydration\Hydrator\ObjectHydrator;
 use Ramona\Ras2\SharedCore\Infrastructure\Serialization\Deserializer;
 use Ramona\Ras2\SharedCore\Infrastructure\Serialization\Serializer;
@@ -82,7 +82,7 @@ final class Module implements \Ramona\Ras2\SharedCore\Infrastructure\Module\Modu
 
     public function register(Container $container): void
     {
-        $hydrator = $container->get(DefaultHydrator::class);
+        $hydrator = $container->get(Hydrator::class);
         $hydrator->installValueHydrator(new ObjectHydrator(UpsertBacklogItem::class));
         $hydrator->installValueHydrator(new ObjectHydrator(UpsertIdea::class));
         $hydrator->installValueHydrator(new ObjectHydrator(PauseWork::class));
@@ -143,20 +143,20 @@ final class Module implements \Ramona\Ras2\SharedCore\Infrastructure\Module\Modu
         $queryBus = $container->get(QueryBus::class);
         $queryBus->installExecutor(
             Upcoming::class,
-            new UpcomingExecutor($container->get(Connection::class), $container->get(DefaultHydrator::class))
+            new UpcomingExecutor($container->get(Connection::class), $container->get(Hydrator::class))
         );
         $queryBus->installExecutor(
             WatchedBy::class,
-            new WatchedByExecutor($container->get(Connection::class), $container->get(DefaultHydrator::class))
+            new WatchedByExecutor($container->get(Connection::class), $container->get(Hydrator::class))
         );
         $queryBus->installExecutor(Current::class, new CurrentExecutor($container->get(Connection::class)));
         $queryBus->installExecutor(
             ById::class,
-            new ByIdExecutor($container->get(Connection::class), $container->get(DefaultHydrator::class))
+            new ByIdExecutor($container->get(Connection::class), $container->get(Hydrator::class))
         );
         $queryBus->installExecutor(
             UserProfileByUserId::class,
-            new UserProfileByUserIdExecutor($container->get(Connection::class), $container->get(DefaultHydrator::class))
+            new UserProfileByUserIdExecutor($container->get(Connection::class), $container->get(Hydrator::class))
         );
         /** @var APIDefinition $apiDefinition */
         $apiDefinition = $container->get(APIDefinition::class);

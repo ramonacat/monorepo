@@ -22,8 +22,8 @@ use Ramona\Ras2\SharedCore\Infrastructure\DependencyInjection\ContainerBuilder;
 use Ramona\Ras2\SharedCore\Infrastructure\HTTP\APIDefinition\APIDefinition;
 use Ramona\Ras2\SharedCore\Infrastructure\HTTP\APIDefinition\CommandDefinition;
 use Ramona\Ras2\SharedCore\Infrastructure\HTTP\APIDefinition\QueryDefinition;
-use Ramona\Ras2\SharedCore\Infrastructure\Hydration\DefaultHydrator;
 use Ramona\Ras2\SharedCore\Infrastructure\Hydration\Dehydrator;
+use Ramona\Ras2\SharedCore\Infrastructure\Hydration\Hydrator;
 use Ramona\Ras2\SharedCore\Infrastructure\Hydration\Hydrator\ObjectHydrator;
 
 final class Module implements \Ramona\Ras2\SharedCore\Infrastructure\Module\Module
@@ -38,7 +38,7 @@ final class Module implements \Ramona\Ras2\SharedCore\Infrastructure\Module\Modu
 
     public function register(Container $container): void
     {
-        $hydrator = $container->get(DefaultHydrator::class);
+        $hydrator = $container->get(Hydrator::class);
         $hydrator->installValueHydrator(new EventIdHydrator());
         $hydrator->installValueHydrator(new ObjectHydrator(EventView::class));
         $hydrator->installValueHydrator(new ObjectHydrator(UpsertEvent::class));
@@ -51,7 +51,7 @@ final class Module implements \Ramona\Ras2\SharedCore\Infrastructure\Module\Modu
         $queryBus = $container->get(QueryBus::class);
         $queryBus->installExecutor(
             InMonth::class,
-            new InMonthExecutor($container->get(Connection::class), $container->get(DefaultHydrator::class))
+            new InMonthExecutor($container->get(Connection::class), $container->get(Hydrator::class))
         );
 
         $commandBus = $container->get(CommandBus::class);

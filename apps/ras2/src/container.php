@@ -39,6 +39,7 @@ use Ramona\Ras2\SharedCore\Infrastructure\Hydration\Dehydrator\DateTimeImmutable
 use Ramona\Ras2\SharedCore\Infrastructure\Hydration\Dehydrator\DateTimeZoneDehydrator;
 use Ramona\Ras2\SharedCore\Infrastructure\Hydration\Dehydrator\ScalarDehydrator;
 use Ramona\Ras2\SharedCore\Infrastructure\Hydration\Dehydrator\UuidDehydrator;
+use Ramona\Ras2\SharedCore\Infrastructure\Hydration\Hydrator;
 use Ramona\Ras2\SharedCore\Infrastructure\Hydration\Hydrator\ArrayCollectionHydrator;
 use Ramona\Ras2\SharedCore\Infrastructure\Hydration\Hydrator\DateTimeImmutableHydrator;
 use Ramona\Ras2\SharedCore\Infrastructure\Hydration\Hydrator\DateTimeZoneHydrator;
@@ -86,10 +87,11 @@ $containerBuilder->register(
     Serializer::class,
     fn (Container $c) => new DefaultSerializer($c->get(Dehydrator::class), $c->get(LoggerInterface::class))
 );
-$containerBuilder->register(DefaultHydrator::class, function () {
+$containerBuilder->register(Hydrator::class, function () {
     $hydrator = new DefaultHydrator();
     $hydrator->installValueHydrator(new ScalarHydrator('string'));
     $hydrator->installValueHydrator(new ScalarHydrator('integer'));
+    $hydrator->installValueHydrator(new ScalarHydrator('boolean'));
     $hydrator->installValueHydrator(new ArrayCollectionHydrator());
     $hydrator->installValueHydrator(new DateTimeImmutableHydrator());
     $hydrator->installValueHydrator(new DateTimeZoneHydrator());
@@ -98,7 +100,7 @@ $containerBuilder->register(DefaultHydrator::class, function () {
 });
 $containerBuilder->register(
     Deserializer::class,
-    fn (Container $c) => new DefaultDeserializer($c->get(DefaultHydrator::class), $c->get(LoggerInterface::class))
+    fn (Container $c) => new DefaultDeserializer($c->get(Hydrator::class), $c->get(LoggerInterface::class))
 );
 
 $containerBuilder->register(Dehydrator::class, function () {
@@ -129,7 +131,7 @@ $containerBuilder->register(Router::class, function (Container $diContainer) {
     $router = new League\Route\Router();
     $router->setStrategy($routerStrategy);
     $router->prependMiddleware(
-        new RequireLogin($diContainer->get(QueryBus::class), $diContainer->get(DefaultHydrator::class))
+        new RequireLogin($diContainer->get(QueryBus::class), $diContainer->get(Hydrator::class))
     );
 
     return $router;
@@ -146,7 +148,7 @@ $containerBuilder->register(
 
 $containerBuilder->register(
     QueryExecutor::class,
-    fn ($c) => new DefaultQueryExecutor($c->get(DefaultHydrator::class), $c->get(
+    fn ($c) => new DefaultQueryExecutor($c->get(Hydrator::class), $c->get(
         DefaultQueryBus::class
     ), $c->get(DefaultJsonResponseFactory::class))
 );
@@ -157,7 +159,7 @@ $containerBuilder->register(APIRouter::class, fn ($c) => new APIRouter(
     $c->get(QueryBus::class),
     $c->get(Deserializer::class),
     $c->get(DefaultJsonResponseFactory::class),
-    $c->get(DefaultHydrator::class),
+    $c->get(Hydrator::class),
 ));
 
 $modules = [new TaskModule(), new UserModule(), new EventModule(), new SystemModule()];
