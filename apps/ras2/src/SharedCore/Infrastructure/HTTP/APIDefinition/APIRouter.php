@@ -30,7 +30,7 @@ final readonly class APIRouter
     {
         $commands = $definition->commands();
         $commandCallbacks = $definition->commandCallbacks();
-        $paths = [...array_keys($commands), ...array_keys($commandCallbacks)];
+        $paths = array_unique([...array_keys($commands), ...array_keys($commandCallbacks)]);
 
         foreach ($paths as $path) {
             $router->map('POST', $path, function (ServerRequestInterface $request) use (
@@ -46,14 +46,18 @@ final readonly class APIRouter
                 }
 
                 if (isset($commands[$path][$action])) {
-                    $command = $commands[$path][$action];
+                    $commandDefinition = $commands[$path][$action];
                     $this->commandBus->execute(
-                        $this->deserializer->deserialize($command, $request->getBody()->getContents())
+                        $this->deserializer->deserialize(
+                            $commandDefinition->commandType,
+                            $request->getBody()
+                                ->getContents()
+                        )
                     );
 
                     return new EmptyResponse();
                 }
-                $result = ($commandCallbacks[$path][$action])($request);
+                $result = ($commandCallbacks[$path][$action]->callback)($request);
 
                 if ($result === null) {
                     return new EmptyResponse();
@@ -69,7 +73,7 @@ final readonly class APIRouter
         $pathsFromQueries = array_keys($queries);
         $pathsFromQueryCallbacks = array_keys($queryCallbacks);
 
-        $paths = [...$pathsFromQueries, ...$pathsFromQueryCallbacks];
+        $paths = array_unique([...$pathsFromQueries, ...$pathsFromQueryCallbacks]);
 
         foreach ($paths as $path) {
             $router->map('GET', $path, function (ServerRequestInterface $request) use (
@@ -85,12 +89,12 @@ final readonly class APIRouter
                 }
 
                 if (isset($queries[$path][$action])) {
-                    $queryType = $queries[$path][$action];
+                    $queryDefinition = $queries[$path][$action];
 
-                    $query = $this->hydrator->hydrate($queryType, $queryString);
+                    $query = $this->hydrator->hydrate($queryDefinition->queryType, $queryString);
                     $result = $this->queryBus->execute($query);
                 } else {
-                    $result = ($queryCallbacks[$path][$action])($request);
+                    $result = ($queryCallbacks[$path][$action]->callback)($request);
                 }
 
                 return $this->jsonResponseFactory->create($result);

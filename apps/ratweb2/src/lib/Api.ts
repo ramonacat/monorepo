@@ -52,17 +52,18 @@ export class ApiClient {
 	constructor(private token: string) {}
 
 	private async query(path: string, options?: RequestInit): Promise<object> {
-		const response = await this.call(path, options);
+		const response = await this.call(path, merge(options, { method: 'GET' }));
 
 		return await response.json();
 	}
 
 	// FIXME make everything call through more specific APIs and make this private
-	public async call(path: string, options: RequestInit | undefined) {
+	private async call(path: string, options: RequestInit | undefined) {
 		const response = await fetch(
 			(process?.env?.RAS2_SERVICE_URL ?? 'http://localhost:8080/') + path,
 			merge(
 				{
+					method: 'POST',
 					headers: {
 						'X-User-Token': this.token,
 						'Content-Type': 'application/json'
@@ -91,7 +92,6 @@ export class ApiClient {
 		assignee: string | undefined
 	): Promise<void> {
 		await this.call('tasks', {
-			method: 'POST',
 			body: JSON.stringify({
 				id,
 				title,
@@ -102,23 +102,53 @@ export class ApiClient {
 				assignee: assignee
 			}),
 			headers: {
-				'X-Action': 'upsert:backlog-item',
-				'Content-Type': 'application/json'
+				'X-Action': 'upsert:backlog-item'
+			}
+		});
+	}
+
+	async startWork(userId: string, taskId: string) {
+		await this.call('tasks', {
+			body: JSON.stringify({ userId, taskId }),
+			headers: {
+				'X-Action': 'start-work'
+			}
+		});
+	}
+
+	async pauseWork(taskId: string) {
+		await this.call('tasks', {
+			body: JSON.stringify({ taskId }),
+			headers: {
+				'X-Action': 'pause-work'
+			}
+		});
+	}
+
+	async finishWork(taskId: string, userId: string) {
+		await this.call('tasks', {
+			body: JSON.stringify({ userId, taskId }),
+			headers: {
+				'X-Action': 'finish-work'
+			}
+		});
+	}
+
+	async returnToBacklog(taskId: string) {
+		await this.call('tasks', {
+			body: JSON.stringify({ taskId }),
+			headers: {
+				'X-Action': 'return-to-backlog'
 			}
 		});
 	}
 
 	async updateTagsProfile(userId: string, tags: string[]) {
 		await this.call('tasks/user-profiles', {
-			method: 'POST',
 			body: JSON.stringify({
 				userId,
 				watchedTags: tags
-			}),
-			headers: {
-				'X-Action': 'upsert',
-				'Content-Type': 'application/json'
-			}
+			})
 		});
 	}
 

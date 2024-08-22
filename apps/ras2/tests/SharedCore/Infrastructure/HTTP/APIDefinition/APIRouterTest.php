@@ -14,6 +14,10 @@ use Ramona\Ras2\SharedCore\Infrastructure\CQRS\Command\CommandBus;
 use Ramona\Ras2\SharedCore\Infrastructure\CQRS\Query\QueryBus;
 use Ramona\Ras2\SharedCore\Infrastructure\HTTP\APIDefinition\APIDefinition;
 use Ramona\Ras2\SharedCore\Infrastructure\HTTP\APIDefinition\APIRouter;
+use Ramona\Ras2\SharedCore\Infrastructure\HTTP\APIDefinition\CommandCallbackDefinition;
+use Ramona\Ras2\SharedCore\Infrastructure\HTTP\APIDefinition\CommandDefinition;
+use Ramona\Ras2\SharedCore\Infrastructure\HTTP\APIDefinition\QueryCallbackDefinition;
+use Ramona\Ras2\SharedCore\Infrastructure\HTTP\APIDefinition\QueryDefinition;
 use Ramona\Ras2\SharedCore\Infrastructure\HTTP\DefaultJsonResponseFactory;
 use Ramona\Ras2\SharedCore\Infrastructure\HTTP\JsonResponseFactory;
 use Ramona\Ras2\SharedCore\Infrastructure\Hydration\Hydrator;
@@ -21,6 +25,7 @@ use Ramona\Ras2\SharedCore\Infrastructure\Serialization\Deserializer;
 use Ramona\Ras2\SharedCore\Infrastructure\Serialization\Serializer;
 use Tests\Ramona\Ras2\SharedCore\Infrastructure\CQRS\Command\Mocks\MockCommand;
 use Tests\Ramona\Ras2\SharedCore\Infrastructure\CQRS\Query\Mocks\MockQuery;
+use Tests\Ramona\Ras2\SharedCore\Infrastructure\CQRS\Query\Mocks\MockResponse;
 
 final class APIRouterTest extends TestCase
 {
@@ -42,9 +47,9 @@ final class APIRouterTest extends TestCase
         );
 
         $definition = new APIDefinition();
-        $definition->installCommand('test1', 'test1', MockCommand::class);
-        $definition->installCommand('test', 'test1', MockCommand::class);
-        $definition->installCommand('test', 'test2', MockCommand::class);
+        $definition->installCommand(new CommandDefinition('test1', 'test1', MockCommand::class));
+        $definition->installCommand(new CommandDefinition('test', 'test1', MockCommand::class));
+        $definition->installCommand(new CommandDefinition('test', 'test2', MockCommand::class));
         $router = $this->createMock(RouteCollectionInterface::class);
         $router
             ->expects(self::exactly(2))
@@ -81,12 +86,18 @@ final class APIRouterTest extends TestCase
         $callbackCalled = false;
 
         $definition = new APIDefinition();
-        $definition->installCommandCallback('test1', 'test1', function () {});
-        $definition->installCommandCallback('test2', 'test2', function () {});
-        $definition->installCommandCallback('test2', 'test3', function () use (&$callbackCalled) {
+        $definition->installCommandCallback(
+            new CommandCallbackDefinition('test1', 'test1', function () {}, 'string', 'string')
+        );
+        $definition->installCommandCallback(
+            new CommandCallbackDefinition('test2', 'test2', function () {}, 'string', 'string')
+        );
+        $definition->installCommandCallback(new CommandCallbackDefinition('test2', 'test3', function () use (
+            &$callbackCalled
+        ) {
             $callbackCalled = true;
             return 'test';
-        });
+        }, 'string', 'string'));
         $router = $this->createMock(RouteCollectionInterface::class);
         $router
             ->expects(self::exactly(2))
@@ -126,9 +137,9 @@ final class APIRouterTest extends TestCase
         );
 
         $definition = new APIDefinition();
-        $definition->installCommand('test1', 'test1', MockCommand::class);
-        $definition->installCommand('test', 'test1', MockCommand::class);
-        $definition->installCommand('test', 'test2', MockCommand::class);
+        $definition->installCommand(new CommandDefinition('test1', 'test1', MockCommand::class));
+        $definition->installCommand(new CommandDefinition('test', 'test1', MockCommand::class));
+        $definition->installCommand(new CommandDefinition('test', 'test2', MockCommand::class));
         $router = $this->createMock(RouteCollectionInterface::class);
         $router
             ->expects(self::exactly(2))
@@ -161,9 +172,9 @@ final class APIRouterTest extends TestCase
         );
 
         $definition = new APIDefinition();
-        $definition->installCommand('test1', 'test1', MockCommand::class);
-        $definition->installCommand('test', 'test1', MockCommand::class);
-        $definition->installCommand('test', 'test2', MockCommand::class);
+        $definition->installCommand(new CommandDefinition('test1', 'test1', MockCommand::class));
+        $definition->installCommand(new CommandDefinition('test', 'test1', MockCommand::class));
+        $definition->installCommand(new CommandDefinition('test', 'test2', MockCommand::class));
         $router = $this->createMock(RouteCollectionInterface::class);
         $router
             ->expects(self::exactly(2))
@@ -203,9 +214,9 @@ final class APIRouterTest extends TestCase
         );
 
         $definition = new APIDefinition();
-        $definition->installQuery('test1', 'test1', MockQuery::class);
-        $definition->installQuery('test2', 'test2', MockQuery::class);
-        $definition->installQuery('test2', 'test3', MockQuery::class);
+        $definition->installQuery(new QueryDefinition('test1', 'test1', MockQuery::class, MockResponse::class));
+        $definition->installQuery(new QueryDefinition('test2', 'test2', MockQuery::class, MockResponse::class));
+        $definition->installQuery(new QueryDefinition('test2', 'test3', MockQuery::class, MockResponse::class));
         $router = $this->createMock(RouteCollectionInterface::class);
         $router
             ->expects(self::exactly(2))
@@ -247,11 +258,15 @@ final class APIRouterTest extends TestCase
         );
 
         $definition = new APIDefinition();
-        $definition->installQueryCallback('test1', 'test1', function () {});
-        $definition->installQueryCallback('test2', 'test2', function () {});
-        $definition->installQueryCallback('test2', 'test3', function () {
+        $definition->installQueryCallback(
+            new QueryCallbackDefinition('test1', 'test1', function () {}, 'string', 'string')
+        );
+        $definition->installQueryCallback(
+            new QueryCallbackDefinition('test2', 'test2', function () {}, 'string', 'string')
+        );
+        $definition->installQueryCallback(new QueryCallbackDefinition('test2', 'test3', function () {
             return 'this is test';
-        });
+        }, 'string', 'string'));
         $router = $this->createMock(RouteCollectionInterface::class);
         $router
             ->expects(self::exactly(2))
@@ -294,9 +309,9 @@ final class APIRouterTest extends TestCase
         );
 
         $definition = new APIDefinition();
-        $definition->installQuery('test1', 'test1', MockQuery::class);
-        $definition->installQuery('test2', 'test2', MockQuery::class);
-        $definition->installQuery('test2', 'test3', MockQuery::class);
+        $definition->installQuery(new QueryDefinition('test1', 'test1', MockQuery::class, MockResponse::class));
+        $definition->installQuery(new QueryDefinition('test2', 'test2', MockQuery::class, MockResponse::class));
+        $definition->installQuery(new QueryDefinition('test2', 'test3', MockQuery::class, MockResponse::class));
         $router = $this->createMock(RouteCollectionInterface::class);
         $router
             ->expects(self::exactly(2))

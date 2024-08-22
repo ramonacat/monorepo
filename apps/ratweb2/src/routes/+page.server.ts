@@ -19,52 +19,36 @@ export async function load({ cookies }) {
 	};
 }
 
-async function sendCommand(token: string, name: string, data: object) {
-	const result = await new ApiClient(token).call('tasks', {
-		method: 'POST',
-		body: JSON.stringify(data),
-		headers: {
-			'X-Action': name
-		}
-	});
-	if (!result.ok) {
-		throw new Error('Failed to execute command');
-	}
-}
-
 export const actions = {
 	start_task: async ({ request, cookies }) => {
-		const { session } = await ensureAuthenticated(cookies);
+		const { session, apiClient } = await ensureAuthenticated(cookies);
 
 		const data = await request.formData();
 		const taskId = data.get('task-id');
 		const userId = session.userId;
-		await sendCommand(cookies.get('token') as string, 'start-work', { taskId: taskId, userId });
+		await apiClient.startWork(userId as string, taskId as string);
 	},
 	pause_task: async ({ request, cookies }) => {
-		await ensureAuthenticated(cookies);
+		const { apiClient } = await ensureAuthenticated(cookies);
 
 		const data = await request.formData();
 		const taskId = data.get('task-id');
-		await sendCommand(cookies.get('token') as string, 'pause-work', { taskId: taskId });
+		await apiClient.pauseWork(taskId as string);
 	},
 	finish_task: async ({ request, cookies }) => {
-		const { session } = await ensureAuthenticated(cookies);
+		const { session, apiClient } = await ensureAuthenticated(cookies);
 
 		const data = await request.formData();
 		const taskId = data.get('task-id');
 
-		await sendCommand(cookies.get('token') as string, 'finish-work', {
-			taskId,
-			userId: session.userId
-		});
+		await apiClient.finishWork(taskId as string, session.userId as string);
 	},
 	return_to_backlog: async ({ request, cookies }) => {
-		await ensureAuthenticated(cookies);
+		const { apiClient } = await ensureAuthenticated(cookies);
 
 		const data = await request.formData();
 		const taskId = data.get('task-id');
-		await sendCommand(cookies.get('token') as string, 'return-to-backlog', { taskId: taskId });
+		await apiClient.returnToBacklog(taskId as string);
 	},
 	create_backlog_item: async ({ request, cookies }) => {
 		await ensureAuthenticated(cookies);
