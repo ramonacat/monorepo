@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Ramona\Ras2\User;
 
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\DBAL\Connection;
 use Psr\Http\Message\ServerRequestInterface;
 use Ramona\Ras2\SharedCore\Infrastructure\CQRS\Command\CommandBus;
@@ -11,6 +12,11 @@ use Ramona\Ras2\SharedCore\Infrastructure\CQRS\Query\QueryBus;
 use Ramona\Ras2\SharedCore\Infrastructure\DependencyInjection\Container;
 use Ramona\Ras2\SharedCore\Infrastructure\DependencyInjection\ContainerBuilder;
 use Ramona\Ras2\SharedCore\Infrastructure\HTTP\APIDefinition\APIDefinition;
+use Ramona\Ras2\SharedCore\Infrastructure\HTTP\APIDefinition\CommandCallbackDefinition;
+use Ramona\Ras2\SharedCore\Infrastructure\HTTP\APIDefinition\CommandDefinition;
+use Ramona\Ras2\SharedCore\Infrastructure\HTTP\APIDefinition\EmptyQuery;
+use Ramona\Ras2\SharedCore\Infrastructure\HTTP\APIDefinition\QueryCallbackDefinition;
+use Ramona\Ras2\SharedCore\Infrastructure\HTTP\APIDefinition\QueryDefinition;
 use Ramona\Ras2\SharedCore\Infrastructure\HTTP\RequireLogin;
 use Ramona\Ras2\SharedCore\Infrastructure\Hydration\DefaultHydrator;
 use Ramona\Ras2\SharedCore\Infrastructure\Hydration\Dehydrator;
@@ -76,25 +82,29 @@ final class Module implements \Ramona\Ras2\SharedCore\Infrastructure\Module\Modu
 
         /** @var APIDefinition $apiDefinition */
         $apiDefinition = $container->get(APIDefinition::class);
-        $apiDefinition->installQueryCallback('/users', 'session', function (ServerRequestInterface $request) {
-            return $request->getAttribute(RequireLogin::SESSION_ATTRIBUTE);
-        });
-        $apiDefinition->installQuery('/users', 'all', All::class);
-        $apiDefinition->installCommand('/users', 'upsert', UpsertUser::class);
-        $apiDefinition->installCommandCallback('/users', 'login', function (ServerRequestInterface $request) use (
-            $container
-        ) {
-            $request = $container->get(Deserializer::class)->deserialize(
-                LoginRequest::class,
-                $request->getBody()
-                    ->getContents()
-            );
+        $apiDefinition->installQueryCallback(
+            new QueryCallbackDefinition('users', 'session', function (ServerRequestInterface $request) {
+                return $request->getAttribute(RequireLogin::SESSION_ATTRIBUTE);
+            }, EmptyQuery::class, Session::class)
+        );
+        $apiDefinition->installQuery(new QueryDefinition('users', 'all', All::class, ArrayCollection::class));
+        $apiDefinition->installCommand(new CommandDefinition('users', 'upsert', UpsertUser::class));
+        $apiDefinition->installCommandCallback(
+            new CommandCallbackDefinition('users', 'login', function (ServerRequestInterface $request) use (
+                $container
+            ) {
+                $request = $container->get(Deserializer::class)->deserialize(
+                    LoginRequest::class,
+                    $request->getBody()
+                        ->getContents()
+                );
 
-            $token = Token::generate();
+                $token = Token::generate();
 
-            $container->get(CommandBus::class)->execute(new Login($token, $request->username));
+                $container->get(CommandBus::class)->execute(new Login($token, $request->username));
 
-            return new LoginResponse($token);
-        });
+                return new LoginResponse($token);
+            }, LoginRequest::class, LoginResponse::class)
+        );
     }
 }

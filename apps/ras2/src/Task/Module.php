@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Ramona\Ras2\Task;
 
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\DBAL\Connection;
 use Ramona\Ras2\SharedCore\Infrastructure\ClockInterface;
 use Ramona\Ras2\SharedCore\Infrastructure\CQRS\Command\CommandBus;
@@ -11,6 +12,8 @@ use Ramona\Ras2\SharedCore\Infrastructure\CQRS\Query\QueryBus;
 use Ramona\Ras2\SharedCore\Infrastructure\DependencyInjection\Container;
 use Ramona\Ras2\SharedCore\Infrastructure\DependencyInjection\ContainerBuilder;
 use Ramona\Ras2\SharedCore\Infrastructure\HTTP\APIDefinition\APIDefinition;
+use Ramona\Ras2\SharedCore\Infrastructure\HTTP\APIDefinition\CommandDefinition;
+use Ramona\Ras2\SharedCore\Infrastructure\HTTP\APIDefinition\QueryDefinition;
 use Ramona\Ras2\SharedCore\Infrastructure\Hydration\DefaultHydrator;
 use Ramona\Ras2\SharedCore\Infrastructure\Hydration\Dehydrator;
 use Ramona\Ras2\SharedCore\Infrastructure\Hydration\Dehydrator\ObjectDehydrator;
@@ -157,16 +160,24 @@ final class Module implements \Ramona\Ras2\SharedCore\Infrastructure\Module\Modu
         );
         /** @var APIDefinition $apiDefinition */
         $apiDefinition = $container->get(APIDefinition::class);
-        $apiDefinition->installQuery('/tasks', 'upcoming', Upcoming::class);
-        $apiDefinition->installQuery('/tasks', 'watched', WatchedBy::class);
-        $apiDefinition->installQuery('/tasks', 'current', Current::class);
-        $apiDefinition->installQuery('/tasks/{id:uuid}', 'by-id', ById::class);
-        $apiDefinition->installQuery('/tasks/user-profiles', 'current', UserProfileByUserId::class);
-        $apiDefinition->installCommand('/tasks', 'upsert:idea', UpsertIdea::class);
-        $apiDefinition->installCommand('/tasks', 'upsert:backlog-item', UpsertBacklogItem::class);
-        $apiDefinition->installCommand('/tasks', 'start-work', StartWork::class);
-        $apiDefinition->installCommand('/tasks', 'pause-work', PauseWork::class);
-        $apiDefinition->installCommand('/tasks', 'finish-work', FinishWork::class);
-        $apiDefinition->installCommand('/tasks', 'return-to-backlog', ReturnToBacklog::class);
+        $apiDefinition->installQuery(
+            new QueryDefinition('tasks', 'upcoming', Upcoming::class, ArrayCollection::class)
+        );
+        $apiDefinition->installQuery(
+            new QueryDefinition('tasks', 'watched', WatchedBy::class, ArrayCollection::class)
+        );
+        $apiDefinition->installQuery(new QueryDefinition('tasks', 'current', Current::class, CurrentTaskView::class));
+        $apiDefinition->installQuery(new QueryDefinition('tasks/{id:uuid}', 'by-id', ById::class, TaskView::class));
+        $apiDefinition->installQuery(
+            new QueryDefinition('tasks/user-profiles', 'current', UserProfileByUserId::class, UserProfileView::class)
+        );
+        $apiDefinition->installCommand(new CommandDefinition('tasks', 'upsert:idea', UpsertIdea::class));
+        $apiDefinition->installCommand(
+            new CommandDefinition('tasks', 'upsert:backlog-item', UpsertBacklogItem::class)
+        );
+        $apiDefinition->installCommand(new CommandDefinition('tasks', 'start-work', StartWork::class));
+        $apiDefinition->installCommand(new CommandDefinition('tasks', 'pause-work', PauseWork::class));
+        $apiDefinition->installCommand(new CommandDefinition('tasks', 'finish-work', FinishWork::class));
+        $apiDefinition->installCommand(new CommandDefinition('tasks', 'return-to-backlog', ReturnToBacklog::class));
     }
 }

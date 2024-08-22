@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Ramona\Ras2\Event;
 
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\DBAL\Connection;
 use Ramona\Ras2\Event\Application\Command\UpsertEvent;
 use Ramona\Ras2\Event\Application\EventView;
@@ -19,6 +20,8 @@ use Ramona\Ras2\SharedCore\Infrastructure\CQRS\Query\QueryBus;
 use Ramona\Ras2\SharedCore\Infrastructure\DependencyInjection\Container;
 use Ramona\Ras2\SharedCore\Infrastructure\DependencyInjection\ContainerBuilder;
 use Ramona\Ras2\SharedCore\Infrastructure\HTTP\APIDefinition\APIDefinition;
+use Ramona\Ras2\SharedCore\Infrastructure\HTTP\APIDefinition\CommandDefinition;
+use Ramona\Ras2\SharedCore\Infrastructure\HTTP\APIDefinition\QueryDefinition;
 use Ramona\Ras2\SharedCore\Infrastructure\Hydration\DefaultHydrator;
 use Ramona\Ras2\SharedCore\Infrastructure\Hydration\Dehydrator;
 use Ramona\Ras2\SharedCore\Infrastructure\Hydration\Hydrator\ObjectHydrator;
@@ -60,7 +63,9 @@ final class Module implements \Ramona\Ras2\SharedCore\Infrastructure\Module\Modu
         /** @var APIDefinition $apiDefinition */
         $apiDefinition = $container->get(APIDefinition::class);
 
-        $apiDefinition->installQuery('/events', 'in-month', InMonth::class);
-        $apiDefinition->installCommand('/events', 'upsert', UpsertEvent::class);
+        $apiDefinition->installQuery(
+            new QueryDefinition('events', 'in-month', InMonth::class, ArrayCollection::class)
+        );
+        $apiDefinition->installCommand(new CommandDefinition('events', 'upsert', UpsertEvent::class));
     }
 }

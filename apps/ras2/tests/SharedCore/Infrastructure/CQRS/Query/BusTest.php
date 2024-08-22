@@ -21,7 +21,7 @@ final class BusTest extends TestCase
 
         $result = $bus->execute($query);
 
-        self::assertSame($query->value, $result);
+        self::assertSame($query->value, $result->value);
     }
 
     public function testFailsOnMissingExecutor(): void

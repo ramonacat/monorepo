@@ -9,6 +9,7 @@ use Ramona\Ras2\SharedCore\Infrastructure\CQRS\Command\CommandBus;
 use Ramona\Ras2\SharedCore\Infrastructure\DependencyInjection\Container;
 use Ramona\Ras2\SharedCore\Infrastructure\DependencyInjection\ContainerBuilder;
 use Ramona\Ras2\SharedCore\Infrastructure\HTTP\APIDefinition\APIDefinition;
+use Ramona\Ras2\SharedCore\Infrastructure\HTTP\APIDefinition\CommandDefinition;
 use Ramona\Ras2\SharedCore\Infrastructure\Hydration\DefaultHydrator;
 use Ramona\Ras2\SharedCore\Infrastructure\Hydration\Dehydrator;
 use Ramona\Ras2\SharedCore\Infrastructure\Hydration\Hydrator\EnumHydrator;
@@ -71,8 +72,11 @@ final class Module implements \Ramona\Ras2\SharedCore\Infrastructure\Module\Modu
 
         /** @var APIDefinition $apiDefinition */
         $apiDefinition = $container->get(APIDefinition::class);
-        $apiDefinition->installCommand('/systems', 'create', CreateSystem::class);
-        $apiDefinition->installCommand('/systems', 'update-current-closure', UpdateCurrentClosure::class);
-        $apiDefinition->installCommand('/systems', 'update-latest-closure', UpdateLatestClosure::class);
+        $apiDefinition->installCommand(
+            new CommandDefinition('systems', 'update-current-closure', UpdateCurrentClosure::class)
+        );
+        $apiDefinition->installCommand(
+            new CommandDefinition('systems', 'update-latest-closure', UpdateLatestClosure::class)
+        );
     }
 }

@@ -4,66 +4,50 @@ declare(strict_types=1);
 
 namespace Ramona\Ras2\SharedCore\Infrastructure\HTTP\APIDefinition;
 
-use Psr\Http\Message\ServerRequestInterface;
-use Ramona\Ras2\SharedCore\Infrastructure\CQRS\Command\Command;
-use Ramona\Ras2\SharedCore\Infrastructure\CQRS\Query\Query;
-
 final class APIDefinition
 {
     /**
-     * @var array<string, array<string, class-string<Command>>>
+     * @var array<string, array<string, CommandDefinition>>
      */
     private array $commands = [];
 
     /**
-     * @var array<string, array<string, class-string<Query<mixed>>>>
+     * @var array<string, array<string, QueryDefinition>>
      */
     private array $queries = [];
 
     /**
-     * @var array<string, array<string, callable(ServerRequestInterface):mixed>>
+     * @var array<string, array<string, QueryCallbackDefinition>>
      */
     private array $queryCallbacks = [];
 
     /**
-     * @var array<string, array<string, callable(ServerRequestInterface):?mixed>>
+     * @var array<string, array<string, CommandCallbackDefinition>>
      */
     private mixed $commandCallbacks = [];
 
-    /**
-     * @param class-string<Command> $commandDefinition
-     */
-    public function installCommand(string $path, string $actionName, string $commandDefinition): void
+    public function installCommand(CommandDefinition $commandDefinition): void
     {
-        $this->commands[$path][$actionName] = $commandDefinition;
+        $this->commands[$commandDefinition->path][$commandDefinition->actionName] = $commandDefinition;
+    }
+
+    public function installQuery(QueryDefinition $queryDefinition): void
+    {
+        $this->queries[$queryDefinition->path][$queryDefinition->queryName] = $queryDefinition;
+    }
+
+    public function installQueryCallback(QueryCallbackDefinition $queryCallbackDefinition): void
+    {
+        $this->queryCallbacks[$queryCallbackDefinition->path][$queryCallbackDefinition->queryName] = $queryCallbackDefinition;
+    }
+
+    public function installCommandCallback(CommandCallbackDefinition $commandCallbackDefinition): void
+    {
+        $this->commandCallbacks[$commandCallbackDefinition->path][$commandCallbackDefinition->commandName] = $commandCallbackDefinition;
     }
 
     /**
-     * @param class-string<Query<mixed>> $queryDefinition
-     */
-    public function installQuery(string $path, string $queryName, string $queryDefinition): void
-    {
-        $this->queries[$path][$queryName] = $queryDefinition;
-    }
-
-    /**
-     * @param callable(ServerRequestInterface):mixed $callback
-     */
-    public function installQueryCallback(string $path, string $queryName, callable $callback): void
-    {
-        $this->queryCallbacks[$path][$queryName] = $callback;
-    }
-
-    /**
-     * @param callable(ServerRequestInterface):?mixed $callback
-     */
-    public function installCommandCallback(string $path, string $commandName, callable $callback): void
-    {
-        $this->commandCallbacks[$path][$commandName] = $callback;
-    }
-
-    /**
-     * @return array<string, array<string, class-string<Command>>>
+     * @return array<string, array<string, CommandDefinition>>
      */
     public function commands(): array
     {
@@ -71,7 +55,7 @@ final class APIDefinition
     }
 
     /**
-     * @return array<string, array<string, class-string<Query<mixed>>>>
+     * @return array<string, array<string, QueryDefinition>>
      */
     public function queries(): array
     {
@@ -79,7 +63,7 @@ final class APIDefinition
     }
 
     /**
-     * @return array<string, array<string, callable(ServerRequestInterface):mixed>>
+     * @return array<string, array<string, QueryCallbackDefinition>>
      */
     public function queryCallbacks(): array
     {
@@ -87,7 +71,7 @@ final class APIDefinition
     }
 
     /**
-     * @return array<string, array<string, callable(ServerRequestInterface):?mixed>>
+     * @return array<string, array<string, CommandCallbackDefinition>>
      */
     public function commandCallbacks(): array
     {

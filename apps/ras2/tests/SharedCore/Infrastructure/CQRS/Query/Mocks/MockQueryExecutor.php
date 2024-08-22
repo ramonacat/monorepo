@@ -8,7 +8,7 @@ use Ramona\Ras2\SharedCore\Infrastructure\CQRS\Query\Executor;
 use Ramona\Ras2\SharedCore\Infrastructure\CQRS\Query\Query;
 
 /**
- * @implements Executor<string, MockQuery>
+ * @implements Executor<MockResponse, MockQuery>
  */
 final class MockQueryExecutor implements Executor
 {
@@ -17,6 +17,6 @@ final class MockQueryExecutor implements Executor
      */
     public function execute(Query $query): mixed
     {
-        return $query->value;
+        return new MockResponse($query->value);
     }
 }

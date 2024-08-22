@@ -53,6 +53,11 @@
             "ignore": [
                 "Ramona\\Ras2\\SharedCore\\Infrastructure\\Hydration\\Hydrator\\ObjectHydrator"
             ]
+        },
+        "UnwrapArrayUnique": {
+            "ignore": [
+                "Ramona\\Ras2\\SharedCore\\Infrastructure\\HTTP\\APIDefinition\\APIRouter"
+            ]
         }
     },
     "logs": {
