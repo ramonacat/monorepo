@@ -5,30 +5,28 @@ declare(strict_types=1);
 namespace Ramona\Ras2\User;
 
 use Doctrine\DBAL\Connection;
-use League\Route\Router;
+use Psr\Http\Message\ServerRequestInterface;
 use Ramona\Ras2\SharedCore\Infrastructure\CQRS\Command\CommandBus;
 use Ramona\Ras2\SharedCore\Infrastructure\CQRS\Query\QueryBus;
 use Ramona\Ras2\SharedCore\Infrastructure\DependencyInjection\Container;
 use Ramona\Ras2\SharedCore\Infrastructure\DependencyInjection\ContainerBuilder;
-use Ramona\Ras2\SharedCore\Infrastructure\HTTP\JsonResponseFactory;
-use Ramona\Ras2\SharedCore\Infrastructure\HTTP\QueryExecutor;
+use Ramona\Ras2\SharedCore\Infrastructure\HTTP\APIDefinition\APIDefinition;
+use Ramona\Ras2\SharedCore\Infrastructure\HTTP\RequireLogin;
+use Ramona\Ras2\SharedCore\Infrastructure\Hydration\DefaultHydrator;
 use Ramona\Ras2\SharedCore\Infrastructure\Hydration\Dehydrator;
 use Ramona\Ras2\SharedCore\Infrastructure\Hydration\Dehydrator\ObjectDehydrator;
-use Ramona\Ras2\SharedCore\Infrastructure\Hydration\Hydrator;
 use Ramona\Ras2\SharedCore\Infrastructure\Hydration\Hydrator\ObjectHydrator;
 use Ramona\Ras2\SharedCore\Infrastructure\Serialization\Deserializer;
-use Ramona\Ras2\SharedCore\Infrastructure\Serialization\Serializer;
 use Ramona\Ras2\Task\Application\Query\UserProfileByUserId;
 use Ramona\Ras2\User\Application\Command\Login;
 use Ramona\Ras2\User\Application\Command\LoginRequest;
 use Ramona\Ras2\User\Application\Command\LoginResponse;
 use Ramona\Ras2\User\Application\Command\UpsertUser;
-use Ramona\Ras2\User\Application\HttpApi\GetUsers;
-use Ramona\Ras2\User\Application\HttpApi\PostUsers;
 use Ramona\Ras2\User\Application\Query\All;
 use Ramona\Ras2\User\Application\Query\ByToken;
 use Ramona\Ras2\User\Application\Session;
 use Ramona\Ras2\User\Application\UserView;
+use Ramona\Ras2\User\Business\Token;
 use Ramona\Ras2\User\Infrastructure\CommandExecutor\LoginExecutor;
 use Ramona\Ras2\User\Infrastructure\CommandExecutor\UpsertUserExecutor;
 use Ramona\Ras2\User\Infrastructure\PostgresRepository;
@@ -47,25 +45,11 @@ final class Module implements \Ramona\Ras2\SharedCore\Infrastructure\Module\Modu
             Repository::class,
             fn (Container $c) => new PostgresRepository($c->get(Connection::class))
         );
-        $containerBuilder->register(
-            GetUsers::class,
-            fn (Container $container) => new GetUsers(
-                $container->get(JsonResponseFactory::class),
-                $container->get(QueryExecutor::class)
-            )
-        );
-        $containerBuilder->register(
-            PostUsers::class,
-            fn (Container $container) => new PostUsers($container->get(CommandBus::class), $container->get(
-                Serializer::class
-            ), $container->get(Deserializer::class))
-        );
-
     }
 
     public function register(Container $container): void
     {
-        $hydrator = $container->get(Hydrator::class);
+        $hydrator = $container->get(DefaultHydrator::class);
         $hydrator->installValueHydrator(new ObjectHydrator(LoginRequest::class));
         $hydrator->installValueHydrator(new ObjectHydrator(UserView::class));
         $hydrator->installValueHydrator(new ObjectHydrator(All::class));
@@ -87,11 +71,30 @@ final class Module implements \Ramona\Ras2\SharedCore\Infrastructure\Module\Modu
         $queryBus->installExecutor(ByToken::class, new ByTokenExecutor($container->get(Connection::class)));
         $queryBus->installExecutor(
             All::class,
-            new AllExecutor($container->get(Connection::class), $container->get(Hydrator::class))
+            new AllExecutor($container->get(Connection::class), $container->get(DefaultHydrator::class))
         );
 
-        $router = $container->get(Router::class);
-        $router->map('GET', '/users', GetUsers::class);
-        $router->map('POST', '/users', PostUsers::class);
+        /** @var APIDefinition $apiDefinition */
+        $apiDefinition = $container->get(APIDefinition::class);
+        $apiDefinition->installQueryCallback('/users', 'session', function (ServerRequestInterface $request) {
+            return $request->getAttribute(RequireLogin::SESSION_ATTRIBUTE);
+        });
+        $apiDefinition->installQuery('/users', 'all', All::class);
+        $apiDefinition->installCommand('/users', 'upsert', UpsertUser::class);
+        $apiDefinition->installCommandCallback('/users', 'login', function (ServerRequestInterface $request) use (
+            $container
+        ) {
+            $request = $container->get(Deserializer::class)->deserialize(
+                LoginRequest::class,
+                $request->getBody()
+                    ->getContents()
+            );
+
+            $token = Token::generate();
+
+            $container->get(CommandBus::class)->execute(new Login($token, $request->username));
+
+            return new LoginResponse($token);
+        });
     }
 }

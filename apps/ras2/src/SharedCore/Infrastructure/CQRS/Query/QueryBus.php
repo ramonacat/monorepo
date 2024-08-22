@@ -7,13 +7,8 @@ namespace Ramona\Ras2\SharedCore\Infrastructure\CQRS\Query;
 /**
  * @psalm-suppress UnusedClass
  */
-final class QueryBus
+interface QueryBus
 {
-    /**
-     * @var array<class-string<Query<mixed>>, Executor<mixed, Query<mixed>>>
-     */
-    private $executors = [];
-
     /**
      * @template TResult
      * @template TQuery of Query<TResult>
@@ -21,10 +16,7 @@ final class QueryBus
      * @param class-string<TQuery> $queryType
      * @param Executor<TResult, TQuery> $executor
      */
-    public function installExecutor(string $queryType, Executor $executor): void
-    {
-        $this->executors[$queryType] = $executor;
-    }
+    public function installExecutor(string $queryType, Executor $executor): void;
 
     /**
      * @psalm-suppress MixedInferredReturnType
@@ -35,17 +27,5 @@ final class QueryBus
      *
      * @return TResult
      */
-    public function execute(Query $query): mixed
-    {
-        $queryClass = get_class($query);
-        if (! isset($this->executors[$queryClass])) {
-            throw NoExecutor::forQueryClass($queryClass);
-        }
-        /**
-         * @phpstan-assert Executor<TResult, Query<TResult>> $executor
-         * @psalm-assert Executor<TResult, Query<TResult>> $executor
-         */
-        $executor = $this->executors[$queryClass];
-        return $executor->execute($query);
-    }
+    public function execute(Query $query): mixed;
 }

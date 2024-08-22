@@ -6,7 +6,7 @@ namespace Tests\Ramona\Ras2\SharedCore\Infrastructure\Hydration;
 
 use PHPUnit\Framework\TestCase;
 use Ramona\Ras2\SharedCore\Infrastructure\Hydration\CannotHydrateType;
-use Ramona\Ras2\SharedCore\Infrastructure\Hydration\Hydrator;
+use Ramona\Ras2\SharedCore\Infrastructure\Hydration\DefaultHydrator;
 use Ramona\Ras2\SharedCore\Infrastructure\Hydration\Hydrator\EnumHydrator;
 
 final class EnumHydratorTest extends TestCase
@@ -15,7 +15,7 @@ final class EnumHydratorTest extends TestCase
     {
         $hydrator = new EnumHydrator(TestEnum::class);
 
-        $result = $hydrator->hydrate(new Hydrator(), 'TEST1', []);
+        $result = $hydrator->hydrate(new DefaultHydrator(), 'TEST1', []);
 
         self::assertEquals(TestEnum::TEST1, $result);
     }
@@ -25,7 +25,7 @@ final class EnumHydratorTest extends TestCase
         $hydrator = new EnumHydrator(TestEnum::class);
 
         $this->expectException(CannotHydrateType::class);
-        $hydrator->hydrate(new Hydrator(), 'TEST2000', []);
+        $hydrator->hydrate(new DefaultHydrator(), 'TEST2000', []);
 
     }
 }

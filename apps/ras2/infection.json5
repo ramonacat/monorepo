@@ -48,6 +48,11 @@
                 "Ramona\\Ras2\\SharedCore\\Infrastructure\\Serialization\\DefaultDeserializer",
                 "Ramona\\Ras2\\SharedCore\\Infrastructure\\Serialization\\DefaultSerializer"
             ]
+        },
+        "GreaterThan": {
+            "ignore": [
+                "Ramona\\Ras2\\SharedCore\\Infrastructure\\Hydration\\Hydrator\\ObjectHydrator"
+            ]
         }
     },
     "logs": {

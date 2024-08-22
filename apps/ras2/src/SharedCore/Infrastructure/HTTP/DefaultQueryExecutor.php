@@ -15,7 +15,7 @@ final class DefaultQueryExecutor implements QueryExecutor
     public function __construct(
         private Hydrator $hydrator,
         private QueryBus $queryBus,
-        private JsonResponseFactory $jsonResponseFactory
+        private DefaultJsonResponseFactory $jsonResponseFactory
     ) {
     }
 

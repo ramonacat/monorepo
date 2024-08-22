@@ -5,17 +5,15 @@ declare(strict_types=1);
 namespace Ramona\Ras2\Task;
 
 use Doctrine\DBAL\Connection;
-use League\Route\Router;
 use Ramona\Ras2\SharedCore\Infrastructure\ClockInterface;
-use Ramona\Ras2\SharedCore\Infrastructure\CQRS\Command\CommandBus as CommandBus;
+use Ramona\Ras2\SharedCore\Infrastructure\CQRS\Command\CommandBus;
 use Ramona\Ras2\SharedCore\Infrastructure\CQRS\Query\QueryBus;
 use Ramona\Ras2\SharedCore\Infrastructure\DependencyInjection\Container;
 use Ramona\Ras2\SharedCore\Infrastructure\DependencyInjection\ContainerBuilder;
-use Ramona\Ras2\SharedCore\Infrastructure\HTTP\CommandExecutor;
-use Ramona\Ras2\SharedCore\Infrastructure\HTTP\QueryExecutor;
+use Ramona\Ras2\SharedCore\Infrastructure\HTTP\APIDefinition\APIDefinition;
+use Ramona\Ras2\SharedCore\Infrastructure\Hydration\DefaultHydrator;
 use Ramona\Ras2\SharedCore\Infrastructure\Hydration\Dehydrator;
 use Ramona\Ras2\SharedCore\Infrastructure\Hydration\Dehydrator\ObjectDehydrator;
-use Ramona\Ras2\SharedCore\Infrastructure\Hydration\Hydrator;
 use Ramona\Ras2\SharedCore\Infrastructure\Hydration\Hydrator\ObjectHydrator;
 use Ramona\Ras2\SharedCore\Infrastructure\Serialization\Deserializer;
 use Ramona\Ras2\SharedCore\Infrastructure\Serialization\Serializer;
@@ -27,11 +25,6 @@ use Ramona\Ras2\Task\Application\Command\UpsertBacklogItem;
 use Ramona\Ras2\Task\Application\Command\UpsertIdea;
 use Ramona\Ras2\Task\Application\Command\UpsertUserProfile;
 use Ramona\Ras2\Task\Application\CurrentTaskView;
-use Ramona\Ras2\Task\Application\HttpApi\GetTaskById;
-use Ramona\Ras2\Task\Application\HttpApi\GetTasks;
-use Ramona\Ras2\Task\Application\HttpApi\GetTasksUserProfiles;
-use Ramona\Ras2\Task\Application\HttpApi\PostTasks;
-use Ramona\Ras2\Task\Application\HttpApi\PostTasksUserProfiles;
 use Ramona\Ras2\Task\Application\Query\ById;
 use Ramona\Ras2\Task\Application\Query\Current;
 use Ramona\Ras2\Task\Application\Query\Upcoming;
@@ -76,38 +69,17 @@ final class Module implements \Ramona\Ras2\SharedCore\Infrastructure\Module\Modu
         );
 
         $containerBuilder->register(
-            GetTasks::class,
-            fn (Container $c) => new GetTasks($c->get(QueryExecutor::class))
-        );
-        $containerBuilder->register(
-            GetTaskById::class,
-            fn (Container $c) => new GetTaskById($c->get(QueryExecutor::class))
-        );
-        $containerBuilder->register(
-            PostTasks::class,
-            fn (Container $c) => new PostTasks($c->get(CommandExecutor::class))
-        );
-        $containerBuilder->register(
-            PostTasksUserProfiles::class,
-            fn (Container $c) => new PostTasksUserProfiles($c->get(CommandExecutor::class))
-        );
-        $containerBuilder->register(
             UserProfileRepository::class,
             fn (Container $c) => new PostgresUserProfileRepository(
                 $c->get(Connection::class),
                 $c->get(Serializer::class)
             )
         );
-
-        $containerBuilder->register(
-            GetTasksUserProfiles::class,
-            fn (Container $c) => new GetTasksUserProfiles($c->get(QueryExecutor::class))
-        );
     }
 
     public function register(Container $container): void
     {
-        $hydrator = $container->get(Hydrator::class);
+        $hydrator = $container->get(DefaultHydrator::class);
         $hydrator->installValueHydrator(new ObjectHydrator(UpsertBacklogItem::class));
         $hydrator->installValueHydrator(new ObjectHydrator(UpsertIdea::class));
         $hydrator->installValueHydrator(new ObjectHydrator(PauseWork::class));
@@ -168,27 +140,33 @@ final class Module implements \Ramona\Ras2\SharedCore\Infrastructure\Module\Modu
         $queryBus = $container->get(QueryBus::class);
         $queryBus->installExecutor(
             Upcoming::class,
-            new UpcomingExecutor($container->get(Connection::class), $container->get(Hydrator::class))
+            new UpcomingExecutor($container->get(Connection::class), $container->get(DefaultHydrator::class))
         );
         $queryBus->installExecutor(
             WatchedBy::class,
-            new WatchedByExecutor($container->get(Connection::class), $container->get(Hydrator::class))
+            new WatchedByExecutor($container->get(Connection::class), $container->get(DefaultHydrator::class))
         );
         $queryBus->installExecutor(Current::class, new CurrentExecutor($container->get(Connection::class)));
         $queryBus->installExecutor(
             ById::class,
-            new ByIdExecutor($container->get(Connection::class), $container->get(Hydrator::class))
+            new ByIdExecutor($container->get(Connection::class), $container->get(DefaultHydrator::class))
         );
         $queryBus->installExecutor(
             UserProfileByUserId::class,
-            new UserProfileByUserIdExecutor($container->get(Connection::class), $container->get(Hydrator::class))
+            new UserProfileByUserIdExecutor($container->get(Connection::class), $container->get(DefaultHydrator::class))
         );
-
-        $router = $container->get(Router::class);
-        $router->map('GET', '/tasks', GetTasks::class);
-        $router->map('GET', '/tasks/{id:uuid}', GetTaskById::class);
-        $router->map('POST', '/tasks', PostTasks::class);
-        $router->map('POST', '/tasks/user-profiles', PostTasksUserProfiles::class);
-        $router->map('GET', '/tasks/user-profiles', GetTasksUserProfiles::class);
+        /** @var APIDefinition $apiDefinition */
+        $apiDefinition = $container->get(APIDefinition::class);
+        $apiDefinition->installQuery('/tasks', 'upcoming', Upcoming::class);
+        $apiDefinition->installQuery('/tasks', 'watched', WatchedBy::class);
+        $apiDefinition->installQuery('/tasks', 'current', Current::class);
+        $apiDefinition->installQuery('/tasks/{id:uuid}', 'by-id', ById::class);
+        $apiDefinition->installQuery('/tasks/user-profiles', 'current', UserProfileByUserId::class);
+        $apiDefinition->installCommand('/tasks', 'upsert:idea', UpsertIdea::class);
+        $apiDefinition->installCommand('/tasks', 'upsert:backlog-item', UpsertBacklogItem::class);
+        $apiDefinition->installCommand('/tasks', 'start-work', StartWork::class);
+        $apiDefinition->installCommand('/tasks', 'pause-work', PauseWork::class);
+        $apiDefinition->installCommand('/tasks', 'finish-work', FinishWork::class);
+        $apiDefinition->installCommand('/tasks', 'return-to-backlog', ReturnToBacklog::class);
     }
 }

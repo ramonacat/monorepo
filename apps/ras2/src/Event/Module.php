@@ -5,11 +5,8 @@ declare(strict_types=1);
 namespace Ramona\Ras2\Event;
 
 use Doctrine\DBAL\Connection;
-use League\Route\Router;
 use Ramona\Ras2\Event\Application\Command\UpsertEvent;
 use Ramona\Ras2\Event\Application\EventView;
-use Ramona\Ras2\Event\Application\HttpApi\GetEvents;
-use Ramona\Ras2\Event\Application\HttpApi\PostEvents;
 use Ramona\Ras2\Event\Application\Query\InMonth;
 use Ramona\Ras2\Event\Infrastructure\CommandExecutor\UpsertEventExecutor;
 use Ramona\Ras2\Event\Infrastructure\EventIdDehydrator;
@@ -21,18 +18,15 @@ use Ramona\Ras2\SharedCore\Infrastructure\CQRS\Command\CommandBus;
 use Ramona\Ras2\SharedCore\Infrastructure\CQRS\Query\QueryBus;
 use Ramona\Ras2\SharedCore\Infrastructure\DependencyInjection\Container;
 use Ramona\Ras2\SharedCore\Infrastructure\DependencyInjection\ContainerBuilder;
-use Ramona\Ras2\SharedCore\Infrastructure\HTTP\CommandExecutor;
-use Ramona\Ras2\SharedCore\Infrastructure\HTTP\QueryExecutor;
+use Ramona\Ras2\SharedCore\Infrastructure\HTTP\APIDefinition\APIDefinition;
+use Ramona\Ras2\SharedCore\Infrastructure\Hydration\DefaultHydrator;
 use Ramona\Ras2\SharedCore\Infrastructure\Hydration\Dehydrator;
-use Ramona\Ras2\SharedCore\Infrastructure\Hydration\Hydrator;
 use Ramona\Ras2\SharedCore\Infrastructure\Hydration\Hydrator\ObjectHydrator;
 
 final class Module implements \Ramona\Ras2\SharedCore\Infrastructure\Module\Module
 {
     public function install(ContainerBuilder $containerBuilder): void
     {
-        $containerBuilder->register(GetEvents::class, fn ($c) => new GetEvents($c->get(QueryExecutor::class)));
-        $containerBuilder->register(PostEvents::class, fn ($c) => new PostEvents($c->get(CommandExecutor::class)));
         $containerBuilder->register(
             Repository::class,
             fn ($c) => new PostgresRepository($c->get(Connection::class))
@@ -41,7 +35,7 @@ final class Module implements \Ramona\Ras2\SharedCore\Infrastructure\Module\Modu
 
     public function register(Container $container): void
     {
-        $hydrator = $container->get(Hydrator::class);
+        $hydrator = $container->get(DefaultHydrator::class);
         $hydrator->installValueHydrator(new EventIdHydrator());
         $hydrator->installValueHydrator(new ObjectHydrator(EventView::class));
         $hydrator->installValueHydrator(new ObjectHydrator(UpsertEvent::class));
@@ -54,7 +48,7 @@ final class Module implements \Ramona\Ras2\SharedCore\Infrastructure\Module\Modu
         $queryBus = $container->get(QueryBus::class);
         $queryBus->installExecutor(
             InMonth::class,
-            new InMonthExecutor($container->get(Connection::class), $container->get(Hydrator::class))
+            new InMonthExecutor($container->get(Connection::class), $container->get(DefaultHydrator::class))
         );
 
         $commandBus = $container->get(CommandBus::class);
@@ -63,8 +57,10 @@ final class Module implements \Ramona\Ras2\SharedCore\Infrastructure\Module\Modu
             new UpsertEventExecutor($container->get(Repository::class))
         );
 
-        $router = $container->get(Router::class);
-        $router->map('GET', '/events', GetEvents::class);
-        $router->map('POST', '/events', PostEvents::class);
+        /** @var APIDefinition $apiDefinition */
+        $apiDefinition = $container->get(APIDefinition::class);
+
+        $apiDefinition->installQuery('/events', 'in-month', InMonth::class);
+        $apiDefinition->installCommand('/events', 'upsert', UpsertEvent::class);
     }
 }

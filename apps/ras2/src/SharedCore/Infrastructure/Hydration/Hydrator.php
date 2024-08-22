@@ -6,23 +6,13 @@ namespace Ramona\Ras2\SharedCore\Infrastructure\Hydration;
 
 use Ramona\Ras2\User\Application\Session;
 
-final class Hydrator
+interface Hydrator
 {
-    /**
-     * @var array<string, ValueHydrator<mixed>>
-     */
-    private array $valueHydrators = [];
-
-    private ?Session $session = null;
-
     /**
      * @template T
      * @param ValueHydrator<T> $valueHydrator
      */
-    public function installValueHydrator(ValueHydrator $valueHydrator): void
-    {
-        $this->valueHydrators[$valueHydrator->handles()] = $valueHydrator;
-    }
+    public function installValueHydrator(ValueHydrator $valueHydrator): void;
 
     /**
      * @template T
@@ -31,28 +21,9 @@ final class Hydrator
      * @param list<HydrationAttribute> $attributes
      * @return T
      */
-    public function hydrate(string $targetType, mixed $input, array $attributes = []): mixed
-    {
-        if ($targetType === 'int') {
-            $targetType = 'integer';
-        } elseif ($targetType === 'bool') {
-            $targetType = 'boolean';
-        }
+    public function hydrate(string $targetType, mixed $input, array $attributes = []): mixed;
 
-        if (! isset($this->valueHydrators[$targetType])) {
-            throw CannotHydrateType::for($targetType);
-        }
+    public function setSession(?Session $session): void;
 
-        return $this->valueHydrators[$targetType]->hydrate($this, $input, $attributes);
-    }
-
-    public function setSession(?Session $session): void
-    {
-        $this->session = $session;
-    }
-
-    public function session(): ?Session
-    {
-        return $this->session;
-    }
+    public function session(): ?Session;
 }

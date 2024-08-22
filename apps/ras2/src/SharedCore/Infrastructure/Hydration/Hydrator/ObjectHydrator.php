@@ -45,7 +45,7 @@ final class ObjectHydrator implements ValueHydrator
             $hasSessionValue = false;
 
             $fromSessionAttribute = $property->getAttributes(HydrateFromSession::class);
-            if (count($fromSessionAttribute) === 1 && ($session = $hydrator->session()) !== null) {
+            if (count($fromSessionAttribute) > 0 && ($session = $hydrator->session()) !== null) {
                 /** @var HydrateFromSession $attribute */
                 $attribute = $fromSessionAttribute[0]->newInstance();
 

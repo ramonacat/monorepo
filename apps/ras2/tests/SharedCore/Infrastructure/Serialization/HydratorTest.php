@@ -8,6 +8,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 use Ramona\Ras2\SharedCore\Infrastructure\Hydration\CannotHydrateType;
+use Ramona\Ras2\SharedCore\Infrastructure\Hydration\DefaultHydrator;
 use Ramona\Ras2\SharedCore\Infrastructure\Hydration\Hydrator;
 use Ramona\Ras2\SharedCore\Infrastructure\Hydration\Hydrator\ArrayCollectionHydrator;
 use Ramona\Ras2\SharedCore\Infrastructure\Hydration\Hydrator\ObjectHydrator;
@@ -26,11 +27,11 @@ use Tests\Ramona\Ras2\SharedCore\Infrastructure\Serialization\Mocks\WithNullable
 
 final class HydratorTest extends TestCase
 {
-    private Hydrator $hydrator;
+    private DefaultHydrator $hydrator;
 
     protected function setUp(): void
     {
-        $this->hydrator = new Hydrator();
+        $this->hydrator = new DefaultHydrator();
         $this->hydrator->installValueHydrator(new ArrayCollectionHydrator());
         $this->hydrator->installValueHydrator(new ScalarHydrator('integer'));
         $this->hydrator->installValueHydrator(new ScalarHydrator('string'));
