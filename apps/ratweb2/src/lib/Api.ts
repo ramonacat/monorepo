@@ -178,7 +178,7 @@ export class ApiClient {
 
 	public async findUpcomingTasks(
 		assigneeId: string,
-		limit: number = 10
+		limit: number = 100
 	): Promise<ServerTaskSummary[]> {
 		const raw: RawTask[] = (await this.query(
 			'tasks?action=upcoming&limit=' + limit + '&assigneeId=' + assigneeId
@@ -187,7 +187,7 @@ export class ApiClient {
 		return raw.map(this.rawTaskToObject);
 	}
 
-	public async findWatchedTasks(limit: number = 10): Promise<ServerTaskSummary[]> {
+	public async findWatchedTasks(limit: number = 100): Promise<ServerTaskSummary[]> {
 		const raw = (await this.query('tasks?action=watched&limit=' + limit)) as RawTask[];
 
 		return raw.map(this.rawTaskToObject);

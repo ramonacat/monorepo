@@ -18,9 +18,9 @@ use Ramona\Ras2\SharedCore\Infrastructure\HTTP\APIDefinition\EmptyQuery;
 use Ramona\Ras2\SharedCore\Infrastructure\HTTP\APIDefinition\QueryCallbackDefinition;
 use Ramona\Ras2\SharedCore\Infrastructure\HTTP\APIDefinition\QueryDefinition;
 use Ramona\Ras2\SharedCore\Infrastructure\HTTP\RequireLogin;
-use Ramona\Ras2\SharedCore\Infrastructure\Hydration\DefaultHydrator;
 use Ramona\Ras2\SharedCore\Infrastructure\Hydration\Dehydrator;
 use Ramona\Ras2\SharedCore\Infrastructure\Hydration\Dehydrator\ObjectDehydrator;
+use Ramona\Ras2\SharedCore\Infrastructure\Hydration\Hydrator;
 use Ramona\Ras2\SharedCore\Infrastructure\Hydration\Hydrator\ObjectHydrator;
 use Ramona\Ras2\SharedCore\Infrastructure\Serialization\Deserializer;
 use Ramona\Ras2\Task\Application\Query\UserProfileByUserId;
@@ -55,7 +55,7 @@ final class Module implements \Ramona\Ras2\SharedCore\Infrastructure\Module\Modu
 
     public function register(Container $container): void
     {
-        $hydrator = $container->get(DefaultHydrator::class);
+        $hydrator = $container->get(Hydrator::class);
         $hydrator->installValueHydrator(new ObjectHydrator(LoginRequest::class));
         $hydrator->installValueHydrator(new ObjectHydrator(UserView::class));
         $hydrator->installValueHydrator(new ObjectHydrator(All::class));
@@ -77,7 +77,7 @@ final class Module implements \Ramona\Ras2\SharedCore\Infrastructure\Module\Modu
         $queryBus->installExecutor(ByToken::class, new ByTokenExecutor($container->get(Connection::class)));
         $queryBus->installExecutor(
             All::class,
-            new AllExecutor($container->get(Connection::class), $container->get(DefaultHydrator::class))
+            new AllExecutor($container->get(Connection::class), $container->get(Hydrator::class))
         );
 
         /** @var APIDefinition $apiDefinition */
