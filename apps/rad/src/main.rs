@@ -19,7 +19,7 @@ async fn main() -> Result<(), Box<dyn Error>> {
         let closure_path = closure_path.to_string_lossy();
 
         let result: String = client
-            .post("http://ras2.services.ramona.fun:8080/system")
+            .post("http://ras2.services.ramona.fun/system")
             .json(&PostSystemUpdateCurrentClosure {
                 current_closure: closure_path.to_string(),
             })
