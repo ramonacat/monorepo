@@ -24,7 +24,7 @@ async fn main() -> Result<(), Box<dyn Error>> {
                 current_closure: closure_path.to_string(),
             })
             .header("X-Action", "update-current-closure")
-            .header("X-User-Token", user_token.clone())
+            .header("X-User-Token", user_token.trim().clone())
             .send()
             .await?
             .json()
