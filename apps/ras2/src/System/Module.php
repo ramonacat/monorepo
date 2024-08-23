@@ -95,6 +95,7 @@ final class Module implements \Ramona\Ras2\SharedCore\Infrastructure\Module\Modu
         $apiDefinition->installCommand(
             new CommandDefinition('systems', 'update-latest-closure', UpdateLatestClosure::class)
         );
+        $apiDefinition->installCommand(new CommandDefinition('systems', 'create', CreateSystem::class));
         $apiDefinition->installQuery(new QueryDefinition('systems', 'all', All::class, ArrayCollection::class));
     }
 }
