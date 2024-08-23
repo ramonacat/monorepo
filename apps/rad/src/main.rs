@@ -18,17 +18,16 @@ async fn main() -> Result<(), Box<dyn Error>> {
         let closure_path = tokio::fs::canonicalize("/nix/var/nix/profiles/system").await?;
         let closure_path = closure_path.to_string_lossy();
 
-        let result: String = client
+        let result = client
             .post("http://ras2.services.ramona.fun/systems")
             .json(&PostSystemUpdateCurrentClosure {
                 current_closure: closure_path.to_string(),
             })
             .header("X-Action", "update-current-closure")
-            .header("X-User-Token", user_token.trim().clone())
+            .header("X-User-Token", user_token.trim())
             .send()
             .await?
-            .json()
-            .await?;
+            .status();
 
         println!("Updated host {hostname} with closure {closure_path}, response: {result}");
 
