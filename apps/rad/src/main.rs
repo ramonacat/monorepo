@@ -4,7 +4,9 @@ use serde::Serialize;
 use tokio::time::sleep;
 
 #[derive(Serialize)]
+#[serde(rename_all = "camelCase")]
 struct PostSystemUpdateCurrentClosure {
+    pub hostname: String,
     pub current_closure: String,
 }
 
@@ -21,6 +23,7 @@ async fn main() -> Result<(), Box<dyn Error>> {
         let result = client
             .post("http://ras2.services.ramona.fun/systems")
             .json(&PostSystemUpdateCurrentClosure {
+                hostname: hostname.clone(),
                 current_closure: closure_path.to_string(),
             })
             .header("X-Action", "update-current-closure")
