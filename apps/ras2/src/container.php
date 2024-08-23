@@ -160,6 +160,7 @@ $containerBuilder->register(APIRouter::class, fn ($c) => new APIRouter(
     $c->get(Deserializer::class),
     $c->get(DefaultJsonResponseFactory::class),
     $c->get(Hydrator::class),
+    $c->get(LoggerInterface::class)
 ));
 
 $modules = [new TaskModule(), new UserModule(), new EventModule(), new SystemModule()];

@@ -15,8 +15,10 @@ use Ramona\Ras2\SharedCore\Infrastructure\HTTP\APIDefinition\APIDefinition;
 use Ramona\Ras2\SharedCore\Infrastructure\HTTP\APIDefinition\CommandDefinition;
 use Ramona\Ras2\SharedCore\Infrastructure\HTTP\APIDefinition\QueryDefinition;
 use Ramona\Ras2\SharedCore\Infrastructure\Hydration\Dehydrator;
+use Ramona\Ras2\SharedCore\Infrastructure\Hydration\Dehydrator\EnumDehydrator;
 use Ramona\Ras2\SharedCore\Infrastructure\Hydration\Dehydrator\ObjectDehydrator;
 use Ramona\Ras2\SharedCore\Infrastructure\Hydration\Hydrator;
+use Ramona\Ras2\SharedCore\Infrastructure\Hydration\Hydrator\EnumHydrator;
 use Ramona\Ras2\SharedCore\Infrastructure\Hydration\Hydrator\ObjectHydrator;
 use Ramona\Ras2\SharedCore\Infrastructure\Serialization\Deserializer;
 use Ramona\Ras2\SharedCore\Infrastructure\Serialization\Serializer;
@@ -30,9 +32,11 @@ use Ramona\Ras2\Task\Application\Command\UpsertUserProfile;
 use Ramona\Ras2\Task\Application\CurrentTaskView;
 use Ramona\Ras2\Task\Application\Query\ById;
 use Ramona\Ras2\Task\Application\Query\Current;
+use Ramona\Ras2\Task\Application\Query\Ideas;
 use Ramona\Ras2\Task\Application\Query\Upcoming;
 use Ramona\Ras2\Task\Application\Query\UserProfileByUserId;
 use Ramona\Ras2\Task\Application\Query\WatchedBy;
+use Ramona\Ras2\Task\Application\Status;
 use Ramona\Ras2\Task\Application\TagView;
 use Ramona\Ras2\Task\Application\TaskView;
 use Ramona\Ras2\Task\Application\UserProfileView;
@@ -48,6 +52,7 @@ use Ramona\Ras2\Task\Infrastructure\PostgresRepository;
 use Ramona\Ras2\Task\Infrastructure\PostgresUserProfileRepository;
 use Ramona\Ras2\Task\Infrastructure\QueryExecutor\ByIdExecutor;
 use Ramona\Ras2\Task\Infrastructure\QueryExecutor\CurrentExecutor;
+use Ramona\Ras2\Task\Infrastructure\QueryExecutor\IdeasExecutor;
 use Ramona\Ras2\Task\Infrastructure\QueryExecutor\UpcomingExecutor;
 use Ramona\Ras2\Task\Infrastructure\QueryExecutor\UserProfileByUserIdExecutor;
 use Ramona\Ras2\Task\Infrastructure\QueryExecutor\WatchedByExecutor;
@@ -97,6 +102,9 @@ final class Module implements \Ramona\Ras2\SharedCore\Infrastructure\Module\Modu
         $hydrator->installValueHydrator(new ObjectHydrator(WatchedBy::class));
         $hydrator->installValueHydrator(new ObjectHydrator(Upcoming::class));
         $hydrator->installValueHydrator(new ObjectHydrator(Current::class));
+        $hydrator->installValueHydrator(new ObjectHydrator(Ideas::class));
+        $hydrator->installValueHydrator(new ObjectHydrator(ById::class));
+        $hydrator->installValueHydrator(new EnumHydrator(Status::class));
         $hydrator->installValueHydrator(new TaskIdHydrator());
         $hydrator->installValueHydrator(new TagIdHydrator());
 
@@ -106,6 +114,7 @@ final class Module implements \Ramona\Ras2\SharedCore\Infrastructure\Module\Modu
         $dehydrator->installValueDehydrator(new ObjectDehydrator(CurrentTaskView::class));
         $dehydrator->installValueDehydrator(new ObjectDehydrator(UserProfileView::class));
         $dehydrator->installValueDehydrator(new ObjectDehydrator(TagView::class));
+        $dehydrator->installValueDehydrator(new EnumDehydrator(Status::class));
         $dehydrator->installValueDehydrator(new TaskIdDehydrator());
         $dehydrator->installValueDehydrator(new TagIdDehydrator());
 
@@ -158,6 +167,10 @@ final class Module implements \Ramona\Ras2\SharedCore\Infrastructure\Module\Modu
             UserProfileByUserId::class,
             new UserProfileByUserIdExecutor($container->get(Connection::class), $container->get(Hydrator::class))
         );
+        $queryBus->installExecutor(
+            Ideas::class,
+            new IdeasExecutor($container->get(Connection::class), $container->get(Hydrator::class))
+        );
         /** @var APIDefinition $apiDefinition */
         $apiDefinition = $container->get(APIDefinition::class);
         $apiDefinition->installQuery(
@@ -166,6 +179,7 @@ final class Module implements \Ramona\Ras2\SharedCore\Infrastructure\Module\Modu
         $apiDefinition->installQuery(
             new QueryDefinition('tasks', 'watched', WatchedBy::class, ArrayCollection::class)
         );
+        $apiDefinition->installQuery(new QueryDefinition('tasks', 'ideas', Ideas::class, ArrayCollection::class));
         $apiDefinition->installQuery(new QueryDefinition('tasks', 'current', Current::class, CurrentTaskView::class));
         $apiDefinition->installQuery(new QueryDefinition('tasks/{id:uuid}', 'by-id', ById::class, TaskView::class));
         $apiDefinition->installQuery(

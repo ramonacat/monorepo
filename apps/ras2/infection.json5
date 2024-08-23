@@ -41,12 +41,18 @@
             "ignore": [
                 "Ramona\\Ras2\\SharedCore\\Infrastructure\\Serialization\\DefaultDeserializer",
                 "Ramona\\Ras2\\SharedCore\\Infrastructure\\Serialization\\DefaultSerializer"
+            ],
+            "ignoreSourceCodeByRegex": [
+                "\\$this->logger->.*"
             ]
         },
         "ArrayItemRemoval": {
             "ignore": [
                 "Ramona\\Ras2\\SharedCore\\Infrastructure\\Serialization\\DefaultDeserializer",
                 "Ramona\\Ras2\\SharedCore\\Infrastructure\\Serialization\\DefaultSerializer"
+            ],
+            "ignoreSourceCodeByRegex": [
+                "\\$this->logger->.*"
             ]
         },
         "GreaterThan": {

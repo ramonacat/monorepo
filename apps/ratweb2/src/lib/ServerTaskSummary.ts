@@ -1,5 +1,6 @@
 import { DateTime } from 'luxon';
-import { ServerDateTime } from '$lib/Api';
+import { ServerDateTime, type TaskStatus } from '$lib/Api';
+
 
 export interface PojoDateTime {
 	timestamp: string;
@@ -13,6 +14,7 @@ export interface PojoTaskSummary {
 	deadline: PojoDateTime | undefined;
 	assigneeId: string | undefined;
 	timeRecords: { started: PojoDateTime; ended: PojoDateTime | undefined }[];
+	status: TaskStatus;
 }
 
 export class ServerTaskSummary {
@@ -22,6 +24,7 @@ export class ServerTaskSummary {
 	assigneeId: string | undefined;
 	deadline: ServerDateTime | undefined;
 	timeRecords: { started: ServerDateTime; ended: ServerDateTime | undefined }[];
+	status: TaskStatus;
 
 	public toPojo(): PojoTaskSummary {
 		return {
@@ -32,7 +35,8 @@ export class ServerTaskSummary {
 			assigneeId: this.assigneeId,
 			timeRecords: this.timeRecords.map(function (x) {
 				return { started: x.started.toPojo(), ended: x.ended ? x.ended.toPojo() : undefined };
-			})
+			}),
+			status: this.status
 		};
 	}
 
@@ -48,7 +52,8 @@ export class ServerTaskSummary {
 					ended: x.ended ? ServerDateTime.fromPojo(x.ended) : undefined
 				};
 			}),
-			pojo.assigneeId
+			pojo.assigneeId,
+			pojo.status
 		);
 	}
 
@@ -61,7 +66,8 @@ export class ServerTaskSummary {
 			started: ServerDateTime;
 			ended: ServerDateTime | undefined;
 		}[],
-		assignee: string | undefined
+		assignee: string | undefined,
+		status: TaskStatus
 	) {
 		this.id = id;
 		this.title = title;
@@ -69,6 +75,7 @@ export class ServerTaskSummary {
 		this.deadline = deadline;
 		this.timeRecords = timeRecords;
 		this.assigneeId = assignee;
+		this.status = status;
 	}
 
 	public getTitle(): string {
@@ -91,5 +98,9 @@ export class ServerTaskSummary {
 		const deadline = this.getDeadline();
 
 		return deadline ? deadline < DateTime.now() : false;
+	}
+
+	public getStatus(): TaskStatus {
+		return this.status;
 	}
 }

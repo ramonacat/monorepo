@@ -23,6 +23,7 @@ final readonly class TaskView
      */
     public function __construct(
         public TaskId $id,
+        public Status $status,
         public string $title,
         public ?UserId $assigneeId,
         public ?string $assigneeName,
