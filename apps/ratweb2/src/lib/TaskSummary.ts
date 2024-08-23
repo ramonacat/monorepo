@@ -1,7 +1,6 @@
 import { DateTime } from 'luxon';
 import { ServerDateTime, type TaskStatus } from '$lib/Api';
 
-
 export interface PojoDateTime {
 	timestamp: string;
 	timezone: string;
@@ -17,7 +16,7 @@ export interface PojoTaskSummary {
 	status: TaskStatus;
 }
 
-export class ServerTaskSummary {
+export class TaskSummary {
 	id: string;
 	title: string;
 	tags: string[];
@@ -41,7 +40,7 @@ export class ServerTaskSummary {
 	}
 
 	public static fromPojo(pojo: PojoTaskSummary) {
-		return new ServerTaskSummary(
+		return new TaskSummary(
 			pojo.id,
 			pojo.title,
 			pojo.tags,

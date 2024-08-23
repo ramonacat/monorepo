@@ -7,7 +7,7 @@
 	import CurrentTask from './ActiveTask.svelte';
 	import type { ActionData } from '../../.svelte-kit/types/src/routes/$types';
 	import type { PageData } from './$types';
-	import { ServerTaskSummary } from '$lib/ServerTaskSummary';
+	import { TaskSummary } from '$lib/TaskSummary';
 	import { ServerCurrentTaskView } from '$lib/ServerCurrentTaskView';
 	import { ServerUserView } from '$lib/ServerUserView';
 	import CreateIdeaForm from './CreateIdeaForm.svelte';
@@ -16,10 +16,10 @@
 	export let form: ActionData;
 	export let data: PageData;
 
-	const upcomingTasks = data.upcomingTasks.map(ServerTaskSummary.fromPojo);
-	const watchedTasks = data.watchedTasks.map(ServerTaskSummary.fromPojo);
+	const upcomingTasks = data.upcomingTasks.map(TaskSummary.fromPojo);
+	const watchedTasks = data.watchedTasks.map(TaskSummary.fromPojo);
 	const allUsers = data.allUsers.map(ServerUserView.fromPojo);
-	const ideas = data.ideas.map(ServerTaskSummary.fromPojo);
+	const ideas = data.ideas.map(TaskSummary.fromPojo);
 </script>
 
 <svelte:head>
