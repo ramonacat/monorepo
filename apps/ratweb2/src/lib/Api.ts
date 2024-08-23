@@ -145,6 +145,9 @@ export class ApiClient {
 
 	async updateTagsProfile(userId: string, tags: string[]) {
 		await this.call('tasks/user-profiles', {
+			headers: {
+				'X-Action': 'upsert'
+			},
 			body: JSON.stringify({
 				userId,
 				watchedTags: tags

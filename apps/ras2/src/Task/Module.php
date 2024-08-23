@@ -179,5 +179,8 @@ final class Module implements \Ramona\Ras2\SharedCore\Infrastructure\Module\Modu
         $apiDefinition->installCommand(new CommandDefinition('tasks', 'pause-work', PauseWork::class));
         $apiDefinition->installCommand(new CommandDefinition('tasks', 'finish-work', FinishWork::class));
         $apiDefinition->installCommand(new CommandDefinition('tasks', 'return-to-backlog', ReturnToBacklog::class));
+        $apiDefinition->installCommand(
+            new CommandDefinition('tasks/user-profiles', 'upsert', UpsertUserProfile::class)
+        );
     }
 }
