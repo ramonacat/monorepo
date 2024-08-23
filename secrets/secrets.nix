@@ -23,6 +23,7 @@ in {
   "transmission-credentials.age".publicKeys = users ++ [shadowsoul];
   "photoprism-password.age".publicKeys = users ++ [hallewell];
   "ras2-db-config.age".publicKeys = users ++ [hallewell];
+  "rad-ras-token.age".publicKeys = users ++ allMachines;
 
   "terraform-tokens.age".publicKeys = users;
   "minio-terraform-state.age".publicKeys = users;

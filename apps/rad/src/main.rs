@@ -11,7 +11,7 @@ struct PostSystemUpdateCurrentClosure {
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn Error>> {
     let client = reqwest::Client::new();
-    let user_token = std::env::var("RAS_TOKEN").unwrap();
+    let user_token = ratlib::secrets::read("rad-ras-token")?;
 
     loop {
         let hostname = hostname::get()?.to_string_lossy().to_string();

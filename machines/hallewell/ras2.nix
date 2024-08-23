@@ -9,6 +9,11 @@
     group = "ras2";
     mode = "440";
   };
+  age.secrets.rad-ras-token = {
+    file = ../../secrets/rad-ras-token.age;
+    group = "ras2";
+    mode = "440";
+  };
   services.phpfpm.pools.ras2 = {
     user = "ras2";
     settings = {
