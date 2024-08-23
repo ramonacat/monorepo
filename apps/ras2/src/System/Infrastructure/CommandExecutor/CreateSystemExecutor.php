@@ -27,7 +27,7 @@ final class CreateSystemExecutor implements Executor
     public function execute(Command $command): void
     {
         $operatingSystem = match ($command->type) {
-            SystemType::NIXOS => $this->hydrator->hydrate(NixOS::class, $command->attributes),
+            SystemType::NIXOS => $this->hydrator->hydrate(NixOS::class, $command->attributes->toArray()),
         };
 
         $system = new System($command->id, $command->hostname, $operatingSystem);
