@@ -23,7 +23,7 @@ final class UpsertUserExecutor implements Executor
     public function execute(Command $command): void
     {
         $this->repository->transactional(function () use ($command) {
-            $this->repository->save(new User($command->id, $command->name));
+            $this->repository->save(new User($command->id, $command->name, $command->isSystem, $command->timezone));
         });
     }
 }

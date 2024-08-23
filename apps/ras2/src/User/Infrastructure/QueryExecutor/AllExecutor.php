@@ -26,7 +26,7 @@ final class AllExecutor implements Executor
     public function execute(Query $query): mixed
     {
         $results = $this->connection->fetchAllAssociative('
-            SELECT id, name as username FROM users
+            SELECT id, name as username FROM users WHERE is_system = 0::bit
         ');
 
         return (new ArrayCollection($results))

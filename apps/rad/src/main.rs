@@ -1,11 +1,17 @@
 use std::{error::Error, time::Duration};
 
-use ratlib::herd::PostHerdMachine;
+use serde::Serialize;
 use tokio::time::sleep;
+
+#[derive(Serialize)]
+struct PostSystemUpdateCurrentClosure {
+    pub current_closure: String,
+}
 
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn Error>> {
     let client = reqwest::Client::new();
+    let user_token = std::env::var("RAS_TOKEN").unwrap();
 
     loop {
         let hostname = hostname::get()?.to_string_lossy().to_string();
@@ -13,10 +19,12 @@ async fn main() -> Result<(), Box<dyn Error>> {
         let closure_path = closure_path.to_string_lossy();
 
         let result: String = client
-            .post(format!("http://hallewell:8438/herd/machines/{hostname}"))
-            .json(&PostHerdMachine {
+            .post("http://ras2.services.ramona.fun:8080/system")
+            .json(&PostSystemUpdateCurrentClosure {
                 current_closure: closure_path.to_string(),
             })
+            .header("X-Action", "update-current-closure")
+            .header("X-User-Token", user_token.clone())
             .send()
             .await?
             .json()

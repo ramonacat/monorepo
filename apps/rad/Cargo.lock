@@ -659,6 +659,7 @@ dependencies = [
  "hostname",
  "ratlib",
  "reqwest",
+ "serde",
  "thiserror",
  "tokio",
 ]

@@ -24,12 +24,15 @@ final class PostgresRepository implements Repository
     {
         $this->databaseConnection->executeStatement('
             INSERT INTO 
-                users(id, name) 
-            VALUES(:id, :name)
-            ON CONFLICT (id) DO UPDATE SET name = :name
+                users(id, name, is_system, timezone) 
+            VALUES(:id, :name, :is_system, :timezone)
+            ON CONFLICT (id) DO UPDATE SET name = :name, is_system=:is_system, timezone=:timezone
         ', [
             'id' => (string) $user->id(),
             'name' => $user->name(),
+            'is_system' => $user->isSystem(),
+            'timezone' => $user->timezone()
+                ->getName(),
         ]);
     }
 
