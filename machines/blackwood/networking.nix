@@ -7,7 +7,4 @@ _: {
       "100.0.0.0/8"
     ];
   };
-
-  # so backups can skip tailscale
-  networking.firewall.allowedTCPPorts = [22];
 }
