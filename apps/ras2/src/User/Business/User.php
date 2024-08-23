@@ -8,26 +8,32 @@ final class User
 {
     public function __construct(
         private UserId $id,
-        private string $name
+        private string $name,
+        private bool $isSystem,
+        private \DateTimeZone $timezone
     ) {
         if (grapheme_strlen($name) < 3) {
             throw UsernameTooShort::forName($name);
         }
     }
 
-    /**
-     * @psalm-suppress PossiblyUnusedMethod
-     */
     public function id(): UserId
     {
         return $this->id;
     }
 
-    /**
-     * @psalm-suppress PossiblyUnusedMethod
-     */
     public function name(): string
     {
         return $this->name;
+    }
+
+    public function isSystem(): bool
+    {
+        return $this->isSystem;
+    }
+
+    public function timezone(): \DateTimeZone
+    {
+        return $this->timezone;
     }
 }

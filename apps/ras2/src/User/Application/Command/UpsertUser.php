@@ -14,7 +14,9 @@ final readonly class UpsertUser implements Command
      */
     public function __construct(
         public UserId $id,
-        public string $name
+        public string $name,
+        public bool $isSystem,
+        public \DateTimeZone $timezone
     ) {
     }
 }

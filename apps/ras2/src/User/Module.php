@@ -60,6 +60,7 @@ final class Module implements \Ramona\Ras2\SharedCore\Infrastructure\Module\Modu
         $hydrator->installValueHydrator(new ObjectHydrator(UserView::class));
         $hydrator->installValueHydrator(new ObjectHydrator(All::class));
         $hydrator->installValueHydrator(new ObjectHydrator(UserProfileByUserId::class));
+        $hydrator->installValueHydrator(new ObjectHydrator(UpsertUser::class));
         $hydrator->installValueHydrator(new UserIdHydrator());
 
         $dehydrator = $container->get(Dehydrator::class);
