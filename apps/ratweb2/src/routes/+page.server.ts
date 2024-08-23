@@ -8,14 +8,14 @@ export async function load({ cookies }) {
 
 	const upcomingTasks = await apiClient.findUpcomingTasks(session.userId);
 	const watchedTasks = await apiClient.findWatchedTasks();
-	const currentTask = await apiClient.findCurrentTask();
 	const allUsers = await apiClient.findAllUsers();
+	const ideas = await apiClient.findIdeas();
 
 	return {
 		upcomingTasks: upcomingTasks.map((x) => x.toPojo()),
 		watchedTasks: watchedTasks.map((x) => x.toPojo()),
-		currentTask: currentTask?.toPojo(),
-		allUsers: allUsers.map((x) => x.toPojo())
+		allUsers: allUsers.map((x) => x.toPojo()),
+		ideas: ideas.map((x) => x.toPojo())
 	};
 }
 

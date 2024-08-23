@@ -42,7 +42,8 @@ final class UpcomingExecutor implements Executor
                         WHERE tt.task_id = t.id
                     ) AS tags, 
                     deadline,
-                    time_records
+                    time_records,
+                    state as status
                 FROM tasks t
                 LEFT JOIN users u ON u.id = t.assignee_id
                 WHERE 

@@ -22,9 +22,10 @@
 	</div>
 	<div class="actions">
 		<div class="button-group -left">
-			<a class="button" href="/todo-edit?task-id={task.id}" title="edit"
-				><Icon inline icon="mdi:edit" /></a
-			>
+			<a class="button" href="/todo-edit?task-id={task.id}" title="edit">
+				<Icon inline icon="mdi:edit" />
+			</a>
+			{#if task.getStatus() !== 'IDEA'}
 			<form method="POST" action="/?/start_task">
 				<input type="hidden" name="task-id" value={task.id} />
 				<button title="start"><Icon inline icon="mdi:stopwatch-start" /></button>
@@ -33,6 +34,7 @@
 				<input type="hidden" name="task-id" value={task.id} />
 				<button title="done"><Icon inline icon="mdi:done" /></button>
 			</form>
+				{/if}
 		</div>
 		<div class="button-group -right">
 			<button class="-danger" title="remove"><Icon inline icon="mdi:remove" /></button>

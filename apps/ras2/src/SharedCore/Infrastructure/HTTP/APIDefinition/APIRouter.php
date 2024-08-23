@@ -8,6 +8,7 @@ use Laminas\Diactoros\Response\EmptyResponse;
 use League\Route\Http\Exception\NotFoundException;
 use League\Route\RouteCollectionInterface;
 use Psr\Http\Message\ServerRequestInterface;
+use Psr\Log\LoggerInterface;
 use Ramona\Ras2\SharedCore\Infrastructure\CQRS\Command\CommandBus;
 use Ramona\Ras2\SharedCore\Infrastructure\CQRS\Query\QueryBus;
 use Ramona\Ras2\SharedCore\Infrastructure\HTTP\AssertRequest;
@@ -22,7 +23,8 @@ final readonly class APIRouter
         private QueryBus $queryBus,
         private Deserializer $deserializer,
         private JsonResponseFactory $jsonResponseFactory,
-        private Hydrator $hydrator
+        private Hydrator $hydrator,
+        private LoggerInterface $logger
     ) {
     }
 
@@ -85,13 +87,21 @@ final readonly class APIRouter
                 $action = $queryString['action'] ?? '';
 
                 if (! isset($queries[$path][$action]) && ! isset($queryCallbacks[$path][$action])) {
+                    $this->logger->debug('Query not found', [
+                        'queries' => $queries,
+                        'path' => $path,
+                        'action' => $action,
+                    ]);
                     throw new NotFoundException();
                 }
 
                 if (isset($queries[$path][$action])) {
                     $queryDefinition = $queries[$path][$action];
 
-                    $query = $this->hydrator->hydrate($queryDefinition->queryType, $queryString);
+                    $query = $this->hydrator->hydrate(
+                        $queryDefinition->queryType,
+                        $queryString + $request->getAttributes()
+                    );
                     $result = $this->queryBus->execute($query);
                 } else {
                     $result = ($queryCallbacks[$path][$action]->callback)($request);

@@ -10,6 +10,7 @@ use League\Route\Http\Exception\NotAcceptableException;
 use League\Route\Http\Exception\NotFoundException;
 use League\Route\RouteCollectionInterface;
 use PHPUnit\Framework\TestCase;
+use Psr\Log\NullLogger;
 use Ramona\Ras2\SharedCore\Infrastructure\CQRS\Command\CommandBus;
 use Ramona\Ras2\SharedCore\Infrastructure\CQRS\Query\QueryBus;
 use Ramona\Ras2\SharedCore\Infrastructure\HTTP\APIDefinition\APIDefinition;
@@ -43,7 +44,8 @@ final class APIRouterTest extends TestCase
             $this->createMock(QueryBus::class),
             $deserializer,
             $this->createMock(JsonResponseFactory::class),
-            $this->createMock(Hydrator::class)
+            $this->createMock(Hydrator::class),
+            new NullLogger()
         );
 
         $definition = new APIDefinition();
@@ -80,7 +82,8 @@ final class APIRouterTest extends TestCase
             $this->createMock(QueryBus::class),
             $this->createMock(Deserializer::class),
             new DefaultJsonResponseFactory($serializer),
-            $this->createMock(Hydrator::class)
+            $this->createMock(Hydrator::class),
+            new NullLogger()
         );
 
         $callbackCalled = false;
@@ -133,7 +136,8 @@ final class APIRouterTest extends TestCase
             $this->createMock(QueryBus::class),
             $deserializer,
             $this->createMock(JsonResponseFactory::class),
-            $this->createMock(Hydrator::class)
+            $this->createMock(Hydrator::class),
+            new NullLogger()
         );
 
         $definition = new APIDefinition();
@@ -168,7 +172,8 @@ final class APIRouterTest extends TestCase
             $this->createMock(QueryBus::class),
             $deserializer,
             $this->createMock(JsonResponseFactory::class),
-            $this->createMock(Hydrator::class)
+            $this->createMock(Hydrator::class),
+            new NullLogger()
         );
 
         $definition = new APIDefinition();
@@ -210,7 +215,8 @@ final class APIRouterTest extends TestCase
             $this->createMock(QueryBus::class),
             $this->createMock(Deserializer::class),
             new DefaultJsonResponseFactory($serializer),
-            $hydrator
+            $hydrator,
+            new NullLogger()
         );
 
         $definition = new APIDefinition();
@@ -254,7 +260,8 @@ final class APIRouterTest extends TestCase
             $this->createMock(QueryBus::class),
             $this->createMock(Deserializer::class),
             new DefaultJsonResponseFactory($serializer),
-            $hydrator
+            $hydrator,
+            new NullLogger()
         );
 
         $definition = new APIDefinition();
@@ -305,7 +312,8 @@ final class APIRouterTest extends TestCase
             $this->createMock(QueryBus::class),
             $this->createMock(Deserializer::class),
             new DefaultJsonResponseFactory($serializer),
-            $hydrator
+            $hydrator,
+            new NullLogger()
         );
 
         $definition = new APIDefinition();

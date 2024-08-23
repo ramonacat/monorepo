@@ -7,6 +7,7 @@ namespace Tests\Ramona\Ras2\SharedCore\Application;
 use Doctrine\Common\Collections\ArrayCollection;
 use PHPUnit\Framework\TestCase;
 use Ramona\Ras2\SharedCore\Infrastructure\Serialization\Serializer;
+use Ramona\Ras2\Task\Application\Status;
 use Ramona\Ras2\Task\Application\TaskView;
 use Ramona\Ras2\Task\Business\TaskId;
 use Ramona\Ras2\User\Application\Command\LoginResponse;
@@ -107,6 +108,7 @@ final class SerializerFactoryTest extends TestCase
     {
         $taskView = new TaskView(
             TaskId::fromString('01913564-5b13-7867-93bc-fcb4649456f1'),
+            Status::STARTED,
             'Some title',
             null,
             null,

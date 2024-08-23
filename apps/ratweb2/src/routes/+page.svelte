@@ -18,8 +18,8 @@
 
 	const upcomingTasks = data.upcomingTasks.map(ServerTaskSummary.fromPojo);
 	const watchedTasks = data.watchedTasks.map(ServerTaskSummary.fromPojo);
-	const currentTask = data.currentTask ? ServerCurrentTaskView.fromPojo(data.currentTask) : null;
 	const allUsers = data.allUsers.map(ServerUserView.fromPojo);
+	const ideas = data.ideas.map(ServerTaskSummary.fromPojo);
 </script>
 
 <svelte:head>
@@ -41,12 +41,18 @@
 		</Tabs>
 	</section>
 	<section>
-		<SectionHeading>Upcoming</SectionHeading>
+		<SectionHeading>upcoming</SectionHeading>
 		<TaskList tasks={upcomingTasks}></TaskList>
 	</section>
 	<section>
-		<SectionHeading>Todos from watched tags</SectionHeading>
+		<SectionHeading>todos from watched tags</SectionHeading>
 		<TaskList tasks={watchedTasks}></TaskList>
+	</section>
+</div>
+<div class="container">
+	<section>
+		<SectionHeading>ideas</SectionHeading>
+		<TaskList tasks={ideas}></TaskList>
 	</section>
 </div>
 

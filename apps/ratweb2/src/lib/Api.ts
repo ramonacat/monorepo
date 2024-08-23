@@ -7,6 +7,8 @@ import { ServerUserView } from '$lib/ServerUserView';
 import { TaskUserProfile, WatchedTag } from './TaskUserProfile';
 import { EventView } from '$lib/EventView';
 
+export type TaskStatus = 'BACKLOG_ITEM'|'STARTED'|'DONE'|'IDEA';
+
 interface RawServerDateTime {
 	timestamp: string;
 	timezone: string;
@@ -19,6 +21,7 @@ interface RawTask {
 	deadline: RawServerDateTime | undefined;
 	timeRecords: { started: RawServerDateTime; ended: RawServerDateTime | undefined }[];
 	assigneeId: string | undefined;
+	status: TaskStatus;
 }
 
 export class ServerDateTime {
@@ -156,7 +159,7 @@ export class ApiClient {
 	}
 
 	public async getTaskByID(id: string): Promise<ServerTaskSummary> {
-		const raw: RawTask = (await this.query(`tasks/${id}`)) as RawTask;
+		const raw: RawTask = (await this.query(`tasks/${id}?action=by-id`)) as RawTask;
 
 		return new ServerTaskSummary(
 			raw.id,
@@ -169,7 +172,8 @@ export class ApiClient {
 					ended: x.ended ? new ServerDateTime(x.ended) : undefined
 				};
 			}),
-			raw.assigneeId
+			raw.assigneeId,
+			raw.status
 		);
 	}
 
@@ -192,6 +196,12 @@ export class ApiClient {
 
 	public async findWatchedTasks(limit: number = 100): Promise<ServerTaskSummary[]> {
 		const raw = (await this.query('tasks?action=watched&limit=' + limit)) as RawTask[];
+
+		return raw.map(this.rawTaskToObject);
+	}
+
+	async findIdeas(limit: number = 100) {
+		const raw = (await this.query('tasks?action=ideas&limit=' + limit)) as RawTask[];
 
 		return raw.map(this.rawTaskToObject);
 	}
@@ -249,6 +259,7 @@ export class ApiClient {
 		);
 	}
 
+
 	private rawTaskToObject(raw: RawTask): ServerTaskSummary {
 		return new ServerTaskSummary(
 			raw.id,
@@ -261,7 +272,8 @@ export class ApiClient {
 					ended: x.ended ? new ServerDateTime(x.ended) : undefined
 				};
 			}),
-			raw.assigneeId
+			raw.assigneeId,
+			raw.status
 		);
 	}
 }
