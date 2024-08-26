@@ -25,7 +25,6 @@ final class UpcomingExecutor implements Executor
 
     public function execute(Query $query): ArrayCollection
     {
-        /** @var list<array{id:string, title:string, assignee_name:?string, assignee_id:?string, tags:?string, deadline: ?string, time_records:string}> $rawTasks */
         $rawTasks = $this
             ->connection
             ->fetchAllAssociative('
@@ -41,7 +40,8 @@ final class UpcomingExecutor implements Executor
                             INNER JOIN tasks_tags tt ON ta.id = tt.tag_id 
                         WHERE tt.task_id = t.id
                     ) AS tags, 
-                    deadline,
+                    (deadline).datetime as deadline_timestamp,
+                    (deadline).timezone as deadline_timezone,
                     time_records,
                     state as status
                 FROM tasks t
@@ -50,7 +50,7 @@ final class UpcomingExecutor implements Executor
                     deadline IS NOT NULL 
                     AND state = \'BACKLOG_ITEM\'
                     AND (assignee_id IS NULL OR assignee_id=:assignee_id)
-                ORDER BY deadline DESC
+                ORDER BY deadline ASC
                 LIMIT :limit
             ', [
                 'limit' => $query->limit,
@@ -63,6 +63,10 @@ final class UpcomingExecutor implements Executor
                 $rawTask['timeRecords'] = \Safe\json_decode($rawTask['time_records'], true);
                 $rawTask['assigneeId'] = $rawTask['assignee_id'];
                 $rawTask['assigneeName'] = $rawTask['assignee_name'];
+                $rawTask['deadline'] = [
+                    'timestamp' => $rawTask['deadline_timestamp'],
+                    'timezone' => $rawTask['deadline_timezone'],
+                ];
 
                 return $rawTask;
             })

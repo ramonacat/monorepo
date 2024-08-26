@@ -1,6 +1,6 @@
 <script lang="ts">
-	import type { CalendarEvent } from '$lib/CalendarEvent';
 	import { generateCalendar } from '$lib/calendar';
+	import type { CalendarEvent } from '$lib/api/calendar';
 
 	export let year;
 	export let month;

@@ -1,50 +1,10 @@
 import { merge } from 'lodash-es';
 import { DateTime } from 'luxon';
-import type { Session } from '$lib/Session';
-import { type PojoDateTime, TaskSummary } from '$lib/TaskSummary';
-import { ServerCurrentTaskView } from '$lib/ServerCurrentTaskView';
-import { ServerUserView } from '$lib/ServerUserView';
 import { TaskUserProfile, WatchedTag } from './TaskUserProfile';
-import { EventView } from '$lib/EventView';
-
-export type TaskStatus = 'BACKLOG_ITEM' | 'STARTED' | 'DONE' | 'IDEA';
-
-interface RawServerDateTime {
-	timestamp: string;
-	timezone: string;
-}
-
-interface RawTask {
-	id: string;
-	title: string;
-	tags: string[];
-	deadline: RawServerDateTime | undefined;
-	timeRecords: { started: RawServerDateTime; ended: RawServerDateTime | undefined }[];
-	assigneeId: string | undefined;
-	status: TaskStatus;
-}
-
-export class ServerDateTime {
-	private timestamp: string;
-	private timezone: string;
-
-	public constructor(raw: RawServerDateTime) {
-		this.timestamp = raw.timestamp;
-		this.timezone = raw.timezone;
-	}
-
-	public toDateTime(): DateTime {
-		return DateTime.fromFormat(this.timestamp, 'yyyy-MM-dd HH:mm:ss', { zone: this.timezone });
-	}
-
-	public toPojo() {
-		return { timestamp: this.timestamp, timezone: this.timezone };
-	}
-
-	public static fromPojo(deadline: PojoDateTime) {
-		return new ServerDateTime({ timestamp: deadline.timestamp, timezone: deadline.timezone });
-	}
-}
+import { type PojoDateTime, ServerDateTime } from '$lib/api/datetime';
+import { type PojoTaskSummary, ServerCurrentTaskView, TaskSummary } from '$lib/api/task';
+import { EventView } from '$lib/api/calendar';
+import { ServerUserView, type Session } from '$lib/api/user';
 
 interface RawUser {
 	id: string;
@@ -167,22 +127,9 @@ export class ApiClient {
 	}
 
 	public async getTaskByID(id: string): Promise<TaskSummary> {
-		const raw: RawTask = (await this.query(`tasks/${id}?action=by-id`)) as RawTask;
+		const raw: PojoTaskSummary = (await this.query(`tasks/${id}?action=by-id`)) as PojoTaskSummary;
 
-		return new TaskSummary(
-			raw.id,
-			raw.title,
-			raw.tags,
-			raw.deadline ? new ServerDateTime(raw.deadline) : undefined,
-			raw.timeRecords.map(function (x) {
-				return {
-					started: new ServerDateTime(x.started),
-					ended: x.ended ? new ServerDateTime(x.ended) : undefined
-				};
-			}),
-			raw.assigneeId,
-			raw.status
-		);
+		return TaskSummary.fromPojo(raw);
 	}
 
 	public async findAllUsers() {
@@ -192,30 +139,30 @@ export class ApiClient {
 	}
 
 	public async findUpcomingTasks(assigneeId: string, limit: number = 100): Promise<TaskSummary[]> {
-		const raw: RawTask[] = (await this.query(
+		const raw: PojoTaskSummary[] = (await this.query(
 			'tasks?action=upcoming&limit=' + limit + '&assigneeId=' + assigneeId
-		)) as RawTask[];
+		)) as PojoTaskSummary[];
 
-		return raw.map(this.rawTaskToObject);
+		return raw.map(TaskSummary.fromPojo);
 	}
 
 	public async findWatchedTasks(limit: number = 100): Promise<TaskSummary[]> {
-		const raw = (await this.query('tasks?action=watched&limit=' + limit)) as RawTask[];
+		const raw = (await this.query('tasks?action=watched&limit=' + limit)) as PojoTaskSummary[];
 
-		return raw.map(this.rawTaskToObject);
+		return raw.map(TaskSummary.fromPojo);
 	}
 
 	async findIdeas(limit: number = 100) {
-		const raw = (await this.query('tasks?action=ideas&limit=' + limit)) as RawTask[];
+		const raw = (await this.query('tasks?action=ideas&limit=' + limit)) as PojoTaskSummary[];
 
-		return raw.map(this.rawTaskToObject);
+		return raw.map(TaskSummary.fromPojo);
 	}
 
 	public async findCurrentTask(): Promise<ServerCurrentTaskView | undefined> {
 		const raw = (await this.query('tasks?action=current')) as {
 			id: string;
 			title: string;
-			startTime: RawServerDateTime;
+			startTime: PojoDateTime;
 			isPaused: boolean;
 		} | null;
 
@@ -223,7 +170,7 @@ export class ApiClient {
 			? new ServerCurrentTaskView(
 					raw.id,
 					raw.title,
-					new ServerDateTime(raw.startTime),
+					ServerDateTime.fromPojo(raw.startTime),
 					raw.isPaused
 				)
 			: undefined;
@@ -247,8 +194,8 @@ export class ApiClient {
 		)) as {
 			id: string;
 			title: string;
-			start: RawServerDateTime;
-			end: RawServerDateTime;
+			start: PojoDateTime;
+			end: PojoDateTime;
 			attendeeUsernames: string[];
 		}[];
 
@@ -257,27 +204,10 @@ export class ApiClient {
 				new EventView(
 					x.id,
 					x.title,
-					new ServerDateTime(x.start),
-					new ServerDateTime(x.end),
+					ServerDateTime.fromPojo(x.start),
+					ServerDateTime.fromPojo(x.end),
 					x.attendeeUsernames
 				)
-		);
-	}
-
-	private rawTaskToObject(raw: RawTask): TaskSummary {
-		return new TaskSummary(
-			raw.id,
-			raw.title,
-			raw.tags,
-			raw.deadline ? new ServerDateTime(raw.deadline) : undefined,
-			raw.timeRecords.map(function (x) {
-				return {
-					started: new ServerDateTime(x.started),
-					ended: x.ended ? new ServerDateTime(x.ended) : undefined
-				};
-			}),
-			raw.assigneeId,
-			raw.status
 		);
 	}
 }

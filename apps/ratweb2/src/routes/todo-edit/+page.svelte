@@ -6,9 +6,9 @@
 	import TagsInput from '$lib/components/forms/TagsInput.svelte';
 	import DateTimeInput from '$lib/components/forms/DateTimeInput.svelte';
 	import type { ActionData } from '../../../.svelte-kit/types/src/routes/$types';
-	import { TaskSummary } from '$lib/TaskSummary';
 	import UserInput from '$lib/components/forms/UserInput.svelte';
-	import { ServerUserView } from '$lib/ServerUserView';
+	import { TaskSummary } from '$lib/api/task';
+	import { ServerUserView } from '$lib/api/user';
 
 	export let form: ActionData;
 	export let data: PageData;

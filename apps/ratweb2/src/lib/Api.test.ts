@@ -1,9 +1,9 @@
 import { expect, test } from 'vitest';
-import { ServerDateTime } from '$lib/Api';
 import { DateTime, IANAZone } from 'luxon';
+import { ServerDateTime } from '$lib/api/datetime';
 
 test('can convert ServerDateTime to Luxon DateTime', function () {
-	const serverDateTime = new ServerDateTime({
+	const serverDateTime = ServerDateTime.fromPojo({
 		timestamp: '2024-01-01 05:00:00',
 		timezone: 'Europe/Warsaw'
 	});

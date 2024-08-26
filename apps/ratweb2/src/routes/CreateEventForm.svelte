@@ -1,12 +1,11 @@
 <script lang="ts">
-	import TagsInput from '$lib/components/forms/TagsInput.svelte';
 	import type { ActionData } from '../../.svelte-kit/types/src/routes/$types';
 	import Icon from '@iconify/svelte';
 	import Message from '$lib/components/forms/Message.svelte';
 	import { MessageType } from '$lib/components/forms/MessageType';
 	import DateTimeInput from '$lib/components/forms/DateTimeInput.svelte';
 	import UserInput from '$lib/components/forms/UserInput.svelte';
-	import type { ServerUserView } from '$lib/ServerUserView';
+	import type { ServerUserView } from '$lib/api/user';
 
 	export let form: ActionData;
 	export let allUsers: ServerUserView[];

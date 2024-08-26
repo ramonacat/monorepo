@@ -1,13 +1,16 @@
 <script lang="ts">
 	import TagPill from '$lib/components/TagPill.svelte';
 	import Icon from '@iconify/svelte';
-	import type { TaskSummary } from '$lib/TaskSummary';
+	import type { TaskSummary } from '$lib/api/task';
 	export let showDetails = false;
 	export let task: TaskSummary;
 </script>
 
 <button class="title" on:click={() => (showDetails = !showDetails)}>
 	{task.title}
+	{#if task.assigneeName}
+		- {task.assigneeName}
+	{/if}
 	{#if task.deadline}
 		<span class="deadline">
 			({task.deadline.toDateTime().toLocaleString({ timeStyle: 'medium', dateStyle: 'medium' })})

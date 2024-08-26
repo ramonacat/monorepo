@@ -1,6 +1,5 @@
 import { type Actions, fail } from '@sveltejs/kit';
 import { ensureAuthenticated } from '$lib/ensureAuthenticated';
-import { ApiClient } from '$lib/Api';
 import { DateTime } from 'luxon';
 
 export async function load({ cookies }) {

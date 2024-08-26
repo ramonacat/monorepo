@@ -1,9 +1,45 @@
+import { type PojoDateTime, ServerDateTime } from '$lib/api/datetime';
 import { DateTime } from 'luxon';
-import { ServerDateTime, type TaskStatus } from '$lib/Api';
 
-export interface PojoDateTime {
-	timestamp: string;
-	timezone: string;
+export type TaskStatus = 'BACKLOG_ITEM' | 'STARTED' | 'DONE' | 'IDEA';
+
+export interface PojoCurrentTask {
+	id: string;
+	title: string;
+	startTime: PojoDateTime;
+	isPaused: boolean;
+}
+
+export class ServerCurrentTaskView {
+	id: string;
+	title: string;
+	startTime: ServerDateTime;
+	isPaused: boolean;
+
+	constructor(id: string, title: string, startTime: ServerDateTime, isPaused: boolean) {
+		this.id = id;
+		this.title = title;
+		this.startTime = startTime;
+		this.isPaused = isPaused;
+	}
+
+	public toPojo(): PojoCurrentTask {
+		return {
+			id: this.id,
+			title: this.title,
+			startTime: this.startTime?.toPojo(),
+			isPaused: this.isPaused
+		};
+	}
+
+	static fromPojo(currentTask: PojoCurrentTask): ServerCurrentTaskView {
+		return new ServerCurrentTaskView(
+			currentTask.id,
+			currentTask.title,
+			ServerDateTime.fromPojo(currentTask.startTime),
+			currentTask.isPaused
+		);
+	}
 }
 
 export interface PojoTaskSummary {
@@ -12,6 +48,7 @@ export interface PojoTaskSummary {
 	tags: string[];
 	deadline: PojoDateTime | undefined;
 	assigneeId: string | undefined;
+	assigneeName: string | undefined;
 	timeRecords: { started: PojoDateTime; ended: PojoDateTime | undefined }[];
 	status: TaskStatus;
 }
@@ -21,6 +58,7 @@ export class TaskSummary {
 	title: string;
 	tags: string[];
 	assigneeId: string | undefined;
+	assigneeName: string | undefined;
 	deadline: ServerDateTime | undefined;
 	timeRecords: { started: ServerDateTime; ended: ServerDateTime | undefined }[];
 	status: TaskStatus;
@@ -32,6 +70,7 @@ export class TaskSummary {
 			tags: this.tags,
 			deadline: this.deadline ? this.deadline.toPojo() : undefined,
 			assigneeId: this.assigneeId,
+			assigneeName: this.assigneeName,
 			timeRecords: this.timeRecords.map(function (x) {
 				return { started: x.started.toPojo(), ended: x.ended ? x.ended.toPojo() : undefined };
 			}),
@@ -52,11 +91,12 @@ export class TaskSummary {
 				};
 			}),
 			pojo.assigneeId,
+			pojo.assigneeName,
 			pojo.status
 		);
 	}
 
-	constructor(
+	public constructor(
 		id: string,
 		title: string,
 		tags: string[],
@@ -65,7 +105,8 @@ export class TaskSummary {
 			started: ServerDateTime;
 			ended: ServerDateTime | undefined;
 		}[],
-		assignee: string | undefined,
+		assigneeId: string | undefined,
+		assigneeName: string | undefined,
 		status: TaskStatus
 	) {
 		this.id = id;
@@ -73,7 +114,8 @@ export class TaskSummary {
 		this.tags = tags;
 		this.deadline = deadline;
 		this.timeRecords = timeRecords;
-		this.assigneeId = assignee;
+		this.assigneeId = assigneeId;
+		this.assigneeName = assigneeName;
 		this.status = status;
 	}
 

@@ -2,10 +2,9 @@
 	import Calendar from './Calendar.svelte';
 	import { DateTime } from 'luxon';
 	import Icon from '@iconify/svelte';
-	import { EventView } from '$lib/EventView.js';
 	import type { PageData } from './$types';
-	import type { CalendarEvent } from '$lib/CalendarEvent';
 	import { page } from '$app/stores';
+	import { type CalendarEvent, EventView } from '$lib/api/calendar';
 
 	export let data: PageData;
 	let now = DateTime.now();

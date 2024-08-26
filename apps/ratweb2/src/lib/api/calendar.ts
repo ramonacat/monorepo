@@ -1,5 +1,8 @@
-import { ServerDateTime } from '$lib/Api';
-import type { PojoDateTime } from '$lib/TaskSummary';
+export interface CalendarEvent {
+	name: string;
+	time?: string;
+}
+import { type PojoDateTime, ServerDateTime } from '$lib/api/datetime';
 
 export class EventView {
 	public constructor(
