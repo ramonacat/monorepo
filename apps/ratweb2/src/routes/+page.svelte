@@ -4,9 +4,7 @@
 	import TaskList from '$lib/components/TaskList.svelte';
 	import SectionHeading from '$lib/components/SectionHeading.svelte';
 	import Tab from '$lib/components/Tab.svelte';
-	import CurrentTask from './ActiveTask.svelte';
-	import type { ActionData } from '../../.svelte-kit/types/src/routes/$types';
-	import type { PageData } from './$types';
+	import type { ActionData, PageData } from './$types';
 	import { TaskSummary } from '$lib/TaskSummary';
 	import { ServerUserView } from '$lib/ServerUserView';
 	import CreateIdeaForm from './CreateIdeaForm.svelte';

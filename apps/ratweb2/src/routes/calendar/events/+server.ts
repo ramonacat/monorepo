@@ -1,4 +1,3 @@
-import { error } from '@sveltejs/kit';
 import type { RequestHandler } from './$types';
 import { ensureAuthenticated } from '$lib/ensureAuthenticated';
 import { DateTime } from 'luxon';

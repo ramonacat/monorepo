@@ -230,7 +230,7 @@ export class ApiClient {
 	}
 
 	async findTaskUserProfile() {
-		const result = (await this.query('/tasks/user-profiles?action=active')) as {
+		const result = (await this.query('/tasks/user-profiles?action=current')) as {
 			userId: string;
 			watchedTags: { id: string; name: string }[];
 		};
