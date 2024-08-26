@@ -14,7 +14,7 @@ use Monolog\Logger;
 use Psr\Log\LoggerInterface;
 use Psr\Log\NullLogger;
 use Ramona\Ras2\Event\Module as EventModule;
-use Ramona\Ras2\SharedCore\Infrastructure\ClockInterface;
+use Ramona\Ras2\SharedCore\Infrastructure\Clock;
 use Ramona\Ras2\SharedCore\Infrastructure\CQRS\Command\CommandBus;
 use Ramona\Ras2\SharedCore\Infrastructure\CQRS\Command\DefaultCommandBus;
 use Ramona\Ras2\SharedCore\Infrastructure\CQRS\Query\DefaultQueryBus;
@@ -54,7 +54,7 @@ use Ramona\Ras2\Task\Module as TaskModule;
 use Ramona\Ras2\User\Module as UserModule;
 
 $containerBuilder = new ContainerBuilder();
-$containerBuilder->register(ClockInterface::class, fn () => new SystemClock());
+$containerBuilder->register(Clock::class, fn () => new SystemClock());
 $containerBuilder->register(LoggerInterface::class, function () {
     $applicationMode = getenv('APPLICATION_MODE');
 

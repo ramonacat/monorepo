@@ -39,6 +39,11 @@ final class BacklogItem implements Task
         return new Done($this->description(), $userId, $this->timeRecords);
     }
 
+    public function toIdea(DateTimeImmutable $now): Idea
+    {
+        return new Idea($this->description); // TODO: do we want to keep time records?
+    }
+
     /**
      * @psalm-suppress PossiblyUnusedMethod
      */

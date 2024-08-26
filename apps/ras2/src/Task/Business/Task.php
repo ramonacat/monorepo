@@ -27,4 +27,6 @@ interface Task
      * @return ArrayCollection<int, TimeRecord>
      */
     public function timeRecords(): ArrayCollection;
+
+    public function toIdea(DateTimeImmutable $now): Idea;
 }

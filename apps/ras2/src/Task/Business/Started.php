@@ -99,12 +99,24 @@ final class Started implements Task
 
     public function toDone(DateTimeImmutable $now): Done
     {
+        $this->finishLastTimeRecord($now);
+
+        return new Done($this->description, $this->assigneeId, $this->timeRecords);
+    }
+
+    public function toIdea(DateTimeImmutable $now): Idea
+    {
+        $this->finishLastTimeRecord($now);
+
+        return new Idea($this->description);
+    }
+
+    private function finishLastTimeRecord(DateTimeImmutable $now): void
+    {
         $lastTimeRecord = $this->timeRecords()
             ->last();
         if ($lastTimeRecord !== false && ! $lastTimeRecord->isFinished()) {
             $lastTimeRecord->finish($now);
         }
-
-        return new Done($this->description, $this->assigneeId, $this->timeRecords);
     }
 }

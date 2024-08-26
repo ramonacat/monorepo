@@ -7,18 +7,18 @@ namespace Ramona\Ras2\Task\Infrastructure\CommandExecutor;
 use Ramona\Ras2\SharedCore\Infrastructure\Clock;
 use Ramona\Ras2\SharedCore\Infrastructure\CQRS\Command\Command;
 use Ramona\Ras2\SharedCore\Infrastructure\CQRS\Command\Executor;
-use Ramona\Ras2\Task\Application\Command\PauseWork;
-use Ramona\Ras2\Task\Business\Started;
+use Ramona\Ras2\Task\Application\Command\ReturnToIdea;
+use Ramona\Ras2\Task\Business\Idea;
 use Ramona\Ras2\Task\Infrastructure\Repository;
 
 /**
- * @implements Executor<PauseWork>
+ * @implements Executor<ReturnToIdea>
  */
-final class PauseWorkExecutor implements Executor
+final class ReturnToIdeaExecutor implements Executor
 {
     public function __construct(
-        private Repository $repository,
-        private Clock $clock
+        private readonly Repository $repository,
+        private readonly Clock $clock
     ) {
     }
 
@@ -26,13 +26,9 @@ final class PauseWorkExecutor implements Executor
     {
         $this->repository->transactional(function () use ($command) {
             $task = $this->repository->getById($command->taskId);
-
-            if (! ($task instanceof Started)) {
-                throw InvalidTaskState::for($task);
+            if (! ($task instanceof Idea)) {
+                $task = $task->toIdea($this->clock->now());
             }
-
-            $task->stopRecordingTime($this->clock->now());
-
             $this->repository->save($task);
         });
     }

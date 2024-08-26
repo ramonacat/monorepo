@@ -6,7 +6,7 @@ namespace Ramona\Ras2\SharedCore\Infrastructure;
 
 use Safe\DateTimeImmutable;
 
-interface ClockInterface
+interface Clock
 {
     public function now(): DateTimeImmutable;
 }
