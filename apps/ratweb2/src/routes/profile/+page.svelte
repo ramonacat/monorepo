@@ -10,6 +10,7 @@
 <div class="root">
 	<form action="/profile?/edit_tasks_profile" method="POST">
 		<div class="row">
+			<label for="watchedTags">watched tags:</label>
 			<TagsInput name="watchedTags" selectedTags={userProfile.watchedTags.map((x) => x.name)} />
 		</div>
 
