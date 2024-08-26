@@ -34,6 +34,10 @@
 					<input type="hidden" name="task-id" value={task.id} />
 					<button title="done"><Icon inline icon="mdi:done" /></button>
 				</form>
+				<form method="POST" action="/?/return_to_idea">
+					<input type="hidden" name="task-id" value={task.id} />
+					<button title="return to idea"><Icon inline icon="mdi:lightbulb-on-outline" /></button>
+				</form>
 			{/if}
 		</div>
 		<div class="button-group -right">

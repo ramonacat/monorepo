@@ -8,7 +8,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Ramona\Ras2\User\Business\UserId;
 use Safe\DateTimeImmutable;
 
-class Idea implements Task
+final class Idea implements Task
 {
     private TaskDescription $description;
 
@@ -17,9 +17,6 @@ class Idea implements Task
         $this->description = $description;
     }
 
-    /**
-     * @psalm-suppress PossiblyUnusedMethod
-     */
     public function toBacklog(?UserId $assignee): BacklogItem
     {
         return new BacklogItem($this->description, $assignee, null, new ArrayCollection());
@@ -53,5 +50,10 @@ class Idea implements Task
     public function timeRecords(): ArrayCollection
     {
         return new ArrayCollection();
+    }
+
+    public function toIdea(DateTimeImmutable $now): self
+    {
+        return $this;
     }
 }

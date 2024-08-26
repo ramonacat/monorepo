@@ -4,10 +4,10 @@
 	import type { ServerCurrentTaskView } from '$lib/ServerCurrentTaskView';
 
 	export let task: ServerCurrentTaskView;
-	export let big:boolean = false;
+	export let big: boolean = false;
 </script>
 
-<div class="wrapper" class:big={big}>
+<div class="wrapper" class:big>
 	<span class="name">{task.title}</span>
 	<span class="time-spent"
 		><TimeCounter since={task.startTime.toDateTime()} isPaused={task.isPaused} /></span
@@ -66,16 +66,16 @@
 	}
 
 	.big.wrapper {
-			display: block;
+		display: block;
 	}
 
-  .big.wrapper .name,
-  .big.wrapper .time-spent {
-      font-size: 5rem;
-  }
+	.big.wrapper .name,
+	.big.wrapper .time-spent {
+		font-size: 5rem;
+	}
 
 	.big.wrapper .buttons button {
-			font-size: 4rem;
-			margin: var(--spacing-m);
+		font-size: 4rem;
+		margin: var(--spacing-m);
 	}
 </style>

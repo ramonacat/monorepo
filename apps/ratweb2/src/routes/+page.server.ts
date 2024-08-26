@@ -50,6 +50,14 @@ export const actions = {
 		const taskId = data.get('task-id');
 		await apiClient.returnToBacklog(taskId as string);
 	},
+	return_to_idea: async ({ request, cookies }) => {
+		const { apiClient } = await ensureAuthenticated(cookies);
+
+		const data = await request.formData();
+		const taskId = data.get('task-id') as string;
+
+		await apiClient.returnToIdea(taskId);
+	},
 	create_backlog_item: async ({ request, cookies }) => {
 		await ensureAuthenticated(cookies);
 

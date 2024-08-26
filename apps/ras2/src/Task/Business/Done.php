@@ -27,6 +27,11 @@ class Done implements Task
 
     }
 
+    public function toIdea(DateTimeImmutable $now): Idea
+    {
+        return new Idea($this->description); // TODO is this actually the behaviour we want? or should it be disallowed?
+    }
+
     public function id(): TaskId
     {
         return $this->description->id();

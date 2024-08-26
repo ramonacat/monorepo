@@ -7,7 +7,7 @@ namespace Tests\Ramona\Ras2\Task\Infrastructure\CommandExecutor;
 use Doctrine\Common\Collections\ArrayCollection;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
-use Ramona\Ras2\SharedCore\Infrastructure\ClockInterface;
+use Ramona\Ras2\SharedCore\Infrastructure\Clock;
 use Ramona\Ras2\Task\Application\Command\FinishWork;
 use Ramona\Ras2\Task\Business\BacklogItem;
 use Ramona\Ras2\Task\Business\Done;
@@ -77,7 +77,7 @@ final class FinishWorkExecutorTest extends TestCase
                 self::assertEquals($expectedTimeRecords, $doneItem->timeRecords()->toArray());
             });
 
-        $clockMock = $this->createMock(ClockInterface::class);
+        $clockMock = $this->createMock(Clock::class);
         $clockMock->method('now')
             ->willReturn($now);
 
@@ -106,7 +106,7 @@ final class FinishWorkExecutorTest extends TestCase
             ->method('transactional')
             ->willReturnCallback(fn ($x) => ($x)());
 
-        $clockMock = $this->createMock(ClockInterface::class);
+        $clockMock = $this->createMock(Clock::class);
 
         $executor = new FinishWorkExecutor($repositoryMock, $clockMock);
 

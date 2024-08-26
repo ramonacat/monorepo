@@ -6,7 +6,7 @@ namespace Ramona\Ras2\SharedCore\Infrastructure;
 
 use Safe\DateTimeImmutable;
 
-final class SystemClock implements ClockInterface
+final class SystemClock implements Clock
 {
     public function now(): DateTimeImmutable
     {

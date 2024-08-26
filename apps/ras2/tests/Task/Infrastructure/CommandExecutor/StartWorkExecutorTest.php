@@ -6,7 +6,7 @@ namespace Tests\Ramona\Ras2\Task\Infrastructure\CommandExecutor;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use PHPUnit\Framework\TestCase;
-use Ramona\Ras2\SharedCore\Infrastructure\ClockInterface;
+use Ramona\Ras2\SharedCore\Infrastructure\Clock;
 use Ramona\Ras2\Task\Application\Command\StartWork;
 use Ramona\Ras2\Task\Business\BacklogItem;
 use Ramona\Ras2\Task\Business\Idea;
@@ -63,7 +63,7 @@ final class StartWorkExecutorTest extends TestCase
             ->method('transactional')
             ->willReturnCallback(fn ($x) => ($x)());
 
-        $clockMock = $this->createMock(ClockInterface::class);
+        $clockMock = $this->createMock(Clock::class);
         $now = new \Safe\DateTimeImmutable();
         $clockMock
             ->method('now')
@@ -131,7 +131,7 @@ final class StartWorkExecutorTest extends TestCase
             ->method('transactional')
             ->willReturnCallback(fn ($x) => ($x)());
 
-        $clockMock = $this->createMock(ClockInterface::class);
+        $clockMock = $this->createMock(Clock::class);
         $now = new \Safe\DateTimeImmutable();
         $later = new \Safe\DateTimeImmutable('+1 hour');
         $clockMock
@@ -175,7 +175,7 @@ final class StartWorkExecutorTest extends TestCase
             ->method('findStartedTasks')
             ->willReturn(new ArrayCollection());
 
-        $clockMock = $this->createMock(ClockInterface::class);
+        $clockMock = $this->createMock(Clock::class);
         $clockMock->method('now')
             ->willReturn(new \Safe\DateTimeImmutable());
 

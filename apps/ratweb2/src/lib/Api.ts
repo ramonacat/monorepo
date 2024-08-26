@@ -145,6 +145,15 @@ export class ApiClient {
 		});
 	}
 
+	async returnToIdea(taskId: string) {
+		await this.call('tasks', {
+			body: JSON.stringify({ taskId }),
+			headers: {
+				'X-Action': 'return-to-idea'
+			}
+		});
+	}
+
 	async updateTagsProfile(userId: string, tags: string[]) {
 		await this.call('tasks/user-profiles', {
 			headers: {

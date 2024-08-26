@@ -6,7 +6,7 @@ namespace Ramona\Ras2\Task;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\DBAL\Connection;
-use Ramona\Ras2\SharedCore\Infrastructure\ClockInterface;
+use Ramona\Ras2\SharedCore\Infrastructure\Clock;
 use Ramona\Ras2\SharedCore\Infrastructure\CQRS\Command\CommandBus;
 use Ramona\Ras2\SharedCore\Infrastructure\CQRS\Query\QueryBus;
 use Ramona\Ras2\SharedCore\Infrastructure\DependencyInjection\Container;
@@ -25,6 +25,7 @@ use Ramona\Ras2\SharedCore\Infrastructure\Serialization\Serializer;
 use Ramona\Ras2\Task\Application\Command\FinishWork;
 use Ramona\Ras2\Task\Application\Command\PauseWork;
 use Ramona\Ras2\Task\Application\Command\ReturnToBacklog;
+use Ramona\Ras2\Task\Application\Command\ReturnToIdea;
 use Ramona\Ras2\Task\Application\Command\StartWork;
 use Ramona\Ras2\Task\Application\Command\UpsertBacklogItem;
 use Ramona\Ras2\Task\Application\Command\UpsertIdea;
@@ -45,6 +46,7 @@ use Ramona\Ras2\Task\Infrastructure\CommandExecutor\CreateIdeaExecutor;
 use Ramona\Ras2\Task\Infrastructure\CommandExecutor\FinishWorkExecutor;
 use Ramona\Ras2\Task\Infrastructure\CommandExecutor\PauseWorkExecutor;
 use Ramona\Ras2\Task\Infrastructure\CommandExecutor\ReturnToBacklogExecutor;
+use Ramona\Ras2\Task\Infrastructure\CommandExecutor\ReturnToIdeaExecutor;
 use Ramona\Ras2\Task\Infrastructure\CommandExecutor\StartWorkExecutor;
 use Ramona\Ras2\Task\Infrastructure\CommandExecutor\UpsertBacklogItemExecutor;
 use Ramona\Ras2\Task\Infrastructure\CommandExecutor\UpsertUserProfileExecutor;
@@ -104,6 +106,7 @@ final class Module implements \Ramona\Ras2\SharedCore\Infrastructure\Module\Modu
         $hydrator->installValueHydrator(new ObjectHydrator(Current::class));
         $hydrator->installValueHydrator(new ObjectHydrator(Ideas::class));
         $hydrator->installValueHydrator(new ObjectHydrator(ById::class));
+        $hydrator->installValueHydrator(new ObjectHydrator(ReturnToIdea::class));
         $hydrator->installValueHydrator(new EnumHydrator(Status::class));
         $hydrator->installValueHydrator(new TaskIdHydrator());
         $hydrator->installValueHydrator(new TagIdHydrator());
@@ -127,19 +130,19 @@ final class Module implements \Ramona\Ras2\SharedCore\Infrastructure\Module\Modu
         );
         $commandBus->installExecutor(
             StartWork::class,
-            new StartWorkExecutor($container->get(Repository::class), $container->get(ClockInterface::class))
+            new StartWorkExecutor($container->get(Repository::class), $container->get(Clock::class))
         );
         $commandBus->installExecutor(
             PauseWork::class,
-            new PauseWorkExecutor($container->get(Repository::class), $container->get(ClockInterface::class))
+            new PauseWorkExecutor($container->get(Repository::class), $container->get(Clock::class))
         );
         $commandBus->installExecutor(
             FinishWork::class,
-            new FinishWorkExecutor($container->get(Repository::class), $container->get(ClockInterface::class))
+            new FinishWorkExecutor($container->get(Repository::class), $container->get(Clock::class))
         );
         $commandBus->installExecutor(
             ReturnToBacklog::class,
-            new ReturnToBacklogExecutor($container->get(Repository::class), $container->get(ClockInterface::class))
+            new ReturnToBacklogExecutor($container->get(Repository::class), $container->get(Clock::class))
         );
         $commandBus->installExecutor(
             UpsertUserProfile::class,
@@ -147,6 +150,10 @@ final class Module implements \Ramona\Ras2\SharedCore\Infrastructure\Module\Modu
                 $container->get(UserProfileRepository::class),
                 $container->get(Repository::class)
             )
+        );
+        $commandBus->installExecutor(
+            ReturnToIdea::class,
+            new ReturnToIdeaExecutor($container->get(Repository::class), $container->get(Clock::class))
         );
 
         $queryBus = $container->get(QueryBus::class);
@@ -193,6 +200,7 @@ final class Module implements \Ramona\Ras2\SharedCore\Infrastructure\Module\Modu
         $apiDefinition->installCommand(new CommandDefinition('tasks', 'pause-work', PauseWork::class));
         $apiDefinition->installCommand(new CommandDefinition('tasks', 'finish-work', FinishWork::class));
         $apiDefinition->installCommand(new CommandDefinition('tasks', 'return-to-backlog', ReturnToBacklog::class));
+        $apiDefinition->installCommand(new CommandDefinition('tasks', 'return-to-idea', ReturnToIdea::class));
         $apiDefinition->installCommand(
             new CommandDefinition('tasks/user-profiles', 'upsert', UpsertUserProfile::class)
         );

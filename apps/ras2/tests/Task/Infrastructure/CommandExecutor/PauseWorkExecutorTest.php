@@ -6,7 +6,7 @@ namespace Tests\Ramona\Ras2\Task\Infrastructure\CommandExecutor;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use PHPUnit\Framework\TestCase;
-use Ramona\Ras2\SharedCore\Infrastructure\ClockInterface;
+use Ramona\Ras2\SharedCore\Infrastructure\Clock;
 use Ramona\Ras2\Task\Application\Command\PauseWork;
 use Ramona\Ras2\Task\Business\BacklogItem;
 use Ramona\Ras2\Task\Business\Started;
@@ -49,7 +49,7 @@ final class PauseWorkExecutorTest extends TestCase
                 self::assertEquals([new TimeRecord($startTime, $endTime)], $pausedItem->timeRecords()->toArray());
             });
 
-        $clockMock = $this->createMock(ClockInterface::class);
+        $clockMock = $this->createMock(Clock::class);
         $clockMock->method('now')
             ->willReturn($endTime);
 
@@ -79,7 +79,7 @@ final class PauseWorkExecutorTest extends TestCase
             ->method('transactional')
             ->willReturnCallback(fn ($x) => ($x)());
 
-        $clockMock = $this->createMock(ClockInterface::class);
+        $clockMock = $this->createMock(Clock::class);
 
         $executor = new PauseWorkExecutor($repositoryMock, $clockMock);
 
