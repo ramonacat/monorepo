@@ -6,14 +6,14 @@
 	import TagsInput from '$lib/components/forms/TagsInput.svelte';
 	import DateTimeInput from '$lib/components/forms/DateTimeInput.svelte';
 	import type { ActionData } from '../../../.svelte-kit/types/src/routes/$types';
-	import { ServerTaskSummary } from '$lib/ServerTaskSummary';
+	import { TaskSummary } from '$lib/TaskSummary';
 	import UserInput from '$lib/components/forms/UserInput.svelte';
 	import { ServerUserView } from '$lib/ServerUserView';
 
 	export let form: ActionData;
 	export let data: PageData;
 
-	const task = ServerTaskSummary.fromPojo(data.task);
+	const task = TaskSummary.fromPojo(data.task);
 	const allUsers = data.allUsers.map(ServerUserView.fromPojo);
 </script>
 

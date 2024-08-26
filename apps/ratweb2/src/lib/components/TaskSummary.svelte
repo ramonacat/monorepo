@@ -1,9 +1,9 @@
 <script lang="ts">
 	import TagPill from '$lib/components/TagPill.svelte';
 	import Icon from '@iconify/svelte';
-	import type { ServerTaskSummary } from '$lib/ServerTaskSummary';
+	import type { TaskSummary } from '$lib/TaskSummary';
 	export let showDetails = false;
-	export let task: ServerTaskSummary;
+	export let task: TaskSummary;
 </script>
 
 <button class="title" on:click={() => (showDetails = !showDetails)}>
@@ -26,15 +26,15 @@
 				<Icon inline icon="mdi:edit" />
 			</a>
 			{#if task.getStatus() !== 'IDEA'}
-			<form method="POST" action="/?/start_task">
-				<input type="hidden" name="task-id" value={task.id} />
-				<button title="start"><Icon inline icon="mdi:stopwatch-start" /></button>
-			</form>
-			<form method="POST" action="/?/finish_task">
-				<input type="hidden" name="task-id" value={task.id} />
-				<button title="done"><Icon inline icon="mdi:done" /></button>
-			</form>
-				{/if}
+				<form method="POST" action="/?/start_task">
+					<input type="hidden" name="task-id" value={task.id} />
+					<button title="start"><Icon inline icon="mdi:stopwatch-start" /></button>
+				</form>
+				<form method="POST" action="/?/finish_task">
+					<input type="hidden" name="task-id" value={task.id} />
+					<button title="done"><Icon inline icon="mdi:done" /></button>
+				</form>
+			{/if}
 		</div>
 		<div class="button-group -right">
 			<button class="-danger" title="remove"><Icon inline icon="mdi:remove" /></button>

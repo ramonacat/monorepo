@@ -1,5 +1,5 @@
 import { ServerDateTime } from '$lib/Api';
-import type { PojoDateTime } from '$lib/ServerTaskSummary';
+import type { PojoDateTime } from '$lib/TaskSummary';
 
 export class EventView {
 	public constructor(

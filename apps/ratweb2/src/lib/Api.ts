@@ -1,13 +1,13 @@
 import { merge } from 'lodash-es';
 import { DateTime } from 'luxon';
 import type { Session } from '$lib/Session';
-import { type PojoDateTime, ServerTaskSummary } from '$lib/ServerTaskSummary';
+import { type PojoDateTime, TaskSummary } from '$lib/TaskSummary';
 import { ServerCurrentTaskView } from '$lib/ServerCurrentTaskView';
 import { ServerUserView } from '$lib/ServerUserView';
 import { TaskUserProfile, WatchedTag } from './TaskUserProfile';
 import { EventView } from '$lib/EventView';
 
-export type TaskStatus = 'BACKLOG_ITEM'|'STARTED'|'DONE'|'IDEA';
+export type TaskStatus = 'BACKLOG_ITEM' | 'STARTED' | 'DONE' | 'IDEA';
 
 interface RawServerDateTime {
 	timestamp: string;
@@ -158,10 +158,10 @@ export class ApiClient {
 		});
 	}
 
-	public async getTaskByID(id: string): Promise<ServerTaskSummary> {
+	public async getTaskByID(id: string): Promise<TaskSummary> {
 		const raw: RawTask = (await this.query(`tasks/${id}?action=by-id`)) as RawTask;
 
-		return new ServerTaskSummary(
+		return new TaskSummary(
 			raw.id,
 			raw.title,
 			raw.tags,
@@ -183,10 +183,7 @@ export class ApiClient {
 		return raw.map((x) => new ServerUserView(x.id, x.username));
 	}
 
-	public async findUpcomingTasks(
-		assigneeId: string,
-		limit: number = 100
-	): Promise<ServerTaskSummary[]> {
+	public async findUpcomingTasks(assigneeId: string, limit: number = 100): Promise<TaskSummary[]> {
 		const raw: RawTask[] = (await this.query(
 			'tasks?action=upcoming&limit=' + limit + '&assigneeId=' + assigneeId
 		)) as RawTask[];
@@ -194,7 +191,7 @@ export class ApiClient {
 		return raw.map(this.rawTaskToObject);
 	}
 
-	public async findWatchedTasks(limit: number = 100): Promise<ServerTaskSummary[]> {
+	public async findWatchedTasks(limit: number = 100): Promise<TaskSummary[]> {
 		const raw = (await this.query('tasks?action=watched&limit=' + limit)) as RawTask[];
 
 		return raw.map(this.rawTaskToObject);
@@ -259,9 +256,8 @@ export class ApiClient {
 		);
 	}
 
-
-	private rawTaskToObject(raw: RawTask): ServerTaskSummary {
-		return new ServerTaskSummary(
+	private rawTaskToObject(raw: RawTask): TaskSummary {
+		return new TaskSummary(
 			raw.id,
 			raw.title,
 			raw.tags,
