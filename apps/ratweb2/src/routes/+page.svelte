@@ -8,7 +8,6 @@
 	import type { ActionData } from '../../.svelte-kit/types/src/routes/$types';
 	import type { PageData } from './$types';
 	import { TaskSummary } from '$lib/TaskSummary';
-	import { ServerCurrentTaskView } from '$lib/ServerCurrentTaskView';
 	import { ServerUserView } from '$lib/ServerUserView';
 	import CreateIdeaForm from './CreateIdeaForm.svelte';
 	import CreateEventForm from './CreateEventForm.svelte';
