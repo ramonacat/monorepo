@@ -60,7 +60,6 @@ export class ApiClient {
 		return await response.json();
 	}
 
-	// FIXME make everything call through more specific APIs and make this private
 	private async call(path: string, options: RequestInit | undefined) {
 		const response = await fetch(
 			(process?.env?.RAS2_SERVICE_URL ?? 'http://localhost:8080/') + path,
@@ -222,7 +221,7 @@ export class ApiClient {
 	}
 
 	async findTaskUserProfile() {
-		const result = (await this.query('/tasks/user-profiles?action=current')) as {
+		const result = (await this.query('/tasks/user-profiles?action=active')) as {
 			userId: string;
 			watchedTags: { id: string; name: string }[];
 		};
