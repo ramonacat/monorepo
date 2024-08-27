@@ -7,7 +7,6 @@ namespace Ramona\Ras2\Event;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\DBAL\Connection;
 use Ramona\Ras2\Event\Application\Command\UpsertEvent;
-use Ramona\Ras2\Event\Application\EventView;
 use Ramona\Ras2\Event\Application\Query\InMonth;
 use Ramona\Ras2\Event\Infrastructure\CommandExecutor\UpsertEventExecutor;
 use Ramona\Ras2\Event\Infrastructure\EventIdDehydrator;
@@ -24,7 +23,6 @@ use Ramona\Ras2\SharedCore\Infrastructure\HTTP\APIDefinition\CommandDefinition;
 use Ramona\Ras2\SharedCore\Infrastructure\HTTP\APIDefinition\QueryDefinition;
 use Ramona\Ras2\SharedCore\Infrastructure\Hydration\Dehydrator;
 use Ramona\Ras2\SharedCore\Infrastructure\Hydration\Hydrator;
-use Ramona\Ras2\SharedCore\Infrastructure\Hydration\Hydrator\ObjectHydrator;
 
 final class Module implements \Ramona\Ras2\SharedCore\Infrastructure\Module\Module
 {
@@ -40,13 +38,9 @@ final class Module implements \Ramona\Ras2\SharedCore\Infrastructure\Module\Modu
     {
         $hydrator = $container->get(Hydrator::class);
         $hydrator->installValueHydrator(new EventIdHydrator());
-        $hydrator->installValueHydrator(new ObjectHydrator(EventView::class));
-        $hydrator->installValueHydrator(new ObjectHydrator(UpsertEvent::class));
-        $hydrator->installValueHydrator(new ObjectHydrator(InMonth::class));
 
         $dehydrator = $container->get(Dehydrator::class);
         $dehydrator->installValueDehydrator(new EventIdDehydrator());
-        $dehydrator->installValueDehydrator(new Dehydrator\ObjectDehydrator(EventView::class));
 
         $queryBus = $container->get(QueryBus::class);
         $queryBus->installExecutor(

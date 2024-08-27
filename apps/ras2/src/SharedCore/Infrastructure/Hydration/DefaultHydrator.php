@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Ramona\Ras2\SharedCore\Infrastructure\Hydration;
 
+use Ramona\Ras2\SharedCore\Infrastructure\Hydration\Hydrator\ObjectHydrator;
 use Ramona\Ras2\User\Application\Session;
 
 final class DefaultHydrator implements Hydrator
@@ -29,7 +30,11 @@ final class DefaultHydrator implements Hydrator
         }
 
         if (! isset($this->valueHydrators[$targetType])) {
-            throw CannotHydrateType::for($targetType);
+            if (class_exists($targetType)) {
+                $this->valueHydrators[$targetType] = new ObjectHydrator($targetType);
+            } else {
+                throw CannotHydrateType::for($targetType);
+            }
         }
 
         return $this->valueHydrators[$targetType]->hydrate($this, $input, $attributes);

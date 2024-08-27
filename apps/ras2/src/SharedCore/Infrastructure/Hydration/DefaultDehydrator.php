@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Ramona\Ras2\SharedCore\Infrastructure\Hydration;
 
+use Ramona\Ras2\SharedCore\Infrastructure\Hydration\Dehydrator\ObjectDehydrator;
+
 final class DefaultDehydrator implements Dehydrator
 {
     /**
@@ -46,7 +48,11 @@ final class DefaultDehydrator implements Dehydrator
             }
 
             if (! $found) {
-                throw CannotDehydrateType::for($typeName);
+                if (! class_exists($typeName)) {
+                    throw CannotDehydrateType::for($typeName);
+                }
+                $this->valueDehydrators[$typeName] = new ObjectDehydrator($typeName);
+
             }
         } else {
             if (! isset($this->valueDehydrators[$typeName])) {

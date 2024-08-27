@@ -19,11 +19,8 @@ use Ramona\Ras2\SharedCore\Infrastructure\HTTP\APIDefinition\QueryCallbackDefini
 use Ramona\Ras2\SharedCore\Infrastructure\HTTP\APIDefinition\QueryDefinition;
 use Ramona\Ras2\SharedCore\Infrastructure\HTTP\RequireLogin;
 use Ramona\Ras2\SharedCore\Infrastructure\Hydration\Dehydrator;
-use Ramona\Ras2\SharedCore\Infrastructure\Hydration\Dehydrator\ObjectDehydrator;
 use Ramona\Ras2\SharedCore\Infrastructure\Hydration\Hydrator;
-use Ramona\Ras2\SharedCore\Infrastructure\Hydration\Hydrator\ObjectHydrator;
 use Ramona\Ras2\SharedCore\Infrastructure\Serialization\Deserializer;
-use Ramona\Ras2\Task\Application\Query\UserProfileByUserId;
 use Ramona\Ras2\User\Application\Command\Login;
 use Ramona\Ras2\User\Application\Command\LoginRequest;
 use Ramona\Ras2\User\Application\Command\LoginResponse;
@@ -31,7 +28,6 @@ use Ramona\Ras2\User\Application\Command\UpsertUser;
 use Ramona\Ras2\User\Application\Query\All;
 use Ramona\Ras2\User\Application\Query\ByToken;
 use Ramona\Ras2\User\Application\Session;
-use Ramona\Ras2\User\Application\UserView;
 use Ramona\Ras2\User\Business\Token;
 use Ramona\Ras2\User\Infrastructure\CommandExecutor\LoginExecutor;
 use Ramona\Ras2\User\Infrastructure\CommandExecutor\UpsertUserExecutor;
@@ -56,18 +52,10 @@ final class Module implements \Ramona\Ras2\SharedCore\Infrastructure\Module\Modu
     public function register(Container $container): void
     {
         $hydrator = $container->get(Hydrator::class);
-        $hydrator->installValueHydrator(new ObjectHydrator(LoginRequest::class));
-        $hydrator->installValueHydrator(new ObjectHydrator(UserView::class));
-        $hydrator->installValueHydrator(new ObjectHydrator(All::class));
-        $hydrator->installValueHydrator(new ObjectHydrator(UserProfileByUserId::class));
-        $hydrator->installValueHydrator(new ObjectHydrator(UpsertUser::class));
         $hydrator->installValueHydrator(new UserIdHydrator());
 
         $dehydrator = $container->get(Dehydrator::class);
         $dehydrator->installValueDehydrator(new UserIdDehydrator());
-        $dehydrator->installValueDehydrator(new ObjectDehydrator(LoginResponse::class));
-        $dehydrator->installValueDehydrator(new ObjectDehydrator(Session::class));
-        $dehydrator->installValueDehydrator(new ObjectDehydrator(UserView::class));
         $dehydrator->installValueDehydrator(new TokenDehydrator());
 
         $commandBus = $container->get(CommandBus::class);

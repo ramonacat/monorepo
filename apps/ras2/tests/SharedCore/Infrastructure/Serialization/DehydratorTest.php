@@ -50,10 +50,14 @@ final class DehydratorTest extends TestCase
         ], $result);
     }
 
-    public function testThrowsOnMissingDehydrator(): void
+    public function testCanDehydrateObjectsWithoutExplicitDehydrator(): void
     {
-        $this->expectException(CannotDehydrateType::class);
-        $this->dehydrator->dehydrate(new Simple());
+        $result = $this->dehydrator->dehydrate(new Simple());
+
+        self::assertEquals([
+            'id' => 'test',
+            'stuff' => 1234,
+        ], $result);
     }
 
     public function testThrowsOnMissingDehydratorForAScalar(): void
