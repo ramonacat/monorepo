@@ -20,7 +20,6 @@ use Ramona\Ras2\Task\Business\TaskDescription;
 use Ramona\Ras2\Task\Business\TaskId;
 use Ramona\Ras2\Task\Business\TimeRecord;
 use Ramona\Ras2\User\Business\UserId;
-use Safe\DateTimeImmutable;
 
 final class PostgresRepository implements Repository
 {
@@ -36,20 +35,23 @@ final class PostgresRepository implements Repository
         $this->connection->transactional(function () use ($task) {
             $this->connection->executeQuery('
                 INSERT INTO tasks(id, title, assignee_id, state, deadline, time_records) 
-                VALUES (:id, :title, :assignee_id, :state, :deadline, :time_records) 
+                VALUES (:id, :title, :assignee_id, :state, CASE WHEN :has_deadline = 0 THEN NULL ELSE (:deadline, :deadline_timezone)::datetime_with_timezone END, :time_records) 
                 ON CONFLICT (id) DO UPDATE
                     SET 
                         title=:title, 
                         assignee_id=:assignee_id, 
                         state=:state, 
-                        deadline=:deadline, 
+                        deadline=CASE WHEN :has_deadline = 0 THEN NULL ELSE (:deadline, :deadline_timezone)::datetime_with_timezone END, 
                         time_records=:time_records
             ', [
                 'id' => (string) $task->id(),
                 'title' => $task->title(),
                 'assignee_id' => $task->assigneeId(),
                 'state' => $this->createStateValue(get_class($task)),
-                'deadline' => $task->deadline()?->format(DateTimeImmutable::RFC3339),
+                'has_deadline' => $task->deadline() !== null ? 1 : 0,
+                'deadline' => $task->deadline()?->format('Y-m-d H:i:s'),
+                'deadline_timezone' => $task->deadline()?->getTimezone()
+                    ->getName(),
                 'time_records' => $this->serializer->serialize($task->timeRecords()),
             ]);
 

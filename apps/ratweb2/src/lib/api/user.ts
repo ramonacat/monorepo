@@ -20,3 +20,8 @@ export class ServerUserView {
 		return new ServerUserView(pojo.id, pojo.username);
 	}
 }
+
+export interface Session {
+	userId: string;
+	username: string;
+}

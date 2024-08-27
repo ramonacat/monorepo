@@ -5,8 +5,8 @@
 	import Message from '$lib/components/forms/Message.svelte';
 	import { MessageType } from '$lib/components/forms/MessageType';
 	import DateTimeInput from '$lib/components/forms/DateTimeInput.svelte';
-	import type { ServerUserView } from '$lib/ServerUserView';
 	import UserInput from '$lib/components/forms/UserInput.svelte';
+	import type { ServerUserView } from '$lib/api/user';
 
 	export let form: ActionData;
 	export let allUsers: ServerUserView[];

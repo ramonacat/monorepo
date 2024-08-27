@@ -1,7 +1,7 @@
 <script lang="ts">
 	import ActiveTask from '../ActiveTask.svelte';
 	import type { PageData } from './$types';
-	import { ServerCurrentTaskView } from '$lib/ServerCurrentTaskView';
+	import { ServerCurrentTaskView } from '$lib/api/task';
 
 	export let data: PageData;
 	const activeTask = data.currentTask

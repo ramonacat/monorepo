@@ -1,7 +1,7 @@
 <script lang="ts">
 	import Icon from '@iconify/svelte';
 	import TimeCounter from '$lib/components/TimeCounter.svelte';
-	import type { ServerCurrentTaskView } from '$lib/ServerCurrentTaskView';
+	import type { ServerCurrentTaskView } from '$lib/api/task';
 
 	export let task: ServerCurrentTaskView;
 	export let big: boolean = false;

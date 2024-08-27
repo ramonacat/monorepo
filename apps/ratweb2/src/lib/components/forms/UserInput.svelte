@@ -1,5 +1,5 @@
 <script lang="ts">
-	import type { ServerUserView } from '$lib/ServerUserView';
+	import type { ServerUserView } from '$lib/api/user';
 
 	export let allUsers: ServerUserView[];
 	export let name: string;
@@ -17,17 +17,15 @@
 
 		checked = checked;
 	}
-
-	console.log(value);
 </script>
 
 {#if multiple}
 	<input type="hidden" {name} value={JSON.stringify(Array.from(checked.values()))} />
 	{#each allUsers as user}
-		<label
-			><input type="checkbox" on:change={(e) => checkedChange(user.id, e.currentTarget.checked)} />
-			{user.username}</label
-		>
+		<label>
+			<input type="checkbox" on:change={(e) => checkedChange(user.id, e.currentTarget.checked)} />
+			{user.username}
+		</label>
 	{/each}
 {/if}
 

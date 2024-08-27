@@ -5,10 +5,10 @@
 	import SectionHeading from '$lib/components/SectionHeading.svelte';
 	import Tab from '$lib/components/Tab.svelte';
 	import type { ActionData, PageData } from './$types';
-	import { TaskSummary } from '$lib/TaskSummary';
-	import { ServerUserView } from '$lib/ServerUserView';
 	import CreateIdeaForm from './CreateIdeaForm.svelte';
 	import CreateEventForm from './CreateEventForm.svelte';
+	import { TaskSummary } from '$lib/api/task';
+	import { ServerUserView } from '$lib/api/user';
 
 	export let form: ActionData;
 	export let data: PageData;

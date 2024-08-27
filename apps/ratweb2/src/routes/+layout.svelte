@@ -3,7 +3,7 @@
 	import MainMenu from './MainMenu.svelte';
 	import CurrentTask from './ActiveTask.svelte';
 	import type { PageData } from '../../.svelte-kit/types/src/routes/$types.js';
-	import { ServerCurrentTaskView } from '$lib/ServerCurrentTaskView.js';
+	import { ServerCurrentTaskView } from '$lib/api/task';
 
 	export let data: PageData;
 </script>

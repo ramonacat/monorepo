@@ -1,6 +1,6 @@
 import { type Cookies, redirect } from '@sveltejs/kit';
-import type { Session } from '$lib/Session';
 import { ApiClient } from '$lib/Api';
+import type { Session } from '$lib/api/user';
 
 export async function ensureAuthenticated(
 	cookies: Cookies
