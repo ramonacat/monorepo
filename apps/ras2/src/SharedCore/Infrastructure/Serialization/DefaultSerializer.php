@@ -7,7 +7,7 @@ namespace Ramona\Ras2\SharedCore\Infrastructure\Serialization;
 use Psr\Log\LoggerInterface;
 use Ramona\Ras2\SharedCore\Infrastructure\Hydration\Dehydrator;
 
-final class DefaultSerializer implements Serializer
+final readonly class DefaultSerializer implements Serializer
 {
     public function __construct(
         private Dehydrator $dehydrator,

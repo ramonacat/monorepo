@@ -6,6 +6,7 @@ namespace Ramona\Ras2\Event;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\DBAL\Connection;
+use Psr\Container\ContainerInterface;
 use Ramona\Ras2\Event\Application\Command\UpsertEvent;
 use Ramona\Ras2\Event\Application\Query\InMonth;
 use Ramona\Ras2\Event\Infrastructure\CommandExecutor\UpsertEventExecutor;
@@ -16,8 +17,6 @@ use Ramona\Ras2\Event\Infrastructure\QueryExecutor\InMonthExecutor;
 use Ramona\Ras2\Event\Infrastructure\Repository;
 use Ramona\Ras2\SharedCore\Infrastructure\CQRS\Command\CommandBus;
 use Ramona\Ras2\SharedCore\Infrastructure\CQRS\Query\QueryBus;
-use Ramona\Ras2\SharedCore\Infrastructure\DependencyInjection\Container;
-use Ramona\Ras2\SharedCore\Infrastructure\DependencyInjection\ContainerBuilder;
 use Ramona\Ras2\SharedCore\Infrastructure\HTTP\APIDefinition\APIDefinition;
 use Ramona\Ras2\SharedCore\Infrastructure\HTTP\APIDefinition\CommandDefinition;
 use Ramona\Ras2\SharedCore\Infrastructure\HTTP\APIDefinition\QueryDefinition;
@@ -26,15 +25,14 @@ use Ramona\Ras2\SharedCore\Infrastructure\Hydration\Hydrator;
 
 final class Module implements \Ramona\Ras2\SharedCore\Infrastructure\Module\Module
 {
-    public function install(ContainerBuilder $containerBuilder): void
+    public function install(\DI\ContainerBuilder $containerBuilder): void
     {
-        $containerBuilder->register(
-            Repository::class,
-            fn ($c) => new PostgresRepository($c->get(Connection::class))
-        );
+        $containerBuilder->addDefinitions([
+            Repository::class => fn (ContainerInterface $c) => new PostgresRepository($c->get(Connection::class)),
+        ]);
     }
 
-    public function register(Container $container): void
+    public function register(ContainerInterface $container): void
     {
         $hydrator = $container->get(Hydrator::class);
         $hydrator->installValueHydrator(new EventIdHydrator());

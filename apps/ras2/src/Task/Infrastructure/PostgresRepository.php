@@ -21,7 +21,7 @@ use Ramona\Ras2\Task\Business\TaskId;
 use Ramona\Ras2\Task\Business\TimeRecord;
 use Ramona\Ras2\User\Business\UserId;
 
-final class PostgresRepository implements Repository
+final readonly class PostgresRepository implements Repository
 {
     public function __construct(
         private Connection $connection,

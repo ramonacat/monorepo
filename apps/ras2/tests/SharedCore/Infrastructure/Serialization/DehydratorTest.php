@@ -86,4 +86,10 @@ final class DehydratorTest extends TestCase
 
         self::assertSame('B CALLED', $result);
     }
+
+    public function testWillThrowOnAMissingDehydratorForScalar(): void
+    {
+        $this->expectException(CannotDehydrateType::class);
+        $this->dehydrator->dehydrate(1.23);
+    }
 }

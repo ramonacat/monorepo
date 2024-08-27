@@ -4,12 +4,12 @@ declare(strict_types=1);
 
 namespace Ramona\Ras2\System;
 
+use DI\ContainerBuilder;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\DBAL\Connection;
+use Psr\Container\ContainerInterface;
 use Ramona\Ras2\SharedCore\Infrastructure\CQRS\Command\CommandBus;
 use Ramona\Ras2\SharedCore\Infrastructure\CQRS\Query\QueryBus;
-use Ramona\Ras2\SharedCore\Infrastructure\DependencyInjection\Container;
-use Ramona\Ras2\SharedCore\Infrastructure\DependencyInjection\ContainerBuilder;
 use Ramona\Ras2\SharedCore\Infrastructure\HTTP\APIDefinition\APIDefinition;
 use Ramona\Ras2\SharedCore\Infrastructure\HTTP\APIDefinition\CommandDefinition;
 use Ramona\Ras2\SharedCore\Infrastructure\HTTP\APIDefinition\QueryDefinition;
@@ -36,17 +36,16 @@ final class Module implements \Ramona\Ras2\SharedCore\Infrastructure\Module\Modu
 {
     public function install(ContainerBuilder $containerBuilder): void
     {
-        $containerBuilder->register(
-            Repository::class,
-            fn ($c) => new PostgresRepository(
+        $containerBuilder->addDefinitions([
+            Repository::class => fn (ContainerInterface $c) => new PostgresRepository(
                 $c->get(Connection::class),
                 $c->get(Serializer::class),
                 $c->get(Hydrator::class)
-            )
-        );
+            ),
+        ]);
     }
 
-    public function register(Container $container): void
+    public function register(ContainerInterface $container): void
     {
         $hydrator = $container->get(Hydrator::class);
         $hydrator->installValueHydrator(new SystemHydrator());
