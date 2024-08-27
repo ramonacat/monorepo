@@ -8,8 +8,8 @@ export async function load({ cookies, url }) {
 	const month = url.searchParams.get('month') ?? now.month;
 
 	return {
-		events: (await apiClient.findEventsInMonth(year as number, month as number)).map((x) =>
-			x.toPojo()
+		events: (await apiClient.calendar().findEventsInMonth(year as number, month as number)).map(
+			(x) => x.toPojo()
 		)
 	};
 }

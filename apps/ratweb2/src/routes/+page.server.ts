@@ -5,10 +5,10 @@ import { DateTime } from 'luxon';
 export async function load({ cookies }) {
 	const { apiClient, session } = await ensureAuthenticated(cookies);
 
-	const upcomingTasks = await apiClient.findUpcomingTasks(session.userId);
-	const watchedTasks = await apiClient.findWatchedTasks();
-	const allUsers = await apiClient.findAllUsers();
-	const ideas = await apiClient.findIdeas();
+	const upcomingTasks = await apiClient.task().findUpcomingTasks(session.userId);
+	const watchedTasks = await apiClient.task().findWatchedTasks();
+	const allUsers = await apiClient.user().findAllUsers();
+	const ideas = await apiClient.task().findIdeas();
 
 	return {
 		upcomingTasks: upcomingTasks.map((x) => x.toPojo()),
@@ -25,14 +25,14 @@ export const actions = {
 		const data = await request.formData();
 		const taskId = data.get('task-id');
 		const userId = session.userId;
-		await apiClient.startWork(userId as string, taskId as string);
+		await apiClient.task().startWork(userId as string, taskId as string);
 	},
 	pause_task: async ({ request, cookies }) => {
 		const { apiClient } = await ensureAuthenticated(cookies);
 
 		const data = await request.formData();
 		const taskId = data.get('task-id');
-		await apiClient.pauseWork(taskId as string);
+		await apiClient.task().pauseWork(taskId as string);
 	},
 	finish_task: async ({ request, cookies }) => {
 		const { session, apiClient } = await ensureAuthenticated(cookies);
@@ -40,14 +40,14 @@ export const actions = {
 		const data = await request.formData();
 		const taskId = data.get('task-id');
 
-		await apiClient.finishWork(taskId as string, session.userId as string);
+		await apiClient.task().finishWork(taskId as string, session.userId as string);
 	},
 	return_to_backlog: async ({ request, cookies }) => {
 		const { apiClient } = await ensureAuthenticated(cookies);
 
 		const data = await request.formData();
 		const taskId = data.get('task-id');
-		await apiClient.returnToBacklog(taskId as string);
+		await apiClient.task().returnToBacklog(taskId as string);
 	},
 	return_to_idea: async ({ request, cookies }) => {
 		const { apiClient } = await ensureAuthenticated(cookies);
@@ -55,7 +55,7 @@ export const actions = {
 		const data = await request.formData();
 		const taskId = data.get('task-id') as string;
 
-		await apiClient.returnToIdea(taskId);
+		await apiClient.task().returnToIdea(taskId);
 	},
 	create_backlog_item: async ({ request, cookies }) => {
 		await ensureAuthenticated(cookies);

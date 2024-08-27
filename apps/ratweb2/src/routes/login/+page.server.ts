@@ -5,6 +5,7 @@ export const actions = {
 
 		const username = data.get('username');
 		const response = await fetch(
+			// TODO make this use the ApiClient instead
 			(process?.env?.RAS2_SERVICE_URL ?? 'http://localhost:8080/') + 'users',
 			{
 				method: 'POST',

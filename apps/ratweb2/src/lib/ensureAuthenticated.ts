@@ -12,7 +12,7 @@ export async function ensureAuthenticated(
 	}
 
 	const apiClient: ApiClient = new ApiClient(token);
-	const session: Session = await apiClient.fetchSession();
+	const session: Session = await apiClient.user().fetchSession();
 
 	return { session, apiClient };
 }

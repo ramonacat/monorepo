@@ -6,11 +6,11 @@ export async function load({ url, cookies }) {
 	const { apiClient } = await ensureAuthenticated(cookies);
 	const taskId = url.searchParams.get('task-id') as string;
 
-	const rawTask = await apiClient.getTaskByID(taskId);
+	const rawTask = await apiClient.task().getTaskByID(taskId);
 	const task = rawTask.toPojo();
 	return {
 		task,
-		allUsers: (await apiClient.findAllUsers()).map((x) => x.toPojo())
+		allUsers: (await apiClient.user().findAllUsers()).map((x) => x.toPojo())
 	};
 }
 
@@ -30,13 +30,15 @@ export const actions: Actions = {
 		const assignee = data.get('assignee');
 
 		try {
-			await apiClient.upsertBacklogItem(
-				url.searchParams.get('task-id') as string,
-				title as string,
-				tags,
-				deadline,
-				assignee as string | undefined
-			);
+			await apiClient
+				.task()
+				.upsertBacklogItem(
+					url.searchParams.get('task-id') as string,
+					title as string,
+					tags,
+					deadline,
+					assignee as string | undefined
+				);
 		} catch {
 			return { failure: true };
 		}
