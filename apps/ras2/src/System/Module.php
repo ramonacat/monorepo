@@ -8,8 +8,6 @@ use DI\ContainerBuilder;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\DBAL\Connection;
 use Psr\Container\ContainerInterface;
-use Ramona\Ras2\SharedCore\Infrastructure\CQRS\Command\CommandBus;
-use Ramona\Ras2\SharedCore\Infrastructure\CQRS\Query\QueryBus;
 use Ramona\Ras2\SharedCore\Infrastructure\HTTP\APIDefinition\APIDefinition;
 use Ramona\Ras2\SharedCore\Infrastructure\HTTP\APIDefinition\CommandDefinition;
 use Ramona\Ras2\SharedCore\Infrastructure\HTTP\APIDefinition\QueryDefinition;
@@ -22,11 +20,7 @@ use Ramona\Ras2\System\Application\Command\SystemType;
 use Ramona\Ras2\System\Application\Command\UpdateCurrentClosure;
 use Ramona\Ras2\System\Application\Command\UpdateLatestClosure;
 use Ramona\Ras2\System\Application\Query\All;
-use Ramona\Ras2\System\Infrastructure\CommandExecutor\CreateSystemExecutor;
-use Ramona\Ras2\System\Infrastructure\CommandExecutor\UpdateCurrentClosureExecutor;
-use Ramona\Ras2\System\Infrastructure\CommandExecutor\UpdateLatestClosureExecutor;
 use Ramona\Ras2\System\Infrastructure\PostgresRepository;
-use Ramona\Ras2\System\Infrastructure\QueryExecutor\AllExecutor;
 use Ramona\Ras2\System\Infrastructure\Repository;
 use Ramona\Ras2\System\Infrastructure\SystemHydrator;
 use Ramona\Ras2\System\Infrastructure\SystemIdDehydrator;
@@ -54,26 +48,6 @@ final class Module implements \Ramona\Ras2\SharedCore\Infrastructure\Module\Modu
 
         $dehydrator = $container->get(Dehydrator::class);
         $dehydrator->installValueDehydrator(new SystemIdDehydrator());
-
-        $commandBus = $container->get(CommandBus::class);
-        $commandBus->installExecutor(CreateSystem::class, new CreateSystemExecutor(
-            $container->get(Repository::class),
-            $container->get(Hydrator::class)
-        ));
-        $commandBus->installExecutor(
-            UpdateCurrentClosure::class,
-            new UpdateCurrentClosureExecutor($container->get(Repository::class))
-        );
-        $commandBus->installExecutor(
-            UpdateLatestClosure::class,
-            new UpdateLatestClosureExecutor($container->get(Repository::class))
-        );
-
-        $queryBus = $container->get(QueryBus::class);
-        $queryBus->installExecutor(
-            All::class,
-            new AllExecutor($container->get(Connection::class), $container->get(Hydrator::class))
-        );
 
         /** @var APIDefinition $apiDefinition */
         $apiDefinition = $container->get(APIDefinition::class);

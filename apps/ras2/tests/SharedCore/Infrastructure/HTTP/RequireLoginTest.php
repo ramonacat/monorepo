@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Tests\Ramona\Ras2\SharedCore\Infrastructure\HTTP;
 
+use DI\Container;
 use Laminas\Diactoros\ServerRequest;
 use PHPUnit\Framework\TestCase;
 use Ramona\Ras2\SharedCore\Infrastructure\CQRS\Query\DefaultQueryBus;
@@ -21,7 +22,7 @@ final class RequireLoginTest extends TestCase
         $request = new ServerRequest(uri: 'http://localhost:8080/users', headers: [
             'X-Action' => 'login',
         ]);
-        $requireLogin = new RequireLogin(new DefaultQueryBus(), new DefaultHydrator());
+        $requireLogin = new RequireLogin(new DefaultQueryBus(new Container()), new DefaultHydrator());
 
         $response = $requireLogin->process($request, new MockRequestHandler());
         $response->getBody()
@@ -36,7 +37,7 @@ final class RequireLoginTest extends TestCase
             'X-Action' => 'upsert',
             'X-User-Token' => 'bped6gRpDIP0S+xQMDKkdsfj2qhSUVr/obnOspHdz2rfoR99vCQee3BEx+9GaX6yRIOTMp6lxADW/YRoIrxImA==',
         ]);
-        $bus = new DefaultQueryBus();
+        $bus = new DefaultQueryBus(new Container());
         $userId = UserId::generate();
         $username = 'ramona';
         $bus->installExecutor(
@@ -63,7 +64,7 @@ final class RequireLoginTest extends TestCase
     {
         $request = new ServerRequest(uri: 'http://localhost:8080/users');
 
-        $requireLogin = new RequireLogin(new DefaultQueryBus(), new DefaultHydrator());
+        $requireLogin = new RequireLogin(new DefaultQueryBus(new Container()), new DefaultHydrator());
 
         $response = $requireLogin->process($request, new MockRequestHandler());
         $response->getBody()
@@ -79,7 +80,7 @@ final class RequireLoginTest extends TestCase
             'X-Action' => 'upsert',
             'X-User-Token' => 'bped6gRpDIP0S+xQMDKkdsfj2qhSUVr/obnOspHdz2rfoR99vCQee3BEx+9GaX6yRIOTMp6lxADW/YRoIrxImA==',
         ]);
-        $bus = new DefaultQueryBus();
+        $bus = new DefaultQueryBus(new Container());
         $bus->installExecutor(
             ByToken::class,
             new FindByTokenExecutorMock(fn () => throw UserNotFound::withToken())
@@ -100,7 +101,7 @@ final class RequireLoginTest extends TestCase
             'X-Action' => 'upsert',
             'X-User-Token' => 'bped6gRpDIP0S+xQMDKkdsfj2qhSUVr/obnOspHdz2rfoR99vCQee3BEx+9GaX6yRIOTMp6lxADW/YRoIrxImA==',
         ]);
-        $bus = new DefaultQueryBus();
+        $bus = new DefaultQueryBus(new Container());
         $userId = UserId::generate();
         $username = 'ramona';
         $bus->installExecutor(

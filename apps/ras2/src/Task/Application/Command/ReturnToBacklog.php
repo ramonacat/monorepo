@@ -5,8 +5,11 @@ declare(strict_types=1);
 namespace Ramona\Ras2\Task\Application\Command;
 
 use Ramona\Ras2\SharedCore\Infrastructure\CQRS\Command\Command;
+use Ramona\Ras2\SharedCore\Infrastructure\CQRS\Command\ExecutedBy;
 use Ramona\Ras2\Task\Business\TaskId;
+use Ramona\Ras2\Task\Infrastructure\CommandExecutor\ReturnToBacklogExecutor;
 
+#[ExecutedBy(ReturnToBacklogExecutor::class)]
 final class ReturnToBacklog implements Command
 {
     public function __construct(

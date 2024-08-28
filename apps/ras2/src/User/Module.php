@@ -10,7 +10,6 @@ use Doctrine\DBAL\Connection;
 use Psr\Container\ContainerInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Ramona\Ras2\SharedCore\Infrastructure\CQRS\Command\CommandBus;
-use Ramona\Ras2\SharedCore\Infrastructure\CQRS\Query\QueryBus;
 use Ramona\Ras2\SharedCore\Infrastructure\HTTP\APIDefinition\APIDefinition;
 use Ramona\Ras2\SharedCore\Infrastructure\HTTP\APIDefinition\CommandCallbackDefinition;
 use Ramona\Ras2\SharedCore\Infrastructure\HTTP\APIDefinition\CommandDefinition;
@@ -26,14 +25,9 @@ use Ramona\Ras2\User\Application\Command\LoginRequest;
 use Ramona\Ras2\User\Application\Command\LoginResponse;
 use Ramona\Ras2\User\Application\Command\UpsertUser;
 use Ramona\Ras2\User\Application\Query\All;
-use Ramona\Ras2\User\Application\Query\ByToken;
 use Ramona\Ras2\User\Application\Session;
 use Ramona\Ras2\User\Business\Token;
-use Ramona\Ras2\User\Infrastructure\CommandExecutor\LoginExecutor;
-use Ramona\Ras2\User\Infrastructure\CommandExecutor\UpsertUserExecutor;
 use Ramona\Ras2\User\Infrastructure\PostgresRepository;
-use Ramona\Ras2\User\Infrastructure\QueryExecutor\AllExecutor;
-use Ramona\Ras2\User\Infrastructure\QueryExecutor\ByTokenExecutor;
 use Ramona\Ras2\User\Infrastructure\Repository;
 use Ramona\Ras2\User\Infrastructure\TokenDehydrator;
 use Ramona\Ras2\User\Infrastructure\UserIdDehydrator;
@@ -56,17 +50,6 @@ final class Module implements \Ramona\Ras2\SharedCore\Infrastructure\Module\Modu
         $dehydrator = $container->get(Dehydrator::class);
         $dehydrator->installValueDehydrator(new UserIdDehydrator());
         $dehydrator->installValueDehydrator(new TokenDehydrator());
-
-        $commandBus = $container->get(CommandBus::class);
-        $commandBus->installExecutor(UpsertUser::class, new UpsertUserExecutor($container->get(Repository::class)));
-        $commandBus->installExecutor(Login::class, new LoginExecutor($container->get(Repository::class)));
-
-        $queryBus = $container->get(QueryBus::class);
-        $queryBus->installExecutor(ByToken::class, new ByTokenExecutor($container->get(Connection::class)));
-        $queryBus->installExecutor(
-            All::class,
-            new AllExecutor($container->get(Connection::class), $container->get(Hydrator::class))
-        );
 
         /** @var APIDefinition $apiDefinition */
         $apiDefinition = $container->get(APIDefinition::class);
