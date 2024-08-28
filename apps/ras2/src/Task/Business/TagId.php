@@ -4,10 +4,11 @@ declare(strict_types=1);
 
 namespace Ramona\Ras2\Task\Business;
 
+use Ramona\Ras2\SharedCore\Business\Identifier;
 use Ramsey\Uuid\Uuid;
 use Ramsey\Uuid\UuidInterface;
 
-final class TagId implements \Stringable
+final class TagId implements Identifier
 {
     private UuidInterface $id;
 

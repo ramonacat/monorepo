@@ -14,6 +14,8 @@ use Ramona\Ras2\SharedCore\Infrastructure\CQRS\Command\DefaultCommandBus;
 use Ramona\Ras2\SharedCore\Infrastructure\CQRS\Query\DefaultQueryBus;
 use Ramona\Ras2\SharedCore\Infrastructure\CQRS\Query\QueryBus;
 use Ramona\Ras2\SharedCore\Infrastructure\DatabaseConnectionFactory;
+use Ramona\Ras2\SharedCore\Infrastructure\HTTP\DefaultJsonResponseFactory;
+use Ramona\Ras2\SharedCore\Infrastructure\HTTP\JsonResponseFactory;
 use Ramona\Ras2\SharedCore\Infrastructure\Hydration\Dehydrator;
 use Ramona\Ras2\SharedCore\Infrastructure\Hydration\DehydratorFactory;
 use Ramona\Ras2\SharedCore\Infrastructure\Hydration\Hydrator;
@@ -50,6 +52,9 @@ $containerBuilder->addDefinitions([
         $c->get(LoggerInterface::class)
     ),
     Clock::class => fn () => new SystemClock(),
+    JsonResponseFactory::class => fn (ContainerInterface $c) => new DefaultJsonResponseFactory($c->get(
+        Serializer::class
+    )),
 ]);
 
 $modules = [new TaskModule(), new UserModule(), new EventModule(), new SystemModule()];

@@ -4,6 +4,9 @@ declare(strict_types=1);
 
 namespace Ramona\Ras2\SharedCore\Infrastructure\Hydration;
 
+use Ramona\Ras2\SharedCore\Business\Identifier;
+use Ramona\Ras2\SharedCore\Infrastructure\Hydration\Dehydrator\EnumDehydrator;
+use Ramona\Ras2\SharedCore\Infrastructure\Hydration\Dehydrator\IdentifierDehydrator;
 use Ramona\Ras2\SharedCore\Infrastructure\Hydration\Dehydrator\ObjectDehydrator;
 
 final class DefaultDehydrator implements Dehydrator
@@ -26,7 +29,12 @@ final class DefaultDehydrator implements Dehydrator
     {
         $typeName = is_object($value) ? get_class($value) : gettype($value);
 
-        if (is_object($value)) {
+        if ($value instanceof Identifier) {
+            if (! isset($this->valueDehydrators[$typeName])) {
+                /** @var class-string<Identifier> $typeName */
+                $this->valueDehydrators[$typeName] = new IdentifierDehydrator($typeName);
+            }
+        } elseif (is_object($value)) {
             $alternativePaths = [$typeName];
 
             $parentClass = get_class($value);
@@ -51,7 +59,11 @@ final class DefaultDehydrator implements Dehydrator
                 if (! class_exists($typeName)) {
                     throw CannotDehydrateType::for($typeName);
                 }
-                $this->valueDehydrators[$typeName] = new ObjectDehydrator($typeName);
+                if (is_a($typeName, \UnitEnum::class, true)) {
+                    $this->valueDehydrators[$typeName] = new EnumDehydrator($typeName);
+                } else {
+                    $this->valueDehydrators[$typeName] = new ObjectDehydrator($typeName);
+                }
 
             }
         } else {

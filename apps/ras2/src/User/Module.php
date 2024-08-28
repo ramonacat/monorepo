@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Ramona\Ras2\User;
 
 use DI\ContainerBuilder;
-use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\DBAL\Connection;
 use Psr\Container\ContainerInterface;
 use Psr\Http\Message\ServerRequestInterface;
@@ -18,7 +17,6 @@ use Ramona\Ras2\SharedCore\Infrastructure\HTTP\APIDefinition\QueryCallbackDefini
 use Ramona\Ras2\SharedCore\Infrastructure\HTTP\APIDefinition\QueryDefinition;
 use Ramona\Ras2\SharedCore\Infrastructure\HTTP\RequireLogin;
 use Ramona\Ras2\SharedCore\Infrastructure\Hydration\Dehydrator;
-use Ramona\Ras2\SharedCore\Infrastructure\Hydration\Hydrator;
 use Ramona\Ras2\SharedCore\Infrastructure\Serialization\Deserializer;
 use Ramona\Ras2\User\Application\Command\Login;
 use Ramona\Ras2\User\Application\Command\LoginRequest;
@@ -30,8 +28,6 @@ use Ramona\Ras2\User\Business\Token;
 use Ramona\Ras2\User\Infrastructure\PostgresRepository;
 use Ramona\Ras2\User\Infrastructure\Repository;
 use Ramona\Ras2\User\Infrastructure\TokenDehydrator;
-use Ramona\Ras2\User\Infrastructure\UserIdDehydrator;
-use Ramona\Ras2\User\Infrastructure\UserIdHydrator;
 
 final class Module implements \Ramona\Ras2\SharedCore\Infrastructure\Module\Module
 {
@@ -44,11 +40,7 @@ final class Module implements \Ramona\Ras2\SharedCore\Infrastructure\Module\Modu
 
     public function register(ContainerInterface $container): void
     {
-        $hydrator = $container->get(Hydrator::class);
-        $hydrator->installValueHydrator(new UserIdHydrator());
-
         $dehydrator = $container->get(Dehydrator::class);
-        $dehydrator->installValueDehydrator(new UserIdDehydrator());
         $dehydrator->installValueDehydrator(new TokenDehydrator());
 
         /** @var APIDefinition $apiDefinition */
@@ -58,7 +50,7 @@ final class Module implements \Ramona\Ras2\SharedCore\Infrastructure\Module\Modu
                 return $request->getAttribute(RequireLogin::SESSION_ATTRIBUTE);
             }, EmptyQuery::class, Session::class)
         );
-        $apiDefinition->installQuery(new QueryDefinition('users', 'all', All::class, ArrayCollection::class));
+        $apiDefinition->installQuery(new QueryDefinition('users', 'all', All::class));
         $apiDefinition->installCommand(new CommandDefinition('users', 'upsert', UpsertUser::class));
         $apiDefinition->installCommandCallback(
             new CommandCallbackDefinition('users', 'login', function (ServerRequestInterface $request) use (

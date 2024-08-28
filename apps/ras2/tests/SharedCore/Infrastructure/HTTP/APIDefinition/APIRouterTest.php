@@ -26,7 +26,6 @@ use Ramona\Ras2\SharedCore\Infrastructure\Serialization\Deserializer;
 use Ramona\Ras2\SharedCore\Infrastructure\Serialization\Serializer;
 use Tests\Ramona\Ras2\SharedCore\Infrastructure\CQRS\Command\Mocks\MockCommand;
 use Tests\Ramona\Ras2\SharedCore\Infrastructure\CQRS\Query\Mocks\MockQuery;
-use Tests\Ramona\Ras2\SharedCore\Infrastructure\CQRS\Query\Mocks\MockResponse;
 
 final class APIRouterTest extends TestCase
 {
@@ -220,9 +219,9 @@ final class APIRouterTest extends TestCase
         );
 
         $definition = new APIDefinition();
-        $definition->installQuery(new QueryDefinition('test1', 'test1', MockQuery::class, MockResponse::class));
-        $definition->installQuery(new QueryDefinition('test2', 'test2', MockQuery::class, MockResponse::class));
-        $definition->installQuery(new QueryDefinition('test2', 'test3', MockQuery::class, MockResponse::class));
+        $definition->installQuery(new QueryDefinition('test1', 'test1', MockQuery::class));
+        $definition->installQuery(new QueryDefinition('test2', 'test2', MockQuery::class));
+        $definition->installQuery(new QueryDefinition('test2', 'test3', MockQuery::class));
         $router = $this->createMock(RouteCollectionInterface::class);
         $router
             ->expects(self::exactly(2))
@@ -317,9 +316,9 @@ final class APIRouterTest extends TestCase
         );
 
         $definition = new APIDefinition();
-        $definition->installQuery(new QueryDefinition('test1', 'test1', MockQuery::class, MockResponse::class));
-        $definition->installQuery(new QueryDefinition('test2', 'test2', MockQuery::class, MockResponse::class));
-        $definition->installQuery(new QueryDefinition('test2', 'test3', MockQuery::class, MockResponse::class));
+        $definition->installQuery(new QueryDefinition('test1', 'test1', MockQuery::class));
+        $definition->installQuery(new QueryDefinition('test2', 'test2', MockQuery::class));
+        $definition->installQuery(new QueryDefinition('test2', 'test3', MockQuery::class));
         $router = $this->createMock(RouteCollectionInterface::class);
         $router
             ->expects(self::exactly(2))
