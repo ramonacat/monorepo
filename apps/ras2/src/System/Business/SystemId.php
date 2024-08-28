@@ -4,10 +4,11 @@ declare(strict_types=1);
 
 namespace Ramona\Ras2\System\Business;
 
+use Ramona\Ras2\SharedCore\Business\Identifier;
 use Ramsey\Uuid\Uuid;
 use Ramsey\Uuid\UuidInterface;
 
-final class SystemId implements \Stringable
+final class SystemId implements Identifier
 {
     private function __construct(
         private UuidInterface $id
@@ -19,8 +20,13 @@ final class SystemId implements \Stringable
         return $this->id->toString();
     }
 
-    public static function fromString(string $input): self
+    public static function fromString(string $id): self
     {
-        return new self(Uuid::fromString($input));
+        return new self(Uuid::fromString($id));
+    }
+
+    public static function generate(): Identifier
+    {
+        return new self(Uuid::uuid7());
     }
 }

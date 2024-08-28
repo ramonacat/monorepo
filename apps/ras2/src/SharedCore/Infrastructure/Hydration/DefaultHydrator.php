@@ -4,6 +4,9 @@ declare(strict_types=1);
 
 namespace Ramona\Ras2\SharedCore\Infrastructure\Hydration;
 
+use Ramona\Ras2\SharedCore\Business\Identifier;
+use Ramona\Ras2\SharedCore\Infrastructure\Hydration\Hydrator\EnumHydrator;
+use Ramona\Ras2\SharedCore\Infrastructure\Hydration\Hydrator\IdentifierHydrator;
 use Ramona\Ras2\SharedCore\Infrastructure\Hydration\Hydrator\ObjectHydrator;
 use Ramona\Ras2\User\Application\Session;
 
@@ -30,7 +33,11 @@ final class DefaultHydrator implements Hydrator
         }
 
         if (! isset($this->valueHydrators[$targetType])) {
-            if (class_exists($targetType)) {
+            if (is_a($targetType, Identifier::class, true)) {
+                $this->valueHydrators[$targetType] = new IdentifierHydrator($targetType);
+            } elseif (enum_exists($targetType)) {
+                $this->valueHydrators[$targetType] = new EnumHydrator($targetType);
+            } elseif (class_exists($targetType)) {
                 $this->valueHydrators[$targetType] = new ObjectHydrator($targetType);
             } else {
                 throw CannotHydrateType::for($targetType);

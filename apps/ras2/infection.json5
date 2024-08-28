@@ -23,7 +23,8 @@
             ignore: [
                 "Ramona\\Ras2\\SharedCore\\Infrastructure\\Serialization\\Normalizer",
                 "Ramona\\Ras2\\SharedCore\\Infrastructure\\Serialization\\ConversionNotFound",
-                "Ramona\\Ras2\\SharedCore\\Infrastructure\\Hydration\\Hydrator\\DateTimeImmutableHydrator"
+                "Ramona\\Ras2\\SharedCore\\Infrastructure\\Hydration\\Hydrator\\DateTimeImmutableHydrator",
+                "Ramona\\Ras2\\SharedCore\\Infrastructure\\Hydration\\Hydrator\\IdentifierHydrator"
             ]
         },
         "CastInt": {
