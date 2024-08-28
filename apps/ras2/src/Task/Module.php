@@ -4,22 +4,20 @@ declare(strict_types=1);
 
 namespace Ramona\Ras2\Task;
 
+use DI\ContainerBuilder;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\DBAL\Connection;
+use Psr\Container\ContainerInterface;
 use Ramona\Ras2\SharedCore\Infrastructure\Clock;
 use Ramona\Ras2\SharedCore\Infrastructure\CQRS\Command\CommandBus;
 use Ramona\Ras2\SharedCore\Infrastructure\CQRS\Query\QueryBus;
-use Ramona\Ras2\SharedCore\Infrastructure\DependencyInjection\Container;
-use Ramona\Ras2\SharedCore\Infrastructure\DependencyInjection\ContainerBuilder;
 use Ramona\Ras2\SharedCore\Infrastructure\HTTP\APIDefinition\APIDefinition;
 use Ramona\Ras2\SharedCore\Infrastructure\HTTP\APIDefinition\CommandDefinition;
 use Ramona\Ras2\SharedCore\Infrastructure\HTTP\APIDefinition\QueryDefinition;
 use Ramona\Ras2\SharedCore\Infrastructure\Hydration\Dehydrator;
 use Ramona\Ras2\SharedCore\Infrastructure\Hydration\Dehydrator\EnumDehydrator;
-use Ramona\Ras2\SharedCore\Infrastructure\Hydration\Dehydrator\ObjectDehydrator;
 use Ramona\Ras2\SharedCore\Infrastructure\Hydration\Hydrator;
 use Ramona\Ras2\SharedCore\Infrastructure\Hydration\Hydrator\EnumHydrator;
-use Ramona\Ras2\SharedCore\Infrastructure\Hydration\Hydrator\ObjectHydrator;
 use Ramona\Ras2\SharedCore\Infrastructure\Serialization\Deserializer;
 use Ramona\Ras2\SharedCore\Infrastructure\Serialization\Serializer;
 use Ramona\Ras2\Task\Application\Command\FinishWork;
@@ -38,10 +36,8 @@ use Ramona\Ras2\Task\Application\Query\Upcoming;
 use Ramona\Ras2\Task\Application\Query\UserProfileByUserId;
 use Ramona\Ras2\Task\Application\Query\WatchedBy;
 use Ramona\Ras2\Task\Application\Status;
-use Ramona\Ras2\Task\Application\TagView;
 use Ramona\Ras2\Task\Application\TaskView;
 use Ramona\Ras2\Task\Application\UserProfileView;
-use Ramona\Ras2\Task\Business\TimeRecord;
 use Ramona\Ras2\Task\Infrastructure\CommandExecutor\CreateIdeaExecutor;
 use Ramona\Ras2\Task\Infrastructure\CommandExecutor\FinishWorkExecutor;
 use Ramona\Ras2\Task\Infrastructure\CommandExecutor\PauseWorkExecutor;
@@ -69,54 +65,27 @@ final class Module implements \Ramona\Ras2\SharedCore\Infrastructure\Module\Modu
 {
     public function install(ContainerBuilder $containerBuilder): void
     {
-        $containerBuilder->register(
-            Repository::class,
-            fn (Container $c) => new PostgresRepository(
+        $containerBuilder->addDefinitions([
+            Repository::class => fn (ContainerInterface $c) => new PostgresRepository(
                 $c->get(Connection::class),
                 $c->get(Serializer::class),
-                $c->get(Deserializer::class),
-            )
-        );
-
-        $containerBuilder->register(
-            UserProfileRepository::class,
-            fn (Container $c) => new PostgresUserProfileRepository(
+                $c->get(Deserializer::class)
+            ),
+            UserProfileRepository::class => fn (ContainerInterface $c) => new PostgresUserProfileRepository(
                 $c->get(Connection::class),
                 $c->get(Serializer::class)
-            )
-        );
+            ),
+        ]);
     }
 
-    public function register(Container $container): void
+    public function register(ContainerInterface $container): void
     {
         $hydrator = $container->get(Hydrator::class);
-        $hydrator->installValueHydrator(new ObjectHydrator(UpsertBacklogItem::class));
-        $hydrator->installValueHydrator(new ObjectHydrator(UpsertIdea::class));
-        $hydrator->installValueHydrator(new ObjectHydrator(PauseWork::class));
-        $hydrator->installValueHydrator(new ObjectHydrator(TimeRecord::class));
-        $hydrator->installValueHydrator(new ObjectHydrator(FinishWork::class));
-        $hydrator->installValueHydrator(new ObjectHydrator(StartWork::class));
-        $hydrator->installValueHydrator(new ObjectHydrator(ReturnToBacklog::class));
-        $hydrator->installValueHydrator(new ObjectHydrator(TaskView::class));
-        $hydrator->installValueHydrator(new ObjectHydrator(UpsertUserProfile::class));
-        $hydrator->installValueHydrator(new ObjectHydrator(UserProfileView::class));
-        $hydrator->installValueHydrator(new ObjectHydrator(TagView::class));
-        $hydrator->installValueHydrator(new ObjectHydrator(WatchedBy::class));
-        $hydrator->installValueHydrator(new ObjectHydrator(Upcoming::class));
-        $hydrator->installValueHydrator(new ObjectHydrator(Current::class));
-        $hydrator->installValueHydrator(new ObjectHydrator(Ideas::class));
-        $hydrator->installValueHydrator(new ObjectHydrator(ById::class));
-        $hydrator->installValueHydrator(new ObjectHydrator(ReturnToIdea::class));
         $hydrator->installValueHydrator(new EnumHydrator(Status::class));
         $hydrator->installValueHydrator(new TaskIdHydrator());
         $hydrator->installValueHydrator(new TagIdHydrator());
 
         $dehydrator = $container->get(Dehydrator::class);
-        $dehydrator->installValueDehydrator(new ObjectDehydrator(TaskView::class));
-        $dehydrator->installValueDehydrator(new ObjectDehydrator(TimeRecord::class));
-        $dehydrator->installValueDehydrator(new ObjectDehydrator(CurrentTaskView::class));
-        $dehydrator->installValueDehydrator(new ObjectDehydrator(UserProfileView::class));
-        $dehydrator->installValueDehydrator(new ObjectDehydrator(TagView::class));
         $dehydrator->installValueDehydrator(new EnumDehydrator(Status::class));
         $dehydrator->installValueDehydrator(new TaskIdDehydrator());
         $dehydrator->installValueDehydrator(new TagIdDehydrator());

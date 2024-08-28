@@ -40,7 +40,9 @@
         "MethodCallRemoval": {
             "ignore": [
                 "Ramona\\Ras2\\SharedCore\\Infrastructure\\Serialization\\DefaultDeserializer",
-                "Ramona\\Ras2\\SharedCore\\Infrastructure\\Serialization\\DefaultSerializer"
+                "Ramona\\Ras2\\SharedCore\\Infrastructure\\Serialization\\DefaultSerializer",
+                "Ramona\\Ras2\\SharedCore\\Infrastructure\\Hydration\\DehydratorFactory",
+                "Ramona\\Ras2\\SharedCore\\Infrastructure\\Hydration\\HydratorFactory"
             ],
             "ignoreSourceCodeByRegex": [
                 "\\$this->logger->.*"
@@ -64,7 +66,8 @@
             "ignore": [
                 "Ramona\\Ras2\\SharedCore\\Infrastructure\\HTTP\\APIDefinition\\APIRouter"
             ]
-        }
+        },
+        "Identical": {ignore: ["Ramona\\Ras2\\SharedCore\\Infrastructure\\LoggerFactory"]}
     },
     "logs": {
         "text": "infection.log"

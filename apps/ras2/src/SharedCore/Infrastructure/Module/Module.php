@@ -4,12 +4,16 @@ declare(strict_types=1);
 
 namespace Ramona\Ras2\SharedCore\Infrastructure\Module;
 
-use Ramona\Ras2\SharedCore\Infrastructure\DependencyInjection\Container;
-use Ramona\Ras2\SharedCore\Infrastructure\DependencyInjection\ContainerBuilder;
+use DI\ContainerBuilder;
+use Psr\Container\ContainerInterface;
 
 interface Module
 {
+    /**
+     * @template T of \DI\Container
+     * @param ContainerBuilder<T> $containerBuilder
+     */
     public function install(ContainerBuilder $containerBuilder): void;
 
-    public function register(Container $container): void;
+    public function register(ContainerInterface $container): void;
 }

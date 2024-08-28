@@ -149,16 +149,14 @@ final class HydratorTest extends TestCase
         ]);
     }
 
-    public function testThrowsOnMissingHydrator(): void
+    public function testDefaultsToObjectHydrator(): void
     {
-        $this->expectException(CannotHydrateType::class);
-        $this->expectExceptionMessage(
-            "Cannot hydrate type 'Tests\Ramona\Ras2\SharedCore\Infrastructure\Serialization\Mocks\Simple'"
-        );
-
-        $this->hydrator->hydrate(Simple::class, [
-            'test' => 1234,
+        $result = $this->hydrator->hydrate(Simple::class, [
+            'id' => '1234',
+            'stuff' => 54321,
         ]);
+
+        self::assertEquals(new Simple('1234', 54321), $result);
     }
 
     public function testThrowsOnMissingValue(): void

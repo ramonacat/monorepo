@@ -16,7 +16,7 @@ final class LoggerMock implements LoggerInterface
      */
     public array $messages = [];
 
-    public function log($level, \Stringable|string $message, array $context = []): void
+    public function log(mixed $level, \Stringable|string $message, array $context = []): void
     {
         $this->messages[] = [
             'level' => $level,
