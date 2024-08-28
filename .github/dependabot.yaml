@@ -62,7 +62,7 @@ updates:
         dependency-type: "development"
 
   - package-ecosystem: "composer"
-    directory: "apps/ratweb2"
+    directory: "apps/ras2"
     schedule:
       interval: "daily"
     groups:
@@ -71,3 +71,12 @@ updates:
       development-dependencies:
         dependency-type: "development"
 
+  - package-ecosystem: "npm"
+    directory: "apps/ratweb2"
+    schedule:
+      interval: "daily"
+    groups:
+      production-dependencies:
+        dependency-type: "production"
+      development-dependencies:
+        dependency-type: "development"
