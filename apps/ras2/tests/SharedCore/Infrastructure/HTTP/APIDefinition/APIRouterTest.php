@@ -24,6 +24,7 @@ use Ramona\Ras2\SharedCore\Infrastructure\HTTP\JsonResponseFactory;
 use Ramona\Ras2\SharedCore\Infrastructure\Hydration\Hydrator;
 use Ramona\Ras2\SharedCore\Infrastructure\Serialization\Deserializer;
 use Ramona\Ras2\SharedCore\Infrastructure\Serialization\Serializer;
+use Tests\Ramona\Ras2\ClassFinderFactory;
 use Tests\Ramona\Ras2\SharedCore\Infrastructure\CQRS\Command\Mocks\MockCommand;
 use Tests\Ramona\Ras2\SharedCore\Infrastructure\CQRS\Query\Mocks\MockQuery;
 
@@ -47,7 +48,7 @@ final class APIRouterTest extends TestCase
             new NullLogger()
         );
 
-        $definition = new APIDefinition();
+        $definition = new APIDefinition(ClassFinderFactory::create());
         $definition->installCommand(new CommandDefinition('test1', 'test1', MockCommand::class));
         $definition->installCommand(new CommandDefinition('test', 'test1', MockCommand::class));
         $definition->installCommand(new CommandDefinition('test', 'test2', MockCommand::class));
@@ -87,7 +88,7 @@ final class APIRouterTest extends TestCase
 
         $callbackCalled = false;
 
-        $definition = new APIDefinition();
+        $definition = new APIDefinition(ClassFinderFactory::create());
         $definition->installCommandCallback(
             new CommandCallbackDefinition('test1', 'test1', function () {}, 'string', 'string')
         );
@@ -139,7 +140,7 @@ final class APIRouterTest extends TestCase
             new NullLogger()
         );
 
-        $definition = new APIDefinition();
+        $definition = new APIDefinition(ClassFinderFactory::create());
         $definition->installCommand(new CommandDefinition('test1', 'test1', MockCommand::class));
         $definition->installCommand(new CommandDefinition('test', 'test1', MockCommand::class));
         $definition->installCommand(new CommandDefinition('test', 'test2', MockCommand::class));
@@ -175,7 +176,7 @@ final class APIRouterTest extends TestCase
             new NullLogger()
         );
 
-        $definition = new APIDefinition();
+        $definition = new APIDefinition(ClassFinderFactory::create());
         $definition->installCommand(new CommandDefinition('test1', 'test1', MockCommand::class));
         $definition->installCommand(new CommandDefinition('test', 'test1', MockCommand::class));
         $definition->installCommand(new CommandDefinition('test', 'test2', MockCommand::class));
@@ -218,7 +219,7 @@ final class APIRouterTest extends TestCase
             new NullLogger()
         );
 
-        $definition = new APIDefinition();
+        $definition = new APIDefinition(ClassFinderFactory::create());
         $definition->installQuery(new QueryDefinition('test1', 'test1', MockQuery::class));
         $definition->installQuery(new QueryDefinition('test2', 'test2', MockQuery::class));
         $definition->installQuery(new QueryDefinition('test2', 'test3', MockQuery::class));
@@ -263,7 +264,7 @@ final class APIRouterTest extends TestCase
             new NullLogger()
         );
 
-        $definition = new APIDefinition();
+        $definition = new APIDefinition(ClassFinderFactory::create());
         $definition->installQueryCallback(
             new QueryCallbackDefinition('test1', 'test1', function () {}, 'string', 'string')
         );
@@ -315,7 +316,7 @@ final class APIRouterTest extends TestCase
             new NullLogger()
         );
 
-        $definition = new APIDefinition();
+        $definition = new APIDefinition(ClassFinderFactory::create());
         $definition->installQuery(new QueryDefinition('test1', 'test1', MockQuery::class));
         $definition->installQuery(new QueryDefinition('test2', 'test2', MockQuery::class));
         $definition->installQuery(new QueryDefinition('test2', 'test3', MockQuery::class));

@@ -7,6 +7,7 @@ use Doctrine\DBAL\Connection;
 use League\Route\Router;
 use Psr\Container\ContainerInterface;
 use Psr\Log\LoggerInterface;
+use Psr\SimpleCache\CacheInterface;
 use Ramona\Ras2\Event\Module as EventModule;
 use Ramona\Ras2\SharedCore\Infrastructure\Clock;
 use Ramona\Ras2\SharedCore\Infrastructure\CQRS\Command\CommandBus;
@@ -14,6 +15,8 @@ use Ramona\Ras2\SharedCore\Infrastructure\CQRS\Command\DefaultCommandBus;
 use Ramona\Ras2\SharedCore\Infrastructure\CQRS\Query\DefaultQueryBus;
 use Ramona\Ras2\SharedCore\Infrastructure\CQRS\Query\QueryBus;
 use Ramona\Ras2\SharedCore\Infrastructure\DatabaseConnectionFactory;
+use Ramona\Ras2\SharedCore\Infrastructure\HTTP\APIDefinition\APIDefinition;
+use Ramona\Ras2\SharedCore\Infrastructure\HTTP\APIDefinition\APIDefinitionFactory;
 use Ramona\Ras2\SharedCore\Infrastructure\HTTP\DefaultJsonResponseFactory;
 use Ramona\Ras2\SharedCore\Infrastructure\HTTP\JsonResponseFactory;
 use Ramona\Ras2\SharedCore\Infrastructure\Hydration\Dehydrator;
@@ -30,6 +33,8 @@ use Ramona\Ras2\SharedCore\Infrastructure\SystemClock;
 use Ramona\Ras2\System\Module as SystemModule;
 use Ramona\Ras2\Task\Module as TaskModule;
 use Ramona\Ras2\User\Module as UserModule;
+use Symfony\Component\Cache\Adapter\FilesystemAdapter;
+use Symfony\Component\Cache\Psr16Cache;
 
 $containerBuilder = new ContainerBuilder();
 $containerBuilder->useAutowiring(true)
@@ -55,6 +60,8 @@ $containerBuilder->addDefinitions([
     JsonResponseFactory::class => fn (ContainerInterface $c) => new DefaultJsonResponseFactory($c->get(
         Serializer::class
     )),
+    APIDefinition::class => fn (ContainerInterface $c) => APIDefinitionFactory::create($c),
+    CacheInterface::class => fn () => new Psr16Cache(new FilesystemAdapter()),
 ]);
 
 $modules = [new TaskModule(), new UserModule(), new EventModule(), new SystemModule()];

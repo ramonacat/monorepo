@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Ramona\Ras2\SharedCore\Infrastructure\HTTP\APIDefinition;
 
+use Ramona\Ras2\SharedCore\Infrastructure\ClassFinder;
+
 final class APIDefinition
 {
     /**
@@ -25,6 +27,51 @@ final class APIDefinition
      * @var array<string, array<string, CommandCallbackDefinition>>
      */
     private mixed $commandCallbacks = [];
+
+    public function __construct(
+        private ClassFinder $classFinder
+    ) {
+    }
+
+    public function installQueriesFromAttributes(): void
+    {
+        foreach ($this->classFinder->findAllDeclaredClasses() as $className) {
+            $reflection = new \ReflectionClass($className);
+            $attributes = $reflection->getAttributes(APIQuery::class);
+
+            if (count($attributes) !== 1) {
+                continue;
+            }
+
+            /** @var APIQuery $attributeInstance */
+            $attributeInstance = $attributes[0]->newInstance();
+            /**
+             * @phpstan-ignore argument.type
+             */
+            $this->installQuery(new QueryDefinition($attributeInstance->path, $attributeInstance->name, $className));
+        }
+    }
+
+    public function installCommandsFromAttributes(): void
+    {
+        foreach ($this->classFinder->findAllDeclaredClasses() as $className) {
+            $reflection = new \ReflectionClass($className);
+            $attributes = $reflection->getAttributes(APICommand::class);
+
+            if (count($attributes) !== 1) {
+                continue;
+            }
+
+            /** @var APICommand $attributeInstance */
+            $attributeInstance = $attributes[0]->newInstance();
+            $this->installCommand(
+                /**
+                 * @phpstan-ignore argument.type
+                 */
+                new CommandDefinition($attributeInstance->path, $attributeInstance->name, $className)
+            );
+        }
+    }
 
     public function installCommand(CommandDefinition $commandDefinition): void
     {

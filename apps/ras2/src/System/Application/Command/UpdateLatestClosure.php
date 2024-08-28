@@ -6,9 +6,10 @@ namespace Ramona\Ras2\System\Application\Command;
 
 use Ramona\Ras2\SharedCore\Infrastructure\CQRS\Command\Command;
 use Ramona\Ras2\SharedCore\Infrastructure\CQRS\Command\ExecutedBy;
+use Ramona\Ras2\SharedCore\Infrastructure\HTTP\APIDefinition\APICommand;
 use Ramona\Ras2\System\Infrastructure\CommandExecutor\UpdateLatestClosureExecutor;
 
-#[ExecutedBy(UpdateLatestClosureExecutor::class)]
+#[ExecutedBy(UpdateLatestClosureExecutor::class), APICommand('systems', 'update-latest-closure')]
 final readonly class UpdateLatestClosure implements Command
 {
     public function __construct(

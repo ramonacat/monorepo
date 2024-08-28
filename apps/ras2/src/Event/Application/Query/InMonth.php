@@ -9,12 +9,13 @@ use Ramona\Ras2\Event\Application\EventView;
 use Ramona\Ras2\Event\Infrastructure\QueryExecutor\InMonthExecutor;
 use Ramona\Ras2\SharedCore\Infrastructure\CQRS\Query\ExecutedBy;
 use Ramona\Ras2\SharedCore\Infrastructure\CQRS\Query\Query;
+use Ramona\Ras2\SharedCore\Infrastructure\HTTP\APIDefinition\APIQuery;
 use Ramona\Ras2\SharedCore\Infrastructure\Hydration\HydrateFromSession;
 
 /**
  * @implements Query<ArrayCollection<int, EventView>>
  */
-#[ExecutedBy(InMonthExecutor::class)]
+#[ExecutedBy(InMonthExecutor::class), APIQuery('events', 'in-month')]
 final readonly class InMonth implements Query
 {
     public function __construct(
