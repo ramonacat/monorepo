@@ -7,12 +7,13 @@ namespace Ramona\Ras2\System\Application\Command;
 use Doctrine\Common\Collections\ArrayCollection;
 use Ramona\Ras2\SharedCore\Infrastructure\CQRS\Command\Command;
 use Ramona\Ras2\SharedCore\Infrastructure\CQRS\Command\ExecutedBy;
+use Ramona\Ras2\SharedCore\Infrastructure\HTTP\APIDefinition\APICommand;
 use Ramona\Ras2\SharedCore\Infrastructure\Hydration\KeyType;
 use Ramona\Ras2\SharedCore\Infrastructure\Hydration\ValueType;
 use Ramona\Ras2\System\Business\SystemId;
 use Ramona\Ras2\System\Infrastructure\CommandExecutor\CreateSystemExecutor;
 
-#[ExecutedBy(CreateSystemExecutor::class)]
+#[ExecutedBy(CreateSystemExecutor::class), APICommand('systems', 'create')]
 final readonly class CreateSystem implements Command
 {
     /**

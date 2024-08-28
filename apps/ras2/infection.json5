@@ -9,7 +9,9 @@
             "Migrations",
             "PostgresRepository",
             "Module.php",
-            "QueryExecutor"
+            "QueryExecutor",
+            "ClassFinder",
+            "APIDefinition"
         ]
     },
     "mutators": {

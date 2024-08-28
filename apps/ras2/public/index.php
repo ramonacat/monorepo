@@ -8,7 +8,7 @@ use Ramona\Ras2\SharedCore\Infrastructure\HTTP\APIDefinition\APIRouter;
 
 require_once __DIR__ . '/../vendor/autoload.php';
 
-$diContainer = require '../src/container.php';
+$diContainer = require __DIR__ . '/../src/container.php';
 $request = Laminas\Diactoros\ServerRequestFactory::fromGlobals($_SERVER, $_GET, $_POST, $_COOKIE, $_FILES);
 $router = $diContainer->get(Router::class);
 $apiDefinition = $diContainer->get(APIDefinition::class);

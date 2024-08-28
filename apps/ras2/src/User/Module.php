@@ -11,18 +11,14 @@ use Psr\Http\Message\ServerRequestInterface;
 use Ramona\Ras2\SharedCore\Infrastructure\CQRS\Command\CommandBus;
 use Ramona\Ras2\SharedCore\Infrastructure\HTTP\APIDefinition\APIDefinition;
 use Ramona\Ras2\SharedCore\Infrastructure\HTTP\APIDefinition\CommandCallbackDefinition;
-use Ramona\Ras2\SharedCore\Infrastructure\HTTP\APIDefinition\CommandDefinition;
 use Ramona\Ras2\SharedCore\Infrastructure\HTTP\APIDefinition\EmptyQuery;
 use Ramona\Ras2\SharedCore\Infrastructure\HTTP\APIDefinition\QueryCallbackDefinition;
-use Ramona\Ras2\SharedCore\Infrastructure\HTTP\APIDefinition\QueryDefinition;
 use Ramona\Ras2\SharedCore\Infrastructure\HTTP\RequireLogin;
 use Ramona\Ras2\SharedCore\Infrastructure\Hydration\Dehydrator;
 use Ramona\Ras2\SharedCore\Infrastructure\Serialization\Deserializer;
 use Ramona\Ras2\User\Application\Command\Login;
 use Ramona\Ras2\User\Application\Command\LoginRequest;
 use Ramona\Ras2\User\Application\Command\LoginResponse;
-use Ramona\Ras2\User\Application\Command\UpsertUser;
-use Ramona\Ras2\User\Application\Query\All;
 use Ramona\Ras2\User\Application\Session;
 use Ramona\Ras2\User\Business\Token;
 use Ramona\Ras2\User\Infrastructure\PostgresRepository;
@@ -50,8 +46,6 @@ final class Module implements \Ramona\Ras2\SharedCore\Infrastructure\Module\Modu
                 return $request->getAttribute(RequireLogin::SESSION_ATTRIBUTE);
             }, EmptyQuery::class, Session::class)
         );
-        $apiDefinition->installQuery(new QueryDefinition('users', 'all', All::class));
-        $apiDefinition->installCommand(new CommandDefinition('users', 'upsert', UpsertUser::class));
         $apiDefinition->installCommandCallback(
             new CommandCallbackDefinition('users', 'login', function (ServerRequestInterface $request) use (
                 $container
