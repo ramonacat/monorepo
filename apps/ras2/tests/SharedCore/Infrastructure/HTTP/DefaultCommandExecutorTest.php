@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Tests\Ramona\Ras2\SharedCore\Infrastructure\HTTP;
 
+use DI\Container;
 use Laminas\Diactoros\ServerRequest;
 use Laminas\Diactoros\Stream;
 use League\Route\Http\Exception\BadRequestException;
@@ -27,7 +28,7 @@ final class DefaultCommandExecutorTest extends TestCase
         $executor = new DefaultCommandExecutor(new DefaultDeserializer(
             new DefaultHydrator(),
             new NullLogger()
-        ), new DefaultCommandBus());
+        ), new DefaultCommandBus(new Container()));
 
         $this->expectException(NotAcceptableException::class);
         $executor->execute($request, []);
@@ -42,7 +43,7 @@ final class DefaultCommandExecutorTest extends TestCase
         $executor = new DefaultCommandExecutor(new DefaultDeserializer(
             new DefaultHydrator(),
             new NullLogger()
-        ), new DefaultCommandBus());
+        ), new DefaultCommandBus(new Container()));
 
         $this->expectException(BadRequestException::class);
         $executor->execute($request, []);
@@ -58,7 +59,7 @@ final class DefaultCommandExecutorTest extends TestCase
             ]
         );
         $mockCommandExecutor = new MockCommandExecutor();
-        $commandBus = new DefaultCommandBus();
+        $commandBus = new DefaultCommandBus(new Container());
         $commandBus->installExecutor(MockCommand::class, $mockCommandExecutor);
         $hydrator = new DefaultHydrator();
         $hydrator->installValueHydrator(new ScalarHydrator('string'));

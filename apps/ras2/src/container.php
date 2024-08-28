@@ -34,8 +34,8 @@ $containerBuilder->useAutowiring(true)
     ->useAttributes(false);
 
 $containerBuilder->addDefinitions([
-    CommandBus::class => fn () => new DefaultCommandBus(),
-    QueryBus::class => fn () => new DefaultQueryBus(),
+    CommandBus::class => fn (ContainerInterface $c) => new DefaultCommandBus($c),
+    QueryBus::class => fn (ContainerInterface $c) => new DefaultQueryBus($c),
     LoggerInterface::class => fn () => LoggerFactory::create(),
     Connection::class => fn () => DatabaseConnectionFactory::create(),
     Hydrator::class => fn () => HydratorFactory::create(),

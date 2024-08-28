@@ -14,7 +14,7 @@ use Ramona\Ras2\Task\Infrastructure\Repository;
  * @implements Executor<UpsertIdea>
  * @psalm-suppress UnusedClass
  */
-final readonly class CreateIdeaExecutor implements Executor
+final readonly class UpsertIdeaExecutor implements Executor
 {
     public function __construct(
         private Repository $repository

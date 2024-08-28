@@ -10,7 +10,7 @@ use Ramona\Ras2\Task\Application\Command\UpsertIdea;
 use Ramona\Ras2\Task\Business\Idea;
 use Ramona\Ras2\Task\Business\TaskDescription;
 use Ramona\Ras2\Task\Business\TaskId;
-use Ramona\Ras2\Task\Infrastructure\CommandExecutor\CreateIdeaExecutor;
+use Ramona\Ras2\Task\Infrastructure\CommandExecutor\UpsertIdeaExecutor;
 use Tests\Ramona\Ras2\Task\Mocks\MockRepository;
 
 final class CreateIdeaExecutorTest extends TestCase
@@ -19,7 +19,7 @@ final class CreateIdeaExecutorTest extends TestCase
     {
         $repository = new MockRepository();
         $id = TaskId::generate();
-        $executor = new CreateIdeaExecutor($repository);
+        $executor = new UpsertIdeaExecutor($repository);
         $executor->execute(new UpsertIdea($id, 'This is a great idea', new ArrayCollection()));
 
         self::assertEquals([
