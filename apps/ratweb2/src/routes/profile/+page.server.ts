@@ -5,7 +5,7 @@ export async function load({ cookies }) {
 	const { apiClient, session } = await ensureAuthenticated(cookies);
 
 	try {
-		const userProfile = await apiClient.findTaskUserProfile();
+		const userProfile = await apiClient.task().findTaskUserProfile();
 
 		return {
 			userProfile: userProfile?.toPojo()
@@ -29,6 +29,6 @@ export const actions: Actions = {
 		const rawTags = data.get('watchedTags');
 		const tags = typeof rawTags !== 'string' ? [] : JSON.parse(rawTags.toString());
 
-		await apiClient.updateTagsProfile(session.userId, tags);
+		await apiClient.task().updateTagsProfile(session.userId, tags);
 	}
 };

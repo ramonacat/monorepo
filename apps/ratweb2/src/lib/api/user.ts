@@ -1,4 +1,4 @@
-interface PojoUser {
+export interface PojoUser {
 	id: string;
 	username: string;
 }

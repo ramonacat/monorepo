@@ -8,9 +8,9 @@ export const GET: RequestHandler = async ({ url, cookies }) => {
 	const year = url.searchParams.get('year') ?? now.year;
 	const month = url.searchParams.get('month') ?? now.month;
 
-	const result = (await apiClient.findEventsInMonth(year as number, month as number)).map((x) =>
-		x.toPojo()
-	);
+	const result = (
+		await apiClient.calendar().findEventsInMonth(year as number, month as number)
+	).map((x) => x.toPojo());
 
 	return new Response(JSON.stringify(result));
 };

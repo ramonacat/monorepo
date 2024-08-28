@@ -7,7 +7,7 @@ export async function load({ cookies, route }) {
 
 	const { apiClient } = await ensureAuthenticated(cookies);
 
-	const currentTask = await apiClient.findCurrentTask();
+	const currentTask = await apiClient.task().findCurrentTask();
 
 	return {
 		currentTask: currentTask?.toPojo()
