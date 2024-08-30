@@ -145,3 +145,26 @@ export class TaskSummary {
 		return this.status;
 	}
 }
+
+export interface PojoFilter {
+	id: string;
+	name: string;
+}
+
+export class Filter {
+	id: string;
+	name: string;
+
+	public constructor(id: string, name: string) {
+		this.id = id;
+		this.name = name;
+	}
+
+	public static fromPojo(pojo: PojoFilter) {
+		return new Filter(pojo.id, pojo.name);
+	}
+
+	public toPojo(): PojoFilter {
+		return { id: this.id, name: this.name };
+	}
+}

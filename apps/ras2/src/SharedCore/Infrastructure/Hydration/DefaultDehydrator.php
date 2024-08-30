@@ -56,9 +56,8 @@ final class DefaultDehydrator implements Dehydrator
             }
 
             if (! $found) {
-                if (! class_exists($typeName)) {
-                    throw CannotDehydrateType::for($typeName);
-                }
+                assert(class_exists($typeName));
+
                 if (is_a($typeName, \UnitEnum::class, true)) {
                     $this->valueDehydrators[$typeName] = new EnumDehydrator($typeName);
                 } else {

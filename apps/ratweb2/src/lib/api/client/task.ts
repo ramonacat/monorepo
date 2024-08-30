@@ -1,7 +1,9 @@
 import type { ApiClient } from '$lib/Api';
 import { TaskUserProfile, WatchedTag } from '$lib/TaskUserProfile';
 import {
+	Filter,
 	type PojoCurrentTask,
+	type PojoFilter,
 	type PojoTaskSummary,
 	ServerCurrentTaskView,
 	TaskSummary
@@ -76,12 +78,24 @@ export class TaskApiClient {
 		return raw.map(TaskSummary.fromPojo);
 	}
 
+	async findFilters() {
+		const raw = (await this.inner.query('tasks/filters?action=all')) as PojoFilter[];
+
+		return raw.map(Filter.fromPojo);
+	}
+
 	public async getTaskByID(id: string): Promise<TaskSummary> {
 		const raw: PojoTaskSummary = (await this.inner.query(
 			`tasks/${id}?action=by-id`
 		)) as PojoTaskSummary;
 
 		return TaskSummary.fromPojo(raw);
+	}
+
+	public async findByFilter(id: string) {
+		const raw = (await this.inner.query('tasks?action=by-filter&id=' + id)) as PojoTaskSummary[];
+
+		return raw.map((x) => TaskSummary.fromPojo(x));
 	}
 
 	async startWork(userId: string, taskId: string) {
@@ -102,5 +116,9 @@ export class TaskApiClient {
 
 	async returnToIdea(taskId: string) {
 		await this.inner.callAction('tasks', 'return-to-idea', { taskId });
+	}
+
+	async upsertFilter(name: string, tags: string[], assignees: string[]) {
+		await this.inner.callAction('tasks/filters', 'create-filter', { name, tags, assignees });
 	}
 }

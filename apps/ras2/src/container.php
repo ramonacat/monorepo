@@ -24,6 +24,7 @@ use Ramona\Ras2\SharedCore\Infrastructure\Hydration\DehydratorFactory;
 use Ramona\Ras2\SharedCore\Infrastructure\Hydration\Hydrator;
 use Ramona\Ras2\SharedCore\Infrastructure\Hydration\HydratorFactory;
 use Ramona\Ras2\SharedCore\Infrastructure\LoggerFactory;
+use Ramona\Ras2\SharedCore\Infrastructure\MustacheFactory;
 use Ramona\Ras2\SharedCore\Infrastructure\RouterFactory;
 use Ramona\Ras2\SharedCore\Infrastructure\Serialization\DefaultDeserializer;
 use Ramona\Ras2\SharedCore\Infrastructure\Serialization\DefaultSerializer;
@@ -62,6 +63,7 @@ $containerBuilder->addDefinitions([
     )),
     APIDefinition::class => fn (ContainerInterface $c) => APIDefinitionFactory::create($c),
     CacheInterface::class => fn () => new Psr16Cache(new FilesystemAdapter()),
+    Mustache_Engine::class => fn () => MustacheFactory::create(),
 ]);
 
 $modules = [new TaskModule(), new UserModule(), new EventModule(), new SystemModule()];

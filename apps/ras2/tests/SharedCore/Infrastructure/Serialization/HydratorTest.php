@@ -167,4 +167,12 @@ final class HydratorTest extends TestCase
         $this->expectExceptionMessage("No value was provided for field 'id'");
         $this->hydrator->hydrate(Simple::class, []);
     }
+
+    public function testThrowsOnInvalidClass(): void
+    {
+        $this->expectException(CannotHydrateType::class);
+
+        /** @phpstan-ignore argument.type */
+        $this->hydrator->hydrate('array', []);
+    }
 }
