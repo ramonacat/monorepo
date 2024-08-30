@@ -24,9 +24,6 @@ final class IdentifierHydrator implements ValueHydrator
 
     public function hydrate(Hydrator $hydrator, mixed $input, array $serializationAttributes): mixed
     {
-        /**
-         * @phpstan-ignore return.type
-         */
         return $this->className::fromString((string) $input);
     }
 

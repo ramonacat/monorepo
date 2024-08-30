@@ -20,12 +20,12 @@ final class SystemId implements Identifier
         return $this->id->toString();
     }
 
-    public static function fromString(string $id): self
+    public static function fromString(string $id): static
     {
         return new self(Uuid::fromString($id));
     }
 
-    public static function generate(): Identifier
+    public static function generate(): static
     {
         return new self(Uuid::uuid7());
     }

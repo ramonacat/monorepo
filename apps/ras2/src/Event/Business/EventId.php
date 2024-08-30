@@ -20,12 +20,12 @@ final class EventId implements Identifier
         return $this->id->toString();
     }
 
-    public static function generate(): self
+    public static function generate(): static
     {
         return new self(Uuid::uuid7());
     }
 
-    public static function fromString(string $id): self
+    public static function fromString(string $id): static
     {
         return new self(Uuid::fromString($id));
     }

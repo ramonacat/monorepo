@@ -1,6 +1,7 @@
 import { type Actions, fail } from '@sveltejs/kit';
 import { ensureAuthenticated } from '$lib/ensureAuthenticated';
 import { DateTime } from 'luxon';
+import type { PojoTaskSummary } from '$lib/api/task';
 
 export async function load({ cookies }) {
 	const { apiClient, session } = await ensureAuthenticated(cookies);
@@ -9,12 +10,21 @@ export async function load({ cookies }) {
 	const watchedTasks = await apiClient.task().findWatchedTasks();
 	const allUsers = await apiClient.user().findAllUsers();
 	const ideas = await apiClient.task().findIdeas();
+	const filters = await apiClient.task().findFilters();
+	const customFilteredTasks: { [key: string]: PojoTaskSummary[] } = {};
+	for (const filter of filters) {
+		customFilteredTasks[filter.id] = (await apiClient.task().findByFilter(filter.id)).map((x) =>
+			x.toPojo()
+		);
+	}
 
 	return {
 		upcomingTasks: upcomingTasks.map((x) => x.toPojo()),
 		watchedTasks: watchedTasks.map((x) => x.toPojo()),
 		allUsers: allUsers.map((x) => x.toPojo()),
-		ideas: ideas.map((x) => x.toPojo())
+		ideas: ideas.map((x) => x.toPojo()),
+		filters: filters.map((x) => x.toPojo()),
+		customFilteredTasks: customFilteredTasks
 	};
 }
 

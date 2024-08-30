@@ -8,19 +8,14 @@ use Ramona\Ras2\SharedCore\Business\Identifier;
 use Ramsey\Uuid\Uuid;
 use Ramsey\Uuid\UuidInterface;
 
-final class TagId implements Identifier
+final readonly class FilterId implements Identifier
 {
-    private UuidInterface $id;
-
-    /**
-     * @psalm-suppress PossiblyUnusedMethod
-     */
-    public function __construct(UuidInterface $id)
-    {
-        $this->id = $id;
+    private function __construct(
+        private UuidInterface $id
+    ) {
     }
 
-    public function __toString(): string
+    public function __toString()
     {
         return $this->id->toString();
     }
@@ -30,9 +25,6 @@ final class TagId implements Identifier
         return new self(Uuid::uuid7());
     }
 
-    /**
-     * @psalm-suppress PossiblyUnusedMethod
-     */
     public static function fromString(string $id): static
     {
         return new self(Uuid::fromString($id));

@@ -19,7 +19,8 @@ final readonly class ByIdExecutor implements Executor
 {
     public function __construct(
         private Connection $connection,
-        private Hydrator $hydrator
+        private Hydrator $hydrator,
+        private \Mustache_Engine $mustache
     ) {
     }
 
@@ -27,38 +28,18 @@ final readonly class ByIdExecutor implements Executor
     {
         $rawTask = $this
             ->connection
-            ->fetchAssociative('
-                SELECT 
-                    t.id, 
-                    title, 
-                    u.name as assignee_name,
-                    u.id as assignee_id,
-                    (
-                        SELECT 
-                            json_agg(ta.name) 
-                        FROM tags ta 
-                            INNER JOIN tasks_tags tt ON ta.id = tt.tag_id 
-                        WHERE tt.task_id = t.id
-                    ) AS tags, 
-                    deadline,
-                    time_records, 
-                    state as status
-                FROM tasks t
-                LEFT JOIN users u ON u.id = t.assignee_id
-                WHERE 
-                    t.id = :task_id
-            ', [
-                'task_id' => $query->id,
-            ]);
+            ->fetchAssociative(
+                $this->mustache->render('tasks.sql.mustache', [
+                    'where' => 't.id = :task_id',
+                ]),
+                [
+                    'task_id' => $query->id,
+                ]
+            );
         if ($rawTask === false) {
             throw NotFound::forId($query->id);
         }
 
-        $rawTask['tags'] = \Safe\json_decode($rawTask['tags'] ?? '[]', true);
-        $rawTask['timeRecords'] = \Safe\json_decode($rawTask['time_records'], true);
-        $rawTask['assigneeId'] = $rawTask['assignee_id'];
-        $rawTask['assigneeName'] = $rawTask['assignee_name'];
-
-        return $this->hydrator->hydrate(TaskView::class, $rawTask);
+        return $this->hydrator->hydrate(TaskView::class, TaskFormatter::prepareForHydration($rawTask));
     }
 }

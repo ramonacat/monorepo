@@ -9,6 +9,8 @@ use Doctrine\DBAL\Connection;
 use Psr\Container\ContainerInterface;
 use Ramona\Ras2\SharedCore\Infrastructure\Serialization\Deserializer;
 use Ramona\Ras2\SharedCore\Infrastructure\Serialization\Serializer;
+use Ramona\Ras2\Task\Infrastructure\FilterRepository;
+use Ramona\Ras2\Task\Infrastructure\PostgresFilterRepository;
 use Ramona\Ras2\Task\Infrastructure\PostgresRepository;
 use Ramona\Ras2\Task\Infrastructure\PostgresUserProfileRepository;
 use Ramona\Ras2\Task\Infrastructure\Repository;
@@ -25,6 +27,10 @@ final class Module implements \Ramona\Ras2\SharedCore\Infrastructure\Module\Modu
                 $c->get(Deserializer::class)
             ),
             UserProfileRepository::class => fn (ContainerInterface $c) => new PostgresUserProfileRepository(
+                $c->get(Connection::class),
+                $c->get(Serializer::class)
+            ),
+            FilterRepository::class => fn (ContainerInterface $c) => new PostgresFilterRepository(
                 $c->get(Connection::class),
                 $c->get(Serializer::class)
             ),

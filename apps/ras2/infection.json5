@@ -11,7 +11,10 @@
             "Module.php",
             "QueryExecutor",
             "ClassFinder",
-            "APIDefinition"
+            "APIDefinition",
+            "DatabaseConnectionFactory",
+            "LoggerFactory",
+            "MustacheFactory"
         ]
     },
     "mutators": {

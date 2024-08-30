@@ -8,7 +8,7 @@ use Stringable;
 
 interface Identifier extends Stringable
 {
-    public static function generate(): self;
+    public static function generate(): static;
 
-    public static function fromString(string $id): self;
+    public static function fromString(string $id): static;
 }

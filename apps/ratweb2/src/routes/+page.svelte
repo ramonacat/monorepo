@@ -7,8 +7,10 @@
 	import type { ActionData, PageData } from './$types';
 	import CreateIdeaForm from './CreateIdeaForm.svelte';
 	import CreateEventForm from './CreateEventForm.svelte';
-	import { TaskSummary } from '$lib/api/task';
+	import { Filter, TaskSummary } from '$lib/api/task';
 	import { ServerUserView } from '$lib/api/user';
+	import Icon from '@iconify/svelte';
+	import { chunk } from 'lodash-es';
 
 	export let form: ActionData;
 	export let data: PageData;
@@ -17,6 +19,13 @@
 	const watchedTasks = data.watchedTasks.map(TaskSummary.fromPojo);
 	const allUsers = data.allUsers.map(ServerUserView.fromPojo);
 	const ideas = data.ideas.map(TaskSummary.fromPojo);
+	const customFilteredTasksRaw = data.customFilteredTasks;
+	const customFilteredTasks: { [key: string]: TaskSummary[] } = {};
+	for (const filterId in customFilteredTasksRaw) {
+		customFilteredTasks[filterId] = customFilteredTasksRaw[filterId].map(TaskSummary.fromPojo);
+	}
+
+	const filters = chunk(data.filters.map(Filter.fromPojo), 3);
 </script>
 
 <svelte:head>
@@ -51,7 +60,21 @@
 		<SectionHeading>ideas</SectionHeading>
 		<TaskList tasks={ideas}></TaskList>
 	</section>
+	<section>
+		<SectionHeading>add custom view</SectionHeading>
+		<a href="/custom-view-create"><Icon icon="mdi:plus" /> create a custom view</a>
+	</section>
 </div>
+{#each filters as chunk}
+	<div class="container">
+		{#each chunk as filter}
+			<section>
+				<SectionHeading>{filter.name}</SectionHeading>
+				<TaskList tasks={customFilteredTasks[filter.id]}></TaskList>
+			</section>
+		{/each}
+	</div>
+{/each}
 
 <style>
 	.container {
