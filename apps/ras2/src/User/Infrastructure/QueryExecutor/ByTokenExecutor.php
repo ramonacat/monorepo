@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Ramona\Ras2\User\Infrastructure\QueryExecutor;
 
+use DateTimeZone;
 use Doctrine\DBAL\Connection;
 use Ramona\Ras2\SharedCore\Infrastructure\CQRS\Query\Executor;
 use Ramona\Ras2\SharedCore\Infrastructure\CQRS\Query\Query;
@@ -38,7 +39,7 @@ final class ByTokenExecutor implements Executor
             throw UserNotFound::withToken();
         }
 
-        return new Session(UserId::fromString($rawUser['id']), $rawUser['name'], new \DateTimeZone(
+        return new Session(UserId::fromString($rawUser['id']), $rawUser['name'], new DateTimeZone(
             $rawUser['timezone']
         ));
     }

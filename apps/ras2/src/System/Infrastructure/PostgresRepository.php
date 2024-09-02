@@ -4,12 +4,14 @@ declare(strict_types=1);
 
 namespace Ramona\Ras2\System\Infrastructure;
 
+use Closure;
 use Doctrine\DBAL\Connection;
 use Ramona\Ras2\SharedCore\Infrastructure\Hydration\Hydrator;
 use Ramona\Ras2\SharedCore\Infrastructure\Serialization\Serializer;
 use Ramona\Ras2\System\Business\NixOS;
 use Ramona\Ras2\System\Business\OperatingSystem;
 use Ramona\Ras2\System\Business\System;
+use RuntimeException;
 
 final class PostgresRepository implements Repository
 {
@@ -57,7 +59,7 @@ final class PostgresRepository implements Repository
         ');
 
         if ($system === false) {
-            throw new \RuntimeException('System not found by hostname: "' . $hostname . '"');
+            throw new RuntimeException('System not found by hostname: "' . $hostname . '"');
         }
 
         $system['operatingSystem'] = \Safe\json_decode($system['operating_system'], true);
@@ -66,7 +68,7 @@ final class PostgresRepository implements Repository
         return $this->hydrator->hydrate(System::class, $system);
     }
 
-    public function transactional(\Closure $param): void
+    public function transactional(Closure $param): void
     {
         $this->connection->transactional($param);
     }
@@ -77,6 +79,6 @@ final class PostgresRepository implements Repository
             return 'NIXOS';
         }
 
-        throw new \RuntimeException('Unknown operating system type: ' . get_class($operatingSystem));
+        throw new RuntimeException('Unknown operating system type: ' . get_class($operatingSystem));
     }
 }

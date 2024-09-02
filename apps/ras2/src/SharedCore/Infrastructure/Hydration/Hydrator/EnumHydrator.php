@@ -7,6 +7,7 @@ namespace Ramona\Ras2\SharedCore\Infrastructure\Hydration\Hydrator;
 use Ramona\Ras2\SharedCore\Infrastructure\Hydration\CannotHydrateType;
 use Ramona\Ras2\SharedCore\Infrastructure\Hydration\Hydrator;
 use Ramona\Ras2\SharedCore\Infrastructure\Hydration\ValueHydrator;
+use ReflectionEnum;
 
 /**
  * @template T of \UnitEnum
@@ -24,7 +25,7 @@ final class EnumHydrator implements ValueHydrator
 
     public function hydrate(Hydrator $hydrator, mixed $input, array $serializationAttributes): mixed
     {
-        $reflection = new \ReflectionEnum($this->enumName);
+        $reflection = new ReflectionEnum($this->enumName);
 
         foreach ($reflection->getCases() as $case) {
             if ($case->getName() === $input) {

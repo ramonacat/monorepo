@@ -8,14 +8,8 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Ramona\Ras2\User\Business\UserId;
 use Safe\DateTimeImmutable;
 
-/**
- * @psalm-suppress UnusedClass
- */
-class Done implements Task
+final readonly class Done implements Task
 {
-    /**
-     * @psalm-suppress PossiblyUnusedMethod
-     */
     public function __construct(
         private TaskDescription $description,
         private UserId $assigneeId,

@@ -4,7 +4,9 @@ declare(strict_types=1);
 
 namespace Ramona\Ras2\SharedCore\Infrastructure\CQRS\Query;
 
-#[\Attribute(\Attribute::TARGET_CLASS)]
+use Attribute;
+
+#[Attribute(Attribute::TARGET_CLASS)]
 final readonly class ExecutedBy
 {
     /**

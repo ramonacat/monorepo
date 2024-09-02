@@ -6,11 +6,13 @@ namespace Ramona\Ras2\Task\Infrastructure\QueryExecutor;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\DBAL\Connection;
+use Mustache_Engine;
 use Ramona\Ras2\SharedCore\Infrastructure\CQRS\Query\Executor;
 use Ramona\Ras2\SharedCore\Infrastructure\CQRS\Query\Query;
 use Ramona\Ras2\SharedCore\Infrastructure\Hydration\Hydrator;
 use Ramona\Ras2\Task\Application\Query\ByFilter;
 use Ramona\Ras2\Task\Application\TaskView;
+use RuntimeException;
 
 /**
  * @implements Executor<ArrayCollection<int, TaskView>, ByFilter>
@@ -19,7 +21,7 @@ final readonly class ByFilterExecutor implements Executor
 {
     public function __construct(
         private Connection $connection,
-        private \Mustache_Engine $mustache,
+        private Mustache_Engine $mustache,
         private Hydrator $hydrator
     ) {
     }
@@ -33,7 +35,7 @@ final readonly class ByFilterExecutor implements Executor
             ]
         );
         if ($filter === false) {
-            throw new \RuntimeException('Filter not found for ID: ' . $query->id);
+            throw new RuntimeException('Filter not found for ID: ' . $query->id);
         }
 
         $assigneeIds = \Safe\json_decode($filter['assignee_ids']);

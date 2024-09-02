@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Ramona\Ras2\Task\Infrastructure\QueryExecutor;
 
+use DateTimeZone;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\DBAL\Connection;
 use Ramona\Ras2\SharedCore\Infrastructure\CQRS\Query\Executor;
@@ -11,6 +12,7 @@ use Ramona\Ras2\SharedCore\Infrastructure\CQRS\Query\Query;
 use Ramona\Ras2\Task\Application\CurrentTaskView;
 use Ramona\Ras2\Task\Application\Query\Current;
 use Ramona\Ras2\Task\Business\TaskId;
+use RuntimeException;
 
 /**
  * @implements Executor<?CurrentTaskView, Current>
@@ -45,7 +47,7 @@ final class CurrentExecutor implements Executor
         $lastRecord = $timeRecords->last();
 
         if ($lastRecord === false) {
-            throw new \RuntimeException('Started task has no time records');
+            throw new RuntimeException('Started task has no time records');
         }
 
         return new CurrentTaskView(
@@ -54,7 +56,7 @@ final class CurrentExecutor implements Executor
             \Safe\DateTimeImmutable::createFromFormat(
                 'Y-m-d H:i:s',
                 $lastRecord['started']['timestamp'],
-                new \DateTimeZone($lastRecord['started']['timezone'])
+                new DateTimeZone($lastRecord['started']['timezone'])
             ),
             $lastRecord['ended'] !== null
         );

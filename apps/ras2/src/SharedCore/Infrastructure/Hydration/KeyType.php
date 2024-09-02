@@ -4,7 +4,9 @@ declare(strict_types=1);
 
 namespace Ramona\Ras2\SharedCore\Infrastructure\Hydration;
 
-#[\Attribute(\Attribute::TARGET_PROPERTY)]
+use Attribute;
+
+#[Attribute(Attribute::TARGET_PROPERTY)]
 final readonly class KeyType implements HydrationAttribute
 {
     /**

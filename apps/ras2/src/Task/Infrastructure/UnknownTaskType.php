@@ -4,7 +4,9 @@ declare(strict_types=1);
 
 namespace Ramona\Ras2\Task\Infrastructure;
 
-final class UnknownTaskType extends \RuntimeException
+use RuntimeException;
+
+final class UnknownTaskType extends RuntimeException
 {
     public static function of(string $className): self
     {

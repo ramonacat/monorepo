@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Tests\Ramona\Ras2\SharedCore\Infrastructure\HTTP;
 
+use Closure;
 use Ramona\Ras2\SharedCore\Infrastructure\CQRS\Query\Executor;
 use Ramona\Ras2\SharedCore\Infrastructure\CQRS\Query\Query;
 use Ramona\Ras2\User\Application\Query\ByToken;
@@ -15,7 +16,7 @@ use Ramona\Ras2\User\Application\Session;
 class FindByTokenExecutorMock implements Executor
 {
     public function __construct(
-        private \Closure $callback
+        private Closure $callback
     ) {
     }
 

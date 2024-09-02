@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Ramona\Ras2\SharedCore\Infrastructure\CQRS\Command;
 
 use Psr\Container\ContainerInterface;
+use ReflectionClass;
 
 final class DefaultCommandBus implements CommandBus
 {
@@ -28,7 +29,7 @@ final class DefaultCommandBus implements CommandBus
         $executor = $this->executors[get_class($command)] ?? null;
 
         if ($executor === null) {
-            $reflectionClass = new \ReflectionClass($command);
+            $reflectionClass = new ReflectionClass($command);
             foreach ($reflectionClass->getAttributes() as $attribute) {
                 if ($attribute->getName() === ExecutedBy::class) {
                     /** @var ExecutedBy $attributeInstance */

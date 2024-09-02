@@ -9,6 +9,7 @@ use Ramona\Ras2\SharedCore\Infrastructure\CQRS\Command\Executor;
 use Ramona\Ras2\System\Application\Command\UpdateLatestClosure;
 use Ramona\Ras2\System\Business\NixOS;
 use Ramona\Ras2\System\Infrastructure\Repository;
+use RuntimeException;
 
 /**
  * @implements Executor<UpdateLatestClosure>
@@ -26,7 +27,7 @@ final class UpdateLatestClosureExecutor implements Executor
         $operatingSystem = $system->operatingSystem();
 
         if (! ($operatingSystem instanceof NixOS)) {
-            throw new \RuntimeException('Unexpected operating system: ' . get_class($operatingSystem));
+            throw new RuntimeException('Unexpected operating system: ' . get_class($operatingSystem));
         }
         $operatingSystem->updateLatestClosure($command->latestClosure);
 

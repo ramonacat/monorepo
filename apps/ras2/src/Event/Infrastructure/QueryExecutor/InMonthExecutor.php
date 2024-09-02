@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Ramona\Ras2\Event\Infrastructure\QueryExecutor;
 
+use DateTimeZone;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\DBAL\Connection;
 use Ramona\Ras2\Event\Application\EventView;
@@ -44,9 +45,9 @@ final class InMonthExecutor implements Executor
                         :start AND :end
             ',
             [
-                'start' => $start->setTimezone(new \DateTimeZone('UTC'))
+                'start' => $start->setTimezone(new DateTimeZone('UTC'))
                     ->format('Y-m-d H:i:s'),
-                'end' => $end->setTimezone(new \DateTimeZone('UTC'))
+                'end' => $end->setTimezone(new DateTimeZone('UTC'))
                     ->format('Y-m-d H:i:s'),
             ]
         );

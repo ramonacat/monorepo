@@ -10,6 +10,7 @@ use Ramona\Ras2\System\Business\NixOS;
 use Ramona\Ras2\System\Business\OperatingSystem;
 use Ramona\Ras2\System\Business\System;
 use Ramona\Ras2\System\Business\SystemId;
+use RuntimeException;
 
 /**
  * @implements ValueHydrator<System>
@@ -37,7 +38,7 @@ final class SystemHydrator implements ValueHydrator
     {
         return match ($operatingSystemName) {
             'NIXOS' => NixOS::class,
-            default => throw new \RuntimeException('Invalid system name ' . $operatingSystemName)
+            default => throw new RuntimeException('Invalid system name ' . $operatingSystemName)
         };
     }
 }

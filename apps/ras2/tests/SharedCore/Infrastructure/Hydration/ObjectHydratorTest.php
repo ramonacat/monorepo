@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Tests\Ramona\Ras2\SharedCore\Infrastructure\Hydration;
 
+use DateTimeZone;
 use PHPUnit\Framework\TestCase;
 use Ramona\Ras2\SharedCore\Infrastructure\Hydration\DefaultHydrator;
 use Ramona\Ras2\SharedCore\Infrastructure\Hydration\Hydrator\ObjectHydrator;
@@ -19,7 +20,7 @@ final class ObjectHydratorTest extends TestCase
         $objectHydrator = new ObjectHydrator(WithUsername::class);
         $hydrator = new DefaultHydrator();
         $hydrator->installValueHydrator(new ScalarHydrator('string'));
-        $hydrator->setSession(new Session(UserId::generate(), 'ramona', new \DateTimeZone('Europe/Berlin')));
+        $hydrator->setSession(new Session(UserId::generate(), 'ramona', new DateTimeZone('Europe/Berlin')));
 
         $result = $objectHydrator->hydrate($hydrator, [
             'username' => 'not ramona',
@@ -33,7 +34,7 @@ final class ObjectHydratorTest extends TestCase
         $objectHydrator = new ObjectHydrator(WithUsername::class);
         $hydrator = new DefaultHydrator();
         $hydrator->installValueHydrator(new ScalarHydrator('string'));
-        $hydrator->setSession(new Session(UserId::generate(), 'ramona', new \DateTimeZone('Europe/Berlin')));
+        $hydrator->setSession(new Session(UserId::generate(), 'ramona', new DateTimeZone('Europe/Berlin')));
 
         $result = $objectHydrator->hydrate($hydrator, [], []);
 

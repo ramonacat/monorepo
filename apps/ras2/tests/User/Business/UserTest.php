@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Tests\Ramona\Ras2\User\Business;
 
+use DateTimeZone;
 use PHPUnit\Framework\TestCase;
 use Ramona\Ras2\User\Business\User;
 use Ramona\Ras2\User\Business\UserId;
@@ -15,12 +16,12 @@ final class UserTest extends TestCase
     {
         $this->expectException(UsernameTooShort::class);
 
-        new User(UserId::generate(), 'ra', true, new \DateTimeZone('Europe/Berlin'));
+        new User(UserId::generate(), 'ra', true, new DateTimeZone('Europe/Berlin'));
     }
 
     public function testCanCreateWithThreeLetterUsername(): void
     {
-        $user = new User(UserId::generate(), 'rad', true, new \DateTimeZone('Europe/Berlin'));
+        $user = new User(UserId::generate(), 'rad', true, new DateTimeZone('Europe/Berlin'));
 
         self::assertEquals('rad', $user->name());
     }

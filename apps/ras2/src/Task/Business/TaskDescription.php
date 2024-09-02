@@ -6,31 +6,16 @@ namespace Ramona\Ras2\Task\Business;
 
 use Doctrine\Common\Collections\ArrayCollection;
 
-final class TaskDescription
+final readonly class TaskDescription
 {
-    /**
-     * @psalm-suppress UnusedProperty
-     */
-    private TaskId $id;
-
-    /**
-     * @todo this should have a type of "UserText"
-     */
-    private string $title;
-
-    /**
-     * @var ArrayCollection<int, TagId>
-     */
-    private ArrayCollection $tags;
-
     /**
      * @param ArrayCollection<int, TagId> $tags
      */
-    public function __construct(TaskId $id, string $title, ArrayCollection $tags)
-    {
-        $this->id = $id;
-        $this->title = $title;
-        $this->tags = $tags;
+    public function __construct(
+        private TaskId $id,
+        private string $title,
+        private ArrayCollection $tags
+    ) {
     }
 
     public function id(): TaskId

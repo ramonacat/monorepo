@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Tests\Ramona\Ras2\SharedCore\Infrastructure\HTTP;
 
+use DateTimeZone;
 use DI\Container;
 use Laminas\Diactoros\ServerRequest;
 use PHPUnit\Framework\TestCase;
@@ -42,11 +43,7 @@ final class RequireLoginTest extends TestCase
         $username = 'ramona';
         $bus->installExecutor(
             ByToken::class,
-            new FindByTokenExecutorMock(fn () => new Session(
-                $userId,
-                $username,
-                new \DateTimeZone('Europe/Berlin')
-            ))
+            new FindByTokenExecutorMock(fn () => new Session($userId, $username, new DateTimeZone('Europe/Berlin')))
         );
         $requireLogin = new RequireLogin($bus, new DefaultHydrator());
 
@@ -56,7 +53,7 @@ final class RequireLoginTest extends TestCase
         self::assertEquals(new Session(
             $userId,
             $username,
-            new \DateTimeZone('Europe/Berlin')
+            new DateTimeZone('Europe/Berlin')
         ), $requestHandler->request?->getAttribute('session'));
     }
 
@@ -106,11 +103,7 @@ final class RequireLoginTest extends TestCase
         $username = 'ramona';
         $bus->installExecutor(
             ByToken::class,
-            new FindByTokenExecutorMock(fn () => new Session(
-                $userId,
-                $username,
-                new \DateTimeZone('Europe/Berlin')
-            ))
+            new FindByTokenExecutorMock(fn () => new Session($userId, $username, new DateTimeZone('Europe/Berlin')))
         );
         $hydrator = new DefaultHydrator();
         $requireLogin = new RequireLogin($bus, $hydrator);
@@ -121,7 +114,7 @@ final class RequireLoginTest extends TestCase
         self::assertEquals(new Session(
             $userId,
             $username,
-            new \DateTimeZone('Europe/Berlin')
+            new DateTimeZone('Europe/Berlin')
         ), $hydrator->session());
     }
 }

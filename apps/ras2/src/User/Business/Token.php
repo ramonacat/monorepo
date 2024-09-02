@@ -5,8 +5,9 @@ declare(strict_types=1);
 namespace Ramona\Ras2\User\Business;
 
 use Random\Randomizer;
+use Stringable;
 
-final class Token implements \Stringable
+final class Token implements Stringable
 {
     public const TOKEN_LENGTH = 64;
 

@@ -4,7 +4,9 @@ declare(strict_types=1);
 
 namespace Ramona\Ras2\Task\Business;
 
-final class NoRunningTimer extends \RuntimeException
+use RuntimeException;
+
+final class NoRunningTimer extends RuntimeException
 {
     public static function create(): self
     {

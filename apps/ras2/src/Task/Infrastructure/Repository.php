@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Ramona\Ras2\Task\Infrastructure;
 
+use Closure;
 use Doctrine\Common\Collections\ArrayCollection;
 use Ramona\Ras2\Task\Business\Started;
 use Ramona\Ras2\Task\Business\TagId;
@@ -22,9 +23,9 @@ interface Repository
     public function fetchOrCreateTags(ArrayCollection $tags): ArrayCollection;
 
     /**
-     * @param \Closure():void $action
+     * @param Closure():void $action
      */
-    public function transactional(\Closure $action): void;
+    public function transactional(Closure $action): void;
 
     public function getById(TaskId $taskId): Task;
 

@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Ramona\Ras2\SharedCore\Infrastructure\HTTP;
 
+use Exception;
 use Laminas\Diactoros\Response;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
@@ -30,7 +31,7 @@ final class LogRequests implements MiddlewareInterface
                 'status_code' => $response->getStatusCode(),
             ]);
             return $response;
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             $this->logger->error('Request failed', [
                 'exception' => $e,
             ]);

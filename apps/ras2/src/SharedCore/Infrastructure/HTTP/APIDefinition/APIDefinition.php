@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Ramona\Ras2\SharedCore\Infrastructure\HTTP\APIDefinition;
 
 use Ramona\Ras2\SharedCore\Infrastructure\ClassFinder;
+use ReflectionClass;
 
 final class APIDefinition
 {
@@ -36,7 +37,7 @@ final class APIDefinition
     public function installQueriesFromAttributes(): void
     {
         foreach ($this->classFinder->findAllDeclaredClasses() as $className) {
-            $reflection = new \ReflectionClass($className);
+            $reflection = new ReflectionClass($className);
             $attributes = $reflection->getAttributes(APIQuery::class);
 
             if (count($attributes) !== 1) {
@@ -55,7 +56,7 @@ final class APIDefinition
     public function installCommandsFromAttributes(): void
     {
         foreach ($this->classFinder->findAllDeclaredClasses() as $className) {
-            $reflection = new \ReflectionClass($className);
+            $reflection = new ReflectionClass($className);
             $attributes = $reflection->getAttributes(APICommand::class);
 
             if (count($attributes) !== 1) {

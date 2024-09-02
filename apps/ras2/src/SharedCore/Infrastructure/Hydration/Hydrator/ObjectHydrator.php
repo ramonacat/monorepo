@@ -10,6 +10,8 @@ use Ramona\Ras2\SharedCore\Infrastructure\Hydration\HydrationAttribute;
 use Ramona\Ras2\SharedCore\Infrastructure\Hydration\Hydrator;
 use Ramona\Ras2\SharedCore\Infrastructure\Hydration\MissingInputValue;
 use Ramona\Ras2\SharedCore\Infrastructure\Hydration\ValueHydrator;
+use ReflectionClass;
+use ReflectionNamedType;
 
 /**
  * @template T of object
@@ -31,12 +33,12 @@ final class ObjectHydrator implements ValueHydrator
      */
     public function hydrate(Hydrator $hydrator, mixed $input, array $serializationAttributes): mixed
     {
-        $reflectionClass = new \ReflectionClass($this->className);
+        $reflectionClass = new ReflectionClass($this->className);
         $instance = $reflectionClass->newInstanceWithoutConstructor();
         foreach ($reflectionClass->getProperties() as $property) {
             $type = $property->getType();
 
-            if (! ($type instanceof \ReflectionNamedType)) {
+            if (! ($type instanceof ReflectionNamedType)) {
                 throw CannotHydrateType::for((string) ($type ?? '<missing>'));
             }
 

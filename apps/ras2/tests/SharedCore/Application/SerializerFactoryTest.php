@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Tests\Ramona\Ras2\SharedCore\Application;
 
+use DateTimeZone;
 use Doctrine\Common\Collections\ArrayCollection;
 use PHPUnit\Framework\TestCase;
 use Ramona\Ras2\SharedCore\Infrastructure\Serialization\Serializer;
@@ -137,7 +138,7 @@ final class SerializerFactoryTest extends TestCase
         $session = new Session(
             UserId::fromString('01913763-3947-73e2-9406-b7efbcf560b3'),
             'ramona',
-            new \DateTimeZone('Europe/Berlin')
+            new DateTimeZone('Europe/Berlin')
         );
 
         $result = $this->serializer->serialize($session);

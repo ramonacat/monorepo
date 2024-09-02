@@ -8,13 +8,11 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Ramona\Ras2\User\Business\UserId;
 use Safe\DateTimeImmutable;
 
-final class Idea implements Task
+final readonly class Idea implements Task
 {
-    private TaskDescription $description;
-
-    public function __construct(TaskDescription $description)
-    {
-        $this->description = $description;
+    public function __construct(
+        private TaskDescription $description
+    ) {
     }
 
     public function toBacklog(?UserId $assignee): BacklogItem

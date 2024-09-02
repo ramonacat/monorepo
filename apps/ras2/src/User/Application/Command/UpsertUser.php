@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Ramona\Ras2\User\Application\Command;
 
+use DateTimeZone;
 use Ramona\Ras2\SharedCore\Infrastructure\CQRS\Command\Command;
 use Ramona\Ras2\SharedCore\Infrastructure\CQRS\Command\ExecutedBy;
 use Ramona\Ras2\SharedCore\Infrastructure\HTTP\APIDefinition\APICommand;
@@ -20,7 +21,7 @@ final readonly class UpsertUser implements Command
         public UserId $id,
         public string $name,
         public bool $isSystem,
-        public \DateTimeZone $timezone
+        public DateTimeZone $timezone
     ) {
     }
 }
