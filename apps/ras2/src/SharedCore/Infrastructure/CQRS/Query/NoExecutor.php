@@ -4,7 +4,9 @@ declare(strict_types=1);
 
 namespace Ramona\Ras2\SharedCore\Infrastructure\CQRS\Query;
 
-final class NoExecutor extends \RuntimeException
+use RuntimeException;
+
+final class NoExecutor extends RuntimeException
 {
     public static function forQueryClass(string $queryClass): self
     {

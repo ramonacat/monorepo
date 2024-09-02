@@ -8,7 +8,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Ramona\Ras2\User\Business\UserId;
 use Safe\DateTimeImmutable;
 
-final class Started implements Task
+final readonly class Started implements Task
 {
     public function __construct(
         private TaskDescription $description,

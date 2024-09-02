@@ -9,6 +9,7 @@ use Ramona\Ras2\SharedCore\Infrastructure\CQRS\Command\Executor;
 use Ramona\Ras2\System\Application\Command\UpdateCurrentClosure;
 use Ramona\Ras2\System\Business\NixOS;
 use Ramona\Ras2\System\Infrastructure\Repository;
+use RuntimeException;
 
 /**
  * @implements Executor<UpdateCurrentClosure>
@@ -26,7 +27,7 @@ final class UpdateCurrentClosureExecutor implements Executor
             $system = $this->repository->getByHostname($command->hostname);
             $operatingSystem = $system->operatingSystem();
             if (! ($operatingSystem instanceof NixOS)) {
-                throw new \RuntimeException('Closures can only be set for NixOS systems');
+                throw new RuntimeException('Closures can only be set for NixOS systems');
             }
             $operatingSystem->updateCurrentClosure($command->currentClosure);
 

@@ -10,6 +10,10 @@ use PhpParser\NodeVisitor\NameResolver;
 use PhpParser\NodeVisitorAbstract;
 use PhpParser\ParserFactory;
 use Psr\SimpleCache\CacheInterface;
+use RecursiveDirectoryIterator;
+use RecursiveIteratorIterator;
+use RegexIterator;
+use SplFileInfo;
 
 final class ClassFinder
 {
@@ -23,8 +27,8 @@ final class ClassFinder
      */
     public function findAllDeclaredClasses(): array
     {
-        $files = new \RecursiveIteratorIterator(new \RecursiveDirectoryIterator(__DIR__ . '/../../'));
-        $files = new \RegexIterator($files, '/\.php$/');
+        $files = new RecursiveIteratorIterator(new RecursiveDirectoryIterator(__DIR__ . '/../../'));
+        $files = new RegexIterator($files, '/\.php$/');
 
         $visitor = new class() extends NodeVisitorAbstract {
             /**
@@ -49,7 +53,7 @@ final class ClassFinder
         $result = [];
 
         foreach ($files as $file) {
-            /** @var \SplFileInfo $file */
+            /** @var SplFileInfo $file */
             if (($cached = $this->cache->get(md5($file->getPathname()))) !== null) {
                 if ($cached['mtime'] === $file->getMTime()) {
                     foreach ($cached['classes'] as $class_) {

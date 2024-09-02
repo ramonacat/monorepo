@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Ramona\Ras2\SharedCore\Infrastructure\Hydration\Dehydrator;
 
+use DateTimeImmutable;
 use Ramona\Ras2\SharedCore\Infrastructure\Hydration\Dehydrator;
 use Ramona\Ras2\SharedCore\Infrastructure\Hydration\ValueDehydrator;
 
@@ -24,6 +25,6 @@ final class DateTimeImmutableDehydrator implements ValueDehydrator
 
     public function handles(): string
     {
-        return \DateTimeImmutable::class;
+        return DateTimeImmutable::class;
     }
 }

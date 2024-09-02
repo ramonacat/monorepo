@@ -4,7 +4,9 @@ declare(strict_types=1);
 
 namespace Ramona\Ras2\User\Business;
 
-final class InvalidTokenLength extends \RuntimeException
+use RuntimeException;
+
+final class InvalidTokenLength extends RuntimeException
 {
     public static function for(int $expected, int $actual): self
     {

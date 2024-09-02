@@ -6,6 +6,7 @@ namespace Tests\Ramona\Ras2;
 
 use Psr\Log\LoggerInterface;
 use Psr\Log\LoggerTrait;
+use Stringable;
 
 final class LoggerMock implements LoggerInterface
 {
@@ -16,7 +17,7 @@ final class LoggerMock implements LoggerInterface
      */
     public array $messages = [];
 
-    public function log(mixed $level, \Stringable|string $message, array $context = []): void
+    public function log(mixed $level, Stringable|string $message, array $context = []): void
     {
         $this->messages[] = [
             'level' => $level,

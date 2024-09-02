@@ -4,7 +4,9 @@ declare(strict_types=1);
 
 namespace Ramona\Ras2\SharedCore\Infrastructure\Hydration;
 
-class InvalidArrayDeclaration extends \RuntimeException
+use RuntimeException;
+
+class InvalidArrayDeclaration extends RuntimeException
 {
     public static function missingKeyOrValue(): self
     {

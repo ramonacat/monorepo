@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Tests\Ramona\Ras2\SharedCore\Infrastructure\HTTP;
 
+use Exception;
 use Laminas\Diactoros\Response\EmptyResponse;
 use Laminas\Diactoros\ServerRequest;
 use Laminas\Diactoros\Uri;
@@ -13,6 +14,7 @@ use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 use Ramona\Ras2\SharedCore\Infrastructure\HTTP\LogRequests;
+use RuntimeException;
 use Tests\Ramona\Ras2\LoggerMock;
 
 final class LogRequestsTest extends TestCase
@@ -21,7 +23,7 @@ final class LogRequestsTest extends TestCase
     {
         $loggerMock = new LoggerMock();
         $logExceptions = new LogRequests($loggerMock);
-        $exception = new \RuntimeException('woops');
+        $exception = new RuntimeException('woops');
         $request = new ServerRequest();
         $logExceptions->process($request, $this->createRequestHandler($exception));
 
@@ -47,7 +49,7 @@ final class LogRequestsTest extends TestCase
     {
         $loggerMock = new LoggerMock();
         $logExceptions = new LogRequests($loggerMock);
-        $exception = new \RuntimeException('woops');
+        $exception = new RuntimeException('woops');
         $result = $logExceptions->process(new ServerRequest(), $this->createRequestHandler($exception));
 
         $body = $result->getBody();
@@ -95,17 +97,17 @@ final class LogRequestsTest extends TestCase
         ], $loggerMock->messages);
     }
 
-    private function createRequestHandler(\Exception|ResponseInterface $exception): RequestHandlerInterface
+    private function createRequestHandler(Exception|ResponseInterface $exception): RequestHandlerInterface
     {
         return new class($exception) implements RequestHandlerInterface {
             public function __construct(
-                private \Exception|ResponseInterface $result
+                private Exception|ResponseInterface $result
             ) {
             }
 
             public function handle(ServerRequestInterface $request): ResponseInterface
             {
-                if ($this->result instanceof \Exception) {
+                if ($this->result instanceof Exception) {
                     throw $this->result;
                 }
 

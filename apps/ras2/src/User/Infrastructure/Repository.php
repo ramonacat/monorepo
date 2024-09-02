@@ -4,15 +4,16 @@ declare(strict_types=1);
 
 namespace Ramona\Ras2\User\Infrastructure;
 
+use Closure;
 use Ramona\Ras2\User\Business\Token;
 use Ramona\Ras2\User\Business\User;
 
 interface Repository
 {
     /**
-     * @param \Closure():void $callable
+     * @param Closure():void $callable
      */
-    public function transactional(\Closure $callable): void;
+    public function transactional(Closure $callable): void;
 
     public function save(User $user): void;
 

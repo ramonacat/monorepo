@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Ramona\Ras2\User\Infrastructure;
 
+use Closure;
 use Doctrine\DBAL\Connection;
 use Ramona\Ras2\User\Business\Token;
 use Ramona\Ras2\User\Business\User;
@@ -15,7 +16,7 @@ final class PostgresRepository implements Repository
     ) {
     }
 
-    public function transactional(\Closure $callable): void
+    public function transactional(Closure $callable): void
     {
         $this->databaseConnection->transactional($callable);
     }

@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Ramona\Ras2\Event\Application\Query;
 
+use DateTimeZone;
 use Doctrine\Common\Collections\ArrayCollection;
 use Ramona\Ras2\Event\Application\EventView;
 use Ramona\Ras2\Event\Infrastructure\QueryExecutor\InMonthExecutor;
@@ -22,7 +23,7 @@ final readonly class InMonth implements Query
         public int $year,
         public int $month,
         #[HydrateFromSession('timeZone')]
-        public \DateTimeZone $timeZone
+        public DateTimeZone $timeZone
     ) {
     }
 }

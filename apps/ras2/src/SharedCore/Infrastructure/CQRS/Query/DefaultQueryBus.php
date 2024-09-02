@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Ramona\Ras2\SharedCore\Infrastructure\CQRS\Query;
 
 use Psr\Container\ContainerInterface;
+use ReflectionClass;
 
 /**
  * @psalm-suppress UnusedClass
@@ -50,7 +51,7 @@ final class DefaultQueryBus implements QueryBus
         $executor = $this->executors[$queryClass] ?? null;
 
         if ($executor === null) {
-            $reflectionClass = new \ReflectionClass($queryClass);
+            $reflectionClass = new ReflectionClass($queryClass);
             foreach ($reflectionClass->getAttributes() as $attribute) {
                 if ($attribute->getName() === ExecutedBy::class) {
                     /** @var ExecutedBy $attributeInstance */

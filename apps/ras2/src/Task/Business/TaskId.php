@@ -10,11 +10,9 @@ use Ramsey\Uuid\UuidInterface;
 
 final class TaskId implements Identifier
 {
-    private UuidInterface $id;
-
-    public function __construct(UuidInterface $id)
-    {
-        $this->id = $id;
+    private function __construct(
+        private UuidInterface $id
+    ) {
     }
 
     public function __toString(): string

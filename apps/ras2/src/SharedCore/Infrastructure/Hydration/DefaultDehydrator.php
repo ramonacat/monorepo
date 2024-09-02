@@ -8,6 +8,8 @@ use Ramona\Ras2\SharedCore\Business\Identifier;
 use Ramona\Ras2\SharedCore\Infrastructure\Hydration\Dehydrator\EnumDehydrator;
 use Ramona\Ras2\SharedCore\Infrastructure\Hydration\Dehydrator\IdentifierDehydrator;
 use Ramona\Ras2\SharedCore\Infrastructure\Hydration\Dehydrator\ObjectDehydrator;
+use ReflectionClass;
+use UnitEnum;
 
 final class DefaultDehydrator implements Dehydrator
 {
@@ -42,7 +44,7 @@ final class DefaultDehydrator implements Dehydrator
                 $alternativePaths[] = $parentClass;
             }
 
-            $classReflection = new \ReflectionClass($value);
+            $classReflection = new ReflectionClass($value);
             $alternativePaths = [...$alternativePaths, ...$classReflection->getInterfaceNames()];
 
             $found = false;
@@ -58,7 +60,7 @@ final class DefaultDehydrator implements Dehydrator
             if (! $found) {
                 assert(class_exists($typeName));
 
-                if (is_a($typeName, \UnitEnum::class, true)) {
+                if (is_a($typeName, UnitEnum::class, true)) {
                     $this->valueDehydrators[$typeName] = new EnumDehydrator($typeName);
                 } else {
                     $this->valueDehydrators[$typeName] = new ObjectDehydrator($typeName);

@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Ramona\Ras2\SharedCore\Infrastructure\Hydration\Hydrator;
 
+use DateTimeZone;
 use Ramona\Ras2\SharedCore\Infrastructure\Hydration\Hydrator;
 use Ramona\Ras2\SharedCore\Infrastructure\Hydration\ValueHydrator;
 
@@ -14,11 +15,11 @@ final class DateTimeZoneHydrator implements ValueHydrator
 {
     public function hydrate(Hydrator $hydrator, mixed $input, array $serializationAttributes): mixed
     {
-        return new \DateTimeZone((string) $input);
+        return new DateTimeZone((string) $input);
     }
 
     public function handles(): string
     {
-        return \DateTimeZone::class;
+        return DateTimeZone::class;
     }
 }

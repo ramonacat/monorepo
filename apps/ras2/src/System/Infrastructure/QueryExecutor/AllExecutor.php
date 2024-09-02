@@ -11,6 +11,7 @@ use Ramona\Ras2\SharedCore\Infrastructure\CQRS\Query\Query;
 use Ramona\Ras2\SharedCore\Infrastructure\Hydration\Hydrator;
 use Ramona\Ras2\System\Application\Query\All;
 use Ramona\Ras2\System\Application\SystemView;
+use RuntimeException;
 
 /**
  * @implements Executor<ArrayCollection<int, SystemView>, All>
@@ -50,7 +51,7 @@ final class AllExecutor implements Executor
                         }
                         break;
                     default:
-                        throw new \RuntimeException('Unsupported operating system ' . $x['operating_system_type']);
+                        throw new RuntimeException('Unsupported operating system ' . $x['operating_system_type']);
                 }
 
                 return $x;

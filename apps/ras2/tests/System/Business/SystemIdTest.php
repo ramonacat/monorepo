@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace System\Business;
+namespace Tests\Ramona\Ras2\System\Business;
 
 use PHPUnit\Framework\TestCase;
 use Ramona\Ras2\System\Business\SystemId;

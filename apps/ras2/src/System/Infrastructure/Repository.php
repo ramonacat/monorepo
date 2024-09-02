@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Ramona\Ras2\System\Infrastructure;
 
+use Closure;
 use Ramona\Ras2\System\Business\System;
 
 interface Repository
@@ -15,7 +16,7 @@ interface Repository
     public function getByHostname(string $hostname): System;
 
     /**
-     * @param \Closure():void $param
+     * @param Closure():void $param
      */
-    public function transactional(\Closure $param): void;
+    public function transactional(Closure $param): void;
 }

@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Ramona\Ras2\Task\Infrastructure;
 
+use Closure;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\DBAL\Connection;
 use Ramona\Ras2\SharedCore\Infrastructure\Hydration\KeyType;
@@ -113,7 +114,7 @@ final readonly class PostgresRepository implements Repository
         return new ArrayCollection($result);
     }
 
-    public function transactional(\Closure $action): void
+    public function transactional(Closure $action): void
     {
         $this->connection->transactional($action);
     }

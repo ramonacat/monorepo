@@ -4,28 +4,30 @@ declare(strict_types=1);
 
 namespace Ramona\Ras2\Task\Business;
 
+use Safe\DateTimeImmutable;
+
 final class TimeRecord
 {
     public function __construct(
-        private readonly \Safe\DateTimeImmutable $started,
-        private ?\Safe\DateTimeImmutable $ended = null
+        private readonly DateTimeImmutable $started,
+        private ?DateTimeImmutable $ended = null
     ) {
     }
 
     /**
      * @psalm-suppress PossiblyUnusedMethod
      */
-    public function started(): \Safe\DateTimeImmutable
+    public function started(): DateTimeImmutable
     {
         return $this->started;
     }
 
-    public function ended(): ?\Safe\DateTimeImmutable
+    public function ended(): ?DateTimeImmutable
     {
         return $this->ended;
     }
 
-    public function finish(\Safe\DateTimeImmutable $now): void
+    public function finish(DateTimeImmutable $now): void
     {
         $this->ended = $now;
     }

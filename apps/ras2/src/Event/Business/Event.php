@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Ramona\Ras2\Event\Business;
 
+use DateTimeImmutable;
 use Doctrine\Common\Collections\ArrayCollection;
 use Ramona\Ras2\User\Business\UserId;
 
@@ -15,8 +16,8 @@ final class Event
     public function __construct(
         private EventId $id,
         private string $title,
-        private \DateTimeImmutable $start,
-        private \DateTimeImmutable $end,
+        private DateTimeImmutable $start,
+        private DateTimeImmutable $end,
         private ArrayCollection $attendees,
     ) {
     }
@@ -31,12 +32,12 @@ final class Event
         return $this->title;
     }
 
-    public function start(): \DateTimeImmutable
+    public function start(): DateTimeImmutable
     {
         return $this->start;
     }
 
-    public function end(): \DateTimeImmutable
+    public function end(): DateTimeImmutable
     {
         return $this->end;
     }

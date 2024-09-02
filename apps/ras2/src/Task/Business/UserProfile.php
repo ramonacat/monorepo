@@ -7,7 +7,7 @@ namespace Ramona\Ras2\Task\Business;
 use Doctrine\Common\Collections\ArrayCollection;
 use Ramona\Ras2\User\Business\UserId;
 
-final class UserProfile
+final readonly class UserProfile
 {
     /**
      * @param ArrayCollection<int, TagId> $watchedTags

@@ -4,13 +4,15 @@ declare(strict_types=1);
 
 namespace Ramona\Ras2\User\Business;
 
+use DateTimeZone;
+
 final class User
 {
     public function __construct(
         private UserId $id,
         private string $name,
         private bool $isSystem,
-        private \DateTimeZone $timezone
+        private DateTimeZone $timezone
     ) {
         if (grapheme_strlen($name) < 3) {
             throw UsernameTooShort::forName($name);
@@ -32,7 +34,7 @@ final class User
         return $this->isSystem;
     }
 
-    public function timezone(): \DateTimeZone
+    public function timezone(): DateTimeZone
     {
         return $this->timezone;
     }
