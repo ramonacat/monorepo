@@ -9,9 +9,11 @@ use Doctrine\DBAL\DriverManager;
 
 final class DatabaseConnectionFactory
 {
-    public static function create(): Connection
+    public static function create(string $databaseName): Connection
     {
-        $config = require __DIR__ . '/../../../migrations-db.php';
+        $config = $databaseName === 'ras2'
+            ? require __DIR__ . '/../../../migrations-db.php'
+            : require __DIR__ . '/../../../' . $databaseName . '-db.php';
 
         return DriverManager::getConnection($config);
     }

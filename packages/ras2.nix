@@ -1,6 +1,6 @@
 {pkgs, ...}: let
   packageAttributes = {
-    php = pkgs.php82;
+    php = pkgs.php83;
 
     pname = "ras2";
     version = "1.0.0";
@@ -10,7 +10,7 @@
     vendorHash = "sha256-ZE837JpT3EEmBSIDKipi+eAlS/TGiXMpIH8ma5nS/6c=";
     composerNoPlugins = false;
   };
-  devPhp = pkgs.php82.buildEnv {
+  devPhp = pkgs.php83.buildEnv {
     extensions = {
       enabled,
       all,
@@ -41,7 +41,7 @@ in rec {
   checks = {
     "${package.name}--ecs" =
       pkgs.runCommand "${devPackage.name}--ecs" {
-        buildInputs = [devPhp pkgs.bash pkgs.nodePackages.gulp-cli pkgs.nodejs_22];
+        buildInputs = [devPhp pkgs.bash pkgs.nodejs_22];
       } ''
         mkdir $out
         cp -r ${devPackage}/share/php/ras2/* $out/
