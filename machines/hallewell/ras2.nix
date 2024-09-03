@@ -45,7 +45,7 @@ in {
         phpPackage
       ];
       "DATABASE_CONFIG" = config.age.secrets.ras2-db-config.path;
-      "DATABASE_CONFIG_telegraf" = config.age.secrets.ras2-telegraf-db-config.path;
+      "DATABASE_CONFIG_TELEGRAF" = config.age.secrets.ras2-telegraf-db-config.path;
     };
   };
 
@@ -77,7 +77,7 @@ in {
     };
 
     services.db-maintenance = {
-      script = "DATABASE_CONFIG=${config.age.secrets.ras2-db-config.path} DATABASE_CONFIG_telegraf=${config.age.secrets.ras2-telegraf-db-config.path} ${phpPackage}/bin/php ${pkgs.ramona.ras2}/share/php/ras2/bin/run-maintenance.php";
+      script = "DATABASE_CONFIG=${config.age.secrets.ras2-db-config.path} DATABASE_CONFIG_TELEGRAF=${config.age.secrets.ras2-telegraf-db-config.path} ${phpPackage}/bin/php ${pkgs.ramona.ras2}/share/php/ras2/bin/run-maintenance.php";
     };
 
     timers.db-maintenance = {
