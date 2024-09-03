@@ -9,7 +9,6 @@
 
     crane = {
       url = "github:ipetkov/crane";
-      inputs.nixpkgs.follows = "nixpkgs";
     };
 
     lix = {
@@ -58,9 +57,7 @@
     packages = {
       music-control = import ./packages/music-control.nix;
       rad = import ./packages/rad.nix;
-      ras = import ./packages/ras.nix;
       ras2 = import ./packages/ras2.nix;
-      rat = import ./packages/rat.nix;
       ratweb2 = import ./packages/ratweb2.nix;
     };
     libraries = {
@@ -238,7 +235,6 @@
           ./machines/hallewell/paperless.nix
           ./machines/hallewell/photoprism.nix
           ./machines/hallewell/postgresql.nix
-          ./machines/hallewell/ras.nix
           ./machines/hallewell/ratweb2.nix
           ./machines/hallewell/ras2.nix
           ./machines/hallewell/syncthing.nix
@@ -247,7 +243,6 @@
           ./modules/bcachefs.nix
           ./modules/installed-base.nix
           ./modules/rad.nix
-          ./modules/ras.nix
           ./modules/syncthing.nix
           ./modules/telegraf.nix
           ./modules/updates.nix

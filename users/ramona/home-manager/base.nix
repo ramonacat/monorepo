@@ -15,7 +15,6 @@
       ripgrep
       unzip
       _1password
-      ramona.rat
     ];
   };
   services.gpg-agent.pinentryPackage = lib.mkDefault pkgs.pinentry-curses;
