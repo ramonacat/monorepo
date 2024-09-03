@@ -26,7 +26,7 @@ final readonly class CleanupTelegrafDatabaseExecutor implements Executor
         );
         foreach ($tables as $table) {
             $this->telegrafConnection->executeStatement(
-                "DELETE FROM {$table} WHERE time < (NOW() - \'30 days\'::interval)"
+                "DELETE FROM {$table} WHERE time < (NOW() - '30 days'::interval)"
             );
         }
     }
