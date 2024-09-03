@@ -3,7 +3,23 @@
   config,
   pkgs,
   ...
-}: {
+}: let
+  phpPackage = pkgs.php83.buildEnv {
+    extensions = {
+      enabled,
+      all,
+    }:
+      enabled ++ [all.xdebug];
+    extraConfig = ''
+      zend.exception_string_param_max_len=128
+    '';
+  };
+in {
+  age.secrets.ras2-telegraf-db-config = {
+    file = ../../secrets/ras2-telegraf-db-config.age;
+    group = "ras2";
+    mode = "440";
+  };
   age.secrets.ras2-db-config = {
     file = ../../secrets/ras2-db-config.age;
     group = "ras2";
@@ -26,18 +42,10 @@
     phpEnv = {
       "APPLICATION_MODE" = "prod";
       "PATH" = lib.makeBinPath [
-        (pkgs.php82.buildEnv {
-          extensions = {
-            enabled,
-            all,
-          }:
-            enabled ++ [all.xdebug];
-          extraConfig = ''
-            zend.exception_string_param_max_len=128
-          '';
-        })
+        phpPackage
       ];
       "DATABASE_CONFIG" = config.age.secrets.ras2-db-config.path;
+      "DATABASE_CONFIG_telegraf" = config.age.secrets.ras2-telegraf-db-config.path;
     };
   };
 
@@ -63,7 +71,23 @@
 
   users.groups.ras2 = {};
 
-  systemd.services.phpfpm-ras2 = {
-    preStart = "cd ${pkgs.ramona.ras2}/share/php/ras2/; DATABASE_CONFIG=${config.age.secrets.ras2-db-config.path} ${pkgs.ramona.ras2}/share/php/ras2/vendor/bin/doctrine-migrations migrate";
+  systemd = {
+    services.phpfpm-ras2 = {
+      preStart = "cd ${pkgs.ramona.ras2}/share/php/ras2/; DATABASE_CONFIG=${config.age.secrets.ras2-db-config.path} ${pkgs.ramona.ras2}/share/php/ras2/vendor/bin/doctrine-migrations migrate";
+    };
+
+    services.db-maintenance = {
+      script = "DATABASE_CONFIG=${config.age.secrets.ras2-db-config.path} DATABASE_CONFIG_telegraf=${config.age.secrets.ras2-telegraf-db-config.path} ${phpPackage}/bin/php ${pkgs.ramona.ras2}/share/php/ras2/bin/run-maintenance.php";
+    };
+
+    timers.db-maintenance = {
+      wantedBy = ["timers.target"];
+      timerConfig = {
+        OnCalendar = "*-*-* 00/1:00:00";
+        Persistent = true;
+        RandomizedDelaySec = "30min";
+        Unit = "db-maintenance.service";
+      };
+    };
   };
 }

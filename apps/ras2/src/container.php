@@ -9,6 +9,7 @@ use Psr\Container\ContainerInterface;
 use Psr\Log\LoggerInterface;
 use Psr\SimpleCache\CacheInterface;
 use Ramona\Ras2\Event\Module as EventModule;
+use Ramona\Ras2\Maintenance\Module as MaintenanceModule;
 use Ramona\Ras2\SharedCore\Infrastructure\Clock;
 use Ramona\Ras2\SharedCore\Infrastructure\CQRS\Command\CommandBus;
 use Ramona\Ras2\SharedCore\Infrastructure\CQRS\Command\DefaultCommandBus;
@@ -45,7 +46,8 @@ $containerBuilder->addDefinitions([
     CommandBus::class => fn (ContainerInterface $c) => new DefaultCommandBus($c),
     QueryBus::class => fn (ContainerInterface $c) => new DefaultQueryBus($c),
     LoggerInterface::class => fn () => LoggerFactory::create(),
-    Connection::class => fn () => DatabaseConnectionFactory::create(),
+    Connection::class => fn () => DatabaseConnectionFactory::create('ras2'),
+    'db.telegraf' => fn () => DatabaseConnectionFactory::create('telegraf'),
     Hydrator::class => fn () => HydratorFactory::create(),
     Dehydrator::class => fn () => DehydratorFactory::create(),
     Router::class => fn (ContainerInterface $c) => RouterFactory::create($c),
@@ -66,7 +68,7 @@ $containerBuilder->addDefinitions([
     Mustache_Engine::class => fn () => MustacheFactory::create(),
 ]);
 
-$modules = [new TaskModule(), new UserModule(), new EventModule(), new SystemModule()];
+$modules = [new TaskModule(), new UserModule(), new EventModule(), new SystemModule(), new MaintenanceModule()];
 
 foreach ($modules as $module) {
     $module->install($containerBuilder);
