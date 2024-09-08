@@ -25,7 +25,6 @@
       samba = {
         enable = true;
         openFirewall = true;
-        securityType = "user";
         settings = {
           "global" = {
             "workgroup" = "WORKGROUP";
@@ -37,7 +36,7 @@
             "hosts deny" = "0.0.0.0/0";
             "guest account" = "nas";
             "map to guest" = "bad user";
-            "qcl allow execute always" = true;
+            "acl allow execute always" = true;
           };
         };
         shares = {
