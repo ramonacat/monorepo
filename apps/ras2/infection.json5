@@ -6,15 +6,8 @@
             "public"
         ],
         "excludes": [
-            "Migrations",
-            "PostgresRepository",
-            "Module.php",
-            "QueryExecutor",
-            "ClassFinder",
-            "APIDefinition",
-            "DatabaseConnectionFactory",
-            "LoggerFactory",
-            "MustacheFactory"
+            "Infrastructure",
+            "Module"
         ]
     },
     "mutators": {
