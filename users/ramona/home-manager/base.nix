@@ -15,6 +15,7 @@
       ripgrep
       unzip
       _1password
+      rustup
     ];
   };
   services.gpg-agent.pinentryPackage = lib.mkDefault pkgs.pinentry-curses;
