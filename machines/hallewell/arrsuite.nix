@@ -36,6 +36,7 @@ _: {
       environment = {
         LOG_LEVEL = "debug";
       };
+      extraOptions = ["--network=host"];
     };
   };
 }
