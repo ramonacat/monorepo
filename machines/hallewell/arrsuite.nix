@@ -27,6 +27,15 @@ _: {
       7878 # radarr
       8990 # sonarr
       8787 # readarr
+      8191 # flaresolverr
     ];
+
+    virtualisation.oci-containers.containers.flaresolverr = {
+      image = "ghcr.io/flaresolverr/flaresolverr:latest";
+      ports = ["0.0.0.0:8191:8191"];
+      environment = {
+        LOG_LEVEL = "info";
+      };
+    };
   };
 }
