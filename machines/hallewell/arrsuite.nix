@@ -34,7 +34,7 @@ _: {
       image = "ghcr.io/flaresolverr/flaresolverr:latest";
       ports = ["0.0.0.0:8191:8191"];
       environment = {
-        LOG_LEVEL = "info";
+        LOG_LEVEL = "debug";
       };
     };
   };
