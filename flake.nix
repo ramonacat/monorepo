@@ -168,7 +168,7 @@
       // (builtins.mapAttrs (_: v: (v {inherit pkgs craneLib;}).package) packages);
     devShells.x86_64-linux.default = pkgs.mkShell {
       packages = with pkgs; [
-        alsaLib.dev
+        alsa-lib.dev
         cargo-leptos
         clang
         google-cloud-sdk
@@ -186,8 +186,6 @@
         postgresql_16
         nil
         nodejs_22
-        nodePackages.gulp-cli
-        nodePackages.ts-node
 
         (pkgs.php82.buildEnv {
           extensions = {
