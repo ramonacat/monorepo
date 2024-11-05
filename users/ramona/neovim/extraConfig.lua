@@ -57,10 +57,8 @@ lspconfig.terraformls.setup({})
 lspconfig.csharp_ls.setup({})
 lspconfig.nushell.setup({})
 lspconfig.jdtls.setup({})
-lspconfig.phan.setup({})
-lspconfig.volar.setup({
-	filetypes = { "typescript", "javascript", "javascriptreact", "typescriptreact", "vue", "json" },
-})
+lspconfig.phpactor.setup({})
+lspconfig.ts_ls.setup({})
 
 vim.keymap.set("n", "<space>e", vim.diagnostic.open_float)
 vim.keymap.set("n", "[d", vim.diagnostic.goto_prev)
