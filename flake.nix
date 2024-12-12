@@ -39,7 +39,9 @@
       url = "github:oxalica/rust-overlay";
       inputs.nixpkgs.follows = "nixpkgs";
     };
-    nixpkgs.url = "nixpkgs/nixos-unstable-small";
+    nixpkgs = {
+      url = "nixpkgs/nixos-unstable-small";
+    };
   };
 
   outputs = {
@@ -90,6 +92,10 @@
     pkgsConfig = {
       allowUnfree = true;
       android_sdk.accept_license = true;
+      permittedInsecurePackages = [
+        "dotnet-sdk-6.0.428"
+        "aspnetcore-runtime-6.0.36"
+      ];
     };
     pkgs = import nixpkgs {
       overlays = overlays.x86_64;
