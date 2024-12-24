@@ -1,0 +1,66 @@
+html {
+  font-family: system-ui, sans-serif;
+  background-color: #ddd;
+}
+
+header.top-menu {
+    display:flex;
+    justify-content: space-between;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.top-menu ul {
+    padding: 0;
+    margin: 0;
+    display: flex;
+    height: 100%;
+    align-items: center;
+}
+
+.top-menu ul li {
+    list-style-type: none;
+}
+
+.top-menu a {
+    color: black;
+    transition: color 300ms ease-in-out;
+    text-decoration: none;
+    display: block; 
+    padding: 0 10px;
+}
+
+.top-menu a:hover {
+    color: #777;
+}
+
+.gallery {
+    max-width: 1200px;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    margin: 0;
+    padding: 0;
+    gap: 10px;
+    margin: 0 auto;
+}
+
+.gallery li {
+    list-style-type: none;
+    cursor: pointer;
+}
+
+.gallery img {
+    width: 100%;
+    height: auto;
+}
+
+dialog {
+    border: 0 none;
+    outline: 0;
+    background-color: transparent;
+}
+
+dialog::backdrop {
+    background-color: black;
+    opacity: 0.9;
+}
