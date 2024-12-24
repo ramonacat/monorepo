@@ -4,7 +4,7 @@ use std::{
 };
 
 use rppal::{
-    gpio::{InputPin, Level, OutputPin},
+    gpio::{InputPin, OutputPin},
     i2c::I2c,
 };
 
@@ -57,15 +57,14 @@ impl TouchPanel {
         self.reset_interrupt();
 
         self.interrupt_pin
-            .set_interrupt(rppal::gpio::Trigger::RisingEdge)
+            .set_interrupt(rppal::gpio::Trigger::RisingEdge, None)
             .unwrap();
 
         while self
             .interrupt_pin
             .poll_interrupt(false, None)
             .unwrap()
-            .unwrap()
-            != Level::High
+            .is_none()
         {}
 
         let mut buffer = [0u8; 1];
