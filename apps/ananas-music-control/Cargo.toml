@@ -16,7 +16,7 @@ opentelemetry-otlp = "0.27.0"
 opentelemetry_sdk = { version = "0.27.1", features = ["rt-tokio"] }
 rodio = "0.20.1"
 rppal = "0.22.1"
-thiserror = "2.0.10"
+thiserror = "2.0.11"
 tokio = { version = "1.43.0", features = ["full"] }
 tracing = "0.1.41"
 tracing-opentelemetry = "0.28.0"
