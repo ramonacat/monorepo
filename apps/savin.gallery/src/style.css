@@ -1,6 +1,10 @@
 html {
   font-family: system-ui, sans-serif;
-  background-color: #ddd;
+  background-color: #2f2127;
+}
+
+html, a {
+  color: #664f59;
 }
 
 header.top-menu {
@@ -8,6 +12,7 @@ header.top-menu {
     justify-content: space-between;
     max-width: 1200px;
     margin: 0 auto;
+    margin-bottom: 10px;
 }
 
 .top-menu ul {
@@ -22,36 +27,41 @@ header.top-menu {
     list-style-type: none;
 }
 
+.top-menu ul li:not(:last-child) {
+    border-right: 1px solid #664f59;
+}
+
 .top-menu a {
-    color: black;
     transition: color 300ms ease-in-out;
     text-decoration: none;
     display: block; 
     padding: 0 10px;
+    letter-spacing: 2px;
 }
 
 .top-menu a:hover {
-    color: #777;
+    color: #997685;
 }
 
 .gallery {
     max-width: 1200px;
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
     margin: 0;
     padding: 0;
-    gap: 10px;
+    column-gap: 10px;
     margin: 0 auto;
+    column-count: 3;
 }
 
 .gallery li {
     list-style-type: none;
     cursor: pointer;
+    margin-bottom: 10px;
 }
 
 .gallery img {
     width: 100%;
     height: auto;
+    border-radius: 5px;
 }
 
 dialog {
