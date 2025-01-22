@@ -47,7 +47,7 @@ jobs:
         id: coverage_files
 
       - name: Upload to codecov
-        uses: codecov/codecov-action@v5.1.2
+        uses: codecov/codecov-action@v5.2.0
         with:
           files: "${{ steps.coverage_files.outputs.files }}"
           token: ${{ secrets.CODECOV_TOKEN }}
