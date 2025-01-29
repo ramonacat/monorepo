@@ -192,6 +192,7 @@
         postgresql_16
         nil
         nodejs_22
+        phpactor
 
         php84Packages.composer
             
