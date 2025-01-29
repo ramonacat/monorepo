@@ -95,7 +95,7 @@
 
     plugins = with pkgs.vimPlugins; [
       auto-save-nvim
-      cmp-git
+      nvim-cmp
       cmp-nvim-lsp
       cmp-vsnip
       kanagawa-nvim
