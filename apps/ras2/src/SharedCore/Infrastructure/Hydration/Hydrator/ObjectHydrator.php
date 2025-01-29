@@ -28,8 +28,7 @@ final class ObjectHydrator implements ValueHydrator
     }
 
     /**
-     * @psalm-suppress MixedAssignment
-     * @psalm-suppress MixedArgument
+     * @return T
      */
     public function hydrate(Hydrator $hydrator, mixed $input, array $serializationAttributes): mixed
     {

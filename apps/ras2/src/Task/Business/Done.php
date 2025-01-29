@@ -36,7 +36,7 @@ final readonly class Done implements Task
         return $this->description->title();
     }
 
-    public function assigneeId(): ?UserId
+    public function assigneeId(): UserId
     {
         return $this->assigneeId;
     }

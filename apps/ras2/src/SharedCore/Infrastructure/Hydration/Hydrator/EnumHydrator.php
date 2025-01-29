@@ -23,6 +23,9 @@ final class EnumHydrator implements ValueHydrator
     ) {
     }
 
+    /**
+     * @return T
+     */
     public function hydrate(Hydrator $hydrator, mixed $input, array $serializationAttributes): mixed
     {
         $reflection = new ReflectionEnum($this->enumName);
@@ -37,6 +40,9 @@ final class EnumHydrator implements ValueHydrator
         throw new CannotHydrateType($this->enumName);
     }
 
+    /**
+     * @return class-string<T>
+     */
     public function handles(): string
     {
         return $this->enumName;

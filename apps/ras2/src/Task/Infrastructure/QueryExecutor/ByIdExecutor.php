@@ -14,7 +14,7 @@ use Ramona\Ras2\Task\Application\TaskView;
 use Ramona\Ras2\Task\Infrastructure\NotFound;
 
 /**
- * @implements Executor<?TaskView, ById>
+ * @implements Executor<TaskView, ById>
  */
 final readonly class ByIdExecutor implements Executor
 {

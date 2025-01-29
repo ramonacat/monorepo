@@ -192,8 +192,11 @@
         postgresql_16
         nil
         nodejs_22
+        phpactor
 
-        (pkgs.php82.buildEnv {
+        php84Packages.composer
+
+        (php84.buildEnv {
           extensions = {
             enabled,
             all,
@@ -203,7 +206,7 @@
             zend.exception_string_param_max_len=128
           '';
         })
-        (pkgs.rust-bin.stable.latest.default.override {
+        (rust-bin.stable.latest.default.override {
           extensions = ["rust-src" "llvm-tools-preview"];
           targets = ["aarch64-unknown-linux-gnu" "wasm32-unknown-unknown"];
         })

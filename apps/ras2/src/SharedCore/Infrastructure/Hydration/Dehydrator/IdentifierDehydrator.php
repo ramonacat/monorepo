@@ -22,11 +22,14 @@ final class IdentifierDehydrator implements ValueDehydrator
 
     }
 
-    public function dehydrate(Dehydrator $dehydrator, mixed $value): mixed
+    public function dehydrate(Dehydrator $dehydrator, mixed $value): string
     {
         return (string) $value;
     }
 
+    /**
+     * @return class-string<Identifier>
+     */
     public function handles(): string
     {
         return $this->className;

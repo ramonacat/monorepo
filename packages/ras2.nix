@@ -7,7 +7,7 @@
 
     src = ../apps/ras2;
 
-    vendorHash = "sha256-q+bagSyUN+QYPZR3W6p2hKr8I4g4X4gXTej2S/+GkY4=";
+    vendorHash = "sha256-nhlV/pKewtrnU+LZ/A7WlySe4cvoRjdO2ZUYhbEZ4z0=";
     composerNoPlugins = false;
   };
   devPhp = pkgs.php83.buildEnv {
@@ -49,7 +49,7 @@ in rec {
 
         # this is an awful hack
         # We generally want to allow nix to patch shebangs, but phars can have signatures
-        # So we restore the signatures for phars manually here
+        # So we restore the shebangs for phars manually here, so the signatures match
         chmod a+w vendor/phpstan/phpstan/
         chmod a+w vendor/phpstan/phpstan/phpstan.phar
         sed -i "1s/.*/#!\\/usr\\/bin\\/env php/" vendor/phpstan/phpstan/phpstan.phar

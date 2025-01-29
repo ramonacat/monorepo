@@ -110,6 +110,9 @@ final class HydratorTest extends TestCase
                 return new ArrayCollection($input);
             }
 
+            /**
+             * @return class-string
+             */
             public function handles(): string
             {
                 return ArrayCollection::class;

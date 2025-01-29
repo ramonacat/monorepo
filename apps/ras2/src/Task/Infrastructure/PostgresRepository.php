@@ -177,7 +177,12 @@ final readonly class PostgresRepository implements Repository
         ])->fetchAllAssociative();
 
         $result = new ArrayCollection(array_map($this->hydrateTask(...), $results));
-        /** @var ArrayCollection<int, Started> $result */
+        /**
+         * @var ArrayCollection<int, Started> $result
+         */
+        /**
+         * @phpstan-ignore varTag.type
+         */
         return $result;
     }
 

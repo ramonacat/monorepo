@@ -22,11 +22,17 @@ final class IdentifierHydrator implements ValueHydrator
     ) {
     }
 
+    /**
+     * @return T
+     */
     public function hydrate(Hydrator $hydrator, mixed $input, array $serializationAttributes): mixed
     {
         return $this->className::fromString((string) $input);
     }
 
+    /**
+     * @return class-string<T>
+     */
     public function handles(): string
     {
         return $this->className;

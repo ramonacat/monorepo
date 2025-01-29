@@ -13,11 +13,14 @@ use Ramona\Ras2\SharedCore\Infrastructure\Hydration\ValueDehydrator;
  */
 final class DateTimeZoneDehydrator implements ValueDehydrator
 {
-    public function dehydrate(Dehydrator $dehydrator, mixed $value): mixed
+    public function dehydrate(Dehydrator $dehydrator, mixed $value): string
     {
         return $value->getName();
     }
 
+    /**
+     * @return class-string<DateTimeZone>
+     */
     public function handles(): string
     {
         return DateTimeZone::class;

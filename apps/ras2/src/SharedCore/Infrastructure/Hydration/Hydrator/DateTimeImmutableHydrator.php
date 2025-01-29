@@ -13,17 +13,16 @@ use Ramona\Ras2\SharedCore\Infrastructure\Hydration\ValueHydrator;
  */
 final class DateTimeImmutableHydrator implements ValueHydrator
 {
-    /**
-     * @psalm-suppress MixedArrayAccess
-     * @psalm-suppress ArgumentTypeCoercion
-     */
-    public function hydrate(Hydrator $hydrator, mixed $input, array $serializationAttributes): mixed
+    public function hydrate(Hydrator $hydrator, mixed $input, array $serializationAttributes): \Safe\DateTimeImmutable
     {
         $timezone = new DateTimeZone((string) $input['timezone']);
 
         return \Safe\DateTimeImmutable::createFromFormat('Y-m-d H:i:s', (string) $input['timestamp'], $timezone);
     }
 
+    /**
+     * @return class-string<\Safe\DateTimeImmutable>
+     */
     public function handles(): string
     {
         return \Safe\DateTimeImmutable::class;

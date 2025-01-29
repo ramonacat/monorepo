@@ -76,6 +76,9 @@ final class DehydratorTest extends TestCase
                 return 'B CALLED';
             }
 
+            /**
+             * @return class-string
+             */
             public function handles(): string
             {
                 return B::class;

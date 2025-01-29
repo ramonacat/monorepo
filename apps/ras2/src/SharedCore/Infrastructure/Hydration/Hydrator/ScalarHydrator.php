@@ -20,11 +20,17 @@ final class ScalarHydrator implements ValueHydrator
     ) {
     }
 
+    /**
+     * @return ?scalar
+     */
     public function hydrate(Hydrator $hydrator, mixed $input, array $serializationAttributes): mixed
     {
         return $input;
     }
 
+    /**
+     * @return 'float'|'integer'|'string'|'array'|'boolean'|'resource'|'NULL'
+     */
     public function handles(): string
     {
         return $this->typeName;
