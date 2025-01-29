@@ -14,7 +14,7 @@
       jq
       ripgrep
       unzip
-      _1password
+      _1password-cli
       rustup
     ];
   };

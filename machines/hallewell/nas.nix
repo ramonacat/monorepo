@@ -38,8 +38,6 @@
             "map to guest" = "bad user";
             "acl allow execute always" = true;
           };
-        };
-        shares = {
           public = {
             path = "/mnt/nas3/data";
             browseable = "yes";
