@@ -195,7 +195,7 @@
         phpactor
 
         php84Packages.composer
-            
+
         (php84.buildEnv {
           extensions = {
             enabled,
