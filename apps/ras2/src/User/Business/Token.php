@@ -21,7 +21,7 @@ final class Token implements Stringable
         return base64_encode($this->value);
     }
 
-    public static function generate(\Random\Engine $randomEngine = null): self
+    public static function generate(?\Random\Engine $randomEngine = null): self
     {
         $randomizer = new Randomizer($randomEngine);
         return new self($randomizer->getBytes(self::TOKEN_LENGTH));

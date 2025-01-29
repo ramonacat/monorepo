@@ -11,19 +11,21 @@ use ReflectionClass;
 /**
  * @template T of object
  * @implements ValueDehydrator<T>
- * @psalm-suppress UnusedClass
  */
 final class ObjectDehydrator implements ValueDehydrator
 {
     /**
-     * @param class-string $className
+     * @param class-string<T> $className
      */
     public function __construct(
         private string $className
     ) {
     }
 
-    public function dehydrate(Dehydrator $dehydrator, mixed $value): mixed
+    /**
+     * @return array<string, scalar>
+     */
+    public function dehydrate(Dehydrator $dehydrator, mixed $value): array
     {
         $classReflection = new ReflectionClass($value);
 
@@ -36,6 +38,9 @@ final class ObjectDehydrator implements ValueDehydrator
         return $result;
     }
 
+    /**
+     * @return class-string<T>
+     */
     public function handles(): string
     {
         return $this->className;

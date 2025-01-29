@@ -26,7 +26,7 @@ final class ObjectHydratorTest extends TestCase
             'username' => 'not ramona',
         ], []);
 
-        self::assertEquals('not ramona', $result?->username);
+        self::assertEquals('not ramona', $result->username);
     }
 
     public function testCanUseSessionValue(): void
@@ -38,6 +38,6 @@ final class ObjectHydratorTest extends TestCase
 
         $result = $objectHydrator->hydrate($hydrator, [], []);
 
-        self::assertEquals('ramona', $result?->username);
+        self::assertEquals('ramona', $result->username);
     }
 }

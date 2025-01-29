@@ -12,7 +12,7 @@ use Ramona\Ras2\Task\Business\TaskId;
 use Ramona\Ras2\Task\Infrastructure\QueryExecutor\ByIdExecutor;
 
 /**
- * @implements Query<?TaskView>
+ * @implements Query<TaskView>
  */
 #[ExecutedBy(ByIdExecutor::class), APIQuery('tasks/{id:uuid}', 'by-id')]
 final readonly class ById implements Query

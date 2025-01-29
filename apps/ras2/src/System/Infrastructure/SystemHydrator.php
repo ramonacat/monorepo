@@ -17,7 +17,7 @@ use RuntimeException;
  */
 final class SystemHydrator implements ValueHydrator
 {
-    public function hydrate(Hydrator $hydrator, mixed $input, array $serializationAttributes): mixed
+    public function hydrate(Hydrator $hydrator, mixed $input, array $serializationAttributes): System
     {
         return new System(
             $hydrator->hydrate(SystemId::class, $input['id']),
@@ -26,6 +26,9 @@ final class SystemHydrator implements ValueHydrator
         );
     }
 
+    /**
+     * @return class-string<System>
+     */
     public function handles(): string
     {
         return System::class;

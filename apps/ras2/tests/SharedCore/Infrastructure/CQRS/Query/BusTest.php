@@ -45,6 +45,6 @@ final class BusTest extends TestCase
 
         $response = $bus->execute(new MockQuery());
 
-        self::assertNotNull($response);
+        self::assertEquals('test1234', $response->value);
     }
 }

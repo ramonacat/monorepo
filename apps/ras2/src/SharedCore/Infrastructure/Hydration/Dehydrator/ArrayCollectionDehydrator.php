@@ -13,13 +13,19 @@ use Ramona\Ras2\SharedCore\Infrastructure\Hydration\ValueDehydrator;
  */
 final class ArrayCollectionDehydrator implements ValueDehydrator
 {
-    public function dehydrate(Dehydrator $dehydrator, mixed $value): mixed
+    /**
+     * @return array<array-key, mixed>
+     */
+    public function dehydrate(Dehydrator $dehydrator, mixed $value): array
     {
         return $value
             ->map($dehydrator->dehydrate(...))
             ->toArray();
     }
 
+    /**
+     * @return class-string<ArrayCollection<array-key, mixed>>
+     */
     public function handles(): string
     {
         return ArrayCollection::class;

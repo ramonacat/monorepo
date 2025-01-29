@@ -22,11 +22,14 @@ final class EnumDehydrator implements ValueDehydrator
 
     }
 
-    public function dehydrate(Dehydrator $dehydrator, mixed $value): mixed
+    public function dehydrate(Dehydrator $dehydrator, mixed $value): string
     {
         return $value->name;
     }
 
+    /**
+     * @return class-string<T>
+     */
     public function handles(): string
     {
         return $this->handles;

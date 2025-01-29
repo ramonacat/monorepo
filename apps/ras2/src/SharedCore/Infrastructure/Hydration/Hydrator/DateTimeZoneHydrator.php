@@ -13,11 +13,14 @@ use Ramona\Ras2\SharedCore\Infrastructure\Hydration\ValueHydrator;
  */
 final class DateTimeZoneHydrator implements ValueHydrator
 {
-    public function hydrate(Hydrator $hydrator, mixed $input, array $serializationAttributes): mixed
+    public function hydrate(Hydrator $hydrator, mixed $input, array $serializationAttributes): DateTimeZone
     {
         return new DateTimeZone((string) $input);
     }
 
+    /**
+     * @return class-string<DateTimeZone>
+     */
     public function handles(): string
     {
         return DateTimeZone::class;

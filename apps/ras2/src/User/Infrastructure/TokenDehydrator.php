@@ -18,6 +18,9 @@ final class TokenDehydrator implements ValueDehydrator
         return (string) $value;
     }
 
+    /**
+     * @return class-string<Token>
+     */
     public function handles(): string
     {
         return Token::class;

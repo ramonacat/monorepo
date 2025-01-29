@@ -13,7 +13,10 @@ use Ramona\Ras2\SharedCore\Infrastructure\Hydration\ValueDehydrator;
  */
 final class DateTimeImmutableDehydrator implements ValueDehydrator
 {
-    public function dehydrate(Dehydrator $dehydrator, mixed $value): mixed
+    /**
+     * @return array{timestamp:string,timezone:string}
+     */
+    public function dehydrate(Dehydrator $dehydrator, mixed $value): array
     {
         $timezone = $value->getTimezone();
 
@@ -23,6 +26,9 @@ final class DateTimeImmutableDehydrator implements ValueDehydrator
         ];
     }
 
+    /**
+     * @return class-string<DateTimeImmutable>
+     */
     public function handles(): string
     {
         return DateTimeImmutable::class;

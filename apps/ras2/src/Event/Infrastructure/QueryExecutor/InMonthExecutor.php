@@ -71,6 +71,9 @@ final class InMonthExecutor implements Executor
     private function convertDateTimeFromDatabase(string $raw): array
     {
         \Safe\preg_match('/\(\"(?<timestamp>.*?)\",(?<timezone>.*?)\)/S', $raw, $matches);
+        /**
+         * @var array{timestamp:string, timezone: string} $matches
+         */
 
         return [
             'timestamp' => $matches['timestamp'],
