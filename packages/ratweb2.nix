@@ -22,6 +22,7 @@ in rec {
   coverage = pkgs.runCommand "${package.name}--coverage" {nativeBuildInputs = [pkgs.nodejs_22];} ''
     cp -r ${rawPackage}/* .
     chmod -R a+w ./node_modules/.vite-temp
+    chmod -R a+w ./node_modules/.vite
     ./node_modules/.bin/vitest run
 
     mv coverage/clover.xml $out
