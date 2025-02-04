@@ -18,6 +18,7 @@
       enabled ++ [all.xdebug];
     extraConfig = ''
       xdebug.mode=coverage
+      memory_limit=1G
     '';
   };
   devPackage = pkgs.php.buildComposerProject (_: ({
