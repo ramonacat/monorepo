@@ -11,9 +11,9 @@ cpal = "0.15.3"
 embedded-graphics = "0.8.1"
 flac = "0.5.0"
 fontdue = "0.9.2"
-opentelemetry = "0.27.1"
-opentelemetry-otlp = "0.27.0"
-opentelemetry_sdk = { version = "0.27.1", features = ["rt-tokio"] }
+opentelemetry = "0.28.0"
+opentelemetry-otlp = "0.28.0"
+opentelemetry_sdk = { version = "0.28.0", features = ["rt-tokio"] }
 rodio = "0.20.1"
 rppal = "0.22.1"
 thiserror = "2.0.11"
