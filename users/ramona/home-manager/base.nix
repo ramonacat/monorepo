@@ -41,6 +41,8 @@
       enable = true;
       clock24 = true;
       newSession = true;
+      mouse = true;
+      keyMode = "vi";
       plugins = with pkgs.tmuxPlugins; [
         sensible
       ];
