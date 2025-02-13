@@ -101,7 +101,6 @@
       cmp-nvim-lsp
       cmp-vsnip
       kanagawa-nvim
-      lush-nvim
       neo-tree-nvim
       nvim-lspconfig
       telescope-nvim
