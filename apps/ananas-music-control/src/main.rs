@@ -5,7 +5,7 @@ use std::{
 };
 
 use fontdue::{Font, FontSettings};
-use opentelemetry::{trace::TracerProvider, KeyValue};
+use opentelemetry::trace::TracerProvider;
 use opentelemetry_otlp::WithExportConfig;
 use opentelemetry_sdk::Resource;
 use rppal::{i2c::I2c, spi::Mode};
@@ -38,19 +38,19 @@ const TOUCHSCREEN_INT_PIN: u8 = 27;
 
 #[tokio::main]
 async fn main() {
-    let tracer = opentelemetry_sdk::trace::TracerProvider::builder()
+    let tracer = opentelemetry_sdk::trace::SdkTracerProvider::builder()
         .with_batch_exporter(
             opentelemetry_otlp::SpanExporter::builder()
                 .with_tonic()
                 .with_endpoint("http://hallewell:4317/")
                 .build()
                 .unwrap(),
-            opentelemetry_sdk::runtime::Tokio,
         )
-        .with_resource(Resource::new(vec![KeyValue::new(
-            "service.name",
-            "music-control",
-        )]))
+        .with_resource(
+            Resource::builder()
+                .with_service_name("music-control")
+                .build(),
+        )
         .build();
     opentelemetry::global::set_tracer_provider(tracer.clone());
     let tracer = tracer.tracer("ananas-music-control");
