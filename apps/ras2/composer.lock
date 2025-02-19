@@ -4111,16 +4111,16 @@
         },
         {
             "name": "phpstan/phpstan",
-            "version": "2.1.5",
+            "version": "2.1.6",
             "source": {
                 "type": "git",
                 "url": "https://github.com/phpstan/phpstan.git",
-                "reference": "451b17f9665481ee502adc39be987cb71067ece2"
+                "reference": "6eaec7c6c9e90dcfe46ad1e1ffa5171e2dab641c"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/phpstan/phpstan/zipball/451b17f9665481ee502adc39be987cb71067ece2",
-                "reference": "451b17f9665481ee502adc39be987cb71067ece2",
+                "url": "https://api.github.com/repos/phpstan/phpstan/zipball/6eaec7c6c9e90dcfe46ad1e1ffa5171e2dab641c",
+                "reference": "6eaec7c6c9e90dcfe46ad1e1ffa5171e2dab641c",
                 "shasum": ""
             },
             "require": {
@@ -4165,7 +4165,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2025-02-13T12:49:56+00:00"
+            "time": "2025-02-19T15:46:42+00:00"
         },
         {
             "name": "phpstan/phpstan-strict-rules",
@@ -4641,16 +4641,16 @@
         },
         {
             "name": "psalm/phar",
-            "version": "6.6.0",
+            "version": "6.8.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/psalm/phar.git",
-                "reference": "daeb6f387946556e93aaaf2be2258c83e043e637"
+                "reference": "57553ad43ea8a400c74d8e4fa145ddf1abe33b13"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/psalm/phar/zipball/daeb6f387946556e93aaaf2be2258c83e043e637",
-                "reference": "daeb6f387946556e93aaaf2be2258c83e043e637",
+                "url": "https://api.github.com/repos/psalm/phar/zipball/57553ad43ea8a400c74d8e4fa145ddf1abe33b13",
+                "reference": "57553ad43ea8a400c74d8e4fa145ddf1abe33b13",
                 "shasum": ""
             },
             "require": {
@@ -4670,9 +4670,9 @@
             "description": "Composer-based Psalm Phar",
             "support": {
                 "issues": "https://github.com/psalm/phar/issues",
-                "source": "https://github.com/psalm/phar/tree/6.6.0"
+                "source": "https://github.com/psalm/phar/tree/6.8.1"
             },
-            "time": "2025-02-15T17:43:42+00:00"
+            "time": "2025-02-19T14:17:33+00:00"
         },
         {
             "name": "sanmai/later",
@@ -6627,7 +6627,7 @@
     ],
     "aliases": [],
     "minimum-stability": "dev",
-    "stability-flags": {},
+    "stability-flags": [],
     "prefer-stable": true,
     "prefer-lowest": false,
     "platform": {
@@ -6635,6 +6635,6 @@
         "ext-mbstring": "*",
         "ext-intl": "*"
     },
-    "platform-dev": {},
-    "plugin-api-version": "2.6.0"
+    "platform-dev": [],
+    "plugin-api-version": "2.3.0"
 }
