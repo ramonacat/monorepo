@@ -21,7 +21,7 @@
       };
 
       "/mnt/nas3" = {
-        device = "UUID=8f552709-24e3-4387-8183-23878c94d00b";
+        device = "/dev/disk/by-id/wwn-0x5000cca2a0c551c7:/dev/disk/by-id/wwn-0x5000cca296c1680c:/dev/disk/by-id/nvme-eui.0025385191b0bc29:/dev/disk/by-id/:/dev/disk/by-id/nvme-eui.0025385a81b20689:/dev/disk/by-id/wwn-0x5002538043584d30:/dev/disk/by-id/wwn-0x5002538e40c8552a:/dev/disk/by-id/wwn-0x5002538e40c8526c:/dev/disk/by-id/wwn-0x5000cca2a0c5632b:/dev/disk/by-id/wwn-0x5000cca2eec47ea2";
         fsType = "bcachefs";
         noCheck = true;
         neededForBoot = false;
