@@ -9,6 +9,10 @@ _: {
       sonarr = {
         enable = true;
         user = "nas";
+
+        settings = {
+          server.port = 8990;
+        };
       };
       readarr = {
         enable = true;
