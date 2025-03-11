@@ -59,7 +59,7 @@ lspconfig.nushell.setup({})
 lspconfig.jdtls.setup({})
 lspconfig.phpactor.setup({})
 lspconfig.ts_ls.setup({})
-lspconfig.ruff.setup({})
+lspconfig.basedpyright.setup({})
 
 vim.keymap.set("n", "<space>e", vim.diagnostic.open_float)
 vim.keymap.set("n", "[d", vim.diagnostic.goto_prev)
