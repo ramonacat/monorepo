@@ -104,6 +104,7 @@
       nvim-lspconfig
       telescope-nvim
       vim-vsnip
+      pest-vim
 
       nvim-treesitter
       nvim-treesitter-parsers.terraform

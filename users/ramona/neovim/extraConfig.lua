@@ -60,6 +60,7 @@ lspconfig.jdtls.setup({})
 lspconfig.phpactor.setup({})
 lspconfig.ts_ls.setup({})
 lspconfig.basedpyright.setup({})
+lspconfig.pest_ls.setup({})
 
 vim.keymap.set("n", "<space>e", vim.diagnostic.open_float)
 vim.keymap.set("n", "[d", vim.diagnostic.goto_prev)
