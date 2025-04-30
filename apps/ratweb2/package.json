@@ -14,7 +14,7 @@
 		"test:unit": "vitest"
 	},
 	"devDependencies": {
-		"@iconify/svelte": "^4.2.0",
+		"@iconify/svelte": "^5.0.0",
 		"@neoconfetti/svelte": "^2.2.2",
 		"@playwright/test": "^1.52.0",
 		"@sveltejs/adapter-auto": "^6.0.0",
@@ -39,7 +39,7 @@
 		"svelte-check": "^4.1.6",
 		"typescript": "^5.8.3",
 		"typescript-eslint": "^8.31.1",
-		"vite": "^6.3.3",
+		"vite": "^6.3.4",
 		"vitest": "^3.0.4"
 	},
 	"type": "module",
