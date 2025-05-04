@@ -15,11 +15,15 @@
     # this service does nothing useful but breaks rebuilds if it's restarted
     # https://github.com/NixOS/nixpkgs/issues/180175
     systemd.services.NetworkManager-wait-online.enable = lib.mkForce false;
-    boot.kernelParams = [
-      # this is needed for iotop
-      "delayacct"
-    ];
-    boot.kernelPackages = lib.mkOverride 500 pkgs.linuxPackages_latest;
+    boot = {
+      kernelParams = [
+        # this is needed for iotop
+        "delayacct"
+      ];
+      kernelPackages = lib.mkOverride 500 pkgs.linuxPackages_latest;
+      kernel.features.debug = true;
+    };
+
     security.sudo.wheelNeedsPassword = true;
     users.mutableUsers = false;
 
@@ -69,6 +73,7 @@
         "nixpkgs=${nixpkgsPath}"
       ];
     };
+
     systemd.tmpfiles.rules = [
       "L+ ${nixpkgsPath}  - - - - ${nixpkgs}"
     ];
