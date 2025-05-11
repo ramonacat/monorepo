@@ -236,11 +236,12 @@
           ./machines/hallewell/paperless.nix
           ./machines/hallewell/photoprism.nix
           ./machines/hallewell/postgresql.nix
-          ./machines/hallewell/ratweb2.nix
           ./machines/hallewell/ras2.nix
+          ./machines/hallewell/ratweb2.nix
           ./machines/hallewell/syncthing.nix
           ./machines/hallewell/tempo.nix
           ./machines/hallewell/users/ramona.nix
+          ./machines/hallewell/znc.nix
           ./modules/bcachefs.nix
           ./modules/installed-base.nix
           ./modules/rad.nix
