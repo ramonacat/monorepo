@@ -15,9 +15,10 @@
       unzip
       _1password-cli
       rustup
+      irssi
     ];
   };
-  services.gpg-agent.pinentryPackage = lib.mkDefault pkgs.pinentry-curses;
+  services.gpg-agent.pinentry.package = lib.mkDefault pkgs.pinentry-curses;
 
   programs = {
     gpg = {
