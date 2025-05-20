@@ -107,12 +107,7 @@
       vim-vsnip
       pest-vim
 
-      nvim-treesitter
-      nvim-treesitter-parsers.terraform
-      nvim-treesitter-parsers.php
-      nvim-treesitter-parsers.rust
-      nvim-treesitter-parsers.nix
-      nvim-treesitter-parsers.lua
+      nvim-treesitter.withAllGrammars
     ];
     extraLuaConfig = lib.readFile ./../neovim/extraConfig.lua;
   };
