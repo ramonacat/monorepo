@@ -212,7 +212,7 @@
 
       modules = [
         ./users/ramona/home-manager/base.nix
-        ./users/ramona/home-manager/wsl-moonfall.nix
+        ./users/ramona/home-manager/wsl.nix
       ];
     };
     nixosConfigurations = {
