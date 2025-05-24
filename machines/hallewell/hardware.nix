@@ -13,12 +13,6 @@
       loader.efi.canTouchEfiVariables = true;
 
       kernelPackages = pkgs.linuxPackages_testing;
-      kernelPatches = [
-        {
-          name = "bcachefs_rebalance_fix";
-          patch = ./bcachefs_rebalance_fix.patch;
-        }
-      ];
     };
 
     powerManagement.powertop.enable = true;
