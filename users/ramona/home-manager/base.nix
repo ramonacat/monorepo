@@ -21,22 +21,6 @@
   services.gpg-agent.pinentry.package = lib.mkDefault pkgs.pinentry-curses;
 
   programs = {
-    gpg = {
-      enable = true;
-      publicKeys = [
-        {
-          source = ../keys/ramona.pgp;
-          trust = "ultimate";
-        }
-        {
-          source = ../keys/ramona2.pgp;
-          trust = "ultimate";
-        }
-      ];
-      mutableTrust = false;
-      mutableKeys = true;
-    };
-
     tmux = {
       enable = true;
       clock24 = true;
@@ -52,12 +36,6 @@
     };
   };
 
-  services.gpg-agent = {
-    enable = true;
-    enableSshSupport = true;
-    sshKeys = ["682AC8D9096D4E08" "E9C995FE5B1BCC62"];
-  };
-
   programs.direnv.enable = true;
 
   programs = {
@@ -70,10 +48,6 @@
     enable = true;
     userName = "Ramona Łuczkiewicz";
     userEmail = "ja@agares.info";
-    signing = {
-      signByDefault = true;
-      key = "E9C995FE5B1BCC62";
-    };
     aliases = {
       st = "status -sb";
       cleanbr = "! git branch -d `git branch --merged | grep -v '^*\\|main\\|master\\|staging\\|devel'`";
