@@ -71,17 +71,17 @@
 
     plugins = with pkgs.vimPlugins; [
       auto-save-nvim
-      nvim-cmp
       cmp-nvim-lsp
       cmp-vsnip
       kanagawa-nvim
       neo-tree-nvim
+      nvim-cmp
       nvim-lspconfig
+      nvim-treesitter-context
+      nvim-treesitter.withAllGrammars
+      pest-vim
       telescope-nvim
       vim-vsnip
-      pest-vim
-
-      nvim-treesitter.withAllGrammars
     ];
     extraLuaConfig = lib.readFile ./../neovim/extraConfig.lua;
   };
