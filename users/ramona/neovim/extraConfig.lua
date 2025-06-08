@@ -139,4 +139,4 @@ require("nvim-treesitter.configs").setup({
 	indent = { enable = true },
 })
 require("kanagawa").setup({})
-require("nvim-treesitter-context").setup({})
+require("treesitter-context").setup({})
