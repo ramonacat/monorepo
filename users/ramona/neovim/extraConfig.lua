@@ -139,4 +139,6 @@ require("nvim-treesitter.configs").setup({
 	indent = { enable = true },
 })
 require("kanagawa").setup({})
-require("treesitter-context").setup({})
+require("treesitter-context").setup({
+	max_lines = 1,
+})
