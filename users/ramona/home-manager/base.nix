@@ -27,6 +27,8 @@
       newSession = true;
       mouse = true;
       keyMode = "vi";
+      customPaneNavigationAndResize = true;
+      prefix = "C-space";
       plugins = with pkgs.tmuxPlugins; [
         sensible
       ];
