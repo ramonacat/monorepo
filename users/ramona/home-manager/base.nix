@@ -31,13 +31,16 @@
       prefix = "C-space";
       plugins = with pkgs.tmuxPlugins; [
         sensible
-        kanagawa
+        {
+          plugin = kanagawa;
+          extraConfig = ''
+            set -g @kanagawa-theme 'dragon'
+            set -g @kanagawa-plugins 'time'
+            set -g @kanagawa-show-powerline true
+          '';
+        }
       ];
       extraConfig = ''
-        set -g @kanagawa-theme 'dragon'
-        set -g @kanagawa-plugins 'time'
-        set -g @kanagawa-show-powerline true
-
         # setup vim-like navigation/resizing
         bind -N "Select pane to the left of the active pane" h select-pane -L
         bind -N "Select pane below the active pane" j select-pane -D
