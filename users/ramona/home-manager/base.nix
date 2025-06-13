@@ -25,13 +25,32 @@
       enable = true;
       clock24 = true;
       newSession = true;
+      baseIndex = 1;
       mouse = true;
       keyMode = "vi";
-      customPaneNavigationAndResize = true;
       prefix = "C-space";
       plugins = with pkgs.tmuxPlugins; [
         sensible
+        kanagawa
       ];
+      extraConfig = ''
+        set -g @kanagawa-theme 'dragon'
+
+        # setup vim-like navigation/resizing
+        bind -N "Select pane to the left of the active pane" h select-pane -L
+        bind -N "Select pane below the active pane" j select-pane -D
+        bind -N "Select pane above the active pane" k select-pane -U
+        bind -N "Select pane to the right of the active pane" l select-pane -R
+
+        bind -r -N "Resize the pane left by 1" \
+          C-h resize-pane -L 1
+        bind -r -N "Resize the pane down by 1" \
+          C-j resize-pane -D 1
+        bind -r -N "Resize the pane up by 1" \
+          C-k resize-pane -U 1
+        bind -r -N "Resize the pane right by 1" \
+          C-l resize-pane -R 1
+      '';
     };
     home-manager = {
       enable = true;
