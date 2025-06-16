@@ -1,8 +1,4 @@
-{
-  lib,
-  pkgs,
-  ...
-}: {
+{lib, ...}: {
   config = {
     boot = {
       initrd.availableKernelModules = ["xhci_pci" "ahci" "nvme" "usbhid" "usb_storage" "sd_mod" "sr_mod" "bcache" "amdgpu"];
@@ -12,8 +8,6 @@
       extraModulePackages = [];
       loader.systemd-boot.enable = true;
       loader.efi.canTouchEfiVariables = true;
-
-      kernelPackages = pkgs.linuxPackages_testing;
     };
 
     powerManagement.powertop.enable = true;
