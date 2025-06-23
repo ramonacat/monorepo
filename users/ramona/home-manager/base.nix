@@ -16,6 +16,7 @@
       _1password-cli
       rustup
       irssi
+      github-cli
     ];
   };
   services.gpg-agent.pinentry.package = lib.mkDefault pkgs.pinentry-curses;
@@ -58,6 +59,9 @@
       '';
     };
     home-manager = {
+      enable = true;
+    };
+    gh = {
       enable = true;
     };
   };
