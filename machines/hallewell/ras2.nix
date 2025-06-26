@@ -51,7 +51,7 @@ in {
 
   services.nginx = {
     enable = true;
-    virtualHosts."ras2.ramona.fun".locations."/" = {
+    virtualHosts."hallewell.ibis-draconis.ts.net".locations."/" = {
       root = "${pkgs.ramona.ras2}/share/php/ras2/public/";
 
       extraConfig = ''
