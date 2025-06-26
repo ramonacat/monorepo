@@ -15,7 +15,7 @@
         sslCertificateKey = certificateKey;
 
         # these are hallewell's tailscale addresses
-        listenAddresses = ["100.109.240.138" "fd7a:115c:a1e0:ab12:4843:cd96:626d:f08a"];
+        listenAddresses = ["100.109.240.138" "[fd7a:115c:a1e0:ab12:4843:cd96:626d:f08a]"];
 
         locations."/webdav/zotero/" = {
           root = "/mnt/nas3/data/ramona/zotero/";
