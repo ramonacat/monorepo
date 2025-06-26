@@ -9,8 +9,8 @@
     certificateKey = "${certificateDirectory}/certificate.key";
   in {
     services.nginx = {
-      virtualHosts."hallewell" = {
-        forceSSL = true;
+      virtualHosts."hallewell.ibis-draconis.ts.net" = {
+        addSSL = true;
         sslCertificate = certificateFile;
         sslCertificateKey = certificateKey;
 
