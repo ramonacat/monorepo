@@ -22,6 +22,8 @@
           extraConfig = ''
             dav_methods PUT DELETE MKCOL COPY MOVE;
             dav_ext_methods PROPFIND OPTIONS;
+            dav_access all:rw;
+
             create_full_put_path on;
           '';
         };
