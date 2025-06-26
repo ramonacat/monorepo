@@ -17,8 +17,8 @@
         # these are hallewell's tailscale addresses
         listenAddresses = ["100.109.240.138" "[fd7a:115c:a1e0:ab12:4843:cd96:626d:f08a]"];
 
-        locations."/webdav" = {
-          root = "/mnt/nas3/data/ramona/webdav/";
+        locations."~ /webdav/.*" = {
+          alias = "/mnt/nas3/data/ramona/webdav/";
           extraConfig = ''
             dav_methods PUT DELETE MKCOL COPY MOVE;
             dav_ext_methods PROPFIND OPTIONS;
