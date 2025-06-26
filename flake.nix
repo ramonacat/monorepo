@@ -233,6 +233,7 @@
           ./machines/hallewell/nas.nix
           ./machines/hallewell/navidrome.nix
           ./machines/hallewell/networking.nix
+          ./machines/hallewell/nginx.nix
           ./machines/hallewell/paperless.nix
           ./machines/hallewell/photoprism.nix
           ./machines/hallewell/postgresql.nix
