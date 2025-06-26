@@ -9,6 +9,7 @@
     certificateKey = "${certificateDirectory}/certificate.key";
   in {
     services.nginx = {
+      clientMaxBodySize = "1024m";
       virtualHosts."hallewell.ibis-draconis.ts.net" = {
         addSSL = true;
         sslCertificate = certificateFile;
