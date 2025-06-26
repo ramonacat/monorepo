@@ -18,7 +18,7 @@
         listenAddresses = ["100.109.240.138" "[fd7a:115c:a1e0:ab12:4843:cd96:626d:f08a]"];
 
         locations."~ /webdav/.*" = {
-          alias = "/mnt/nas3/data/ramona/webdav/";
+          root = "/mnt/nas3/data/ramona/";
           extraConfig = ''
             dav_methods PUT DELETE MKCOL COPY MOVE;
             dav_ext_methods PROPFIND OPTIONS;
