@@ -24,43 +24,49 @@ local capabilities = require("cmp_nvim_lsp").default_capabilities()
 
 local lspconfig = require("lspconfig")
 
-lspconfig.rust_analyzer.setup({
+vim.lsp.enable("rust_analyzer")
+vim.lsp.enable("lua_ls")
+vim.lsp.enable("nil_ls")
+vim.lsp.enable("terraformls")
+vim.lsp.enable("csharp_ls")
+vim.lsp.enable("nushell")
+vim.lsp.enable("jdtls")
+vim.lsp.enable("phpactor")
+vim.lsp.enable("ts_ls")
+vim.lsp.enable("basedpyright")
+vim.lsp.enable("pest_ls")
+vim.lsp.config("rust_analyzer", {
 	capabilities = capabilities,
 })
-lspconfig.lua_ls.setup({
+vim.lsp.config("lua_ls", {
 	capabilities = capabilities,
 	on_init = function(client)
 		local path = client.workspace_folders[1].name
-		if not vim.loop.fs_stat(path .. "/.luarc.json") and not vim.loop.fs_stat(path .. "/.luarc.jsonc") then
-			client.config.settings = vim.tbl_deep_extend("force", client.config.settings, {
-				Lua = {
-					runtime = {
-						version = "LuaJIT",
-					},
-					-- Make the server aware of Neovim runtime files
-					workspace = {
-						checkThirdParty = false,
-						library = {
-							vim.env.VIMRUNTIME,
-						},
-					},
-				},
-			})
-
-			client.notify("workspace/didChangeConfiguration", { settings = client.config.settings })
+		if vim.loop.fs_stat(path .. "/.luarc.json") or vim.loop.fs_stat(path .. "/.luarc.jsonc") then
+			return
 		end
-		return true
+
+		client.config.settings.Lua = vim.tbl_deep_extend("force", client.config.settings.Lua, {
+			runtime = {
+				-- Tell the language server which version of Lua you're using
+				-- (most likely LuaJIT in the case of Neovim)
+				version = "LuaJIT",
+			},
+			-- Make the server aware of Neovim runtime files
+			workspace = {
+				checkThirdParty = false,
+				library = {
+					vim.env.VIMRUNTIME,
+					-- Depending on the usage, you might want to add additional paths here.
+					-- "${3rd}/luv/library"
+					-- "${3rd}/busted/library",
+				},
+				-- or pull in all of 'runtimepath'. NOTE: this is a lot slower
+				-- library = vim.api.nvim_get_runtime_file("", true)
+			},
+		})
 	end,
 })
-lspconfig.nil_ls.setup({})
-lspconfig.terraformls.setup({})
-lspconfig.csharp_ls.setup({})
-lspconfig.nushell.setup({})
-lspconfig.jdtls.setup({})
-lspconfig.phpactor.setup({})
-lspconfig.ts_ls.setup({})
-lspconfig.basedpyright.setup({})
-lspconfig.pest_ls.setup({})
 
 vim.keymap.set("n", "<space>e", vim.diagnostic.open_float)
 vim.keymap.set("n", "[d", vim.diagnostic.goto_prev)
