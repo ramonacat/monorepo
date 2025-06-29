@@ -10,6 +10,7 @@
       plugins = with pkgs.vimPlugins; [
         auto-save-nvim
         blink-cmp
+        friendly-snippets
         kanagawa-nvim
         neo-tree-nvim
         nvim-lspconfig
