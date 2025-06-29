@@ -25,14 +25,17 @@
       url = "github:ryantm/agenix";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+
     nix-minecraft = {
       url = "github:Infinidoge/nix-minecraft";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+
     rust-overlay = {
       url = "github:oxalica/rust-overlay";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+
     nixpkgs = {
       url = "nixpkgs/nixos-unstable-small";
     };
@@ -241,7 +244,6 @@
           ./machines/hallewell/ratweb2.nix
           ./machines/hallewell/syncthing.nix
           ./machines/hallewell/tempo.nix
-          ./machines/hallewell/users/ramona.nix
           ./machines/hallewell/znc.nix
           ./modules/bcachefs.nix
           ./modules/installed-base.nix
