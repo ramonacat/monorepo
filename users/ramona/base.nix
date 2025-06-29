@@ -5,7 +5,7 @@
 }: {
   config = {
     home-manager.useGlobalPkgs = true;
-    home-manager.users.ramona = import ./home-manager/base.nix {inherit pkgs lib;};
+    home-manager.users.ramona = import ./home-manager.nix {inherit pkgs lib;};
 
     users.users.ramona = {
       isNormalUser = true;
