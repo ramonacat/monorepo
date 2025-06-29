@@ -1,6 +1,6 @@
 package.path = package.path .. ";" .. "~/.config/nvim/?.lua"
 
-require("ramona/cmp")
+require("ramona/blink")
 require("ramona/lsp")
 require("ramona/neo-tree")
 require("ramona/telescope")
