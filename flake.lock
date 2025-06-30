@@ -171,15 +171,15 @@
     "lix": {
       "flake": false,
       "locked": {
-        "lastModified": 1750762203,
-        "narHash": "sha256-LmQhjQ7c+AOkwhvR9GFgJOy8oHW35MoQRELtrwyVnPw=",
-        "rev": "38b358ce27203f972faa2973cf44ba80c758f46e",
+        "lastModified": 1751237967,
+        "narHash": "sha256-fP6SXT5WUEAEoMvr2j3kdorGvLphWRjlLJIrgeoWMyI=",
+        "rev": "f10ca0d677f02b96d24917cd00ee4b5da1e18b1a",
         "type": "tarball",
-        "url": "https://git.lix.systems/api/v1/repos/lix-project/lix/archive/38b358ce27203f972faa2973cf44ba80c758f46e.tar.gz?rev=38b358ce27203f972faa2973cf44ba80c758f46e"
+        "url": "https://git.lix.systems/api/v1/repos/lix-project/lix/archive/f10ca0d677f02b96d24917cd00ee4b5da1e18b1a.tar.gz?rev=f10ca0d677f02b96d24917cd00ee4b5da1e18b1a"
       },
       "original": {
         "type": "tarball",
-        "url": "https://git.lix.systems/lix-project/lix/archive/release-2.93.tar.gz"
+        "url": "https://git.lix.systems/lix-project/lix/archive/release-2.92.tar.gz"
       }
     },
     "lix-module": {
@@ -192,15 +192,15 @@
         ]
       },
       "locked": {
-        "lastModified": 1751240025,
-        "narHash": "sha256-SXUAlxpjPRkArRMHy5+Hdi+PiC+ND9yzzIjiaHmTvQU=",
-        "rev": "8b1094356f4723d6e89d3f8a95b333ee16d9ab02",
+        "lastModified": 1751239988,
+        "narHash": "sha256-/yAP5zHAs5hT3NUYWaKnVuaLuxVLDMmn3jPdWAMOVNo=",
+        "rev": "91b03e3ace9005f50b2fbe81d2533d988e19df6e",
         "type": "tarball",
-        "url": "https://git.lix.systems/api/v1/repos/lix-project/nixos-module/archive/8b1094356f4723d6e89d3f8a95b333ee16d9ab02.tar.gz?rev=8b1094356f4723d6e89d3f8a95b333ee16d9ab02"
+        "url": "https://git.lix.systems/api/v1/repos/lix-project/nixos-module/archive/91b03e3ace9005f50b2fbe81d2533d988e19df6e.tar.gz?rev=91b03e3ace9005f50b2fbe81d2533d988e19df6e"
       },
       "original": {
         "type": "tarball",
-        "url": "https://git.lix.systems/lix-project/nixos-module/archive/2.93.2-1.tar.gz"
+        "url": "https://git.lix.systems/lix-project/nixos-module/archive/2.92.3-1.tar.gz"
       }
     },
     "nix-minecraft": {
