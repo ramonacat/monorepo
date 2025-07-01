@@ -1,4 +1,4 @@
-package.path = package.path .. ";" .. "~/.config/nvim/?.lua"
+package.path = package.path .. ";" .. "/home/ramona/.config/nvim/?.lua"
 
 require("ramona/blink")
 require("ramona/lsp")

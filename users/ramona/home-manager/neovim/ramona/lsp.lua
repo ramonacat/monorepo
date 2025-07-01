@@ -1,4 +1,8 @@
-local capabilities = require("cmp_nvim_lsp").default_capabilities()
+local capabilities = require("blink-cmp").get_lsp_capabilities()
+
+vim.lsp.config("*", {
+	capabilities = capabilities,
+})
 
 vim.lsp.enable("rust_analyzer")
 vim.lsp.enable("lua_ls")
@@ -11,16 +15,16 @@ vim.lsp.enable("phpactor")
 vim.lsp.enable("ts_ls")
 vim.lsp.enable("basedpyright")
 vim.lsp.enable("pest_ls")
-vim.lsp.config("rust_analyzer", {
-	capabilities = capabilities,
-})
 vim.lsp.config("lua_ls", {
 	on_init = function(client)
 		if client.workspace_folders then
 			local path = client.workspace_folders[1].name
 			if
-				path ~= vim.fn.stdpath("config")
-				and (vim.uv.fs_stat(path .. "/.luarc.json") or vim.uv.fs_stat(path .. "/.luarc.jsonc"))
+				-- this is kinda hacky, but I always store my checkouts in ~/Projects so it should be fine
+				(
+					path ~= vim.fn.stdpath("config")
+					and path ~= "/home/ramona/Projects/monorepo/users/ramona/home-manager/neovim/"
+				) and (vim.uv.fs_stat(path .. "/.luarc.json") or vim.uv.fs_stat(path .. "/.luarc.jsonc"))
 			then
 				return
 			end
