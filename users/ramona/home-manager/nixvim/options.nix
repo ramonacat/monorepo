@@ -11,7 +11,15 @@ _: {
         shiftwidth = 4;
         relativenumber = true;
         autoread = true;
+        updatetime = 100;
       };
+      autoCmd = [
+        {
+          event = ["CursorHold"];
+          pattern = "*";
+          command = "checktime";
+        }
+      ];
     };
   };
 }
