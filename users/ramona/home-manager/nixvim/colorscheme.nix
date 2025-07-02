@@ -7,8 +7,6 @@ _: {
       };
 
       highlight = {
-        Normal.guibg = "none";
-        NonText.guibg = "none";
         Normal.ctermbg = "none";
         NonText.ctermbg = "none";
       };
