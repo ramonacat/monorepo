@@ -1,30 +1,17 @@
-{pkgs, ...}: {
-  config = {
-    programs.neovim = {
-      enable = true;
-      viAlias = true;
-      vimAlias = true;
-      vimdiffAlias = true;
-      defaultEditor = true;
-
-      plugins = with pkgs.vimPlugins; [
-        auto-save-nvim
-        blink-cmp
-        friendly-snippets
-        kanagawa-nvim
-        neo-tree-nvim
-        nvim-lspconfig
-        nvim-treesitter-context
-        nvim-treesitter.withAllGrammars
-        pest-vim
-        telescope-nvim
-      ];
-      extraLuaConfig = ":luafile ~/.config/nvim/init.lua";
-    };
-
-    home.file."./.config/nvim/" = {
-      source = ./neovim;
-      recursive = true;
-    };
-  };
+_: {
+  imports = [
+    ./nixvim.nix
+    ./nixvim/colorscheme.nix
+    ./nixvim/diagnostics.nix
+    ./nixvim/options.nix
+    ./nixvim/plugins/auto-save-nvim.nix
+    ./nixvim/plugins/blink-cmp.nix
+    ./nixvim/plugins/friendly-snippets.nix
+    ./nixvim/plugins/lsp.nix
+    ./nixvim/plugins/mini.nix
+    ./nixvim/plugins/neo-tree.nix
+    ./nixvim/plugins/telescope.nix
+    ./nixvim/plugins/treesitter-context.nix
+    ./nixvim/plugins/treesitter.nix
+  ];
 }
