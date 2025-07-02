@@ -6,6 +6,7 @@ _: {
         preset = "super-tab";
         "<C-Space>" = false;
         "<C-p>" = ["show"];
+        "<CR>" = ["accept" "fallback"];
       };
     };
   };
