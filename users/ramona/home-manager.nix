@@ -42,6 +42,7 @@
               set -g @kanagawa-theme 'dragon'
               set -g @kanagawa-plugins 'time'
               set -g @kanagawa-show-powerline true
+              set -g @kanagawa-ignore-window-colors true
             '';
           }
         ];
