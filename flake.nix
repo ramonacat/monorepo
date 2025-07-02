@@ -36,6 +36,12 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
+    nixvim = {
+      url = "github:nix-community/nixvim";
+
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
     nixpkgs = {
       url = "nixpkgs/nixos-unstable-small";
     };
@@ -49,6 +55,7 @@
     nix-minecraft,
     nixos-generators,
     nixpkgs,
+    nixvim,
     rust-overlay,
     self,
     ...
@@ -112,14 +119,11 @@
       targets = ["wasm32-unknown-unknown"];
     };
 
-    shellScripts =
-      builtins.concatStringsSep
-      " "
-      (
-        builtins.filter
-        (x: pkgs.lib.hasSuffix ".sh" x && !(pkgs.lib.strings.hasInfix "/vendor/" x))
-        (pkgs.lib.filesystem.listFilesRecursive (pkgs.lib.cleanSource ./.))
-      );
+    shellScripts = builtins.concatStringsSep " " (
+      builtins.filter (x: pkgs.lib.hasSuffix ".sh" x && !(pkgs.lib.strings.hasInfix "/vendor/" x)) (
+        pkgs.lib.filesystem.listFilesRecursive (pkgs.lib.cleanSource ./.)
+      )
+    );
   in {
     formatter.x86_64-linux = pkgs.alejandra;
     checks.x86_64-linux =
@@ -150,20 +154,36 @@
           touch $out
         '';
       }
-      // (pkgs.lib.mergeAttrsList (pkgs.lib.mapAttrsToList (_: value: (value {inherit craneLib pkgs;}).checks) libraries))
-      // (pkgs.lib.mergeAttrsList (pkgs.lib.mapAttrsToList (_: value: (value {inherit craneLib pkgs;}).checks) packages));
+      // (pkgs.lib.mergeAttrsList (
+        pkgs.lib.mapAttrsToList (_: value: (value {inherit craneLib pkgs;}).checks) libraries
+      ))
+      // (pkgs.lib.mergeAttrsList (
+        pkgs.lib.mapAttrsToList (_: value: (value {inherit craneLib pkgs;}).checks) packages
+      ));
     packages.x86_64-linux =
       rec {
         coverage = let
-          paths = pkgs.lib.mapAttrsToList (_: value: (value {inherit craneLib pkgs;}).coverage) (libraries // packages);
+          paths = pkgs.lib.mapAttrsToList (_: value: (value {inherit craneLib pkgs;}).coverage) (
+            libraries // packages
+          );
         in
-          pkgs.runCommand "coverage" {} ("mkdir $out\n" + (pkgs.lib.concatStringsSep "\n" (builtins.map (p: "ln -s ${p} $out/${p.name}") paths)) + "\n");
+          pkgs.runCommand "coverage" {} (
+            "mkdir $out\n"
+            + (pkgs.lib.concatStringsSep "\n" (builtins.map (p: "ln -s ${p} $out/${p.name}") paths))
+            + "\n"
+          );
         everything = let
-          allClosures = builtins.mapAttrs (_: value: value.config.system.build.toplevel) self.nixosConfigurations;
+          allClosures =
+            builtins.mapAttrs (
+              _: value: value.config.system.build.toplevel
+            )
+            self.nixosConfigurations;
         in
           pkgs.runCommand "everything" {} (
             "mkdir -p $out/hosts\n"
-            + (pkgs.lib.concatStringsSep "\n" (pkgs.lib.mapAttrsToList (k: p: "ln -s ${p} $out/hosts/${k}") allClosures))
+            + (pkgs.lib.concatStringsSep "\n" (
+              pkgs.lib.mapAttrsToList (k: p: "ln -s ${p} $out/hosts/${k}") allClosures
+            ))
             + "\nln -s ${self.nixosConfigurations.iso.config.system.build.isoImage} $out/iso\n"
           );
         default = coverage;
@@ -204,8 +224,14 @@
           '';
         })
         (rust-bin.stable.latest.default.override {
-          extensions = ["rust-src" "llvm-tools-preview"];
-          targets = ["aarch64-unknown-linux-gnu" "wasm32-unknown-unknown"];
+          extensions = [
+            "rust-src"
+            "llvm-tools-preview"
+          ];
+          targets = [
+            "aarch64-unknown-linux-gnu"
+            "wasm32-unknown-unknown"
+          ];
         })
       ];
       LIBCLANG_PATH = "${pkgs.libclang.lib}/lib";
@@ -214,6 +240,8 @@
       inherit pkgs;
 
       modules = [
+        nixvim.homeModules.nixvim
+
         ./users/ramona/home-manager/base.nix
         ./users/ramona/home-manager/wsl.nix
       ];
@@ -226,6 +254,8 @@
           lix-module.nixosModules.default
           home-manager.nixosModules.home-manager
           agenix.nixosModules.default
+          nixvim.nixosModules.nixvim
+          {home-manager.sharedModules = [nixvim.homeModules.nixvim];}
 
           (import ./modules/base.nix {inherit nixpkgs;})
 
@@ -263,6 +293,8 @@
           home-manager.nixosModules.home-manager
           agenix.nixosModules.default
           nix-minecraft.nixosModules.minecraft-servers
+          nixvim.nixosModules.nixvim
+          {home-manager.sharedModules = [nixvim.homeModules.nixvim];}
 
           (import ./modules/base.nix {inherit nixpkgs;})
           ./machines/blackwood/backup-target.nix
@@ -290,6 +322,8 @@
           lix-module.nixosModules.default
           home-manager.nixosModules.home-manager
           agenix.nixosModules.default
+          nixvim.nixosModules.nixvim
+          {home-manager.sharedModules = [nixvim.homeModules.nixvim];}
 
           (import ./modules/base.nix {inherit nixpkgs;})
 
@@ -313,6 +347,8 @@
         modules = [
           home-manager.nixosModules.home-manager
           nixos-generators.nixosModules.all-formats
+          nixvim.nixosModules.nixvim
+          {home-manager.sharedModules = [nixvim.homeModules.nixvim];}
 
           "${nixpkgs}/nixos/modules/installer/cd-dvd/installation-cd-minimal.nix"
 

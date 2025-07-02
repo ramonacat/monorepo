@@ -3,7 +3,9 @@
   lib,
   ...
 }: {
-  imports = [./home-manager/neovim.nix];
+  imports = [
+    ./home-manager/neovim.nix
+  ];
   config = {
     home = {
       homeDirectory = "/home/ramona";
