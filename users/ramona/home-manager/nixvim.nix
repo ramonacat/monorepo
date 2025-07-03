@@ -6,5 +6,6 @@ _: {
       vimAlias = true;
       vimdiffAlias = true;
     };
+    home.sessionVariables.EDITOR = "vim";
   };
 }
