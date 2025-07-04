@@ -10,6 +10,7 @@ _: {
     ./nixvim/plugins/lsp.nix
     ./nixvim/plugins/mini.nix
     ./nixvim/plugins/neo-tree.nix
+    ./nixvim/plugins/rainbow-delimiters.nix
     ./nixvim/plugins/telescope.nix
     ./nixvim/plugins/treesitter-context.nix
     ./nixvim/plugins/treesitter.nix
