@@ -6,6 +6,8 @@ _: {
     ./nixvim/options.nix
     ./nixvim/plugins/auto-save-nvim.nix
     ./nixvim/plugins/blink-cmp.nix
+    ./nixvim/plugins/blink-compat.nix
+    ./nixvim/plugins/crates.nix
     ./nixvim/plugins/friendly-snippets.nix
     ./nixvim/plugins/lsp.nix
     ./nixvim/plugins/mini.nix
