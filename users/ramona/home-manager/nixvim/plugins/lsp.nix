@@ -30,7 +30,10 @@ _: {
         "<C-k>" = "signature_help";
         "<leader>D" = "type_definition";
         "<leader>rn" = "rename";
-        "<leader>ca" = "code_action";
+        "<leader>ca" = {
+          action = "code_action";
+          mode = ["v" "n"];
+        };
         gr = "references";
       };
       keymaps.extra = [
