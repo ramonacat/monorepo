@@ -15,6 +15,9 @@ _: {
             name = "crates";
             module = "blink.compat.source";
           };
+          friendly-snippets = {
+            score_offset = -100;
+          };
         };
       };
     };
