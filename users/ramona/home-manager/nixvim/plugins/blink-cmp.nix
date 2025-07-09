@@ -15,7 +15,7 @@ _: {
             name = "crates";
             module = "blink.compat.source";
           };
-          friendly-snippets = {
+          snippets = {
             score_offset = -100;
           };
         };
