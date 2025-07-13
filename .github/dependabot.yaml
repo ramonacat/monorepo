@@ -11,16 +11,6 @@ updates:
         dependency-type: "development"
 
   - package-ecosystem: "cargo"
-    directory: "apps/ananas-music-control"
-    schedule:
-      interval: "daily"
-    groups:
-      production-dependencies:
-        dependency-type: "production"
-      development-dependencies:
-        dependency-type: "development"
-
-  - package-ecosystem: "cargo"
     directory: "apps/hat"
     schedule:
       interval: "daily"

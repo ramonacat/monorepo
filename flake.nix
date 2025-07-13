@@ -61,7 +61,6 @@
     ...
   }: let
     packages = {
-      music-control = import ./packages/music-control.nix;
       rad = import ./packages/rad.nix;
       ras2 = import ./packages/ras2.nix;
       ratweb2 = import ./packages/ratweb2.nix;
