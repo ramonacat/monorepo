@@ -1,7 +1,7 @@
 {lib, ...}: {
   config = {
     boot = {
-      initrd.availableKernelModules = ["xhci_pci" "ahci" "nvme" "usbhid" "usb_storage" "sd_mod" "sr_mod" "bcache" "amdgpu"];
+      initrd.availableKernelModules = ["xhci_pci" "ahci" "nvme" "usbhid" "usb_storage" "sd_mod" "sr_mod" "bcache" "amdgpu" "e1000e"];
       initrd.kernelModules = [];
       kernelModules = ["kvm-intel" "vfio" "vfio_pci" "vfio_iommu_type1" "vfio_virqfd" "amdgpu" "i2c-dev"];
       kernelParams = ["systemd.setenv=SYSTEMD_SULOGIN_FORCE=1"];

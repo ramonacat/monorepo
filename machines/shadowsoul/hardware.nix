@@ -5,7 +5,7 @@
 }: {
   config = {
     boot = {
-      initrd.availableKernelModules = ["xhci_pci" "ahci" "nvme" "usbhid" "usb_storage" "sd_mod" "rtsx_usb_sdmmc"];
+      initrd.availableKernelModules = ["xhci_pci" "ahci" "nvme" "usbhid" "usb_storage" "sd_mod" "rtsx_usb_sdmmc" "e1000e" "igb"];
       initrd.kernelModules = [];
       kernelModules = ["kvm-intel"];
       extraModulePackages = [];

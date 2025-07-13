@@ -4,7 +4,7 @@
   ...
 }: {
   boot = {
-    initrd.availableKernelModules = ["xhci_pci" "ahci" "nvme" "sd_mod"];
+    initrd.availableKernelModules = ["xhci_pci" "ahci" "nvme" "sd_mod" "igb"];
     initrd.kernelModules = [];
     kernelModules = ["kvm-amd"];
     extraModulePackages = [];

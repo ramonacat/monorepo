@@ -4,6 +4,7 @@
   ...
 }: {
   imports = [
+    ./installed-base/initrd-ssh.nix
     ./installed-base/restic.nix
   ];
   config = {
