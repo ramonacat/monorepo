@@ -1,0 +1,4 @@
+{
+  ramona = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIJwvvTZjbvSDU7oK4B5VfsEBann7ktIVj5ShTWoFaGwH";
+  ramona-blackwood = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIGuk/H2BXE0SFDhei8ySnEz8BWoMYBQZRhliRe3ShWSP";
+}
