@@ -18,7 +18,7 @@ done
 echo "On branch: $BRANCH_NAME"
 if [[ "$BRANCH_NAME" == "main" ]]; then
     publish -- result/iso/iso/*.iso root@blackwood:/var/www/ramona.fun/builds/nixos-latest.iso
-    publish -- result/kexec-bundle root@blackwood:/var/www/ramona.fun/builds/kexec-bundle
+    publish -- result/kexec-bundle/* root@blackwood:/var/www/ramona.fun/builds/kexec-bundle
     publish -- *-closure root@blackwood:/var/www/ramona.fun/builds/
 
     for filename in *-closure; do
