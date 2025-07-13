@@ -25,8 +25,6 @@
       "/mnt/nas3" = {
         device = "/dev/disk/by-uuid/8f552709-24e3-4387-8183-23878c94d00b";
         fsType = "bcachefs";
-        noCheck = true;
-        neededForBoot = false;
       };
     };
 
