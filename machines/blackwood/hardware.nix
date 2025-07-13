@@ -12,7 +12,7 @@
   };
 
   fileSystems."/" = {
-    device = "UUID=2e2d43a4-a5ad-46fc-937d-e7c38d146dd1";
+    device = "/dev/disk/by-uuid/2e2d43a4-a5ad-46fc-937d-e7c38d146dd1";
     fsType = "bcachefs";
   };
 

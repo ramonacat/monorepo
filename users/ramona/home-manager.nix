@@ -21,6 +21,9 @@
         rustup
         irssi
         github-cli
+        htop
+        iftop
+        strace
       ];
     };
     services.gpg-agent.pinentry.package = lib.mkDefault pkgs.pinentry-curses;
@@ -63,37 +66,46 @@
             C-l resize-pane -R 1
         '';
       };
+
       home-manager = {
         enable = true;
       };
+
       gh = {
         enable = true;
       };
-    };
 
-    programs.direnv.enable = true;
-
-    programs = {
       bash = {
         enable = true;
       };
-    };
 
-    programs.git = {
-      enable = true;
-      userName = "Ramona Łuczkiewicz";
-      userEmail = "ja@agares.info";
-      aliases = {
-        st = "status -sb";
-        cleanbr = "! git branch -d `git branch --merged | grep -v '^*\\|main\\|master\\|staging\\|devel'`";
+      direnv.enable = true;
+
+      git = {
+        enable = true;
+        userName = "Ramona Łuczkiewicz";
+        userEmail = "ja@agares.info";
+        maintenance = {
+          enable = true;
+          repositories = ["/home/ramona/Projects/monorepo/" "/home/ramona/Projects/ligeia"];
+        };
+        aliases = {
+          st = "status -sb";
+          cleanbr = "! git branch -d `git branch --merged | grep -v '^*\\|main\\|master\\|staging\\|devel'`";
+        };
+        extraConfig = {
+          push = {
+            autoSetupRemote = true;
+          };
+          init = {
+            defaultBranch = "main";
+          };
+        };
       };
-      extraConfig = {
-        push = {
-          autoSetupRemote = true;
-        };
-        init = {
-          defaultBranch = "main";
-        };
+
+      starship = {
+        enable = true;
+        enableBashIntegration = true;
       };
     };
   };
