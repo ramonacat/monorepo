@@ -4,7 +4,8 @@
   ...
 }: {
   imports = [
-    ./home-manager/neovim.nix
+    ./home-manager/atuin.nix
+    ./home-manager/nixvim.nix
   ];
   config = {
     home = {
