@@ -9,7 +9,6 @@
   config = {
     services = {
       openssh = {
-        enable = true;
         openFirewall = false;
       };
       fwupd.enable = lib.mkDefault true;

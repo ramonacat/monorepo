@@ -2,6 +2,10 @@
 set -x
 set -euo pipefail
 
+function publish {
+    scp -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -i ./id_ed25519 "$@"
+}
+
 BRANCH_NAME=$1
 
 nix build -L -v ".#everything"
@@ -13,9 +17,9 @@ done
 
 echo "On branch: $BRANCH_NAME"
 if [[ "$BRANCH_NAME" == "main" ]]; then
-    scp -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -i ./id_ed25519 -- result/iso/iso/*.iso root@blackwood:/var/www/ramona.fun/builds/nixos-latest.iso
-
-    scp -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -i ./id_ed25519 -- *-closure root@blackwood:/var/www/ramona.fun/builds/
+    publish -- result/iso/iso/*.iso root@blackwood:/var/www/ramona.fun/builds/nixos-latest.iso
+    publish -- result/kexec-bundle root@blackwood:/var/www/ramona.fun/builds/kexec-bundle
+    publish -- *-closure root@blackwood:/var/www/ramona.fun/builds/
 
     for filename in *-closure; do
         CLOSURE=$(tr -d "\n" < "$filename")
