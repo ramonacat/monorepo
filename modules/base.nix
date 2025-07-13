@@ -12,6 +12,7 @@
   config = let
     nixpkgsPath = "/etc/channels/nixpkgs";
   in {
+    services.openssh.enable = true;
     # this service does nothing useful but breaks rebuilds if it's restarted
     # https://github.com/NixOS/nixpkgs/issues/180175
     systemd.services.NetworkManager-wait-online.enable = lib.mkForce false;

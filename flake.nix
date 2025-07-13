@@ -185,6 +185,7 @@
               pkgs.lib.mapAttrsToList (k: p: "ln -s ${p} $out/hosts/${k}") allClosures
             ))
             + "\nln -s ${self.nixosConfigurations.iso.config.system.build.isoImage} $out/iso\n"
+            + "\nln -s ${self.nixosConfigurations.iso.config.formats.kexec-bundle} $out/kexec-bundle\n"
           );
         default = coverage;
       }
@@ -363,8 +364,8 @@
 
           (import ./modules/base.nix {inherit nixpkgs;})
 
+          ./machines/iso/filesystems.nix
           ./modules/bcachefs.nix
-          ./modules/iso.nix
           ./users/ramona/base.nix
           ./users/root/base.nix
         ];
