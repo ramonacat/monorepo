@@ -15,4 +15,5 @@ return ECSConfig::configure()
             'import_constants' => true,
             'import_functions' => true,
         ]
-    );
+    )
+    ->withSkip([\Symplify\CodingStandard\Fixer\Annotation\RemovePropertyVariableNameDescriptionFixer::class]);
