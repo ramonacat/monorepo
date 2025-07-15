@@ -238,15 +238,15 @@
     "lix": {
       "flake": false,
       "locked": {
-        "lastModified": 1751237967,
-        "narHash": "sha256-fP6SXT5WUEAEoMvr2j3kdorGvLphWRjlLJIrgeoWMyI=",
-        "rev": "f10ca0d677f02b96d24917cd00ee4b5da1e18b1a",
+        "lastModified": 1752542447,
+        "narHash": "sha256-ScJapbIV3lJa6NdCE2VtATMPtBvga6QDQ8f8jtTBVBs=",
+        "rev": "f4a11d0336478cc90802dae757267b85af587457",
         "type": "tarball",
-        "url": "https://git.lix.systems/api/v1/repos/lix-project/lix/archive/f10ca0d677f02b96d24917cd00ee4b5da1e18b1a.tar.gz?rev=f10ca0d677f02b96d24917cd00ee4b5da1e18b1a"
+        "url": "https://git.lix.systems/api/v1/repos/lix-project/lix/archive/f4a11d0336478cc90802dae757267b85af587457.tar.gz?rev=f4a11d0336478cc90802dae757267b85af587457"
       },
       "original": {
         "type": "tarball",
-        "url": "https://git.lix.systems/lix-project/lix/archive/release-2.92.tar.gz"
+        "url": "https://git.lix.systems/lix-project/lix/archive/main.tar.gz"
       }
     },
     "lix-module": {
@@ -259,15 +259,15 @@
         ]
       },
       "locked": {
-        "lastModified": 1751239988,
-        "narHash": "sha256-/yAP5zHAs5hT3NUYWaKnVuaLuxVLDMmn3jPdWAMOVNo=",
-        "rev": "91b03e3ace9005f50b2fbe81d2533d988e19df6e",
+        "lastModified": 1751909859,
+        "narHash": "sha256-gbpuESxl/An4GTh7QEbQRYJozVIxWkwVGbWK0/0GoRc=",
+        "rev": "4d4c2b8f0a801c91ce5b717c77fe3a17efa1402f",
         "type": "tarball",
-        "url": "https://git.lix.systems/api/v1/repos/lix-project/nixos-module/archive/91b03e3ace9005f50b2fbe81d2533d988e19df6e.tar.gz"
+        "url": "https://git.lix.systems/api/v1/repos/lix-project/nixos-module/archive/4d4c2b8f0a801c91ce5b717c77fe3a17efa1402f.tar.gz?rev=4d4c2b8f0a801c91ce5b717c77fe3a17efa1402f"
       },
       "original": {
         "type": "tarball",
-        "url": "https://git.lix.systems/lix-project/nixos-module/archive/2.92.3-1.tar.gz"
+        "url": "https://git.lix.systems/lix-project/nixos-module/archive/main.tar.gz"
       }
     },
     "nix-minecraft": {
