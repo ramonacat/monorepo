@@ -12,7 +12,7 @@
     };
 
     lix-module = {
-      url = "https://git.lix.systems/lix-project/nixos-module/archive/2.92.3-1.tar.gz";
+      url = "https://git.lix.systems/lix-project/nixos-module/archive/main.tar.gz";
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
@@ -77,6 +77,7 @@
         craneLib,
       }: (_: prev: {
         agenix = agenix.packages."${architecture}-linux".default;
+
         ramona =
           prev.lib.mapAttrs' (name: value: {
             name = "${name}";
@@ -95,10 +96,6 @@
     pkgsConfig = {
       allowUnfree = true;
       android_sdk.accept_license = true;
-      permittedInsecurePackages = [
-        "dotnet-sdk-6.0.428"
-        "aspnetcore-runtime-6.0.36"
-      ];
     };
     pkgs = import nixpkgs {
       overlays = overlays.x86_64;
@@ -106,8 +103,8 @@
       config =
         pkgsConfig
         // {
-          # Dark magic for transcoding acceleration on hallewell
           packageOverrides = pkgs: {
+            # Dark magic for transcoding acceleration on hallewell
             vaapiIntel = pkgs.vaapiIntel.override {enableHybridCodec = true;};
           };
         };
