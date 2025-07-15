@@ -12,7 +12,7 @@
     };
 
     lix-module = {
-      url = "https://git.lix.systems/lix-project/nixos-module/archive/2.92.3-1.tar.gz";
+      url = "https://git.lix.systems/lix-project/nixos-module/archive/main.tar.gz";
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
@@ -77,6 +77,7 @@
         craneLib,
       }: (_: prev: {
         agenix = agenix.packages."${architecture}-linux".default;
+
         ramona =
           prev.lib.mapAttrs' (name: value: {
             name = "${name}";
@@ -106,8 +107,8 @@
       config =
         pkgsConfig
         // {
-          # Dark magic for transcoding acceleration on hallewell
           packageOverrides = pkgs: {
+            # Dark magic for transcoding acceleration on hallewell
             vaapiIntel = pkgs.vaapiIntel.override {enableHybridCodec = true;};
           };
         };
