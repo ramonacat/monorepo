@@ -205,7 +205,7 @@
         udev.dev
         postgresql_16
         nil
-        nodejs_22
+        nodePackages_latest.nodejs
         phpactor
 
         php84Packages.composer

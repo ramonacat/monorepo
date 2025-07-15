@@ -42,7 +42,7 @@ in rec {
   checks = {
     "${package.name}--ecs" =
       pkgs.runCommand "${devPackage.name}--ecs" {
-        buildInputs = [devPhp pkgs.bash pkgs.nodejs_22];
+        buildInputs = [devPhp pkgs.bash pkgs.nodePackages_latest.nodejs];
       } ''
         mkdir $out
         cp -r ${devPackage}/share/php/ras2/* $out/

@@ -11,15 +11,15 @@
       cp -r ./* $out/
     '';
     dontInstall = true;
-    nodejs = pkgs.nodejs_22;
 
+    inherit (pkgs.nodePackages_latest) nodejs;
     inherit (pkgs.importNpmLock) npmConfigHook;
   };
 in rec {
   package = pkgs.writeShellScriptBin "ratweb2" ''
-    ${pkgs.nodejs_22}/bin/node ${rawPackage}/build
+    ${pkgs.nodePackages_latest.nodejs}/bin/node ${rawPackage}/build
   '';
-  coverage = pkgs.runCommand "${package.name}--coverage" {nativeBuildInputs = [pkgs.nodejs_22];} ''
+  coverage = pkgs.runCommand "${package.name}--coverage" {nativeBuildInputs = [pkgs.nodePackages_latest.nodejs];} ''
     cp -r ${rawPackage}/* .
     chmod -R a+w ./node_modules/.vite-temp
     chmod a+w ./node_modules/
@@ -30,7 +30,7 @@ in rec {
     mv coverage/clover.xml $out
   '';
   checks = {
-    "${package.name}--check" = pkgs.runCommand "${package.name}--checks" {nativeBuildInputs = [pkgs.nodejs_22];} ''
+    "${package.name}--check" = pkgs.runCommand "${package.name}--checks" {nativeBuildInputs = [pkgs.nodePackages_latest.nodejs];} ''
       cp -r ${rawPackage}/* .
       chmod -R a+w ./node_modules/.vite-temp
       npm run check
