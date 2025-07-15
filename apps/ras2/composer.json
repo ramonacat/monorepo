@@ -44,7 +44,7 @@
         "nikic/php-parser": "^5.1",
         "symfony/cache": "^7.1",
         "psr/simple-cache": "^1.0",
-        "mustache/mustache": "^2.14",
+        "mustache/mustache": "^3.0",
         "james-heinrich/getid3": "^1.9"
     },
     "require-dev": {
