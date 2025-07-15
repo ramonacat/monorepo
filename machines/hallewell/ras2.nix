@@ -4,7 +4,7 @@
   pkgs,
   ...
 }: let
-  phpPackage = pkgs.php83.buildEnv {
+  phpPackage = pkgs.php84.buildEnv {
     extensions = {
       enabled,
       all,

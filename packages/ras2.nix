@@ -1,16 +1,16 @@
 {pkgs, ...}: let
   packageAttributes = {
-    php = pkgs.php83;
+    php = pkgs.php84;
 
     pname = "ras2";
     version = "1.0.0";
 
     src = ../apps/ras2;
 
-    vendorHash = "sha256-giTXspfpL/R6R/Lgomo1tGWFCuEaLliXoviepmFbmAM=";
+    vendorHash = "sha256-AaWQdJW2RwTkKDgWwzDrEqTZOXTmowYlqhQ2p6RO8sY=";
     composerNoPlugins = false;
   };
-  devPhp = pkgs.php83.buildEnv {
+  devPhp = pkgs.php84.buildEnv {
     extensions = {
       enabled,
       all,
