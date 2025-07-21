@@ -14,7 +14,7 @@
         };
 
         folders = {
-          shared.path = lib.mkForce "/mnt/nas3/data/shared/";
+          shared.path = lib.mkForce "/mnt/nas3/data/ramona/shared/";
           dls = {
             id = "trnsmsn-dls";
             path = "/mnt/nas3/dls/";
