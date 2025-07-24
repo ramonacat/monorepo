@@ -56,7 +56,6 @@
             server = "tcp4://:6514";
           };
           smart = {
-            use_sudo = true;
             path_smartctl = "${smartctl_script}";
             path_nvme = "${nvme_script}";
             enable_extensions = ["auto-on"];
