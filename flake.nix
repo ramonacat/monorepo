@@ -271,6 +271,7 @@
           ./machines/hallewell/atuin-server.nix
           ./machines/hallewell/grafana.nix
           ./machines/hallewell/hardware.nix
+          ./machines/hallewell/minecraft.nix
           ./machines/hallewell/minio.nix
           ./machines/hallewell/nas.nix
           ./machines/hallewell/navidrome.nix
@@ -311,9 +312,7 @@
 
           ./machines/blackwood/backup-target.nix
           ./machines/blackwood/hardware.nix
-          ./machines/blackwood/minecraft.nix
           ./machines/blackwood/networking.nix
-          ./machines/blackwood/postgresql.nix
           ./modules/bcachefs.nix
           ./modules/installed-base.nix
           ./modules/minecraft.nix
