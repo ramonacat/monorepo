@@ -29,7 +29,7 @@
               exit;
           fi;
 
-          PATH="${pkgs.openssh}/bin:$PATH" NIX_SSHOPTS="-i ${config.age.secrets.universal-root.path} -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null" ${pkgs.nix}/bin/nix-copy-closure --from root@blackwood "$CLOSURE"
+          PATH="${pkgs.openssh}/bin:$PATH" NIX_SSHOPTS="-i ${config.age.secrets.universal-root.path} -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null" ${pkgs.nix}/bin/nix-copy-closure --from root@hallewell "$CLOSURE"
           $CLOSURE/bin/switch-to-configuration switch
           ${pkgs.nix}/bin/nix-env --profile /nix/var/nix/profiles/system --set $CLOSURE
         '';
