@@ -17,6 +17,9 @@
       paths = [
         "/mnt/nas3/data/"
       ];
+      exclude = [
+        "/mnt/nas3/data/Movies/"
+      ];
       pruneOpts = [
         "--keep-hourly 24"
         "--keep-daily 7"
