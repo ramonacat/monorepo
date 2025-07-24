@@ -24,11 +24,11 @@
         users = ["telegraf"];
         commands = [
           {
-            command = "${smartctl_script}";
+            command = "${pkgs.smartmontools}/bin/smartctl";
             options = ["NOPASSWD"];
           }
           {
-            command = "${nvme_script}";
+            command = "${pkgs.nvme-cli}/bin/nvme";
             options = ["NOPASSWD"];
           }
         ];
