@@ -7,9 +7,6 @@ namespace Ramona\Ras2\SharedCore\Infrastructure\CQRS\Query;
 use Psr\Container\ContainerInterface;
 use ReflectionClass;
 
-/**
- * @psalm-suppress UnusedClass
- */
 final class DefaultQueryBus implements QueryBus
 {
     /**
@@ -32,6 +29,7 @@ final class DefaultQueryBus implements QueryBus
      */
     public function installExecutor(string $queryType, Executor $executor): void
     {
+        /** @phpstan-ignore assign.propertyType */
         $this->executors[$queryType] = $executor;
     }
 

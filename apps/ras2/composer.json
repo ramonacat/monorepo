@@ -52,7 +52,6 @@
         "symplify/easy-coding-standard": "^12.3",
         "phpstan/phpstan-strict-rules": "^2",
         "phpstan/extension-installer": "^1.4",
-        "psalm/phar": "^6.0",
         "phpunit/phpunit": "^11.0",
         "infection/infection": "^0.30",
         "thecodingmachine/phpstan-safe-rule": "^1.3",

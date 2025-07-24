@@ -1,16 +1,17 @@
 {pkgs, ...}: let
+  php = pkgs.php84;
   packageAttributes = {
-    php = pkgs.php84;
+    inherit php;
 
     pname = "ras2";
     version = "1.0.0";
 
     src = ../apps/ras2;
 
-    vendorHash = "sha256-AaWQdJW2RwTkKDgWwzDrEqTZOXTmowYlqhQ2p6RO8sY=";
+    vendorHash = "sha256-9021EknMKrbIJR/3WTvbke0ZCcvxMUQav9U+Gapvv0g=";
     composerNoPlugins = false;
   };
-  devPhp = pkgs.php84.buildEnv {
+  devPhp = php.buildEnv {
     extensions = {
       enabled,
       all,
@@ -21,15 +22,14 @@
       memory_limit=1G
     '';
   };
-  devPackage = pkgs.php.buildComposerProject (_: ({
+  devPackage = php.buildComposerProject (_: ({
       composerNoDev = false;
       composerNoScripts = false;
       php = devPhp;
     }
     // packageAttributes));
 in rec {
-  package = pkgs.php.buildComposerProject (_: packageAttributes);
-  # FIXME: actually get the coverage here...
+  package = php.buildComposerProject (_: packageAttributes);
   coverage = let
     rawCoverage = pkgs.runCommand "${package.name}--coverage" {buildInputs = [devPhp];} "
   cd ${devPackage}/share/php/ras2/
@@ -43,23 +43,19 @@ in rec {
     "${package.name}--ecs" =
       pkgs.runCommand "${devPackage.name}--ecs" {
         buildInputs = [devPhp pkgs.bash pkgs.nodePackages_latest.nodejs];
-      } ''
-        mkdir $out
+      }
+      ''
+        mkdir -p $out
+
         cp -r ${devPackage}/share/php/ras2/* $out/
+
         cd $out/
 
-        # this is an awful hack
-        # We generally want to allow nix to patch shebangs, but phars can have signatures
-        # So we restore the shebangs for phars manually here, so the signatures match
-        chmod a+w vendor/phpstan/phpstan/
-        chmod a+w vendor/phpstan/phpstan/phpstan.phar
-        sed -i "1s/.*/#!\\/usr\\/bin\\/env php/" vendor/phpstan/phpstan/phpstan.phar
-
-        chmod a+w vendor/psalm/phar/
-        chmod a+w vendor/psalm/phar/psalm.phar
-        sed -i "1s/.*/#!\\/usr\\/bin\\/env php/" vendor/psalm/phar/psalm.phar
-
-        bash ${../apps/ras2/build.sh} --no-fix
+        php ./vendor/bin/ecs
+        # TODO this is causing: Fatal error: Uncaught PharException: manifest cannot be larger than 100 MB in phar "/nix/store/3axxd4wvid41yx5nvpmpiirn2rqw61vk-ras2-1.0.0--ecs/vendor/phpstan/phpstan/phpstan.phar" in /nix/store/3axxd4wvid41yx5nvpmpiirn2rqw61vk-ras2-1.0.0--ecs/vendor/phpstan/phpstan/phpstan:6
+        # php ./vendor/bin/phpstan
+        php ./vendor/bin/phpunit
+        php ./vendor/bin/infection --min-msi=73 --min-covered-msi=100 -j"$(nproc)"
       '';
   };
 }
