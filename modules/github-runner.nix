@@ -4,17 +4,17 @@
   lib,
   ...
 }: {
-  age.secrets.caligari-github-pat-runner-registration = {
-    file = ../../secrets/caligari-github-pat-runner-registration.age;
+  age.secrets.github-pat-runner-registration = {
+    file = ../secrets/github-pat-runner-registration.age;
   };
 
   services.github-runners = builtins.listToAttrs (builtins.map
     (i: {
-      name = "blackwood-${toString i}";
+      name = "${config.networking.hostName}-${toString i}";
       value = {
         enable = true;
         url = "https://github.com/ramonacat/monorepo";
-        tokenFile = config.age.secrets.caligari-github-pat-runner-registration.path;
+        tokenFile = config.age.secrets.github-pat-runner-registration.path;
         extraLabels = ["nixos"];
         extraPackages = with pkgs; [openssh];
         replace = true;
