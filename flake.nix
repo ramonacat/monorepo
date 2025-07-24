@@ -285,6 +285,7 @@
           ./machines/hallewell/tempo.nix
           ./machines/hallewell/znc.nix
           ./modules/bcachefs.nix
+          ./modules/github-runner.nix
           ./modules/installed-base.nix
           ./modules/rad.nix
           ./modules/syncthing.nix
@@ -307,7 +308,6 @@
 
           (import ./modules/base.nix {inherit nixpkgs;})
           ./machines/blackwood/backup-target.nix
-          ./machines/blackwood/github-runner.nix
           ./machines/blackwood/hardware.nix
           ./machines/blackwood/minecraft.nix
           ./machines/blackwood/networking.nix

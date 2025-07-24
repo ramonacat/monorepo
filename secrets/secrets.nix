@@ -8,7 +8,7 @@ let
   blackwood = "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAACAQDqwjKOzg1EP89c+MQOjR7tEPIR3I5qp8cptCw1K83qQW9+9ysaWuEcmpGszvot2t+KHXijHXxyBr2FdWWRUZWrZbF3fFWfEpWF3YALpxu0qJBuyFkPA077C2V6guPLCruMPOfBa8sklLqlgGZCDF8rhEUjw9uCRveTdqEpDv9u1A1uR3txh4lecbU4PmvSZ4vlvSlBOwEvGrgMF5Y23c5j6lxy/165vtY3JQsaQDQkEpBLI2mtyuVMxOV1pKOCtZf62gFuC5SpB9IC9uDUgY+KzDUfMxZFEiCS5j/WZjX+SxtG09iOf70OUJtVwfAKFdHgEM54r8gqvIC8506sKZsX72LKzBQMFkFNxXwd+JhUJrYWjUEcj0cd/8YxRPXvaVq4vPZpUAn60ZiBM7A/SJO9DPZoczP6tJG0bh4cuolmoei+KzujRTghSsEoL8WX02AL5il2bJfvRLODdSC+nmB2lQNUu8z+w6Z/he2jE2A9fR5fbuZgY2cw6wScAeVBL43bOqX5Q+7P9v2diceHqRIeEOrE+61vyCPuMp8cy93r8QM+lruoF7qfM/EusIN467BdxJNRqrNPTdd6GSSDMclLkdQ5qL5NHpz8qUqSwqT9ulWlzoyP+lRB/wFUxfdcgb6cDAl/ot6KhWgG9J1hzQfpnzmapAG8wCx+EzwrmjXaUQ== root@kexec";
   allMachines = [hallewell shadowsoul blackwood];
 in {
-  "caligari-github-pat-runner-registration.age".publicKeys = users ++ [blackwood];
+  "github-pat-runner-registration.age".publicKeys = users ++ [blackwood hallewell];
   "minio-root.age".publicKeys = users ++ [hallewell];
   "minio-tempo.age".publicKeys = users ++ [hallewell];
   "minio-terraform-state.age".publicKeys = users;
