@@ -1,10 +1,39 @@
-{config, ...}: {
-  config = {
+{
+  config,
+  pkgs,
+  ...
+}: {
+  config = let
+    smartctl_script = pkgs.writeScript ''smartctl-wrapper'' ''
+      #!${pkgs.stdenv.shell}
+      /run/wrappers/bin/sudo ${pkgs.smartmontools}/bin/smartctl "$@"
+    '';
+    nvme_script = pkgs.writeScript ''nvme-wrapper'' ''
+      #!${pkgs.stdenv.shell}
+      /run/wrappers/bin/sudo ${pkgs.nvme-cli}/bin/nvme "$@"
+    '';
+  in {
     age.secrets.telegraf-database = {
       file = ../secrets/telegraf-database.age;
       group = "telegraf";
       mode = "440";
     };
+
+    security.sudo.extraRules = [
+      {
+        users = ["telegraf"];
+        commands = [
+          {
+            command = "${smartctl_script}";
+            options = ["NOPASSWD"];
+          }
+          {
+            command = "${nvme_script}";
+            options = ["NOPASSWD"];
+          }
+        ];
+      }
+    ];
 
     services.telegraf = {
       enable = true;
@@ -25,6 +54,13 @@
           mem = {};
           syslog = {
             server = "tcp4://:6514";
+          };
+          smart = {
+            path = "${pkgs.smartmontools}/bin/smartctl";
+            use_sudo = true;
+            path_smartctl = "${smartctl_script}";
+            path_nvme = "${nvme_script}";
+            enable_extensions = ["auto-on"];
           };
           exec = {
             commands = ["readlink -f /nix/var/nix/profiles/system"];

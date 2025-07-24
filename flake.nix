@@ -259,9 +259,10 @@
         inherit pkgs;
         system = "x86_64-linux";
         modules = [
-          lix-module.nixosModules.default
-          home-manager.nixosModules.home-manager
           agenix.nixosModules.default
+          home-manager.nixosModules.home-manager
+          lix-module.nixosModules.default
+          nix-minecraft.nixosModules.minecraft-servers
           nixvim.nixosModules.nixvim
           {home-manager.sharedModules = [nixvim.homeModules.nixvim];}
 
@@ -271,6 +272,7 @@
           ./machines/hallewell/atuin-server.nix
           ./machines/hallewell/grafana.nix
           ./machines/hallewell/hardware.nix
+          ./machines/hallewell/minecraft.nix
           ./machines/hallewell/minio.nix
           ./machines/hallewell/nas.nix
           ./machines/hallewell/navidrome.nix
@@ -288,6 +290,7 @@
           ./modules/bcachefs.nix
           ./modules/github-runner.nix
           ./modules/installed-base.nix
+          ./modules/minecraft.nix
           ./modules/rad.nix
           ./modules/syncthing.nix
           ./modules/telegraf.nix
@@ -303,7 +306,6 @@
           lix-module.nixosModules.default
           home-manager.nixosModules.home-manager
           agenix.nixosModules.default
-          nix-minecraft.nixosModules.minecraft-servers
           nixvim.nixosModules.nixvim
           {home-manager.sharedModules = [nixvim.homeModules.nixvim];}
 
@@ -311,12 +313,9 @@
 
           ./machines/blackwood/backup-target.nix
           ./machines/blackwood/hardware.nix
-          ./machines/blackwood/minecraft.nix
           ./machines/blackwood/networking.nix
-          ./machines/blackwood/postgresql.nix
           ./modules/bcachefs.nix
           ./modules/installed-base.nix
-          ./modules/minecraft.nix
           ./modules/rad.nix
           ./modules/telegraf.nix
           ./modules/updates.nix
