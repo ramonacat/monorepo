@@ -22,7 +22,7 @@
           fi;
 
           CURRENT_SYSTEM_CLOSURE=$(readlink -f /nix/var/nix/profiles/system)
-          CLOSURE=$(${pkgs.curl}/bin/curl "https://ramona.fun/builds/${config.networking.hostName}-closure" | tr -d '\n')
+          CLOSURE=$(${pkgs.curl}/bin/curl "https://hallewell.ibis-draconis.ts.net/builds/${config.networking.hostName}-closure" | tr -d '\n')
 
           if [[ "$CLOSURE" == "$CURRENT_SYSTEM_CLOSURE" ]]; then
               echo "System already running the latest closure, not rebuilding";

@@ -282,6 +282,7 @@
           ./machines/hallewell/ras2.nix
           ./machines/hallewell/ratweb2.nix
           ./machines/hallewell/syncthing.nix
+          ./machines/hallewell/telegraf.nix
           ./machines/hallewell/tempo.nix
           ./machines/hallewell/znc.nix
           ./modules/bcachefs.nix
@@ -312,10 +313,7 @@
           ./machines/blackwood/hardware.nix
           ./machines/blackwood/minecraft.nix
           ./machines/blackwood/networking.nix
-          ./machines/blackwood/nginx.nix
           ./machines/blackwood/postgresql.nix
-          ./machines/blackwood/ramona-fun-publisher.nix
-          ./machines/blackwood/telegraf.nix
           ./modules/bcachefs.nix
           ./modules/installed-base.nix
           ./modules/minecraft.nix
