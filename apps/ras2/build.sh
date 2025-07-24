@@ -8,6 +8,6 @@ if [[ "${1:-}" == "--no-fix" ]]; then
 else
   php ./vendor/bin/ecs --fix
 fi
-php ./vendor/bin/phpstan.phar
+php ./vendor/bin/phpstan
 php ./vendor/bin/phpunit
 php ./vendor/bin/infection --min-msi=73 --min-covered-msi=100 -j"$(nproc)"

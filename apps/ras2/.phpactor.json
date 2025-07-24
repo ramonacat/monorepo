@@ -1,0 +1,4 @@
+{
+    "$schema": "/nix/store/f430091v6k8kqvmfnjsx5rbzp0g0djw6-phpactor-2025.04.17.0/share/php/phpactor/phpactor.schema.json",
+    "language_server_phpstan.enabled": false
+}

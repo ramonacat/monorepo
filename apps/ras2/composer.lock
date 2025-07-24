@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "db68c3901d0824a5c29b0da8a68c364c",
+    "content-hash": "0507ea8b6104aa5781edf1b975fbca76",
     "packages": [
         {
             "name": "brick/math",
@@ -154,16 +154,16 @@
         },
         {
             "name": "doctrine/dbal",
-            "version": "4.3.0",
+            "version": "4.3.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/doctrine/dbal.git",
-                "reference": "5fe09532be619202d59c70956c6fb20e97933ee3"
+                "reference": "ac336c95ea9e13433d56ca81c308b39db0e1a2a7"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/doctrine/dbal/zipball/5fe09532be619202d59c70956c6fb20e97933ee3",
-                "reference": "5fe09532be619202d59c70956c6fb20e97933ee3",
+                "url": "https://api.github.com/repos/doctrine/dbal/zipball/ac336c95ea9e13433d56ca81c308b39db0e1a2a7",
+                "reference": "ac336c95ea9e13433d56ca81c308b39db0e1a2a7",
                 "shasum": ""
             },
             "require": {
@@ -240,7 +240,7 @@
             ],
             "support": {
                 "issues": "https://github.com/doctrine/dbal/issues",
-                "source": "https://github.com/doctrine/dbal/tree/4.3.0"
+                "source": "https://github.com/doctrine/dbal/tree/4.3.1"
             },
             "funding": [
                 {
@@ -256,7 +256,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2025-06-16T19:31:04+00:00"
+            "time": "2025-07-22T10:09:51+00:00"
         },
         {
             "name": "doctrine/deprecations",
@@ -4252,16 +4252,16 @@
         },
         {
             "name": "phpstan/phpstan",
-            "version": "2.1.17",
+            "version": "2.1.19",
             "source": {
                 "type": "git",
                 "url": "https://github.com/phpstan/phpstan.git",
-                "reference": "89b5ef665716fa2a52ecd2633f21007a6a349053"
+                "reference": "473a8c30e450d87099f76313edcbb90852f9afdf"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/phpstan/phpstan/zipball/89b5ef665716fa2a52ecd2633f21007a6a349053",
-                "reference": "89b5ef665716fa2a52ecd2633f21007a6a349053",
+                "url": "https://api.github.com/repos/phpstan/phpstan/zipball/473a8c30e450d87099f76313edcbb90852f9afdf",
+                "reference": "473a8c30e450d87099f76313edcbb90852f9afdf",
                 "shasum": ""
             },
             "require": {
@@ -4306,20 +4306,20 @@
                     "type": "github"
                 }
             ],
-            "time": "2025-05-21T20:55:28+00:00"
+            "time": "2025-07-21T19:58:24+00:00"
         },
         {
             "name": "phpstan/phpstan-strict-rules",
-            "version": "2.0.4",
+            "version": "2.0.6",
             "source": {
                 "type": "git",
                 "url": "https://github.com/phpstan/phpstan-strict-rules.git",
-                "reference": "3e139cbe67fafa3588e1dbe27ca50f31fdb6236a"
+                "reference": "f9f77efa9de31992a832ff77ea52eb42d675b094"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/phpstan/phpstan-strict-rules/zipball/3e139cbe67fafa3588e1dbe27ca50f31fdb6236a",
-                "reference": "3e139cbe67fafa3588e1dbe27ca50f31fdb6236a",
+                "url": "https://api.github.com/repos/phpstan/phpstan-strict-rules/zipball/f9f77efa9de31992a832ff77ea52eb42d675b094",
+                "reference": "f9f77efa9de31992a832ff77ea52eb42d675b094",
                 "shasum": ""
             },
             "require": {
@@ -4352,9 +4352,9 @@
             "description": "Extra strict and opinionated rules for PHPStan",
             "support": {
                 "issues": "https://github.com/phpstan/phpstan-strict-rules/issues",
-                "source": "https://github.com/phpstan/phpstan-strict-rules/tree/2.0.4"
+                "source": "https://github.com/phpstan/phpstan-strict-rules/tree/2.0.6"
             },
-            "time": "2025-03-18T11:42:40+00:00"
+            "time": "2025-07-21T12:19:29+00:00"
         },
         {
             "name": "phpunit/php-code-coverage",
@@ -4801,41 +4801,6 @@
             "time": "2025-07-11T04:10:06+00:00"
         },
         {
-            "name": "psalm/phar",
-            "version": "6.13.0",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/psalm/phar.git",
-                "reference": "f99546ae420e3b3a27dea85d7551330bd23d076e"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/psalm/phar/zipball/f99546ae420e3b3a27dea85d7551330bd23d076e",
-                "reference": "f99546ae420e3b3a27dea85d7551330bd23d076e",
-                "shasum": ""
-            },
-            "require": {
-                "php": "^8.2"
-            },
-            "conflict": {
-                "vimeo/psalm": "*"
-            },
-            "bin": [
-                "psalm.phar"
-            ],
-            "type": "library",
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "description": "Composer-based Psalm Phar",
-            "support": {
-                "issues": "https://github.com/psalm/phar/issues",
-                "source": "https://github.com/psalm/phar/tree/6.13.0"
-            },
-            "time": "2025-07-14T10:03:49+00:00"
-        },
-        {
             "name": "sanmai/later",
             "version": "0.1.7",
             "source": {
@@ -4901,16 +4866,16 @@
         },
         {
             "name": "sanmai/pipeline",
-            "version": "6.19",
+            "version": "6.22",
             "source": {
                 "type": "git",
                 "url": "https://github.com/sanmai/pipeline.git",
-                "reference": "3707180c66dd6b3b9c4b5f9fe26155325812037d"
+                "reference": "fb8d0c23b4ef085315a36d397fafa052203020ce"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/sanmai/pipeline/zipball/3707180c66dd6b3b9c4b5f9fe26155325812037d",
-                "reference": "3707180c66dd6b3b9c4b5f9fe26155325812037d",
+                "url": "https://api.github.com/repos/sanmai/pipeline/zipball/fb8d0c23b4ef085315a36d397fafa052203020ce",
+                "reference": "fb8d0c23b4ef085315a36d397fafa052203020ce",
                 "shasum": ""
             },
             "require": {
@@ -4918,13 +4883,16 @@
             },
             "require-dev": {
                 "ergebnis/composer-normalize": "^2.8",
+                "esi/phpunit-coverage-check": ">2",
                 "friendsofphp/php-cs-fixer": "^3.17",
-                "infection/infection": ">=0.10.5",
+                "infection/infection": ">=0.30.3",
                 "league/pipeline": "^0.3 || ^1.0",
                 "php-coveralls/php-coveralls": "^2.4.1",
+                "phpstan/extension-installer": "^1.4",
                 "phpstan/phpstan": "^2",
                 "phpunit/phpunit": ">=9.4 <12",
                 "sanmai/phpstan-rules": "^0.3.0",
+                "sanmai/phpunit-double-colon-syntax": "^0.1.1",
                 "vimeo/psalm": ">=2"
             },
             "type": "library",
@@ -4954,7 +4922,7 @@
             "description": "General-purpose collections pipeline",
             "support": {
                 "issues": "https://github.com/sanmai/pipeline/issues",
-                "source": "https://github.com/sanmai/pipeline/tree/6.19"
+                "source": "https://github.com/sanmai/pipeline/tree/6.22"
             },
             "funding": [
                 {
@@ -4962,7 +4930,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2025-07-05T14:39:33+00:00"
+            "time": "2025-07-22T09:07:07+00:00"
         },
         {
             "name": "sebastian/cli-parser",

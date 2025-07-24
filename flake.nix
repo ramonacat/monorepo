@@ -217,9 +217,11 @@
           }:
             enabled ++ [all.xdebug];
           extraConfig = ''
+            memory_limit=1G
             zend.exception_string_param_max_len=128
           '';
         })
+
         (rust-bin.stable.latest.default.override {
           extensions = [
             "rust-src"
