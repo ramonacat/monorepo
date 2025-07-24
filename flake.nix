@@ -259,9 +259,10 @@
         inherit pkgs;
         system = "x86_64-linux";
         modules = [
-          lix-module.nixosModules.default
-          home-manager.nixosModules.home-manager
           agenix.nixosModules.default
+          home-manager.nixosModules.home-manager
+          lix-module.nixosModules.default
+          nix-minecraft.nixosModules.minecraft-servers
           nixvim.nixosModules.nixvim
           {home-manager.sharedModules = [nixvim.homeModules.nixvim];}
 
@@ -289,6 +290,7 @@
           ./modules/bcachefs.nix
           ./modules/github-runner.nix
           ./modules/installed-base.nix
+          ./modules/minecraft.nix
           ./modules/rad.nix
           ./modules/syncthing.nix
           ./modules/telegraf.nix
@@ -304,7 +306,6 @@
           lix-module.nixosModules.default
           home-manager.nixosModules.home-manager
           agenix.nixosModules.default
-          nix-minecraft.nixosModules.minecraft-servers
           nixvim.nixosModules.nixvim
           {home-manager.sharedModules = [nixvim.homeModules.nixvim];}
 
@@ -315,7 +316,6 @@
           ./machines/blackwood/networking.nix
           ./modules/bcachefs.nix
           ./modules/installed-base.nix
-          ./modules/minecraft.nix
           ./modules/rad.nix
           ./modules/telegraf.nix
           ./modules/updates.nix
