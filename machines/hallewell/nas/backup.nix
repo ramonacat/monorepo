@@ -11,8 +11,9 @@
         Persistent = true;
         RandomizedDelaySec = "30m";
       };
-      # TODO use a DNS name instead
-      repository = "/var/backups/${config.networking.hostName}/";
+      repository = "b2:ramona-postgres-backups:/hallewell/";
+      rcloneConfigFile = config.age.secrets."postgres-backups-rclone".path;
+      environmentFile = config.age.secrets."postgres-backups-env".path;
       passwordFile = config.age.secrets."restic-repository-password".path;
       paths = [
         "/mnt/nas3/data/"
@@ -25,7 +26,7 @@
         "--keep-daily 7"
         "--keep-weekly 4"
         "--keep-monthly 3"
-        "--keep-yearly 100"
+        "--keep-yearly 3"
       ];
     };
   };
