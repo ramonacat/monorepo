@@ -55,7 +55,10 @@
     };
 
     services.restic.backups =
-      lib.mapAttrs' (name: settings: let path = "/mnt/nas3/minecraft/${name}/"; backupPath = "/mnt/nas3/minecraft/${name}-backup/"; in {
+      lib.mapAttrs' (name: settings: let
+          path = "/mnt/nas3/minecraft/${name}/";
+          backupPath = "/mnt/nas3/minecraft/${name}-backup/";
+        in {
           name = "minecraft-" + name;
           value = let
             informerScript = pkgs.writeShellScriptBin ("backup-minecraft-server-" + name) "
