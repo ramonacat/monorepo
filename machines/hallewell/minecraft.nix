@@ -1,4 +1,7 @@
 {config, ...}: {
+  imports = [
+    ../../modules/minecraft.nix
+  ];
   config = {
     services.ramona.minecraft = let
       backupSettings = {

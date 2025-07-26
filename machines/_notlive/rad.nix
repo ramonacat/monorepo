@@ -5,10 +5,10 @@
 }: {
   config = {
     age.secrets.rad-environment = {
-      file = ../secrets/rad-environment.age;
+      file = ../../secrets/rad-environment.age;
     };
     age.secrets.rad-ras-token = {
-      file = ../secrets/rad-ras-token.age;
+      file = ../../secrets/rad-ras-token.age;
       owner = "rad";
       mode = "440";
     };
