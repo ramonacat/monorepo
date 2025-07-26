@@ -55,10 +55,12 @@
     };
 
     services.restic.backups =
-      lib.mapAttrs' (name: settings: {
+      lib.mapAttrs' (name: settings: let
+          path = "/mnt/nas3/minecraft/${name}/";
+          backupPath = "/mnt/nas3/minecraft/${name}-backup/";
+        in {
           name = "minecraft-" + name;
           value = let
-            backupPath = "/srv/minecraft/${name}-backup";
             informerScript = pkgs.writeShellScriptBin ("backup-minecraft-server-" + name) "
           #!/usr/bin/env bash
 
@@ -83,7 +85,7 @@ EOS
             backupPrepareCommand = ''
               ${informerScript}/bin/backup-minecraft-server-${name}
 
-              ${pkgs.bcachefs-tools}/bin/bcachefs subvolume snapshot /srv/minecraft/${name} ${backupPath}
+              ${pkgs.bcachefs-tools}/bin/bcachefs subvolume snapshot ${path} ${backupPath}
             '';
             backupCleanupCommand = ''
               ${pkgs.bcachefs-tools}/bin/bcachefs subvolume delete ${backupPath}
@@ -93,7 +95,7 @@ EOS
               "--keep-daily 7"
               "--keep-weekly 4"
               "--keep-monthly 3"
-              "--keep-yearly 100"
+              "--keep-yearly 3"
             ];
           };
         })
