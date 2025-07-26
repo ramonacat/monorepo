@@ -269,19 +269,6 @@
           (import ./machines/hallewell.nix {inherit nixpkgs;})
         ];
       };
-      blackwood = nixpkgs.lib.nixosSystem {
-        inherit pkgs;
-
-        modules = [
-          lix-module.nixosModules.default
-          home-manager.nixosModules.home-manager
-          agenix.nixosModules.default
-          nixvim.nixosModules.nixvim
-          {home-manager.sharedModules = [nixvim.homeModules.nixvim];}
-
-          (import ./machines/blackwood.nix {inherit nixpkgs;})
-        ];
-      };
       shadowsoul = nixpkgs.lib.nixosSystem {
         inherit pkgs;
         system = "x86_64-linux";
