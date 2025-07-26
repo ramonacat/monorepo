@@ -5,6 +5,7 @@ _: {
         ssh-keys = import ../../data/ssh-keys.nix;
       in [
         ssh-keys.ramona
+        ssh-keys.root-updater
       ];
     };
   };
