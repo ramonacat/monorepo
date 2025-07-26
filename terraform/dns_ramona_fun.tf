@@ -1,8 +1,3 @@
-variable "blackwood_ip_address" {
-  type    = string
-  default = "37.27.125.251"
-}
-
 variable "hallewell_tailscale_ip_address" {
   type    = string
   default = "100.109.240.138"
@@ -14,33 +9,6 @@ resource "google_dns_managed_zone" "ramona-fun" {
   description = "ramona.fun"
 }
 
-resource "google_dns_record_set" "blackwood-devices-ramona-fun" {
-  name         = "blackwood.devices.${google_dns_managed_zone.ramona-fun.dns_name}"
-  type         = "A"
-  ttl          = "60"
-  managed_zone = google_dns_managed_zone.ramona-fun.name
-
-  rrdatas = [var.blackwood_ip_address]
-}
-
-resource "google_dns_record_set" "hallewell-devices-ramona-fun" {
-  name         = "hallewell.devices.${google_dns_managed_zone.ramona-fun.dns_name}"
-  type         = "A"
-  ttl          = 60
-  managed_zone = google_dns_managed_zone.ramona-fun.name
-
-  rrdatas = [var.hallewell_tailscale_ip_address]
-}
-
-resource "google_dns_record_set" "minecraft-services-ramona-fun" {
-  name         = "minecraft.services.${google_dns_managed_zone.ramona-fun.dns_name}"
-  type         = "A"
-  ttl          = "60"
-  managed_zone = google_dns_managed_zone.ramona-fun.name
-
-  rrdatas = [var.blackwood_ip_address]
-}
-
 resource "google_dns_record_set" "ras2-services-ramona-fun" {
   name         = "ras2.services.${google_dns_managed_zone.ramona-fun.dns_name}"
   type         = "A"
@@ -50,13 +18,7 @@ resource "google_dns_record_set" "ras2-services-ramona-fun" {
   rrdatas = [var.hallewell_tailscale_ip_address]
 }
 
-resource "google_dns_record_set" "ramona-fun" {
-  name         = google_dns_managed_zone.ramona-fun.dns_name
-  managed_zone = google_dns_managed_zone.ramona-fun.name
-
-  type    = "A"
-  rrdatas = [var.blackwood_ip_address]
-}
+// TODO Set the A record for ramona.fun to something
 
 resource "google_dns_record_set" "MX-ramona-fun" {
   name         = google_dns_managed_zone.ramona-fun.dns_name

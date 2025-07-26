@@ -1,14 +1,13 @@
 let
   ssh-keys = import ../data/ssh-keys.nix;
 
-  users = [ssh-keys.ramona ssh-keys.ramona-blackwood];
+  users = [ssh-keys.ramona];
 
   shadowsoul = ssh-keys.machine-shadowsoul;
   hallewell = ssh-keys.machine-hallewell;
-  blackwood = ssh-keys.machine-blackwood;
-  allMachines = [hallewell shadowsoul blackwood];
+  allMachines = [hallewell shadowsoul];
 in {
-  "github-pat-runner-registration.age".publicKeys = users ++ [blackwood hallewell];
+  "github-pat-runner-registration.age".publicKeys = users ++ [hallewell];
   "minio-root.age".publicKeys = users ++ [hallewell];
   "minio-tempo.age".publicKeys = users ++ [hallewell];
   "minio-terraform-state.age".publicKeys = users;
@@ -27,6 +26,4 @@ in {
   "terraform-tokens.age".publicKeys = users;
   "transmission-credentials.age".publicKeys = users ++ [shadowsoul];
   "universal-root.age".publicKeys = users ++ allMachines;
-  "hostkey-rsa-initrd.age".publicKeys = users ++ allMachines;
-  "hostkey-ed25519-initrd.age".publicKeys = users ++ allMachines;
 }

@@ -1,10 +1,5 @@
 {config, ...}: {
   config = {
-    fileSystems."/var/backups" = {
-      device = "blackwood:/var/backups";
-      fsType = "nfs";
-      options = ["x-systemd.after=tailscaled.service"];
-    };
     services.restic.backups.nas = {
       timerConfig = {
         OnCalendar = "*-*-* 00/1:00:00";
