@@ -5,8 +5,9 @@
 }: {
   config = {
     age.secrets.universal-root = {
-      file = ../secrets/universal-root.age;
+      file = ../../secrets/universal-root.age;
     };
+
     systemd.services.updater = {
       description = "Download the latest system closure";
       restartIfChanged = false;

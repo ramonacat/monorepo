@@ -14,7 +14,7 @@
     '';
   in {
     age.secrets.telegraf-database = {
-      file = ../secrets/telegraf-database.age;
+      file = ../../secrets/telegraf-database.age;
       group = "telegraf";
       mode = "440";
     };

@@ -266,37 +266,7 @@
           nixvim.nixosModules.nixvim
           {home-manager.sharedModules = [nixvim.homeModules.nixvim];}
 
-          (import ./modules/base.nix {inherit nixpkgs;})
-
-          ./machines/hallewell/arrsuite.nix
-          ./machines/hallewell/atuin-server.nix
-          ./machines/hallewell/grafana.nix
-          ./machines/hallewell/hardware.nix
-          ./machines/hallewell/minecraft.nix
-          ./machines/hallewell/minio.nix
-          ./machines/hallewell/nas.nix
-          ./machines/hallewell/navidrome.nix
-          ./machines/hallewell/networking.nix
-          ./machines/hallewell/nginx.nix
-          ./machines/hallewell/paperless.nix
-          ./machines/hallewell/photoprism.nix
-          ./machines/hallewell/postgresql.nix
-          ./machines/hallewell/ras2.nix
-          ./machines/hallewell/ratweb2.nix
-          ./machines/hallewell/syncthing.nix
-          ./machines/hallewell/telegraf.nix
-          ./machines/hallewell/tempo.nix
-          ./machines/hallewell/znc.nix
-          ./modules/bcachefs.nix
-          ./modules/github-runner.nix
-          ./modules/installed-base.nix
-          ./modules/minecraft.nix
-          ./modules/rad.nix
-          ./modules/syncthing.nix
-          ./modules/telegraf.nix
-          ./modules/updates.nix
-          ./users/ramona/installed.nix
-          ./users/root/base.nix
+          (import ./machines/hallewell.nix {inherit nixpkgs;})
         ];
       };
       blackwood = nixpkgs.lib.nixosSystem {
@@ -309,18 +279,7 @@
           nixvim.nixosModules.nixvim
           {home-manager.sharedModules = [nixvim.homeModules.nixvim];}
 
-          (import ./modules/base.nix {inherit nixpkgs;})
-
-          ./machines/blackwood/backup-target.nix
-          ./machines/blackwood/hardware.nix
-          ./machines/blackwood/networking.nix
-          ./modules/bcachefs.nix
-          ./modules/installed-base.nix
-          ./modules/rad.nix
-          ./modules/telegraf.nix
-          ./modules/updates.nix
-          ./users/ramona/installed.nix
-          ./users/root/installed.nix
+          (import ./machines/blackwood.nix {inherit nixpkgs;})
         ];
       };
       shadowsoul = nixpkgs.lib.nixosSystem {
@@ -333,20 +292,7 @@
           nixvim.nixosModules.nixvim
           {home-manager.sharedModules = [nixvim.homeModules.nixvim];}
 
-          (import ./modules/base.nix {inherit nixpkgs;})
-
-          ./machines/shadowsoul/hardware.nix
-          ./machines/shadowsoul/networking.nix
-          ./machines/shadowsoul/syncthing.nix
-          ./machines/shadowsoul/transmission.nix
-          ./modules/bcachefs.nix
-          ./modules/installed-base.nix
-          ./modules/nas-client.nix
-          ./modules/rad.nix
-          ./modules/telegraf.nix
-          ./modules/updates.nix
-          ./users/ramona/installed.nix
-          ./users/root/base.nix
+          (import ./machines/shadowsoul.nix {inherit nixpkgs;})
         ];
       };
       iso = nixpkgs.lib.nixosSystem {
@@ -360,12 +306,7 @@
 
           "${nixpkgs}/nixos/modules/installer/cd-dvd/installation-cd-minimal.nix"
 
-          (import ./modules/base.nix {inherit nixpkgs;})
-
-          ./machines/iso/filesystems.nix
-          ./modules/bcachefs.nix
-          ./users/ramona/base.nix
-          ./users/root/base.nix
+          (import ./machines/iso.nix {inherit nixpkgs;})
         ];
       };
     };
