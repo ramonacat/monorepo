@@ -13,6 +13,12 @@ nix build -L -v ".#everything"
 for f in result/hosts/*; do
     host_basename=$(basename "$f")
     readlink "$f" > "$host_basename-closure"
+
+    echo "diff for $host_basename"
+    CURRENT_CLOSURE=$(nix shell 'nixpkgs#curl' -c curl "https://hallewell.ibis-draconis.ts.net/builds/$host_basename-closure" | tr -d '[:space:]')
+    nix store diff-closures "$CURRENT_CLOSURE" "$f"
+
+    echo
 done
 
 echo "On branch: $BRANCH_NAME"
