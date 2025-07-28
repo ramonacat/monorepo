@@ -96,6 +96,9 @@
     pkgsConfig = {
       allowUnfree = true;
       android_sdk.accept_license = true;
+      permittedInsecurePackages = [
+        "libsoup-2.74.3"
+      ];
     };
     pkgs = import nixpkgs {
       overlays = overlays.x86_64;
