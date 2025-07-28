@@ -17,7 +17,6 @@ in {
   "rad-environment.age".publicKeys = users ++ allMachines;
   "rad-ras-token.age".publicKeys = users ++ allMachines;
   "ramona-password.age".publicKeys = users ++ allMachines;
-  "ras-environment.age".publicKeys = users ++ [hallewell];
   "ras2-db-config.age".publicKeys = users ++ [hallewell];
   "ras2-telegraf-db-config.age".publicKeys = users ++ [hallewell];
   "restic-repository-password.age".publicKeys = users ++ allMachines;
