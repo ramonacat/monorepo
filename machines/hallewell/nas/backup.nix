@@ -1,6 +1,8 @@
 {config, ...}: {
   config = {
-    services.restic.backups.nas =
+    services.restic.backups.nas = let
+      paths = import ../../../data/paths.nix;
+    in
       {
         timerConfig = {
           OnCalendar = "*-*-* 00/1:00:00";
@@ -8,10 +10,10 @@
           RandomizedDelaySec = "30m";
         };
         paths = [
-          "/mnt/nas3/data/"
+          paths.hallewell.nas-share
         ];
         exclude = [
-          "/mnt/nas3/data/Movies/"
+          "${paths.hallewell.nas-share}/Movies/"
         ];
         pruneOpts = [
           "--keep-hourly 24"

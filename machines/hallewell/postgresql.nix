@@ -6,7 +6,9 @@
   postgresPackage = pkgs.postgresql_16;
 in {
   config = {
-    services = {
+    services = let
+      paths = import ../../data/paths.nix;
+    in {
       postgresql = {
         enable = true;
         enableJIT = true;
@@ -19,7 +21,7 @@ in {
         '';
 
         package = postgresPackage;
-        dataDir = "/mnt/nas3/postgresql/16/";
+        dataDir = "${paths.hallewell.nas-root}/postgresql/16/";
         initdbArgs = ["--data-checksums"];
         enableTCPIP = true;
         settings = {
@@ -31,7 +33,7 @@ in {
       };
 
       restic.backups.postgresql = let
-        backupPath = "/mnt/nas3/postgres-backup";
+        backupPath = "${paths.hallewell.nas-root}/postgres-backup";
       in
         {
           timerConfig = {

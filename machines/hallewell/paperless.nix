@@ -1,17 +1,19 @@
-_: {
+{config, ...}: {
   config = {
-    services.paperless = {
+    services.paperless = let
+      paths = import ../../data/paths.nix;
+    in {
       enable = true;
       address = "0.0.0.0";
       port = 58080;
-      dataDir = "/mnt/nas3/paperless/data/";
-      mediaDir = "/mnt/nas3/paperless/media/";
-      consumptionDir = "/mnt/nas3/data/paperless-import/";
+      dataDir = "${paths.hallewell.nas-root}/paperless/data/";
+      mediaDir = "${paths.hallewell.nas-root}/paperless/media/";
+      consumptionDir = "${paths.hallewell.nas-share}/paperless-import/";
       consumptionDirIsPublic = true;
       settings = {
         PAPERLESS_OCR_LANGUAGE = "deu+eng+pol";
       };
     };
-    networking.firewall.interfaces.tailscale0.allowedTCPPorts = [58080];
+    networking.firewall.interfaces.tailscale0.allowedTCPPorts = [config.services.paperless.port];
   };
 }

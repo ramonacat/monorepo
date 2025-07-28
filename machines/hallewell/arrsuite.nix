@@ -1,5 +1,7 @@
-_: {
-  config = {
+{config, ...}: {
+  config = let
+    flaresolver-port = 8191;
+  in {
     services = {
       jackett.enable = true;
       radarr = {
@@ -23,15 +25,15 @@ _: {
     };
 
     networking.firewall.interfaces.tailscale0.allowedTCPPorts = [
-      9117 # jackett
-      7878 # radarr
-      8990 # sonarr
-      8191 # flaresolverr
+      config.services.jackett.port
+      config.services.radarr.settings.server.port
+      config.services.sonarr.settings.server.port
+      flaresolver-port
     ];
 
     virtualisation.oci-containers.containers.flaresolverr = {
       image = "ghcr.io/flaresolverr/flaresolverr:latest";
-      ports = ["0.0.0.0:8191:8191"];
+      ports = ["0.0.0.0:${builtins.toString flaresolver-port}:${builtins.toString flaresolver-port}"];
       environment = {
         LOG_LEVEL = "debug";
       };

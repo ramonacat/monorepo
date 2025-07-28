@@ -11,7 +11,9 @@
     };
 
     powerManagement.powertop.enable = true;
-    fileSystems = {
+    fileSystems = let
+      paths = import ../../data/paths.nix;
+    in {
       "/" = {
         device = "/dev/disk/by-uuid/e98a10e4-385b-4c46-a77a-78c1f2a0abdb";
         fsType = "ext4";
@@ -22,7 +24,7 @@
         fsType = "vfat";
       };
 
-      "/mnt/nas3" = {
+      "${paths.hallewell.nas-root}" = {
         device = "/dev/disk/by-uuid/8f552709-24e3-4387-8183-23878c94d00b";
         fsType = "bcachefs";
       };
