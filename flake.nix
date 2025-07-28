@@ -47,7 +47,7 @@
     };
   };
 
-  outputs = {
+  outputs = inputs @ {
     agenix,
     crane,
     home-manager,
@@ -269,26 +269,29 @@
       hallewell = nixpkgs.lib.nixosSystem {
         inherit pkgs;
         system = "x86_64-linux";
+        specialArgs = {inherit inputs;};
         modules =
           common-modules
           ++ [
             nix-minecraft.nixosModules.minecraft-servers
 
-            (import ./machines/hallewell.nix {inherit nixpkgs;})
+            ./machines/hallewell.nix
           ];
       };
       shadowsoul = nixpkgs.lib.nixosSystem {
         inherit pkgs;
         system = "x86_64-linux";
+        specialArgs = {inherit inputs;};
         modules =
           common-modules
           ++ [
-            (import ./machines/shadowsoul.nix {inherit nixpkgs;})
+            ./machines/shadowsoul.nix
           ];
       };
       iso = nixpkgs.lib.nixosSystem {
         inherit pkgs;
         system = "x86_64-linux";
+        specialArgs = {inherit inputs;};
         modules =
           common-modules
           ++ [
@@ -296,7 +299,7 @@
 
             "${nixpkgs}/nixos/modules/installer/cd-dvd/installation-cd-minimal.nix"
 
-            (import ./machines/iso.nix {inherit nixpkgs;})
+            ./machines/iso.nix
           ];
       };
     };

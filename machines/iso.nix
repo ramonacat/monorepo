@@ -1,7 +1,6 @@
-{nixpkgs}: {...}: {
+_: {
   imports = [
-    (import ./_all.nix {inherit nixpkgs;})
-
+    ./_all.nix
     ./iso/filesystems.nix
 
     ../users/ramona/base.nix
