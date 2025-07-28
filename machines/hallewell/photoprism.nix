@@ -13,7 +13,7 @@
       passwordFile = config.age.secrets.photoprism-password.path;
       storagePath = "${paths.hallewell.nas-root}/photoprism/storage/";
       originalsPath = "${paths.hallewell.nas-root}/photoprism/originals/";
-      importPath = "${paths.hallewell.nas-share}/data/PhotoprismImport/";
+      importPath = "${paths.hallewell.nas-share}/PhotoprismImport/";
       address = "0.0.0.0";
     };
 
