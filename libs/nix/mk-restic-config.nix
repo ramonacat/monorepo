@@ -15,6 +15,6 @@ config: options:
     "--keep-monthly 3"
     "--keep-yearly 3"
   ];
-  extraOptions = ["--retry-lock 5m"];
+  extraOptions = ["--retry-lock=5m"];
 }
 // options

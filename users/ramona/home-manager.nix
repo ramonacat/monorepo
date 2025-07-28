@@ -1,8 +1,4 @@
-{
-  pkgs,
-  lib,
-  ...
-}: {
+{pkgs, ...}: {
   imports = [
     ./home-manager/atuin.nix
     ./home-manager/nixvim.nix
@@ -27,7 +23,6 @@
         strace
       ];
     };
-    services.gpg-agent.pinentry.package = lib.mkDefault pkgs.pinentry-curses;
 
     programs = {
       tmux = {
