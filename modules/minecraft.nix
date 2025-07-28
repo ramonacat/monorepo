@@ -46,7 +46,7 @@
             "rcon.port" = settings.rconPort;
             "rcon.password" = "rcon";
           };
-          package = pkgs.minecraftServers.vanilla-1_21_4;
+          package = pkgs.minecraftServers.vanilla;
         })
         servers;
     };
