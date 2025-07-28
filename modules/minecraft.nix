@@ -69,13 +69,11 @@
 EOS
         ";
           in
-            {
+            import ../libs/nix/mk-restic-config.nix config {
               timerConfig = {
                 OnCalendar = "*-*-* *:00:00";
-                Persistent = true;
                 RandomizedDelaySec = "30min";
               };
-              extraOptions = ["--retry-lock"];
               backupPrepareCommand = ''
                 ${informerScript}/bin/backup-minecraft-server-${name}
 
@@ -85,15 +83,7 @@ EOS
                 ${pkgs.bcachefs-tools}/bin/bcachefs subvolume delete ${backupPath}
               '';
               paths = [backupPath];
-              pruneOpts = [
-                "--keep-daily 7"
-                "--keep-weekly 4"
-                "--keep-monthly 3"
-                "--keep-yearly 3"
-              ];
-            }
-            # TODO: move the backups and change the repository to a common one
-            // import ../libs/nix/mk-restic-repository.nix config "caligari";
+            };
         })
       servers;
 

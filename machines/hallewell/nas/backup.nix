@@ -3,10 +3,9 @@
     services.restic.backups.nas = let
       paths = import ../../../data/paths.nix;
     in
-      {
+      import ../../../libs/nix/mk-restic-config.nix config {
         timerConfig = {
           OnCalendar = "*-*-* 00/1:00:00";
-          Persistent = true;
           RandomizedDelaySec = "30m";
         };
         paths = [
@@ -15,14 +14,6 @@
         exclude = [
           "${paths.hallewell.nas-share}/Movies/"
         ];
-        pruneOpts = [
-          "--keep-hourly 24"
-          "--keep-daily 7"
-          "--keep-weekly 4"
-          "--keep-monthly 3"
-          "--keep-yearly 3"
-        ];
-      }
-      // import ../../../libs/nix/mk-restic-repository.nix config "hallewell";
+      };
   };
 }

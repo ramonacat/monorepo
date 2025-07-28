@@ -35,10 +35,9 @@ in {
       restic.backups.postgresql = let
         backupPath = "${paths.hallewell.nas-root}/postgres-backup";
       in
-        {
+        import ../../libs/nix/mk-restic-config.nix config {
           timerConfig = {
             OnCalendar = "*-*-* 00/6:00:00";
-            Persistent = true;
             RandomizedDelaySec = "3h";
           };
           backupPrepareCommand = ''
@@ -52,14 +51,7 @@ in {
           paths = [
             backupPath
           ];
-          pruneOpts = [
-            "--keep-daily 7"
-            "--keep-weekly 4"
-            "--keep-monthly 3"
-            "--keep-yearly 3"
-          ];
-        }
-        // import ../../libs/nix/mk-restic-repository.nix config "hallewell";
+        };
     };
 
     networking.firewall.interfaces.tailscale0.allowedTCPPorts = [5432];
