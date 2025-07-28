@@ -47,7 +47,7 @@
     };
   };
 
-  outputs = {
+  outputs = inputs @ {
     agenix,
     crane,
     home-manager,
@@ -257,47 +257,50 @@
         ./users/ramona/home-manager/wsl.nix
       ];
     };
-    nixosConfigurations = {
+    nixosConfigurations = let
+      common-modules = [
+        agenix.nixosModules.default
+        home-manager.nixosModules.home-manager
+        lix-module.nixosModules.default
+        nixvim.nixosModules.nixvim
+        {home-manager.sharedModules = [nixvim.homeModules.nixvim];}
+      ];
+    in {
       hallewell = nixpkgs.lib.nixosSystem {
         inherit pkgs;
         system = "x86_64-linux";
-        modules = [
-          agenix.nixosModules.default
-          home-manager.nixosModules.home-manager
-          lix-module.nixosModules.default
-          nix-minecraft.nixosModules.minecraft-servers
-          nixvim.nixosModules.nixvim
-          {home-manager.sharedModules = [nixvim.homeModules.nixvim];}
+        specialArgs = {inherit inputs;};
+        modules =
+          common-modules
+          ++ [
+            nix-minecraft.nixosModules.minecraft-servers
 
-          (import ./machines/hallewell.nix {inherit nixpkgs;})
-        ];
+            ./machines/hallewell.nix
+          ];
       };
       shadowsoul = nixpkgs.lib.nixosSystem {
         inherit pkgs;
         system = "x86_64-linux";
-        modules = [
-          lix-module.nixosModules.default
-          home-manager.nixosModules.home-manager
-          agenix.nixosModules.default
-          nixvim.nixosModules.nixvim
-          {home-manager.sharedModules = [nixvim.homeModules.nixvim];}
-
-          (import ./machines/shadowsoul.nix {inherit nixpkgs;})
-        ];
+        specialArgs = {inherit inputs;};
+        modules =
+          common-modules
+          ++ [
+            ./machines/shadowsoul.nix
+          ];
       };
       iso = nixpkgs.lib.nixosSystem {
         inherit pkgs;
         system = "x86_64-linux";
-        modules = [
-          home-manager.nixosModules.home-manager
-          nixos-generators.nixosModules.all-formats
-          nixvim.nixosModules.nixvim
-          {home-manager.sharedModules = [nixvim.homeModules.nixvim];}
+        specialArgs = {inherit inputs;};
+        modules =
+          common-modules
+          ++ [
+            nixos-generators.nixosModules.all-formats
 
-          "${nixpkgs}/nixos/modules/installer/cd-dvd/installation-cd-minimal.nix"
+            "${nixpkgs}/nixos/modules/installer/cd-dvd/installation-cd-minimal.nix"
 
-          (import ./machines/iso.nix {inherit nixpkgs;})
-        ];
+            ./machines/iso.nix
+          ];
       };
     };
   };

@@ -4,15 +4,15 @@
   ...
 }: {
   imports = [
+    ./_notlive/nas-client.nix
+    ./_notlive/nix.nix
+    ./_notlive/rad.nix
     ./_notlive/restic.nix
     ./_notlive/ssh.nix
-    ./_notlive/nas-client.nix
-    ./_notlive/tailscale.nix
-    ./_notlive/rad.nix
     ./_notlive/syncthing.nix
+    ./_notlive/tailscale.nix
     ./_notlive/telegraf.nix
     ./_notlive/updates.nix
-    ./_notlive/nix.nix
   ];
   config = {
     services = {

@@ -1,13 +1,15 @@
 _: {
   config = {
-    services.navidrome = {
+    services.navidrome = let
+      paths = import ../../data/paths.nix;
+    in {
       enable = true;
       user = "nas";
       group = "nas";
       settings = {
         Address = "0.0.0.0";
         TranscodingCacheSize = "10G";
-        MusicFolder = "/mnt/nas3/data/Music";
+        MusicFolder = "${paths.hallewell.nas-share}/Music";
       };
     };
 

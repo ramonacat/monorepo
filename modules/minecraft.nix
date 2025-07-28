@@ -16,15 +16,12 @@
             whitelist = lib.mkOption {
               type = attrsOf str;
             };
-            resticRcloneConfigFile = lib.mkOption {type = path;};
-            resticEnvironmentFile = lib.mkOption {type = path;};
-            resticPasswordFile = lib.mkOption {type = path;};
-            resticRepository = lib.mkOption {type = str;};
           };
         });
     };
   };
   config = let
+    paths = import ../data/paths.nix;
     servers = config.services.ramona.minecraft;
   in {
     services.minecraft-servers = {
@@ -49,15 +46,15 @@
             "rcon.port" = settings.rconPort;
             "rcon.password" = "rcon";
           };
-          package = pkgs.minecraftServers.vanilla-1_21_4;
+          package = pkgs.minecraftServers.vanilla;
         })
         servers;
     };
 
     services.restic.backups =
       lib.mapAttrs' (name: settings: let
-          path = "/mnt/nas3/minecraft/${name}";
-          backupPath = "/mnt/nas3/minecraft/${name}-backup";
+          path = "${paths.hallewell.nas-root}/minecraft/${name}";
+          backupPath = "${paths.hallewell.nas-root}/minecraft/${name}-backup";
         in {
           name = "minecraft-" + name;
           value = let
@@ -71,33 +68,22 @@
             say [§4WARNING§r] starting server backup
 EOS
         ";
-          in {
-            timerConfig = {
-              OnCalendar = "*-*-* *:00:00";
-              Persistent = true;
-              RandomizedDelaySec = "30min";
-            };
-            extraOptions = ["--retry-lock"];
-            repository = settings.resticRepository;
-            rcloneConfigFile = settings.resticRcloneConfigFile;
-            environmentFile = settings.resticEnvironmentFile;
-            passwordFile = settings.resticPasswordFile;
-            backupPrepareCommand = ''
-              ${informerScript}/bin/backup-minecraft-server-${name}
+          in
+            import ../libs/nix/mk-restic-config.nix config {
+              timerConfig = {
+                OnCalendar = "*-*-* *:00:00";
+                RandomizedDelaySec = "30min";
+              };
+              backupPrepareCommand = ''
+                ${informerScript}/bin/backup-minecraft-server-${name}
 
-              ${pkgs.bcachefs-tools}/bin/bcachefs subvolume snapshot ${path} ${backupPath}
-            '';
-            backupCleanupCommand = ''
-              ${pkgs.bcachefs-tools}/bin/bcachefs subvolume delete ${backupPath}
-            '';
-            paths = [backupPath];
-            pruneOpts = [
-              "--keep-daily 7"
-              "--keep-weekly 4"
-              "--keep-monthly 3"
-              "--keep-yearly 3"
-            ];
-          };
+                ${pkgs.bcachefs-tools}/bin/bcachefs subvolume snapshot ${path} ${backupPath}
+              '';
+              backupCleanupCommand = ''
+                ${pkgs.bcachefs-tools}/bin/bcachefs subvolume delete ${backupPath}
+              '';
+              paths = [backupPath];
+            };
         })
       servers;
 

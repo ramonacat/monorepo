@@ -1,7 +1,6 @@
-{nixpkgs}: _: {
+_: {
   imports = [
-    (import ./_all.nix {inherit nixpkgs;})
-
+    ./_all.nix
     ./_notlive.nix
     ./hallewell/arrsuite.nix
     ./hallewell/atuin-server.nix

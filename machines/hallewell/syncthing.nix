@@ -1,9 +1,12 @@
+# TODO move this to the big common config in _notlive/?
 {lib, ...}: {
   config = {
-    services.syncthing = {
+    services.syncthing = let
+      paths = import ../../data/paths.nix;
+    in {
       user = lib.mkForce "nas";
-      dataDir = lib.mkForce "/mnt/nas3/syncthing/data/";
-      configDir = lib.mkForce "/mnt/nas3/syncthing/config/";
+      dataDir = lib.mkForce "${paths.hallewell.nas-root}/syncthing/data/";
+      configDir = lib.mkForce "${paths.hallewell.nas-root}/config/";
 
       settings = {
         devices.shadowsoul = {
@@ -14,10 +17,10 @@
         };
 
         folders = {
-          shared.path = lib.mkForce "/mnt/nas3/data/ramona/shared/";
+          shared.path = lib.mkForce "${paths.hallewell.nas-share}/ramona/shared/";
           dls = {
             id = "trnsmsn-dls";
-            path = "/mnt/nas3/dls/";
+            path = "${paths.hallewell.nas-root}/dls/";
             devices = ["shadowsoul"];
           };
         };

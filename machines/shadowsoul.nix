@@ -1,7 +1,6 @@
-{nixpkgs}: {...}: {
+{...}: {
   imports = [
-    (import ./_all.nix {inherit nixpkgs;})
-
+    ./_all.nix
     ./_notlive.nix
     ./shadowsoul/hardware.nix
     ./shadowsoul/networking.nix

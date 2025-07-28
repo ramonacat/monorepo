@@ -1,9 +1,11 @@
 _: {
-  config = {
+  config = let
+    paths = import ../../../../data/paths.nix;
+  in {
     services.nginx = {
       virtualHosts."hallewell.ibis-draconis.ts.net" = {
         locations."~ /webdav/.*" = {
-          root = "/mnt/nas3/data/ramona/";
+          root = "${paths.hallewell.nas-share}/ramona/";
           extraConfig = ''
             dav_methods PUT DELETE MKCOL COPY MOVE;
             dav_ext_methods PROPFIND OPTIONS;
@@ -16,7 +18,7 @@ _: {
     };
 
     systemd = {
-      services.nginx.serviceConfig.ReadWritePaths = ["/mnt/nas3/data/ramona/webdav/"];
+      services.nginx.serviceConfig.ReadWritePaths = ["${paths.hallewell.nas-share}/ramona/webdav/"];
     };
   };
 }

@@ -6,7 +6,9 @@
   postgresPackage = pkgs.postgresql_16;
 in {
   config = {
-    services = {
+    services = let
+      paths = import ../../data/paths.nix;
+    in {
       postgresql = {
         enable = true;
         enableJIT = true;
@@ -19,7 +21,7 @@ in {
         '';
 
         package = postgresPackage;
-        dataDir = "/mnt/nas3/postgresql/16/";
+        dataDir = "${paths.hallewell.nas-root}/postgresql/16/";
         initdbArgs = ["--data-checksums"];
         enableTCPIP = true;
         settings = {
@@ -31,35 +33,25 @@ in {
       };
 
       restic.backups.postgresql = let
-        backupPath = "/mnt/nas3/postgres-backup";
-      in {
-        timerConfig = {
-          OnCalendar = "*-*-* 00/6:00:00";
-          Persistent = true;
-          RandomizedDelaySec = "3h";
+        backupPath = "${paths.hallewell.nas-root}/postgres-backup";
+      in
+        import ../../libs/nix/mk-restic-config.nix config {
+          timerConfig = {
+            OnCalendar = "*-*-* 00/6:00:00";
+            RandomizedDelaySec = "3h";
+          };
+          backupPrepareCommand = ''
+            mkdir ${backupPath}
+            chown postgres:postgres ${backupPath}
+            ${pkgs.sudo}/bin/sudo -u postgres ${postgresPackage}/bin/pg_basebackup -Xstream -D${backupPath}
+          '';
+          backupCleanupCommand = ''
+            rm -r ${backupPath} || true
+          '';
+          paths = [
+            backupPath
+          ];
         };
-        repository = "b2:ramona-postgres-backups:/hallewell/";
-        rcloneConfigFile = config.age.secrets."postgres-backups-rclone".path;
-        environmentFile = config.age.secrets."postgres-backups-env".path;
-        backupPrepareCommand = ''
-          mkdir ${backupPath}
-          chown postgres:postgres ${backupPath}
-          ${pkgs.sudo}/bin/sudo -u postgres ${postgresPackage}/bin/pg_basebackup -Xstream -D${backupPath}
-        '';
-        backupCleanupCommand = ''
-          rm -r ${backupPath} || true
-        '';
-        passwordFile = config.age.secrets."restic-repository-password".path;
-        paths = [
-          backupPath
-        ];
-        pruneOpts = [
-          "--keep-daily 7"
-          "--keep-weekly 4"
-          "--keep-monthly 3"
-          "--keep-yearly 3"
-        ];
-      };
     };
 
     networking.firewall.interfaces.tailscale0.allowedTCPPorts = [5432];
