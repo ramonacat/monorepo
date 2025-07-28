@@ -32,34 +32,32 @@ in {
 
       restic.backups.postgresql = let
         backupPath = "/mnt/nas3/postgres-backup";
-      in {
-        timerConfig = {
-          OnCalendar = "*-*-* 00/6:00:00";
-          Persistent = true;
-          RandomizedDelaySec = "3h";
-        };
-        repository = "b2:ramona-postgres-backups:/hallewell/";
-        rcloneConfigFile = config.age.secrets."postgres-backups-rclone".path;
-        environmentFile = config.age.secrets."postgres-backups-env".path;
-        backupPrepareCommand = ''
-          mkdir ${backupPath}
-          chown postgres:postgres ${backupPath}
-          ${pkgs.sudo}/bin/sudo -u postgres ${postgresPackage}/bin/pg_basebackup -Xstream -D${backupPath}
-        '';
-        backupCleanupCommand = ''
-          rm -r ${backupPath} || true
-        '';
-        passwordFile = config.age.secrets."restic-repository-password".path;
-        paths = [
-          backupPath
-        ];
-        pruneOpts = [
-          "--keep-daily 7"
-          "--keep-weekly 4"
-          "--keep-monthly 3"
-          "--keep-yearly 3"
-        ];
-      };
+      in
+        {
+          timerConfig = {
+            OnCalendar = "*-*-* 00/6:00:00";
+            Persistent = true;
+            RandomizedDelaySec = "3h";
+          };
+          backupPrepareCommand = ''
+            mkdir ${backupPath}
+            chown postgres:postgres ${backupPath}
+            ${pkgs.sudo}/bin/sudo -u postgres ${postgresPackage}/bin/pg_basebackup -Xstream -D${backupPath}
+          '';
+          backupCleanupCommand = ''
+            rm -r ${backupPath} || true
+          '';
+          paths = [
+            backupPath
+          ];
+          pruneOpts = [
+            "--keep-daily 7"
+            "--keep-weekly 4"
+            "--keep-monthly 3"
+            "--keep-yearly 3"
+          ];
+        }
+        // import ../../libs/nix/mk-restic-repository.nix config "hallewell";
     };
 
     networking.firewall.interfaces.tailscale0.allowedTCPPorts = [5432];

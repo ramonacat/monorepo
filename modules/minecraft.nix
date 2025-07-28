@@ -16,10 +16,6 @@
             whitelist = lib.mkOption {
               type = attrsOf str;
             };
-            resticRcloneConfigFile = lib.mkOption {type = path;};
-            resticEnvironmentFile = lib.mkOption {type = path;};
-            resticPasswordFile = lib.mkOption {type = path;};
-            resticRepository = lib.mkOption {type = str;};
           };
         });
     };
@@ -71,33 +67,32 @@
             say [§4WARNING§r] starting server backup
 EOS
         ";
-          in {
-            timerConfig = {
-              OnCalendar = "*-*-* *:00:00";
-              Persistent = true;
-              RandomizedDelaySec = "30min";
-            };
-            extraOptions = ["--retry-lock"];
-            repository = settings.resticRepository;
-            rcloneConfigFile = settings.resticRcloneConfigFile;
-            environmentFile = settings.resticEnvironmentFile;
-            passwordFile = settings.resticPasswordFile;
-            backupPrepareCommand = ''
-              ${informerScript}/bin/backup-minecraft-server-${name}
+          in
+            {
+              timerConfig = {
+                OnCalendar = "*-*-* *:00:00";
+                Persistent = true;
+                RandomizedDelaySec = "30min";
+              };
+              extraOptions = ["--retry-lock"];
+              backupPrepareCommand = ''
+                ${informerScript}/bin/backup-minecraft-server-${name}
 
-              ${pkgs.bcachefs-tools}/bin/bcachefs subvolume snapshot ${path} ${backupPath}
-            '';
-            backupCleanupCommand = ''
-              ${pkgs.bcachefs-tools}/bin/bcachefs subvolume delete ${backupPath}
-            '';
-            paths = [backupPath];
-            pruneOpts = [
-              "--keep-daily 7"
-              "--keep-weekly 4"
-              "--keep-monthly 3"
-              "--keep-yearly 3"
-            ];
-          };
+                ${pkgs.bcachefs-tools}/bin/bcachefs subvolume snapshot ${path} ${backupPath}
+              '';
+              backupCleanupCommand = ''
+                ${pkgs.bcachefs-tools}/bin/bcachefs subvolume delete ${backupPath}
+              '';
+              paths = [backupPath];
+              pruneOpts = [
+                "--keep-daily 7"
+                "--keep-weekly 4"
+                "--keep-monthly 3"
+                "--keep-yearly 3"
+              ];
+            }
+            # TODO: move the backups and change the repository to a common one
+            // import ../libs/nix/mk-restic-repository.nix config "caligari";
         })
       servers;
 
