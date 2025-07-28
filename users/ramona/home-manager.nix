@@ -2,6 +2,7 @@
   imports = [
     ./home-manager/atuin.nix
     ./home-manager/nixvim.nix
+    ./home-manager/ssh.nix
   ];
   config = {
     home = {
