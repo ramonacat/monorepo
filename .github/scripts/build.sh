@@ -30,6 +30,7 @@ if [[ "$BRANCH_NAME" == "main" ]]; then
     publish -- result/iso/iso/*.iso root@hallewell:/var/www/hallewell.ibis-draconis.ts.net/builds/nixos-latest.iso
     publish -- result/kexec-bundle/* root@hallewell:/var/www/hallewell.ibis-draconis.ts.net/builds/kexec-bundle
     publish -- *-closure root@hallewell:/var/www/hallewell.ibis-draconis.ts.net/builds/
+    ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -i ./id_ed25519 root@hallewell -- "chmod a+r /var/www/hallewell.ibis-draconis.ts.net/builds/*"
 
     for filename in *-closure; do
         CLOSURE=$(tr -d "\n" < "$filename")

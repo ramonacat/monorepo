@@ -8,6 +8,7 @@
     ./crimson/disko.nix
     ./crimson/hardware.nix
     ./crimson/networking.nix
+    ./crimson/nginx.nix
 
     ../users/ramona/installed.nix
     ../users/root/base.nix
