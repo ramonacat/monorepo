@@ -5,6 +5,7 @@
 }: let
   syncthing-gui-port = 8384;
   syncthing-device-ids = import ../../data/syncthing-devices-ids.nix;
+  other-machine-ids = lib.attrsets.filterAttrs (key: _: key != config.networking.hostName) syncthing-device-ids;
 in {
   services.syncthing = let
     paths = import ../../data/paths.nix;
@@ -38,12 +39,16 @@ in {
         configDir = lib.mkForce "${paths.hallewell.nas-root}/syncthing/config/";
 
         settings = {
-          devices.shadowsoul = {
-            addresses = [
-              "tcp://213.108.112.64:22000"
-            ];
-            id = syncthing-device-ids.shadowsoul;
-          };
+          devices =
+            (lib.attrsets.mapAttrs (_: value: {id = value;}) other-machine-ids)
+            // {
+              shadowsoul = {
+                addresses = [
+                  "tcp://213.108.112.64:22000"
+                ];
+                id = syncthing-device-ids.shadowsoul;
+              };
+            };
 
           folders = {
             shared.path = lib.mkForce "${paths.hallewell.nas-share}/ramona/shared/";
@@ -62,15 +67,13 @@ in {
         dataDir = paths.common.syncthing-data;
         configDir = paths.common.syncthing-config;
 
-        settings = let
-          otherMachineIds = lib.attrsets.filterAttrs (key: _: key != config.networking.hostName) syncthing-device-ids;
-        in {
-          devices = lib.attrsets.mapAttrs (_: value: {id = value;}) otherMachineIds;
+        settings = {
+          devices = lib.attrsets.mapAttrs (_: value: {id = value;}) other-machine-ids;
 
           folders = {
             "shared" = {
               path = paths.common.ramona-shared;
-              devices = lib.attrsets.mapAttrsToList (name: _: name) otherMachineIds;
+              devices = lib.attrsets.mapAttrsToList (name: _: name) other-machine-ids;
             };
           };
         };
