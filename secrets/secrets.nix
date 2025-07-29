@@ -5,7 +5,8 @@ let
 
   shadowsoul = ssh-keys.machine-shadowsoul;
   hallewell = ssh-keys.machine-hallewell;
-  allMachines = [hallewell shadowsoul];
+  crimson = ssh-keys.machine-crimson;
+  allMachines = [hallewell shadowsoul crimson];
 in {
   "github-pat-runner-registration.age".publicKeys = users ++ [hallewell];
   "minio-root.age".publicKeys = users ++ [hallewell];
@@ -13,7 +14,7 @@ in {
   "minio-terraform-state.age".publicKeys = users;
   "photoprism-password.age".publicKeys = users ++ [hallewell];
   "backups-env.age".publicKeys = users ++ allMachines;
-  "-backups-rclone.age".publicKeys = users ++ allMachines;
+  "backups-rclone.age".publicKeys = users ++ allMachines;
   "rad-environment.age".publicKeys = users ++ allMachines;
   "rad-ras-token.age".publicKeys = users ++ allMachines;
   "ramona-password.age".publicKeys = users ++ allMachines;

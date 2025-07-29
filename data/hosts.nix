@@ -3,6 +3,7 @@ rec {
   nixos = [
     "hallewell"
     "shadowsoul"
+    "crimson"
   ];
   windows = [
     "angelsin"

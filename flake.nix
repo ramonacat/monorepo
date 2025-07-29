@@ -45,11 +45,17 @@
     nixpkgs = {
       url = "nixpkgs/nixos-unstable-small";
     };
+
+    disko = {
+      url = "github:nix-community/disko/latest";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 
   outputs = inputs @ {
     agenix,
     crane,
+    disko,
     home-manager,
     lix-module,
     nix-minecraft,
@@ -286,6 +292,17 @@
           common-modules
           ++ [
             ./machines/shadowsoul.nix
+          ];
+      };
+      crimson = nixpkgs.lib.nixosSystem {
+        inherit pkgs;
+        system = "x86_64-linux";
+        specialArgs = {inherit inputs;};
+        modules =
+          common-modules
+          ++ [
+            disko.nixosModules.disko
+            ./machines/crimson.nix
           ];
       };
       iso = nixpkgs.lib.nixosSystem {

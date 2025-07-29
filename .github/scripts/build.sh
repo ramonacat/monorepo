@@ -15,8 +15,12 @@ for f in result/hosts/*; do
     readlink "$f" > "$host_basename-closure"
 
     echo "diff for $host_basename"
-    CURRENT_CLOSURE=$(nix shell 'nixpkgs#curl' -c curl "https://hallewell.ibis-draconis.ts.net/builds/$host_basename-closure" | tr -d '[:space:]')
-    nix store diff-closures "$CURRENT_CLOSURE" "$f"
+    CURRENT_CLOSURE=$(nix shell 'nixpkgs#curl' -c curl "https://hallewell.ibis-draconis.ts.net/builds/$host_basename-closure" | tr -d '[:space:]' || true)
+
+    # This is a bit of a hack, a 404 will result in the response being HTML, so it will not start with a `/`
+    if [[ "${CURRENT_CLOSURE:0:1}" = "/" ]]; then
+        nix store diff-closures "$CURRENT_CLOSURE" "$f"
+    fi
 
     echo
 done
