@@ -1,4 +1,4 @@
-_: {
+{config, ...}: {
   imports = [
     ./nginx/host-tailscale.nix
   ];
@@ -9,6 +9,9 @@ _: {
       clientMaxBodySize = "1024m";
     };
 
-    networking.firewall.interfaces.tailscale0.allowedTCPPorts = [80 443];
+    networking.firewall.interfaces.tailscale0.allowedTCPPorts = [
+      config.services.nginx.defaultHTTPListenPort
+      config.services.nginx.defaultSSLListenPort
+    ];
   };
 }

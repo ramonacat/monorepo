@@ -18,12 +18,6 @@
       };
     };
 
-    fileSystems."/var/lib/transmission/Downloads" = {
-      device = "shadowsoul:/var/lib/transmission/Downloads";
-      fsType = "nfs";
-      options = ["x-systemd.after=tailscaled.service"];
-    };
-
     networking.firewall.interfaces.tailscale0.allowedTCPPorts = [
       config.services.jackett.port
       config.services.radarr.settings.server.port

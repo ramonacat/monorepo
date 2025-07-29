@@ -4,6 +4,7 @@
   ...
 }: let
   syncthing-gui-port = 8384;
+  syncthing-device-ids = import ../../data/syncthing-devices-ids.nix;
 in {
   services.syncthing = let
     paths = import ../../data/paths.nix;
@@ -21,11 +22,11 @@ in {
 
         settings = {
           devices = {
-            hallewell = {id = "WGH223K-BA7PTFL-DG22PJS-DJY3OJP-PGNVTHO-7S6QVAV-ALDTUWY-7NOLXAF";};
+            hallewell = {id = syncthing-device-ids.hallewell;};
           };
           folders.dls = {
             id = "trnsmsn-dls";
-            path = "/var/lib/transmission/Downloads/";
+            path = paths.shadowsoul.transmission-downloads;
             devices = ["hallewell"];
           };
         };
@@ -41,7 +42,7 @@ in {
             addresses = [
               "tcp://213.108.112.64:22000"
             ];
-            id = "7NXR3IB-O4X73UQ-YVL6C5D-WEVRNVZ-5R6MIZH-P73UNPX-LRNJV6K-UEJNUQS";
+            id = syncthing-device-ids.shadowsoul;
           };
 
           folders = {
@@ -58,17 +59,17 @@ in {
         openDefaultPorts = true;
         user = "ramona";
 
-        dataDir = "/home/ramona/.syncthing-data";
-        configDir = "/home/ramona/.config/syncthing";
+        dataDir = paths.common.syncthing-data;
+        configDir = paths.common.syncthing-config;
 
         settings = let
-          otherMachineIds = lib.attrsets.filterAttrs (key: _: key != config.networking.hostName) (import ../../data/syncthing-devices-ids.nix);
+          otherMachineIds = lib.attrsets.filterAttrs (key: _: key != config.networking.hostName) syncthing-device-ids;
         in {
           devices = lib.attrsets.mapAttrs (_: value: {id = value;}) otherMachineIds;
 
           folders = {
             "shared" = {
-              path = "/home/ramona/shared/";
+              path = paths.common.ramona-shared;
               devices = lib.attrsets.mapAttrsToList (name: _: name) otherMachineIds;
             };
           };
