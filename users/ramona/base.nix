@@ -9,7 +9,7 @@
 
     users.users.ramona = {
       isNormalUser = true;
-      extraGroups = ["wheel" "networkmanager" "docker" "cdrom" "audio" "adbusers"];
+      extraGroups = ["wheel" "docker" "cdrom" "audio" "adbusers"];
       openssh.authorizedKeys.keys = let
         ssh-keys = import ../../data/ssh-keys.nix;
       in [
