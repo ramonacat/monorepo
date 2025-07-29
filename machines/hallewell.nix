@@ -18,7 +18,6 @@ _: {
     ./hallewell/postgresql.nix
     ./hallewell/ras2.nix
     ./hallewell/ratweb2.nix
-    ./hallewell/syncthing.nix
     ./hallewell/telegraf.nix
     ./hallewell/tempo.nix
     ./hallewell/znc.nix

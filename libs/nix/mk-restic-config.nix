@@ -2,8 +2,8 @@ config: options:
 {
   # TODO rename the bucket and secrets - this is the common config for all backups, not just postgres
   repository = "b2:ramona-postgres-backups:/common/";
-  rcloneConfigFile = config.age.secrets."postgres-backups-rclone".path;
-  environmentFile = config.age.secrets."postgres-backups-env".path;
+  rcloneConfigFile = config.age.secrets."backups-rclone".path;
+  environmentFile = config.age.secrets."backups-env".path;
   passwordFile = config.age.secrets."restic-repository-password".path;
   timerConfig = {
     Persistent = true;

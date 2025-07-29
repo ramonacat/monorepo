@@ -2,12 +2,12 @@
   config = {
     # TODO move the secrets setup to its own nix file
     age.secrets = {
-      postgres-backups-rclone = {
-        file = ../../secrets/postgres-backups-rclone.age;
+      backups-rclone = {
+        file = ../../secrets/backups-rclone.age;
       };
 
-      postgres-backups-env = {
-        file = ../../secrets/postgres-backups-env.age;
+      backups-env = {
+        file = ../../secrets/backups-env.age;
       };
 
       restic-repository-password = {

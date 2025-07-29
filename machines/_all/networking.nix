@@ -4,7 +4,7 @@
     # https://github.com/NixOS/nixpkgs/issues/180175
     systemd.services.NetworkManager-wait-online.enable = lib.mkForce false;
     networking = {
-      useDHCP = false;
+      useDHCP = lib.mkForce true;
       networkmanager.enable = true;
       wireless.enable = false;
       nftables.enable = true;

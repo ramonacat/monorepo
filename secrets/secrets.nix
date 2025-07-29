@@ -12,8 +12,8 @@ in {
   "minio-tempo.age".publicKeys = users ++ [hallewell];
   "minio-terraform-state.age".publicKeys = users;
   "photoprism-password.age".publicKeys = users ++ [hallewell];
-  "postgres-backups-env.age".publicKeys = users ++ allMachines;
-  "postgres-backups-rclone.age".publicKeys = users ++ allMachines;
+  "backups-env.age".publicKeys = users ++ allMachines;
+  "-backups-rclone.age".publicKeys = users ++ allMachines;
   "rad-environment.age".publicKeys = users ++ allMachines;
   "rad-ras-token.age".publicKeys = users ++ allMachines;
   "ramona-password.age".publicKeys = users ++ allMachines;

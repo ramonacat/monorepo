@@ -3,7 +3,8 @@
     networking.hostName = "shadowsoul";
 
     networking = {
-      useDHCP = lib.mkForce true;
+      networkmanager.enable = lib.mkForce false;
+      useNetworkd = true;
     };
   };
 }
