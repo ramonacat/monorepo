@@ -4,16 +4,8 @@
   pkgs,
   ...
 }: let
-  phpPackage = pkgs.php84.buildEnv {
-    extensions = {
-      enabled,
-      all,
-    }:
-      enabled ++ [all.xdebug];
-    extraConfig = ''
-      zend.exception_string_param_max_len=128
-    '';
-  };
+  package-versions = import ../../data/package-versions.nix {inherit pkgs;};
+  phpPackage = package-versions.php;
 in {
   age.secrets.ras2-telegraf-db-config = {
     file = ../../secrets/ras2-telegraf-db-config.age;
@@ -55,7 +47,7 @@ in {
       root = "${pkgs.ramona.ras2}/share/php/ras2/public/";
 
       extraConfig = ''
-        rewrite ^/ras/(.*)$ $1;
+        rewrite ^/ras(/.*)$ $1 break;
         try_files $uri $uri/ /index.php$is_args$args;
         fastcgi_split_path_info ^(.+\.php)(/.+)$;
         fastcgi_pass unix:${config.services.phpfpm.pools.ras2.socket};

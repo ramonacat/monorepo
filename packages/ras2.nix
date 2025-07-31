@@ -1,5 +1,6 @@
 {pkgs, ...}: let
-  php = pkgs.php84;
+  inherit (package-versions) php;
+  package-versions = import ../data/package-versions.nix {inherit pkgs;};
   packageAttributes = {
     inherit php;
 
@@ -11,17 +12,7 @@
     vendorHash = "sha256-9021EknMKrbIJR/3WTvbke0ZCcvxMUQav9U+Gapvv0g=";
     composerNoPlugins = false;
   };
-  devPhp = php.buildEnv {
-    extensions = {
-      enabled,
-      all,
-    }:
-      enabled ++ [all.xdebug];
-    extraConfig = ''
-      xdebug.mode=coverage
-      memory_limit=1G
-    '';
-  };
+  devPhp = package-versions.php-dev;
   devPackage = php.buildComposerProject (_: ({
       composerNoDev = false;
       composerNoScripts = false;
@@ -42,7 +33,7 @@ in rec {
   checks = {
     "${package.name}--ecs" =
       pkgs.runCommand "${devPackage.name}--ecs" {
-        buildInputs = [devPhp pkgs.bash pkgs.nodePackages_latest.nodejs];
+        buildInputs = [devPhp pkgs.bash package-versions.nodejs];
       }
       ''
         mkdir -p $out
