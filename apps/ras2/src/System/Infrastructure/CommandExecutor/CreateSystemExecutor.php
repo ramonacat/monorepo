@@ -30,7 +30,7 @@ final class CreateSystemExecutor implements Executor
             SystemType::NIXOS => $this->hydrator->hydrate(NixOS::class, $command->attributes->toArray()),
         };
 
-        $system = new System($command->id, $command->hostname, $operatingSystem);
+        $system = new System($command->id, $command->hostname, $operatingSystem, null);
 
         $this->repository->insert($system);
     }

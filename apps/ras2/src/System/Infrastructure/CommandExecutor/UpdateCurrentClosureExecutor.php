@@ -10,6 +10,7 @@ use Ramona\Ras2\System\Application\Command\UpdateCurrentClosure;
 use Ramona\Ras2\System\Business\NixOS;
 use Ramona\Ras2\System\Infrastructure\Repository;
 use RuntimeException;
+use Safe\DateTimeImmutable;
 
 /**
  * @implements Executor<UpdateCurrentClosure>
@@ -25,6 +26,8 @@ final class UpdateCurrentClosureExecutor implements Executor
     {
         $this->repository->transactional(function () use ($command) {
             $system = $this->repository->getByHostname($command->hostname);
+            $now = new DateTimeImmutable();
+            $system->refreshPingDateTime($now);
             $operatingSystem = $system->operatingSystem();
             if (! ($operatingSystem instanceof NixOS)) {
                 throw new RuntimeException('Closures can only be set for NixOS systems');

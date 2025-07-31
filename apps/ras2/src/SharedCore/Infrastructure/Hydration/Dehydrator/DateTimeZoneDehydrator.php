@@ -9,7 +9,7 @@ use Ramona\Ras2\SharedCore\Infrastructure\Hydration\Dehydrator;
 use Ramona\Ras2\SharedCore\Infrastructure\Hydration\ValueDehydrator;
 
 /**
- * @implements ValueDehydrator<\DateTimeZone>
+ * @implements ValueDehydrator<DateTimeZone>
  */
 final class DateTimeZoneDehydrator implements ValueDehydrator
 {

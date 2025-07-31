@@ -9,7 +9,7 @@ use Ramona\Ras2\SharedCore\Infrastructure\Hydration\Hydrator;
 use Ramona\Ras2\SharedCore\Infrastructure\Hydration\ValueHydrator;
 
 /**
- * @implements ValueHydrator<\DateTimeZone>
+ * @implements ValueHydrator<DateTimeZone>
  */
 final class DateTimeZoneHydrator implements ValueHydrator
 {

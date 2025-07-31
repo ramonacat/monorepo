@@ -207,19 +207,20 @@
         google-cloud-sdk
         lua-language-server
         nil
+        nil
+        nushell
+        package-versions.nodejs
+        phpactor
         pipewire
         pkg-config
+        postgresql_16
         rust-analyzer
         stylua
         terraform
         terraform-ls
         trunk
-        wasm-bindgen-cli
         udev.dev
-        postgresql_16
-        nil
-        package-versions.nodejs
-        phpactor
+        wasm-bindgen-cli
 
         package-versions.phpPackages.composer
         package-versions.php-dev
