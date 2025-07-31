@@ -11,5 +11,10 @@
       config.services.nginx.defaultHTTPListenPort
       config.services.nginx.defaultSSLListenPort
     ];
+
+    security.acme = {
+      acceptTerms = true;
+      defaults.email = "ramona@luczkiewi.cz";
+    };
   };
 }

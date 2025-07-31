@@ -8,10 +8,5 @@
         root = "${pkgs.ramona.ramona-fun}/public/";
       };
     };
-
-    security.acme = {
-      acceptTerms = true;
-      defaults.email = "ramona@luczkiewi.cz";
-    };
   };
 }
