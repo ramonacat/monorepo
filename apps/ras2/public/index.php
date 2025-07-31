@@ -6,6 +6,9 @@ use League\Route\Router;
 use Ramona\Ras2\SharedCore\Infrastructure\HTTP\APIDefinition\APIDefinition;
 use Ramona\Ras2\SharedCore\Infrastructure\HTTP\APIDefinition\APIRouter;
 
+// TODO: get rid of this (requires getting rid of the league router and replacing it with something that's still being updated)
+error_reporting(error_reporting() & ~E_DEPRECATED);
+
 require_once __DIR__ . '/../vendor/autoload.php';
 
 $diContainer = require __DIR__ . '/../src/container.php';

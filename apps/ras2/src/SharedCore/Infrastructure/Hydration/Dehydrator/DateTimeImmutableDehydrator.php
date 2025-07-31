@@ -9,7 +9,7 @@ use Ramona\Ras2\SharedCore\Infrastructure\Hydration\Dehydrator;
 use Ramona\Ras2\SharedCore\Infrastructure\Hydration\ValueDehydrator;
 
 /**
- * @implements ValueDehydrator<\DateTimeImmutable>
+ * @implements ValueDehydrator<DateTimeImmutable>
  */
 final class DateTimeImmutableDehydrator implements ValueDehydrator
 {

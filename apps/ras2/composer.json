@@ -28,7 +28,7 @@
         "ext-mbstring": "*",
         "ext-intl": "*",
 
-        "thecodingmachine/safe": "^3",
+        "thecodingmachine/safe": "^3.3",
         "doctrine/collections": "^2.2",
         "ramsey/uuid": "^4.7",
         "league/route": "^5.1",

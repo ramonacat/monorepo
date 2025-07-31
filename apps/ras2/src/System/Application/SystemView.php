@@ -12,7 +12,8 @@ final readonly class SystemView
         public SystemId $id,
         public string $hostname,
         public bool $isUpToDate,
-        public string $outdatedDescription
+        public string $outdatedDescription,
+        public ?\Safe\DateTimeImmutable $latestPing
     ) {
     }
 }

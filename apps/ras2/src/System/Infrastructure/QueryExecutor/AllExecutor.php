@@ -30,7 +30,7 @@ final class AllExecutor implements Executor
             ->connection
             ->fetchAllAssociative('
                 SELECT 
-                    id, hostname, operating_system, operating_system_type
+                    id, hostname, operating_system, operating_system_type, latest_ping
                 FROM systems
             ');
 
@@ -53,9 +53,29 @@ final class AllExecutor implements Executor
                     default:
                         throw new RuntimeException('Unsupported operating system ' . $x['operating_system_type']);
                 }
+                $x['latestPing'] = $x['latest_ping'] === null ? null : $this->convertDateTimeFromDatabase(
+                    $x['latest_ping']
+                );
 
                 return $x;
             })
             ->map(fn (array $x) => $this->hydrator->hydrate(SystemView::class, $x));
+    }
+
+    /**
+     * TODO this function is copy-pasted from Event/.../InMonthExecutor
+     * @return array{timestamp:string, timezone: string}
+     */
+    private function convertDateTimeFromDatabase(string $raw): array
+    {
+        \Safe\preg_match('/\(\"(?<timestamp>.*?)\",(?<timezone>.*?)\)/S', $raw, $matches);
+        /**
+         * @var array{timestamp:string, timezone: string} $matches
+         */
+
+        return [
+            'timestamp' => $matches['timestamp'],
+            'timezone' => $matches['timezone'],
+        ];
     }
 }
