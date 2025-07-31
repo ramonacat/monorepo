@@ -43,11 +43,10 @@ in {
 
   services.nginx = {
     enable = true;
-    virtualHosts."hallewell.ibis-draconis.ts.net".locations."~ /ras/.*" = {
-      root = "${pkgs.ramona.ras2}/share/php/ras2/public/";
+    virtualHosts."hallewell.ibis-draconis.ts.net".locations."~ /ras/(.*)" = {
+      alias = "${pkgs.ramona.ras2}/share/php/ras2/public/$1";
 
       extraConfig = ''
-        rewrite ^/ras(/.*)$ $1 break;
         try_files $uri $uri/ /index.php$is_args$args;
         fastcgi_split_path_info ^(.+\.php)(/.+)$;
         fastcgi_pass unix:${config.services.phpfpm.pools.ras2.socket};
