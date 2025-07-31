@@ -1,6 +1,8 @@
 {config, ...}: {
   imports = [
     ./nginx/host-ramona-fun.nix
+    ./nginx/host-savin-gallery.nix
+    ./nginx/host-sawin-gallery.nix
   ];
   config = {
     services.nginx = {
