@@ -10,6 +10,14 @@ require_once __DIR__ . '/../vendor/autoload.php';
 
 $diContainer = require __DIR__ . '/../src/container.php';
 $request = Laminas\Diactoros\ServerRequestFactory::fromGlobals($_SERVER, $_GET, $_POST, $_COOKIE, $_FILES);
+
+$prefix = preg_quote('ras');
+$path = \Safe\preg_replace("#(/?){$prefix}(/.*)?#i", '$1$2', $request->getUri()->getPath());
+$path = str_replace('//', '/', $path);
+$uri = $request->getUri()
+    ->withPath($path);
+$request = $request->withUri($uri);
+
 $router = $diContainer->get(Router::class);
 $apiDefinition = $diContainer->get(APIDefinition::class);
 $apiRouter = $diContainer->get(APIRouter::class);

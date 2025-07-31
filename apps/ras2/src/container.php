@@ -65,7 +65,7 @@ $containerBuilder->addDefinitions([
     )),
     APIDefinition::class => fn (ContainerInterface $c) => APIDefinitionFactory::create($c),
     CacheInterface::class => fn () => new Psr16Cache(new FilesystemAdapter()),
-    Mustache_Engine::class => fn () => MustacheFactory::create(),
+    \Mustache\Engine::class => fn () => MustacheFactory::create(),
 ]);
 
 $modules = [new TaskModule(), new UserModule(), new EventModule(), new SystemModule(), new MaintenanceModule()];

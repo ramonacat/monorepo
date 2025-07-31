@@ -17,41 +17,54 @@ in {
     group = "ras2";
     mode = "440";
   };
-  services.phpfpm.pools.ras2 = {
-    user = "ras2";
-    settings = {
-      "listen.owner" = config.services.nginx.user;
-      "pm" = "dynamic";
-      "pm.max_children" = 32;
-      "pm.max_requests" = 500;
-      "pm.start_servers" = 2;
-      "pm.min_spare_servers" = 2;
-      "pm.max_spare_servers" = 5;
-      "php_admin_value[error_log]" = "stderr";
-      "php_admin_flag[log_errors]" = true;
-      "catch_workers_output" = true;
-    };
-    phpEnv = {
-      "APPLICATION_MODE" = "prod";
-      "PATH" = lib.makeBinPath [
-        phpPackage
-      ];
-      "DATABASE_CONFIG" = config.age.secrets.ras2-db-config.path;
-      "DATABASE_CONFIG_TELEGRAF" = config.age.secrets.ras2-telegraf-db-config.path;
+  services.phpfpm = {
+    pools.ras2 = {
+      user = "ras2";
+      settings = {
+        "listen.owner" = config.services.nginx.user;
+        "pm" = "dynamic";
+        "pm.max_children" = 32;
+        "pm.max_requests" = 500;
+        "pm.start_servers" = 2;
+        "pm.min_spare_servers" = 2;
+        "pm.max_spare_servers" = 5;
+        "php_admin_value[error_log]" = "stderr";
+        "php_admin_flag[log_errors]" = true;
+        "catch_workers_output" = true;
+      };
+      phpEnv = {
+        "APPLICATION_MODE" = "prod";
+        "PATH" = lib.makeBinPath [
+          phpPackage
+        ];
+        "DATABASE_CONFIG" = config.age.secrets.ras2-db-config.path;
+        "DATABASE_CONFIG_TELEGRAF" = config.age.secrets.ras2-telegraf-db-config.path;
+      };
     };
   };
 
   services.nginx = {
     enable = true;
-    virtualHosts."hallewell.ibis-draconis.ts.net".locations."~ /ras/(.*)" = {
-      alias = "${pkgs.ramona.ras2}/share/php/ras2/public/$1";
+    virtualHosts."hallewell.ibis-draconis.ts.net".locations = {
+      "^~ /ras/" = {
+        root = "${pkgs.ramona.ras2}/share/php/ras2/public/";
 
-      extraConfig = ''
-        try_files $uri $uri/ /index.php$is_args$args;
-        fastcgi_split_path_info ^(.+\.php)(/.+)$;
-        fastcgi_pass unix:${config.services.phpfpm.pools.ras2.socket};
-        include ${pkgs.nginx}/conf/fastcgi.conf;
-      '';
+        extraConfig = ''
+          try_files $uri $uri/ @ras-fcgi;
+        '';
+      };
+      "@ras-fcgi" = {
+        root = "${pkgs.ramona.ras2}/share/php/ras2/public/";
+        extraConfig = ''
+          rewrite ^/ras/(.*)$ /$1 break;
+
+          fastcgi_split_path_info ^((.*))$;
+          fastcgi_pass unix:${config.services.phpfpm.pools.ras2.socket};
+
+          include ${pkgs.nginx}/conf/fastcgi.conf;
+          fastcgi_param SCRIPT_FILENAME $document_root/index.php;
+        '';
+      };
     };
   };
 
