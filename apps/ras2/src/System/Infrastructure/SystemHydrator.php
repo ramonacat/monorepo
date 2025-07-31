@@ -23,7 +23,10 @@ final class SystemHydrator implements ValueHydrator
             $hydrator->hydrate(SystemId::class, $input['id']),
             $input['hostname'],
             $hydrator->hydrate($this->systemNameToType($input['operatingSystemType']), $input['operatingSystem']),
-            $hydrator->hydrate(\Safe\DateTimeImmutable::class, $input['latest_ping']),
+            $input['latestPing'] === null ? null : $hydrator->hydrate(
+                \Safe\DateTimeImmutable::class,
+                $input['latestPing']
+            ),
         );
     }
 
