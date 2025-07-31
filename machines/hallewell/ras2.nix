@@ -55,6 +55,7 @@ in {
       root = "${pkgs.ramona.ras2}/share/php/ras2/public/";
 
       extraConfig = ''
+        rewrite ^/ras/(.*)$ $1;
         try_files $uri $uri/ /index.php$is_args$args;
         fastcgi_split_path_info ^(.+\.php)(/.+)$;
         fastcgi_pass unix:${config.services.phpfpm.pools.ras2.socket};
@@ -62,6 +63,7 @@ in {
       '';
     };
   };
+
   users.users.ras2 = {
     isSystemUser = true;
     group = "ras2";
