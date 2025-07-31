@@ -197,7 +197,9 @@
       }
       // (builtins.mapAttrs (_: v: (v {inherit pkgs craneLib;}).package) packages);
     devShells.x86_64-linux.default = pkgs.mkShell {
-      packages = with pkgs; [
+      packages = with pkgs; let
+        package-versions = import ./data/package-versions.nix {inherit pkgs;};
+      in [
         alsa-lib.dev
         cargo-leptos
         clang
@@ -215,22 +217,11 @@
         udev.dev
         postgresql_16
         nil
-        nodePackages_latest.nodejs
+        package-versions.nodejs
         phpactor
 
-        php84Packages.composer
-
-        (php84.buildEnv {
-          extensions = {
-            enabled,
-            all,
-          }:
-            enabled ++ [all.xdebug];
-          extraConfig = ''
-            memory_limit=1G
-            zend.exception_string_param_max_len=128
-          '';
-        })
+        package-versions.phpPackages.composer
+        package-versions.php-dev
 
         (rust-bin.stable.latest.default.override {
           extensions = [

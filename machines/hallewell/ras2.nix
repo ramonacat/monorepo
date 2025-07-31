@@ -4,16 +4,8 @@
   pkgs,
   ...
 }: let
-  phpPackage = pkgs.php84.buildEnv {
-    extensions = {
-      enabled,
-      all,
-    }:
-      enabled ++ [all.xdebug];
-    extraConfig = ''
-      zend.exception_string_param_max_len=128
-    '';
-  };
+  package-versions = import ../../data/package-versions.nix {inherit pkgs;};
+  phpPackage = package-versions.php;
 in {
   age.secrets.ras2-telegraf-db-config = {
     file = ../../secrets/ras2-telegraf-db-config.age;

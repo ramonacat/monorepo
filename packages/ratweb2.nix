@@ -1,4 +1,5 @@
 {pkgs, ...}: let
+  package-versions = import ../data/package-versions.nix {inherit pkgs;};
   rawPackage = pkgs.buildNpmPackage {
     name = "ratweb2";
     npmDeps = pkgs.importNpmLock {
@@ -12,14 +13,14 @@
     '';
     dontInstall = true;
 
-    inherit (pkgs.nodePackages_latest) nodejs;
+    inherit (package-versions) nodejs;
     inherit (pkgs.importNpmLock) npmConfigHook;
   };
 in rec {
   package = pkgs.writeShellScriptBin "ratweb2" ''
-    ${pkgs.nodePackages_latest.nodejs}/bin/node ${rawPackage}/build
+    ${package-versions.nodejs}/bin/node ${rawPackage}/build
   '';
-  coverage = pkgs.runCommand "${package.name}--coverage" {nativeBuildInputs = [pkgs.nodePackages_latest.nodejs];} ''
+  coverage = pkgs.runCommand "${package.name}--coverage" {nativeBuildInputs = [package-versions.nodejs];} ''
     cp -r ${rawPackage}/* .
     chmod -R a+w ./node_modules/.vite-temp
     chmod a+w ./node_modules/
@@ -30,7 +31,7 @@ in rec {
     mv coverage/clover.xml $out
   '';
   checks = {
-    "${package.name}--check" = pkgs.runCommand "${package.name}--checks" {nativeBuildInputs = [pkgs.nodePackages_latest.nodejs];} ''
+    "${package.name}--check" = pkgs.runCommand "${package.name}--checks" {nativeBuildInputs = [package-versions.nodejs];} ''
       cp -r ${rawPackage}/* .
       chmod -R a+w ./node_modules/.vite-temp
       npm run check
