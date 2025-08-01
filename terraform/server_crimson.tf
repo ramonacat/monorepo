@@ -26,13 +26,13 @@ resource "hcloud_rdns" "crimson-ipv6" {
 }
 
 module "crimson-system-build" {
-  source            = "github.com/nix-community/nixos-anywhere/terraform/nix-build"
-  attribute         = "..#nixosConfigurations.crimson.config.system.build.toplevel"
+  source    = "github.com/nix-community/nixos-anywhere/terraform/nix-build"
+  attribute = "..#nixosConfigurations.crimson.config.system.build.toplevel"
 }
 
 module "crimson-disko" {
-  source         = "github.com/nix-community/nixos-anywhere/terraform/nix-build"
-  attribute      = "..#nixosConfigurations.crimson.config.system.build.diskoScript"
+  source    = "github.com/nix-community/nixos-anywhere/terraform/nix-build"
+  attribute = "..#nixosConfigurations.crimson.config.system.build.diskoScript"
 }
 
 module "crimson-install" {
