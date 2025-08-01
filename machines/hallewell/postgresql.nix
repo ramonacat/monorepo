@@ -3,7 +3,7 @@
   pkgs,
   ...
 }: let
-  postgresPackage = pkgs.postgresql_16;
+  postgresPackage = pkgs.postgresql_17;
 in {
   config = {
     services = let
@@ -21,7 +21,7 @@ in {
         '';
 
         package = postgresPackage;
-        dataDir = "${paths.hallewell.nas-root}/postgresql/16/";
+        dataDir = "${paths.hallewell.nas-root}/postgresql/17/";
         initdbArgs = ["--data-checksums"];
         enableTCPIP = true;
         settings = {
