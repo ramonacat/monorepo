@@ -1,6 +1,7 @@
 _: {
   imports = [
-    ./_all.nix
+    ../roles/all.nix
+
     ./iso/filesystems.nix
 
     ../users/ramona/base.nix

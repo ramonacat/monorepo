@@ -51,11 +51,13 @@ in {
             };
 
           folders = {
-            shared.path = lib.mkForce "${paths.hallewell.nas-share}/ramona/shared/";
+            shared = {
+              path = lib.mkForce "${paths.hallewell.nas-share}/ramona/shared/";
+              devices = lib.attrsets.mapAttrsToList (name: _: name) other-machine-ids;
+            };
             dls = {
               id = "trnsmsn-dls";
               path = "${paths.hallewell.nas-root}/dls/";
-              devices = lib.attrsets.mapAttrsToList (name: _: name) other-machine-ids;
             };
           };
         };

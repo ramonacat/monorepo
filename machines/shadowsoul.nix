@@ -1,7 +1,8 @@
 _: {
   imports = [
-    ./_all.nix
-    ./_notlive.nix
+    ../roles/all.nix
+    ../roles/private.nix
+    ../roles/installed.nix
 
     ./shadowsoul/hardware.nix
     ./shadowsoul/networking.nix
