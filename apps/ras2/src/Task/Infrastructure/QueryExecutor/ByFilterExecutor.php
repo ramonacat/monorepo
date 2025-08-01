@@ -6,7 +6,6 @@ namespace Ramona\Ras2\Task\Infrastructure\QueryExecutor;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\DBAL\Connection;
-use Mustache_Engine;
 use Ramona\Ras2\SharedCore\Infrastructure\CQRS\Query\Executor;
 use Ramona\Ras2\SharedCore\Infrastructure\CQRS\Query\Query;
 use Ramona\Ras2\SharedCore\Infrastructure\Hydration\Hydrator;
@@ -21,7 +20,7 @@ final readonly class ByFilterExecutor implements Executor
 {
     public function __construct(
         private Connection $connection,
-        private Mustache_Engine $mustache,
+        private \Mustache\Engine $mustache,
         private Hydrator $hydrator
     ) {
     }

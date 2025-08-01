@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Ramona\Ras2\Task\Infrastructure\QueryExecutor;
 
 use Doctrine\DBAL\Connection;
-use Mustache_Engine;
 use Ramona\Ras2\SharedCore\Infrastructure\CQRS\Query\Executor;
 use Ramona\Ras2\SharedCore\Infrastructure\CQRS\Query\Query;
 use Ramona\Ras2\SharedCore\Infrastructure\Hydration\Hydrator;
@@ -21,7 +20,7 @@ final readonly class ByIdExecutor implements Executor
     public function __construct(
         private Connection $connection,
         private Hydrator $hydrator,
-        private Mustache_Engine $mustache
+        private \Mustache\Engine $mustache
     ) {
     }
 
