@@ -17,9 +17,6 @@
         addSSL = true;
         sslCertificate = certificateFile;
         sslCertificateKey = certificateKey;
-
-        # these are hallewell's tailscale addresses
-        listenAddresses = ["100.109.240.138" "[fd7a:115c:a1e0:ab12:4843:cd96:626d:f08a]"];
       };
     };
     systemd = {
