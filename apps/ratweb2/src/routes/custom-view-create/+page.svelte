@@ -5,7 +5,6 @@
 	import type { ActionData } from './$types';
 	import { ServerUserView } from '$lib/api/user.js';
 
-	export let form: ActionData;
 	export let data: PageData;
 	const allUsers = data.allUsers.map(ServerUserView.fromPojo);
 </script>
