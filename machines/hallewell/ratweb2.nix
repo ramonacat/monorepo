@@ -9,7 +9,7 @@
           "ORIGIN=http://hallewell:8069"
           "HOST=0.0.0.0"
           "PORT=8069"
-          "RAS2_SERVICE_URL=http://ras2.services.ramona.fun/"
+          "RAS2_SERVICE_URL=http://hallewell/ras/"
         ];
         ExecStart = "${pkgs.ramona.ratweb2}/bin/ratweb2";
       };
