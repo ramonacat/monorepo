@@ -1,7 +1,9 @@
 _: {
   imports = [
-    ./_all.nix
-    ./_notlive.nix
+    ../roles/all.nix
+    ../roles/private.nix
+    ../roles/installed.nix
+
     ./hallewell/arrsuite.nix
     ./hallewell/atuin-server.nix
     ./hallewell/github-runner.nix

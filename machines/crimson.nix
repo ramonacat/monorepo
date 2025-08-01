@@ -2,8 +2,8 @@
   imports = [
     (modulesPath + "/profiles/qemu-guest.nix")
 
-    ./_all.nix
-    ./_notlive.nix
+    ../roles/all.nix
+    ../roles/installed.nix
 
     ./crimson/disko.nix
     ./crimson/hardware.nix
