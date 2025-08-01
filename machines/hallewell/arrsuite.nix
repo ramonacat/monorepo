@@ -16,12 +16,21 @@
           server.port = 8990;
         };
       };
+      lidarr = {
+        enable = true;
+        user = "nas";
+
+        settings = {
+          server.port = 8991;
+        };
+      };
     };
 
     networking.firewall.interfaces.tailscale0.allowedTCPPorts = [
       config.services.jackett.port
       config.services.radarr.settings.server.port
       config.services.sonarr.settings.server.port
+      config.services.lidarr.settings.server.port
       flaresolver-port
     ];
 
