@@ -1,10 +1,10 @@
 _: {
-  imports = [
-    ../roles/all.nix
+  imports =
+    [
+      ../roles/all.nix
 
-    ./iso/filesystems.nix
-
-    ../users/ramona/base.nix
-    ../users/root/base.nix
-  ];
+      ../users/ramona/base.nix
+      ../users/root/base.nix
+    ]
+    ++ (import ../libs/nix/nix-files-from-dir.nix ./iso);
 }

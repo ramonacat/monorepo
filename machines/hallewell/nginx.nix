@@ -1,7 +1,5 @@
 {config, ...}: {
-  imports = [
-    ./nginx/host-tailscale.nix
-  ];
+  imports = import ../../libs/nix/nix-files-from-dir.nix ./nginx;
   config = {
     services.nginx = {
       enable = true;
