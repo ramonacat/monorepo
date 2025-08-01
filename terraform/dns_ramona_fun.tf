@@ -109,3 +109,14 @@ resource "google_dns_record_set" "TXT-ramona-fun" {
 
   rrdatas = ["\"v=spf1 include:spf.messagingengine.com ?all\""]
 }
+
+resource "google_dns_record_set" "TXT-_dmarc-ramona-fun" {
+  name         = "_dmarc.${google_dns_managed_zone.ramona-fun.dns_name}"
+  managed_zone = google_dns_managed_zone.ramona-fun.name
+
+  type = "TXT"
+  ttl  = "60"
+  rrdatas = [
+    "v=DMARC1; p=none; rua=mailto:dmarc@ramona.fun; ruf=mailto:dmarc@ramona.fun; fo=1"
+  ]
+}
