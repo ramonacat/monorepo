@@ -3,7 +3,7 @@
     programs.ssh = {
       enable = true;
       matchBlocks = let
-        hosts = import ../../../data/hosts.nix;
+        hosts = import ../../../../data/hosts.nix;
       in
         lib.attrsets.genAttrs hosts.nixos (hostname: {
           inherit hostname;

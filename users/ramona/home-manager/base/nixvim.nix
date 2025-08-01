@@ -1,5 +1,5 @@
 _: {
-  imports = import ../../../libs/nix/nix-files-from-dir.nix ./nixvim;
+  imports = import ../../../../libs/nix/nix-files-from-dir.nix ./nixvim;
   config = {
     programs.nixvim = {
       enable = true;

@@ -244,7 +244,7 @@
       modules = [
         nixvim.homeModules.nixvim
 
-        ./users/ramona/home-manager.nix
+        ./users/ramona/home-manager/base.nix
       ];
     };
     homeConfigurations.ramona-wsl = home-manager.lib.homeManagerConfiguration {
@@ -253,7 +253,7 @@
       modules = [
         nixvim.homeModules.nixvim
 
-        ./users/ramona/home-manager.nix
+        ./users/ramona/home-manager/base.nix
         ./users/ramona/home-manager/wsl.nix
       ];
     };
