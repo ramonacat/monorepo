@@ -1,8 +1,7 @@
 import { ensureAuthenticated } from '$lib/ensureAuthenticated';
-import type { Actions } from '@sveltejs/kit';
-import { DateTime } from 'luxon';
+import type { Actions, Cookies } from '@sveltejs/kit';
 
-export async function load({ cookies }) {
+export async function load({ cookies }: {cookies: Cookies}) {
 	const { apiClient } = await ensureAuthenticated(cookies);
 
 	return {

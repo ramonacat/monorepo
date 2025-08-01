@@ -1,7 +1,8 @@
 import { ensureAuthenticated } from '$lib/ensureAuthenticated';
 import { DateTime } from 'luxon';
+import { type Cookies } from '@sveltejs/kit';
 
-export async function load({ cookies, url }) {
+export async function load({ cookies, url }: {cookies: Cookies, url: URL}) {
 	const { apiClient } = await ensureAuthenticated(cookies);
 	const now = DateTime.now();
 	const year = url.searchParams.get('year') ?? now.year;
