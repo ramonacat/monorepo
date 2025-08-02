@@ -6,7 +6,7 @@ _: {
       ../roles/hetzner-cloud.nix
 
       ../users/ramona/installed.nix
-      ../users/root/base.nix
+      ../users/root/installed.nix
     ]
     ++ (import ../libs/nix/nix-files-from-dir.nix ./crimson);
 }
