@@ -13,9 +13,9 @@
       openssh.authorizedKeys.keys = let
         ssh-keys = import ../../data/ssh-keys.nix;
       in [
-        ssh-keys.ramona
-        ssh-keys.ramona-nitrokey
-        ssh-keys.ramona-nitrokey3
+        ssh-keys.ramona.default
+        ssh-keys.ramona.nitrokey
+        ssh-keys.ramona.nitrokey3
       ];
       shell = pkgs.bash;
     };
