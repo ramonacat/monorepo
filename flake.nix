@@ -180,17 +180,20 @@
             + "\n"
           );
         everything = let
-          allClosures =
+          allHosts =
             builtins.mapAttrs (
               _: value: value.config.system.build.toplevel
             )
             self.nixosConfigurations;
+          allHomes = builtins.mapAttrs (_: value: value.activationPackage) self.homeConfigurations;
         in
           pkgs.runCommand "everything" {} (
             "mkdir -p $out/hosts\n"
             + (pkgs.lib.concatStringsSep "\n" (
-              pkgs.lib.mapAttrsToList (k: p: "ln -s ${p} $out/hosts/${k}") allClosures
+              pkgs.lib.mapAttrsToList (k: p: "ln -s ${p} $out/hosts/${k}") allHosts
             ))
+            + "\nmkdir -p $out/homes\n"
+            + (pkgs.lib.concatStringsSep "\n" (pkgs.lib.mapAttrsToList (k: v: "ln -s ${v} $out/homes/${k}") allHomes))
             + "\nln -s ${self.nixosConfigurations.iso.config.system.build.isoImage} $out/iso\n"
             + "\nln -s ${self.nixosConfigurations.iso.config.formats.kexec-bundle} $out/kexec-bundle\n"
           );
@@ -241,6 +244,8 @@
     homeConfigurations.ramona = home-manager.lib.homeManagerConfiguration {
       inherit pkgs;
 
+      extraSpecialArgs = {flake = self;};
+
       modules = [
         nixvim.homeModules.nixvim
 
@@ -249,6 +254,8 @@
     };
     homeConfigurations.ramona-wsl = home-manager.lib.homeManagerConfiguration {
       inherit pkgs;
+
+      extraSpecialArgs = {flake = self;};
 
       modules = [
         nixvim.homeModules.nixvim
@@ -269,7 +276,10 @@
       hallewell = nixpkgs.lib.nixosSystem {
         inherit pkgs;
         system = "x86_64-linux";
-        specialArgs = {inherit inputs;};
+        specialArgs = {
+          inherit inputs;
+          flake = self;
+        };
         modules =
           common-modules
           ++ [
@@ -281,7 +291,10 @@
       shadowsoul = nixpkgs.lib.nixosSystem {
         inherit pkgs;
         system = "x86_64-linux";
-        specialArgs = {inherit inputs;};
+        specialArgs = {
+          inherit inputs;
+          flake = self;
+        };
         modules =
           common-modules
           ++ [
@@ -291,7 +304,10 @@
       crimson = nixpkgs.lib.nixosSystem {
         inherit pkgs;
         system = "x86_64-linux";
-        specialArgs = {inherit inputs;};
+        specialArgs = {
+          inherit inputs;
+          flake = self;
+        };
         modules =
           common-modules
           ++ [
@@ -299,10 +315,27 @@
             ./machines/crimson.nix
           ];
       };
+      thornton = nixpkgs.lib.nixosSystem {
+        inherit pkgs;
+        system = "x86_64-linux";
+        specialArgs = {
+          inherit inputs;
+          flake = self;
+        };
+        modules =
+          common-modules
+          ++ [
+            disko.nixosModules.disko
+            ./machines/thornton.nix
+          ];
+      };
       iso = nixpkgs.lib.nixosSystem {
         inherit pkgs;
         system = "x86_64-linux";
-        specialArgs = {inherit inputs;};
+        specialArgs = {
+          inherit inputs;
+          flake = self;
+        };
         modules =
           common-modules
           ++ [

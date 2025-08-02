@@ -62,6 +62,28 @@ resource "google_dns_record_set" "AAAA-crimson-devices-ramona-fun" {
   ]
 }
 
+resource "google_dns_record_set" "A-thornton-devices-ramona-fun" {
+  name         = "thornton.devices.${google_dns_managed_zone.ramona-fun.dns_name}"
+  managed_zone = google_dns_managed_zone.ramona-fun.name
+  type         = "A"
+  ttl          = "60"
+
+  rrdatas = [
+    hcloud_server.thornton.ipv4_address
+  ]
+}
+
+resource "google_dns_record_set" "AAAA-thornton-devices-ramona-fun" {
+  name         = "thornton.devices.${google_dns_managed_zone.ramona-fun.dns_name}"
+  managed_zone = google_dns_managed_zone.ramona-fun.name
+  type         = "AAAA"
+  ttl          = "60"
+
+  rrdatas = [
+    hcloud_server.thornton.ipv6_address
+  ]
+}
+
 resource "google_dns_record_set" "MX-ramona-fun" {
   name         = google_dns_managed_zone.ramona-fun.dns_name
   managed_zone = google_dns_managed_zone.ramona-fun.name
@@ -117,6 +139,6 @@ resource "google_dns_record_set" "TXT-_dmarc-ramona-fun" {
   type = "TXT"
   ttl  = "60"
   rrdatas = [
-    "v=DMARC1; p=none; rua=mailto:dmarc@ramona.fun; ruf=mailto:dmarc@ramona.fun; fo=1"
+    "\"v=DMARC1; p=none; rua=mailto:dmarc@ramona.fun; ruf=mailto:dmarc@ramona.fun; fo=1\""
   ]
 }

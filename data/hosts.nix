@@ -1,10 +1,8 @@
-rec {
-  # TODO this should be automated and taken from the flake, we just need a way to differentiate between the ISO and actual machines
-  nixos = [
-    "hallewell"
-    "shadowsoul"
-    "crimson"
-  ];
+{
+  flake,
+  lib,
+}: rec {
+  nixos = builtins.filter (k: k != "iso") (lib.mapAttrsToList (k: _: k) flake.nixosConfigurations);
   windows = [
     "angelsin"
     "evillian"

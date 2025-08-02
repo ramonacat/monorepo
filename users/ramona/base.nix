@@ -1,11 +1,14 @@
 {
-  lib,
   pkgs,
+  flake,
   ...
 }: {
   config = {
-    home-manager.useGlobalPkgs = true;
-    home-manager.users.ramona = import ./home-manager.nix {inherit pkgs lib;};
+    home-manager = {
+      useGlobalPkgs = true;
+      users.ramona = import ./home-manager.nix {inherit pkgs;};
+      extraSpecialArgs = {inherit flake;};
+    };
 
     users.users.ramona = {
       isNormalUser = true;
