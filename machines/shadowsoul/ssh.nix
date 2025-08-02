@@ -12,13 +12,13 @@
     };
 
     systemd.services.sshd.preStart = ''
-      echo <<-EOF
+      echo << EOF > /etc/ssh/ssh_host_rsa_key.pub
       ${ssh-keys.machines.shadowsoul-rsa}
-      EOF > /etc/ssh/ssh_host_rsa_key.pub
+      EOF
 
-      echo <<-EOF
+      echo << EOF > /etc/ssh/ssh_host_ed25519_key.pub
       ${ssh-keys.machines.shadowsoul-ed25519}
-      EOF > /etc/ssh/ssh_host_ed25519_key.pub
+      EOF
 
       cat ${config.age.secrets.shadowsoul-ssh-host-key-rsa.path} > /etc/ssh/ssh_host_rsa_key
       cat ${config.age.secrets.shadowsoul-ssh-host-key-ed25519.path} > /etc/ssh/ssh_host_ed25519_key
