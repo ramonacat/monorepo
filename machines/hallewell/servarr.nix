@@ -42,5 +42,18 @@
       };
       extraOptions = ["--network=host"];
     };
+
+    services.restic.backups.servarr = import ../../libs/nix/mk-restic-config.nix config {
+      timerConfig = {
+        OnCalendar = "*-*-* 00/1:00:00";
+        RandomizedDelaySec = "30m";
+      };
+      paths = [
+        config.services.sonarr.dataDir
+        config.services.radarr.dataDir
+        config.services.lidarr.dataDir
+        config.services.jackett.dataDir
+      ];
+    };
   };
 }
