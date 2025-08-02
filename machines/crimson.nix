@@ -1,10 +1,9 @@
-{modulesPath, ...}: {
+_: {
   imports =
     [
-      (modulesPath + "/profiles/qemu-guest.nix")
-
       ../roles/all.nix
       ../roles/installed.nix
+      ../roles/hetzner-cloud.nix
 
       ../users/ramona/installed.nix
       ../users/root/base.nix
