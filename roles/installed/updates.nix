@@ -4,10 +4,6 @@
   ...
 }: {
   config = {
-    age.secrets.universal-root = {
-      file = ../../secrets/universal-root.age;
-    };
-
     systemd.services.updater = {
       description = "Download the latest system closure";
       restartIfChanged = false;
@@ -30,7 +26,7 @@
               exit;
           fi;
 
-          PATH="${pkgs.openssh}/bin:$PATH" NIX_SSHOPTS="-i ${config.age.secrets.universal-root.path} -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null" ${pkgs.nix}/bin/nix-copy-closure --from root@hallewell "$CLOSURE"
+          ${pkgs.nix}/bin/nix-store --realise "$CLOSURE"
           $CLOSURE/bin/switch-to-configuration switch
           ${pkgs.nix}/bin/nix-env --profile /nix/var/nix/profiles/system --set $CLOSURE
         '';
