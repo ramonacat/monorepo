@@ -17,6 +17,7 @@ in {
   "hallewell-ssh-host-key-ed25519.age".publicKeys = users ++ [hallewell];
   "thornton-ssh-host-key-rsa.age".publicKeys = users ++ [thornton];
   "thornton-ssh-host-key-ed25519.age".publicKeys = users ++ [thornton];
+  "tailscale-auth-key.age".publicKeys = users ++ allMachines;
   "github-pat-runner-registration.age".publicKeys = users ++ [hallewell];
   "minio-root.age".publicKeys = users ++ [hallewell];
   "minio-tempo.age".publicKeys = users ++ [hallewell];
