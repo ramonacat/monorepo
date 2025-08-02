@@ -4,8 +4,8 @@ _: {
       openssh.authorizedKeys.keys = let
         ssh-keys = import ../../data/ssh-keys.nix;
       in [
-        ssh-keys.ramona
-        ssh-keys.root-updater
+        ssh-keys.ramona.default
+        ssh-keys.root.updater
       ];
     };
   };

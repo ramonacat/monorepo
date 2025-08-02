@@ -1,13 +1,15 @@
 let
   ssh-keys = import ../data/ssh-keys.nix;
 
-  users = [ssh-keys.ramona];
+  users = [ssh-keys.ramona.default];
 
-  shadowsoul = ssh-keys.machine-shadowsoul;
-  hallewell = ssh-keys.machine-hallewell;
-  crimson = ssh-keys.machine-crimson;
+  shadowsoul = ssh-keys.machines.shadowsoul-rsa;
+  hallewell = ssh-keys.machines.hallewell-rsa;
+  crimson = ssh-keys.machines.crimson-rsa;
   allMachines = [hallewell shadowsoul crimson];
 in {
+  "shadowsoul-ssh-host-key-rsa.age".publicKeys = users ++ [shadowsoul];
+  "shadowsoul-ssh-host-key-ed25519.age".publicKeys = users ++ [shadowsoul];
   "github-pat-runner-registration.age".publicKeys = users ++ [hallewell];
   "minio-root.age".publicKeys = users ++ [hallewell];
   "minio-tempo.age".publicKeys = users ++ [hallewell];
