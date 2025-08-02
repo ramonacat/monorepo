@@ -139,6 +139,6 @@ resource "google_dns_record_set" "TXT-_dmarc-ramona-fun" {
   type = "TXT"
   ttl  = "60"
   rrdatas = [
-    "v=DMARC1; p=none; rua=mailto:dmarc@ramona.fun; ruf=mailto:dmarc@ramona.fun; fo=1"
+    "\"v=DMARC1; p=none; rua=mailto:dmarc@ramona.fun; ruf=mailto:dmarc@ramona.fun; fo=1\""
   ]
 }
