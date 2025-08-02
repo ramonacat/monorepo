@@ -1,6 +1,12 @@
 _: {
   config = {
-    nix.optimise.automatic = true;
-    nix.gc.automatic = true;
+    nix = {
+      optimise.automatic = true;
+      gc.automatic = true;
+      settings = {
+        trusted-public-keys = ["nix-serve--hallewell:U/8IASkklbxXoFqzevYNdIle1xm3G54u9vUSHzmNaik="];
+        trusted-substituters = ["http://hallewell:5000/"];
+      };
+    };
   };
 }
