@@ -41,5 +41,5 @@ module "thornton-install" {
   nixos_partitioner  = module.thornton-disko.result.out
   target_host        = hcloud_server.thornton.ipv4_address
   extra_environment  = { SECRETS_PATH = abspath("../secrets/"), HOSTNAME = "thornton" }
-  extra_files_script = file("scripts/extra-files-script.bash")
+  extra_files_script = "scripts/extra-files-script.bash"
 }
