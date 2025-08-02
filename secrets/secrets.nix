@@ -8,6 +8,8 @@ let
   crimson = ssh-keys.machines.crimson-rsa;
   allMachines = [hallewell shadowsoul crimson];
 in {
+  "shadowsoul-ssh-host-key-rsa.age".publicKeys = users ++ [shadowsoul];
+  "shadowsoul-ssh-host-key-ed25519.age".publicKeys = users ++ [shadowsoul];
   "github-pat-runner-registration.age".publicKeys = users ++ [hallewell];
   "minio-root.age".publicKeys = users ++ [hallewell];
   "minio-tempo.age".publicKeys = users ++ [hallewell];
