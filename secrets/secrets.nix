@@ -36,5 +36,4 @@ in {
   "thornton-ssh-host-key-ed25519.age".publicKeys = users ++ [thornton];
   "thornton-ssh-host-key-rsa.age".publicKeys = users ++ [thornton];
   "transmission-credentials.age".publicKeys = users ++ [shadowsoul];
-  "universal-root.age".publicKeys = users ++ allMachines;
 }
