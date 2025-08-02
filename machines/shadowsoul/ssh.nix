@@ -11,7 +11,7 @@
       };
     };
 
-    systemd.services.openssh.preStart = ''
+    systemd.services.sshd.preStart = ''
       echo <<-EOF
       ${ssh-keys.machines.shadowsoul-rsa}
       EOF > /etc/ssh/ssh_host_rsa_key.pub
