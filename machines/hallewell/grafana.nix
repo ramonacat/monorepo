@@ -10,6 +10,17 @@
         };
       };
     };
+
     networking.firewall.allowedTCPPorts = [config.services.grafana.settings.server.http_port];
+
+    services.restic.backups.grafana = import ../../libs/nix/mk-restic-config.nix config {
+      timerConfig = {
+        OnCalendar = "*-*-* 00/1:00:00";
+        RandomizedDelaySec = "30m";
+      };
+      paths = [
+        config.services.grafana.dataDir
+      ];
+    };
   };
 }
