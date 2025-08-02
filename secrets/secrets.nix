@@ -6,7 +6,8 @@ let
   shadowsoul = ssh-keys.machines.shadowsoul-rsa;
   hallewell = ssh-keys.machines.hallewell-rsa;
   crimson = ssh-keys.machines.crimson-rsa;
-  allMachines = [hallewell shadowsoul crimson];
+  thornton = ssh-keys.machines.thornton-rsa;
+  allMachines = [hallewell shadowsoul crimson thornton];
 in {
   "shadowsoul-ssh-host-key-rsa.age".publicKeys = users ++ [shadowsoul];
   "shadowsoul-ssh-host-key-ed25519.age".publicKeys = users ++ [shadowsoul];
@@ -14,6 +15,8 @@ in {
   "crimson-ssh-host-key-ed25519.age".publicKeys = users ++ [crimson];
   "hallewell-ssh-host-key-rsa.age".publicKeys = users ++ [hallewell];
   "hallewell-ssh-host-key-ed25519.age".publicKeys = users ++ [hallewell];
+  "thornton-ssh-host-key-rsa.age".publicKeys = users ++ [thornton];
+  "thornton-ssh-host-key-ed25519.age".publicKeys = users ++ [thornton];
   "github-pat-runner-registration.age".publicKeys = users ++ [hallewell];
   "minio-root.age".publicKeys = users ++ [hallewell];
   "minio-tempo.age".publicKeys = users ++ [hallewell];

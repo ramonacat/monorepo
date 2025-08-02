@@ -315,6 +315,20 @@
             ./machines/crimson.nix
           ];
       };
+      thornton = nixpkgs.lib.nixosSystem {
+        inherit pkgs;
+        system = "x86_64-linux";
+        specialArgs = {
+          inherit inputs;
+          flake = self;
+        };
+        modules =
+          common-modules
+          ++ [
+            disko.nixosModules.disko
+            ./machines/thornton.nix
+          ];
+      };
       iso = nixpkgs.lib.nixosSystem {
         inherit pkgs;
         system = "x86_64-linux";
