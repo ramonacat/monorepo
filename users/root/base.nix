@@ -5,7 +5,6 @@ _: {
         ssh-keys = import ../../data/ssh-keys.nix;
       in [
         ssh-keys.ramona.default
-        ssh-keys.root.updater
       ];
     };
   };
