@@ -10,5 +10,14 @@
         fi
       '';
     };
+
+    nix = {
+      package = pkgs.nix;
+      gc.automatic = true;
+      settings = {
+        trusted-public-keys = ["nix-serve--hallewell:U/8IASkklbxXoFqzevYNdIle1xm3G54u9vUSHzmNaik="];
+        trusted-substituters = ["http://hallewell:5000/"];
+      };
+    };
   };
 }
