@@ -58,6 +58,7 @@ in {
             dls = {
               id = "trnsmsn-dls";
               path = "${paths.hallewell.nas-root}/dls/";
+              devices = ["shadowsoul"];
             };
           };
         };
