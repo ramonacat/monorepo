@@ -9,8 +9,12 @@ let
   thornton = ssh-keys.machines.thornton-rsa;
   allMachines = [hallewell shadowsoul crimson thornton];
 in {
-  "backups-env.age".publicKeys = users ++ allMachines;
-  "backups-rclone.age".publicKeys = users ++ allMachines;
+  "backups-common-env.age".publicKeys = users ++ allMachines;
+  "backups-common-password.age".publicKeys = users ++ allMachines;
+  "backups-common-rclone.age".publicKeys = users ++ allMachines;
+  "backups-public-env.age".publicKeys = users ++ allMachines;
+  "backups-public-password.age".publicKeys = users ++ allMachines;
+  "backups-public-rclone.age".publicKeys = users ++ allMachines;
   "crimson-ssh-host-key-ed25519.age".publicKeys = users ++ [crimson];
   "crimson-ssh-host-key-rsa.age".publicKeys = users ++ [crimson];
   "github-pat-runner-registration.age".publicKeys = users ++ [hallewell];
@@ -26,7 +30,6 @@ in {
   "ramona-password.age".publicKeys = users ++ allMachines;
   "ras2-db-config.age".publicKeys = users ++ [hallewell];
   "ras2-telegraf-db-config.age".publicKeys = users ++ [hallewell];
-  "restic-repository-password.age".publicKeys = users ++ allMachines;
   "root-password.age".publicKeys = users ++ allMachines;
   "shadowsoul-ssh-host-key-ed25519.age".publicKeys = users ++ [shadowsoul];
   "shadowsoul-ssh-host-key-rsa.age".publicKeys = users ++ [shadowsoul];
