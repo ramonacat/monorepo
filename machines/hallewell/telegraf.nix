@@ -15,11 +15,12 @@
         config.age.secrets.telegraf-database.path
       ];
       extraConfig = {
-        outputs.socket_writer = lib.mkForce {};
-        outputs.postgresql = {
-          connection = "postgres://telegraf:$DB_PASSWORD@hallewell/telegraf";
-          timestamp_column_type = "timestamp with time zone";
-          tag_cache_size = 100000;
+        outputs = lib.mkForce {
+          postgresql = {
+            connection = "postgres://telegraf:$DB_PASSWORD@hallewell/telegraf";
+            timestamp_column_type = "timestamp with time zone";
+            tag_cache_size = 100000;
+          };
         };
         inputs = {
           socket_listener = {
