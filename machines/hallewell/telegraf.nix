@@ -1,4 +1,8 @@
-{config, ...}: {
+{
+  config,
+  lib,
+  ...
+}: {
   config = {
     age.secrets.telegraf-database = {
       file = ../../secrets/telegraf-database.age;
@@ -11,6 +15,7 @@
         config.age.secrets.telegraf-database.path
       ];
       extraConfig = {
+        outputs.socket_writer = lib.mkForce {};
         outputs.postgresql = {
           connection = "postgres://telegraf:$DB_PASSWORD@hallewell/telegraf";
           timestamp_column_type = "timestamp with time zone";
@@ -18,7 +23,7 @@
         };
         inputs = {
           socket_listener = {
-            service_addres = "tcp://:8094";
+            service_address = "tcp://:8094";
             content_encoding = "gzip";
             data_format = "influx";
           };
