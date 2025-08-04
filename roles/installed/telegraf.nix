@@ -1,8 +1,4 @@
-{
-  config,
-  pkgs,
-  ...
-}: {
+{pkgs, ...}: {
   config = let
     smartctl_script = pkgs.writeScript ''smartctl-wrapper'' ''
       #!${pkgs.stdenv.shell}
@@ -13,12 +9,6 @@
       /run/wrappers/bin/sudo ${pkgs.nvme-cli}/bin/nvme "$@"
     '';
   in {
-    age.secrets.telegraf-database = {
-      file = ../../secrets/telegraf-database.age;
-      group = "telegraf";
-      mode = "440";
-    };
-
     security.sudo.extraRules = [
       {
         users = ["telegraf"];
@@ -37,16 +27,8 @@
 
     services.telegraf = {
       enable = true;
-      environmentFiles = [
-        config.age.secrets.telegraf-database.path
-      ];
       extraConfig = {
         agent.omit_hostname = false;
-        outputs.postgresql = {
-          connection = "postgres://telegraf:$DB_PASSWORD@hallewell/telegraf";
-          timestamp_column_type = "timestamp with time zone";
-          tag_cache_size = 100000;
-        };
         inputs = {
           cpu = {};
           disk = {};
@@ -66,6 +48,11 @@
             data_format = "value";
             data_type = "string";
           };
+        };
+        outputs.socket_writer = {
+          address = "tcp://hallewell:8094";
+          content_encoding = "gzip";
+          data_format = "influx";
         };
       };
     };
