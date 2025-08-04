@@ -3,10 +3,7 @@
   config,
   ...
 }: {
-  imports = [
-    ./host-tailscale/webdav.nix
-    ./host-tailscale/nixos-builds.nix
-  ];
+  imports = import ../../../libs/nix/nix-files-from-dir.nix ./host-tailscale;
   config = let
     certificateDirectory = "/var/tailscale-ssl/nginx/";
     certificateFile = "${certificateDirectory}/certificate.cert";

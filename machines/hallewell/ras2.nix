@@ -18,6 +18,9 @@ in {
     mode = "440";
   };
   services.phpfpm = {
+    settings = {
+      "error_log" = lib.mkForce "/var/log/php-fpm/error.log";
+    };
     pools.ras2 = {
       user = "ras2";
       settings = {
@@ -31,6 +34,7 @@ in {
         "php_admin_value[error_log]" = "stderr";
         "php_admin_flag[log_errors]" = true;
         "catch_workers_output" = true;
+        "access.log" = "/var/log/php-fpm/access.log";
       };
       phpEnv = {
         "APPLICATION_MODE" = "prod";
@@ -39,31 +43,6 @@ in {
         ];
         "DATABASE_CONFIG" = config.age.secrets.ras2-db-config.path;
         "DATABASE_CONFIG_TELEGRAF" = config.age.secrets.ras2-telegraf-db-config.path;
-      };
-    };
-  };
-
-  services.nginx = {
-    enable = true;
-    virtualHosts."hallewell.ibis-draconis.ts.net".locations = {
-      "^~ /ras/" = {
-        root = "${pkgs.ramona.ras2}/share/php/ras2/public/";
-
-        extraConfig = ''
-          try_files $uri $uri/ @ras-fcgi;
-        '';
-      };
-      "@ras-fcgi" = {
-        root = "${pkgs.ramona.ras2}/share/php/ras2/public/";
-        extraConfig = ''
-          rewrite ^/ras/(.*)$ /$1 break;
-
-          fastcgi_split_path_info ^((.*))$;
-          fastcgi_pass unix:${config.services.phpfpm.pools.ras2.socket};
-
-          include ${pkgs.nginx}/conf/fastcgi.conf;
-          fastcgi_param SCRIPT_FILENAME $document_root/index.php;
-        '';
       };
     };
   };
