@@ -18,7 +18,7 @@
         };
         inputs = {
           socket_listener = {
-            service_addres = "tcp://:8094";
+            service_address = "tcp://:8094";
             content_encoding = "gzip";
             data_format = "influx";
           };
