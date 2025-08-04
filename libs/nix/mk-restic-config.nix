@@ -3,10 +3,13 @@ config: options: let
     if config.ramona.machine.visibility == "private"
     then "common"
     else "public";
+  bucket =
+    if config.ramona.machine.visibility == "private"
+    then "ramona-postgres-backups"
+    else "ramona-public-backups";
 in
   {
-    # TODO rename the bucket and secrets - this is the common config for all backups, not just postgres
-    repository = "b2:ramona-postgres-backups:/${repository}/";
+    repository = "b2:${bucket}:/${repository}/";
     rcloneConfigFile = config.age.secrets."backups-${repository}-rclone".path;
     environmentFile = config.age.secrets."backups-${repository}-env".path;
     passwordFile = config.age.secrets."backups-${repository}-password".path;
