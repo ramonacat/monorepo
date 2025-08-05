@@ -1,6 +1,7 @@
 {pkgs, ...}: {
   imports = import ../../../libs/nix/nix-files-from-dir.nix ./base;
   config = {
+    systemd.user.enable = true;
     home = {
       homeDirectory = "/home/ramona";
       username = "ramona";

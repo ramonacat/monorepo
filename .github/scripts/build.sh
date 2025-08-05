@@ -10,22 +10,35 @@ BRANCH_NAME=$1
 
 nix build -L -v ".#everything"
 
-OUTPUT=$"# Build results\n## Homes\n| name | closure |\n|---|---|"
+OUTPUT=$"# Build results\n## Homes\n<table><thead><tr><th>name</th><th>closure</th><th>diff</th></tr></thead><tbody>"
 
 for f in result/homes/*; do
     home_basename=$(basename "$f")
     readlink "$f" > "$home_basename-home"
 
-    OUTPUT=$"$OUTPUT\n| $home_basename | $(readlink "$f") |"
+    OUTPUT=$"$OUTPUT\n<tr><td>$home_basename</td><td>$(readlink "$f")</td>"
+
+    echo "diff for $home_basename"
+    CURRENT_CLOSURE=$(nix shell 'nixpkgs#curl' -c curl "https://hallewell.ibis-draconis.ts.net/builds/$home_basename-home" | tr -d '[:space:]' || true)
+
+    DIFF=""
+    # This is a bit of a hack, a 404 will result in the response being HTML, so it will not start with a `/`
+    if [[ "${CURRENT_CLOSURE:0:1}" = "/" ]]; then
+        DIFF=$(nix store diff-closures "$CURRENT_CLOSURE" "$f")
+    fi
+
+    OUTPUT=$"$OUTPUT <td>${DIFF//$'\n'/\<br\/\>}</td></tr>"
 done
 
-OUTPUT=$"$OUTPUT\n## Systems\n| name | closure | diff |\n|---|---|---|"
+OUTPUT=$"$OUTPUT </tbody></table>"
+
+OUTPUT=$"$OUTPUT\n\n## Systems\n<table><thead><tr><th>name</th><th>closure</th><th>diff</th></tr></thead><tbody>"
 
 for f in result/hosts/*; do
     host_basename=$(basename "$f")
     readlink "$f" > "$host_basename-closure"
 
-    OUTPUT=$"$OUTPUT\n| $host_basename | $(readlink "$f") |"
+    OUTPUT=$"$OUTPUT\n<tr><td>$host_basename</td><td>$(readlink "$f")</td>"
 
     echo "diff for $host_basename"
     CURRENT_CLOSURE=$(nix shell 'nixpkgs#curl' -c curl "https://hallewell.ibis-draconis.ts.net/builds/$host_basename-closure" | tr -d '[:space:]' || true)
@@ -36,10 +49,10 @@ for f in result/hosts/*; do
         DIFF=$(nix store diff-closures "$CURRENT_CLOSURE" "$f")
     fi
 
-    OUTPUT=$"$OUTPUT $DIFF |"
-
-    echo
+    OUTPUT=$"$OUTPUT <td>${DIFF//$'\n'/\<br\/\>}</td></tr>"
 done
+
+OUTPUT=$"$OUTPUT </tbody></table>"
 
 {
 echo "READABLE_OUTPUT<<EOF"
