@@ -9,7 +9,5 @@
       secretKeyFile = config.age.secrets.nix-serve-key.path;
       port = 5001;
     };
-
-    networking.firewall.interfaces.tailscale0.allowedTCPPorts = [config.services.nix-serve.port];
   };
 }
