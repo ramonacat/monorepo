@@ -10,25 +10,42 @@ BRANCH_NAME=$1
 
 nix build -L -v ".#everything"
 
+OUTPUT=$"# Build results\n## Homes\n| name | closure |\n|---|---|"
+
 for f in result/homes/*; do
     home_basename=$(basename "$f")
     readlink "$f" > "$home_basename-home"
+
+    OUTPUT=$"$OUTPUT\n| $home_basename | $(readlink "$f") |"
 done
+
+OUTPUT=$"$OUTPUT\n## Systems\n| name | closure | diff |\n|---|---|---|"
 
 for f in result/hosts/*; do
     host_basename=$(basename "$f")
     readlink "$f" > "$host_basename-closure"
 
+    OUTPUT=$"$OUTPUT\n| $host_basename | $(readlink "$f") |"
+
     echo "diff for $host_basename"
     CURRENT_CLOSURE=$(nix shell 'nixpkgs#curl' -c curl "https://hallewell.ibis-draconis.ts.net/builds/$host_basename-closure" | tr -d '[:space:]' || true)
 
+    DIFF=""
     # This is a bit of a hack, a 404 will result in the response being HTML, so it will not start with a `/`
     if [[ "${CURRENT_CLOSURE:0:1}" = "/" ]]; then
-        nix store diff-closures "$CURRENT_CLOSURE" "$f"
+        DIFF=$(nix store diff-closures "$CURRENT_CLOSURE" "$f")
     fi
+
+    OUTPUT=$"$OUTPUT $DIFF |"
 
     echo
 done
+
+{
+echo "READABLE_OUTPUT<<EOF"
+echo -e "$OUTPUT"
+echo "EOF"
+} >> "$GITHUB_OUTPUT"
 
 echo "On branch: $BRANCH_NAME"
 if [[ "$BRANCH_NAME" == "main" ]]; then
