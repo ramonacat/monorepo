@@ -8,7 +8,6 @@ use League\Route\Router;
 use Psr\Container\ContainerInterface;
 use Psr\Log\LoggerInterface;
 use Psr\SimpleCache\CacheInterface;
-use Ramona\Ras2\Event\Module as EventModule;
 use Ramona\Ras2\Maintenance\Module as MaintenanceModule;
 use Ramona\Ras2\SharedCore\Infrastructure\Clock;
 use Ramona\Ras2\SharedCore\Infrastructure\CQRS\Command\CommandBus;
@@ -33,7 +32,6 @@ use Ramona\Ras2\SharedCore\Infrastructure\Serialization\Deserializer;
 use Ramona\Ras2\SharedCore\Infrastructure\Serialization\Serializer;
 use Ramona\Ras2\SharedCore\Infrastructure\SystemClock;
 use Ramona\Ras2\System\Module as SystemModule;
-use Ramona\Ras2\Task\Module as TaskModule;
 use Ramona\Ras2\User\Module as UserModule;
 use Symfony\Component\Cache\Adapter\FilesystemAdapter;
 use Symfony\Component\Cache\Psr16Cache;
@@ -68,7 +66,7 @@ $containerBuilder->addDefinitions([
     \Mustache\Engine::class => fn () => MustacheFactory::create(),
 ]);
 
-$modules = [new TaskModule(), new UserModule(), new EventModule(), new SystemModule(), new MaintenanceModule()];
+$modules = [new UserModule(), new SystemModule(), new MaintenanceModule()];
 
 foreach ($modules as $module) {
     $module->install($containerBuilder);

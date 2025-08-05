@@ -4,12 +4,8 @@ declare(strict_types=1);
 
 namespace Tests\Ramona\Ras2\SharedCore\Application;
 
-use Doctrine\Common\Collections\ArrayCollection;
 use PHPUnit\Framework\TestCase;
 use Ramona\Ras2\SharedCore\Infrastructure\Serialization\Deserializer;
-use Ramona\Ras2\Task\Application\Command\UpsertBacklogItem;
-use Ramona\Ras2\Task\Application\Command\UpsertIdea;
-use Ramona\Ras2\Task\Business\TaskId;
 use Ramona\Ras2\User\Application\Command\LoginRequest;
 use Ramona\Ras2\User\Business\UserId;
 
@@ -44,54 +40,6 @@ final class DeserializerFactoryTest extends TestCase
         $result = $this->deserializer->deserialize(LoginRequest::class, '{"username": "ramona"}');
 
         self::assertEquals(new LoginRequest('ramona'), $result);
-    }
-
-    public function testCanDeserializeUpsertBacklogItem(): void
-    {
-        $raw = [
-            'id' => '01913599-f289-7b0c-a020-9be356dccf0b',
-            'title' => 'test',
-            'tags' => ['a', 'b', 'c'],
-            'assignee' => null,
-            'deadline' => null,
-        ];
-
-        $raw = \Safe\json_encode($raw);
-
-        $result = $this->deserializer->deserialize(UpsertBacklogItem::class, $raw);
-
-        self::assertEquals(
-            new UpsertBacklogItem(
-                TaskId::fromString('01913599-f289-7b0c-a020-9be356dccf0b'),
-                'test',
-                new ArrayCollection(['a', 'b', 'c']),
-                null,
-                null
-            ),
-            $result
-        );
-    }
-
-    public function testCanDeserializeUpsertIdea(): void
-    {
-        $raw = [
-            'id' => '01913599-f289-7b0c-a020-9be356dccf0b',
-            'title' => 'test',
-            'tags' => ['a', 'b', 'c'],
-        ];
-
-        $raw = \Safe\json_encode($raw);
-
-        $result = $this->deserializer->deserialize(UpsertIdea::class, $raw);
-
-        self::assertEquals(
-            new UpsertIdea(
-                TaskId::fromString('01913599-f289-7b0c-a020-9be356dccf0b'),
-                'test',
-                new ArrayCollection(['a', 'b', 'c']),
-            ),
-            $result
-        );
     }
 
     public function testCanDeserializeAUserId(): void

@@ -8,9 +8,6 @@ use DateTimeZone;
 use Doctrine\Common\Collections\ArrayCollection;
 use PHPUnit\Framework\TestCase;
 use Ramona\Ras2\SharedCore\Infrastructure\Serialization\Serializer;
-use Ramona\Ras2\Task\Application\Status;
-use Ramona\Ras2\Task\Application\TaskView;
-use Ramona\Ras2\Task\Business\TaskId;
 use Ramona\Ras2\User\Application\Command\LoginResponse;
 use Ramona\Ras2\User\Application\Session;
 use Ramona\Ras2\User\Business\Token;
@@ -28,15 +25,6 @@ final class SerializerFactoryTest extends TestCase
     {
         $container = require __DIR__ . '/../../../src/container.php';
         $this->serializer = $container->get(Serializer::class);
-    }
-
-    public function testCanGenerateSerializerThatUnderstandsTaskId(): void
-    {
-        $taskId = TaskId::generate();
-
-        $result = $this->serializer->serialize($taskId);
-
-        self::assertJsonStringEqualsJsonString(\Safe\json_encode((string) $taskId), $result);
     }
 
     public function testUnderstandsArrayCollection(): void
@@ -103,24 +91,6 @@ final class SerializerFactoryTest extends TestCase
         $result = $this->serializer->serialize($uuid);
 
         self::assertJsonStringEqualsJsonString("\"{$uuid}\"", $result);
-    }
-
-    public function testUnderstandsTaskView(): void
-    {
-        $taskView = new TaskView(
-            TaskId::fromString('01913564-5b13-7867-93bc-fcb4649456f1'),
-            Status::STARTED,
-            'Some title',
-            null,
-            null,
-            new ArrayCollection(['tag1', 'tag2']),
-            null,
-            new ArrayCollection()
-        );
-
-        $result = $this->serializer->serialize($taskView);
-
-        $this->assertMatchesJsonSnapshot($result);
     }
 
     public function testUnderstandsLoginResponse(): void
