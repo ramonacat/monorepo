@@ -75,7 +75,6 @@
     packages = {
       rad = import ./packages/rad.nix;
       ras2 = import ./packages/ras2.nix;
-      ratweb2 = import ./packages/ratweb2.nix;
       ramona-fun = import ./packages/ramona-fun.nix;
       sawin-gallery = import ./packages/sawin-gallery.nix;
     };
