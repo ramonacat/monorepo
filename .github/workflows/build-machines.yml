@@ -27,7 +27,26 @@ jobs:
         run: echo "${{ secrets.SSH_KEY }}" > id_ed25519
 
       - name: build all machines
+        id: build-all
         run: ./.github/scripts/build.sh "${{ steps.extract_branch.outputs.branch }}"
+
+      - name: Find Comment
+        uses: peter-evans/find-comment@v3
+        id: fc
+        with:
+          issue-number: ${{ github.event.pull_request.number }}
+          comment-author: 'ramonacat'
+          body-includes: Build results
+          token: "${{ secrets.PAT }}"
+
+      - name: Create or update comment
+        uses: peter-evans/create-or-update-comment@v4
+        with:
+          comment-id: ${{ steps.fc.outputs.comment-id }}
+          issue-number: ${{ github.event.pull_request.number }}
+          body: ${{ steps.build-all.outputs.READABLE_OUTPUT }}
+          edit-mode: replace
+          token: "${{ secrets.PAT }}"
 
       - name: upload iso as artifact
         if: github.ref == 'refs/heads/main'
