@@ -7,14 +7,16 @@ let
   hallewell = ssh-keys.machines.hallewell-rsa;
   crimson = ssh-keys.machines.crimson-rsa;
   thornton = ssh-keys.machines.thornton-rsa;
-  allMachines = [hallewell shadowsoul crimson thornton];
+  privateMachines = [hallewell shadowsoul];
+  publicMachines = [crimson thornton];
+  allMachines = privateMachines ++ publicMachines;
 in {
-  "backups-common-env.age".publicKeys = users ++ allMachines;
-  "backups-common-password.age".publicKeys = users ++ allMachines;
-  "backups-common-rclone.age".publicKeys = users ++ allMachines;
-  "backups-public-env.age".publicKeys = users ++ allMachines;
-  "backups-public-password.age".publicKeys = users ++ allMachines;
-  "backups-public-rclone.age".publicKeys = users ++ allMachines;
+  "backups-common-env.age".publicKeys = users ++ privateMachines;
+  "backups-common-password.age".publicKeys = users ++ privateMachines;
+  "backups-common-rclone.age".publicKeys = users ++ privateMachines;
+  "backups-public-env.age".publicKeys = users ++ publicMachines;
+  "backups-public-password.age".publicKeys = users ++ publicMachines;
+  "backups-public-rclone.age".publicKeys = users ++ publicMachines;
   "crimson-ssh-host-key-ed25519.age".publicKeys = users ++ [crimson];
   "crimson-ssh-host-key-rsa.age".publicKeys = users ++ [crimson];
   "github-pat-runner-registration.age".publicKeys = users ++ [hallewell];
@@ -27,16 +29,18 @@ in {
   "photoprism-password.age".publicKeys = users ++ [hallewell];
   "rad-environment.age".publicKeys = users ++ allMachines;
   "rad-ras-token.age".publicKeys = users ++ allMachines;
-  "ramona-password.age".publicKeys = users ++ allMachines;
   "ras2-db-config.age".publicKeys = users ++ [hallewell];
   "ras2-telegraf-db-config.age".publicKeys = users ++ [hallewell];
-  "root-password.age".publicKeys = users ++ allMachines;
   "shadowsoul-ssh-host-key-ed25519.age".publicKeys = users ++ [shadowsoul];
   "shadowsoul-ssh-host-key-rsa.age".publicKeys = users ++ [shadowsoul];
   "tailscale-auth-key.age".publicKeys = users ++ allMachines;
-  "telegraf-database.age".publicKeys = users ++ allMachines;
+  "telegraf-database.age".publicKeys = users ++ [hallewell];
   "terraform-tokens.age".publicKeys = users;
   "thornton-ssh-host-key-ed25519.age".publicKeys = users ++ [thornton];
   "thornton-ssh-host-key-rsa.age".publicKeys = users ++ [thornton];
   "transmission-credentials.age".publicKeys = users ++ [shadowsoul];
+  "user-password-private-ramona.age".publicKeys = users ++ privateMachines;
+  "user-password-private-root.age".publicKeys = users ++ privateMachines;
+  "user-password-public-ramona.age".publicKeys = users ++ publicMachines;
+  "user-password-public-root.age".publicKeys = users ++ publicMachines;
 }

@@ -3,12 +3,24 @@
     ./base.nix
   ];
   config = {
-    age.secrets.ramona-password = {
-      file = ../../secrets/ramona-password.age;
-    };
+    age.secrets =
+      if config.ramona.machine.hasPublicIP
+      then {
+        user-password-public-ramona = {
+          file = ../../secrets/user-password-public-ramona.age;
+        };
+      }
+      else {
+        user-password-private-ramona = {
+          file = ../../secrets/user-password-private-ramona.age;
+        };
+      };
 
     users.users.ramona = {
-      hashedPasswordFile = config.age.secrets.ramona-password.path;
+      hashedPasswordFile =
+        if config.ramona.machine.hasPublicIP
+        then config.age.secrets.user-password-public-ramona.path
+        else config.age.secrets.user-password-private-ramona.path;
     };
   };
 }

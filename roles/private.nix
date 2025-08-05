@@ -3,7 +3,7 @@ _: {
   config = {
     ramona.machine = {
       type = "server";
-      visibility = "private";
+      hasPublicIP = false;
     };
   };
 }
