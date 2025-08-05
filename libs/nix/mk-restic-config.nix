@@ -1,12 +1,12 @@
 config: options: let
   repository =
-    if config.ramona.machine.visibility == "private"
-    then "common"
-    else "public";
+    if config.ramona.machine.hasPublicIP
+    then "public"
+    else "common";
   bucket =
-    if config.ramona.machine.visibility == "private"
-    then "ramona-postgres-backups"
-    else "ramona-public-backups";
+    if config.ramona.machine.hasPublicIP
+    then "ramona-public-backups"
+    else "ramona-postgres-backups";
 in
   {
     repository = "b2:${bucket}:/${repository}/";

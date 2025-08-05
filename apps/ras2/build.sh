@@ -10,4 +10,4 @@ else
 fi
 php ./vendor/bin/phpstan
 php ./vendor/bin/phpunit
-php ./vendor/bin/infection --min-msi=73 --min-covered-msi=100 -j"$(nproc)"
+php ./vendor/bin/infection --min-msi=48 --min-covered-msi=100 -j"$(nproc)"

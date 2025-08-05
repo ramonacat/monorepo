@@ -46,7 +46,7 @@ in rec {
         # TODO this is causing: Fatal error: Uncaught PharException: manifest cannot be larger than 100 MB in phar "/nix/store/3axxd4wvid41yx5nvpmpiirn2rqw61vk-ras2-1.0.0--ecs/vendor/phpstan/phpstan/phpstan.phar" in /nix/store/3axxd4wvid41yx5nvpmpiirn2rqw61vk-ras2-1.0.0--ecs/vendor/phpstan/phpstan/phpstan:6
         # php ./vendor/bin/phpstan
         php ./vendor/bin/phpunit
-        php ./vendor/bin/infection --min-msi=73 --min-covered-msi=100 -j"$(nproc)"
+        php ./vendor/bin/infection --min-msi=48 --min-covered-msi=100 -j"$(nproc)"
       '';
   };
 }

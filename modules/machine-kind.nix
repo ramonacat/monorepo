@@ -5,7 +5,7 @@
         submodule {
           options = {
             type = lib.mkOption {type = enum ["server" "workstation"];};
-            visibility = lib.mkOption {type = enum ["public" "private"];};
+            hasPublicIP = lib.mkOption {type = bool;};
           };
         };
     };
