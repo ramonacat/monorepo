@@ -3,14 +3,19 @@ let
 
   users = [ssh-keys.ramona.default];
 
+  angelsin-linux = ssh-keys.machines.angelsin-linux-rsa;
   shadowsoul = ssh-keys.machines.shadowsoul-rsa;
   hallewell = ssh-keys.machines.hallewell-rsa;
   crimson = ssh-keys.machines.crimson-rsa;
   thornton = ssh-keys.machines.thornton-rsa;
-  privateMachines = [hallewell shadowsoul];
+
+  privateMachines = [hallewell shadowsoul angelsin-linux];
   publicMachines = [crimson thornton];
+
   allMachines = privateMachines ++ publicMachines;
 in {
+  "angelsin-linux-ssh-host-key-ed25519.age".publicKeys = users ++ [angelsin-linux];
+  "angelsin-linux-ssh-host-key-rsa.age".publicKeys = users ++ [angelsin-linux];
   "backups-common-env.age".publicKeys = users ++ privateMachines;
   "backups-common-password.age".publicKeys = users ++ privateMachines;
   "backups-common-rclone.age".publicKeys = users ++ privateMachines;

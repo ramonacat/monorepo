@@ -4,6 +4,7 @@ _: {
       ../../roles/all
       ../../roles/installed
       ../../roles/private
+      ../../roles/server-private
 
       ../../users/ramona/installed
       ../../users/root/installed
