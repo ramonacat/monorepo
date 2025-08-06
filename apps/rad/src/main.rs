@@ -21,7 +21,7 @@ async fn main() -> Result<(), Box<dyn Error>> {
         let closure_path = closure_path.to_string_lossy();
 
         let result = client
-            .post("http://hallewell.ibis-draconis.ts.net/ras/systems")
+            .post("https://hallewell.ibis-draconis.ts.net/ras/systems")
             .json(&PostSystemUpdateCurrentClosure {
                 hostname: hostname.clone(),
                 current_closure: closure_path.to_string(),
