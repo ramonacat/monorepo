@@ -24,7 +24,7 @@ for f in result/homes/*; do
     DIFF=""
     # This is a bit of a hack, a 404 will result in the response being HTML, so it will not start with a `/`
     if [[ "${CURRENT_CLOSURE:0:1}" = "/" ]]; then
-        DIFF=$(nix store diff-closures "$CURRENT_CLOSURE" "$f")
+        DIFF=$(nix store diff-closures "$CURRENT_CLOSURE" "$f" | sed 's/^\(.*\): \(.*\)$/**\1**: \2/')
     fi
 
     OUTPUT=$"$OUTPUT <td>${DIFF//$'\n'/\<br\/\>}</td></tr>"
@@ -46,7 +46,7 @@ for f in result/hosts/*; do
     DIFF=""
     # This is a bit of a hack, a 404 will result in the response being HTML, so it will not start with a `/`
     if [[ "${CURRENT_CLOSURE:0:1}" = "/" ]]; then
-        DIFF=$(nix store diff-closures "$CURRENT_CLOSURE" "$f")
+        DIFF=$(nix store diff-closures "$CURRENT_CLOSURE" "$f" | sed 's/^\(.*\): \(.*\)$/**\1**: \2/')
     fi
 
     OUTPUT=$"$OUTPUT <td>${DIFF//$'\n'/\<br\/\>}</td></tr>"
@@ -59,6 +59,7 @@ echo "READABLE_OUTPUT<<EOF"
 echo -e "$OUTPUT"
 echo "EOF"
 } >> "$GITHUB_OUTPUT"
+
 {
 echo -e "$OUTPUT"
 } >> "$GITHUB_STEP_SUMMARY"
