@@ -4,9 +4,9 @@ set -euo pipefail
 set -x
 
 if [[ "${1:-}" == "--no-fix" ]]; then
-  php ./vendor/bin/ecs
+	php ./vendor/bin/ecs
 else
-  php ./vendor/bin/ecs --fix
+	php ./vendor/bin/ecs --fix
 fi
 php ./vendor/bin/phpstan
 php ./vendor/bin/phpunit

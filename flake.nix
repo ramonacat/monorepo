@@ -132,7 +132,7 @@
     };
 
     shellScripts = builtins.concatStringsSep " " (
-      builtins.filter (x: pkgs.lib.hasSuffix ".sh" x && !(pkgs.lib.strings.hasInfix "/vendor/" x)) (
+      builtins.filter (x: (pkgs.lib.hasSuffix ".sh" x || pkgs.lib.hasSuffix ".bash" x) && !(pkgs.lib.strings.hasInfix "/vendor/" x)) (
         pkgs.lib.filesystem.listFilesRecursive (pkgs.lib.cleanSource ./.)
       )
     );
@@ -147,6 +147,11 @@
         '';
         fmt-lua = pkgs.runCommand "fmt-lua" {} ''
           ${pkgs.stylua}/bin/stylua --check ${./.}
+
+          touch $out
+        '';
+        fmt-bash = pkgs.runCommand "fmt-bash" {} ''
+          ${pkgs.shfmt}/bin/shfmt -d ${shellScripts}
 
           touch $out
         '';
@@ -223,6 +228,8 @@
         pkg-config
         postgresql_16
         rust-analyzer
+        shellcheck
+        shfmt
         stylua
         terraform
         terraform-ls
