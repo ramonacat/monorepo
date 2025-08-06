@@ -45,6 +45,8 @@ make-rows-homes() {
 		new_closure=$(readlink "$f")
 		closure_diff=$(diff-closures "$home_basename-home" "$new_closure")
 
+		echo "$new_closure" >"$home_basename-home"
+
 		make-row "$home_basename" "$new_closure" "$closure_diff"
 	done
 }
@@ -58,6 +60,8 @@ make-rows-hosts() {
 		host_basename=$(basename "$f")
 		new_closure=$(readlink "$f")
 		closure_diff=$(diff-closures "$host_basename-closure" "$new_closure")
+
+		echo "$new_closure" >"$host_basename-closure"
 
 		make-row "$host_basename" "$new_closure" "$closure_diff"
 	done
