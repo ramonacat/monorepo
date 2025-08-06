@@ -56,6 +56,8 @@
       url = "github:nix-community/disko/latest";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+
+    nixos-hardware.url = "github:NixOS/nixos-hardware/master";
   };
 
   outputs = inputs @ {
@@ -69,6 +71,7 @@
     nixpkgs,
     nixvim,
     rust-overlay,
+    nixos-hardware,
     self,
     ...
   }: let
@@ -284,6 +287,21 @@
         {home-manager.sharedModules = [nixvim.homeModules.nixvim];}
       ];
     in {
+      angelsin-linux = nixpkgs.lib.nixosSystem {
+        inherit pkgs;
+        system = "x86_64-linux";
+        specialArgs = {
+          inherit inputs;
+          flake = self;
+        };
+        modules =
+          common-modules
+          ++ [
+            nixos-hardware.nixosModules.framework-13-7040-amd
+
+            ./machines/angelsin-linux
+          ];
+      };
       hallewell = nixpkgs.lib.nixosSystem {
         inherit pkgs;
         system = "x86_64-linux";
