@@ -59,6 +59,9 @@ echo "READABLE_OUTPUT<<EOF"
 echo -e "$OUTPUT"
 echo "EOF"
 } >> "$GITHUB_OUTPUT"
+{
+echo -e "$OUTPUT"
+} >> "$GITHUB_STEP_SUMMARY"
 
 echo "On branch: $BRANCH_NAME"
 if [[ "$BRANCH_NAME" == "main" ]]; then
