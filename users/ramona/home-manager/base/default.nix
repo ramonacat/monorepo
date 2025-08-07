@@ -1,5 +1,5 @@
 {pkgs, ...}: {
-  imports = import ../../../libs/nix/nix-files-from-dir.nix ./base;
+  imports = import ../../../../libs/nix/nix-files-from-dir.nix ./.;
   config = {
     systemd.user.enable = true;
     home = {

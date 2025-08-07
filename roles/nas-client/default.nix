@@ -1,6 +1,6 @@
 _: {
   config = let
-    paths = import ../../data/paths.nix;
+    paths = import ../../../data/paths.nix;
   in {
     fileSystems."/mnt/nas" = {
       device = "hallewell:${paths.hallewell.nas-share}";
