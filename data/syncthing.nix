@@ -20,6 +20,8 @@ rec {
           path = "${paths.hallewell.nas-share}/ramona/shared";
         };
       };
+      dataDir = "${paths.hallewell.nas-root}/syncthing/data/";
+      configDir = "${paths.hallewell.nas-root}/syncthing/config/";
     };
     shadowsoul = {
       user = "transmission";

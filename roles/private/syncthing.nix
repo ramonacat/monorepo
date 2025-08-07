@@ -50,6 +50,8 @@ in {
           }
         )
         current-host-topology;
+      dataDir = lib.mkIf (settings ? dataDir) settings.dataDir;
+      configDir = lib.mkIf (settings ? configDir) settings.configDir;
     };
   };
 
