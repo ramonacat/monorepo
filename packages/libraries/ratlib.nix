@@ -1,10 +1,10 @@
 {
   pkgs,
-  craneLib,
+  crane-lib,
 }: let
-  mkRustLibrary = import ../../libs/nix/mkRustLibrary.nix;
+  mk-rust-library = import ../../libs/nix/mk-rust-library.nix;
 in
-  mkRustLibrary {
-    inherit pkgs craneLib;
-    srcPath = ../../libs/rust/ratlib;
+  mk-rust-library {
+    inherit pkgs crane-lib;
+    src-path = ../../libs/rust/ratlib;
   }
