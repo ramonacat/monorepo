@@ -40,6 +40,9 @@ module "thornton-install" {
   nixos_system       = module.thornton-system-build.result.out
   nixos_partitioner  = module.thornton-disko.result.out
   target_host        = hcloud_server.thornton.ipv4_address
-  extra_environment  = { SECRETS_PATH = abspath("../secrets/"), HOSTNAME = "thornton" }
+  extra_environment  = { 
+    RAMONA_FLAKE_ROOT = abspath("../"),
+    HOSTNAME = "thornton" 
+  }
   extra_files_script = "scripts/extra-files-script.bash"
 }

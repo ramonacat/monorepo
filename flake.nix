@@ -134,11 +134,13 @@
       targets = ["wasm32-unknown-unknown"];
     };
 
-    shellScripts = builtins.concatStringsSep " " (
-      builtins.filter (x: (pkgs.lib.hasSuffix ".sh" x || pkgs.lib.hasSuffix ".bash" x) && !(pkgs.lib.strings.hasInfix "/vendor/" x)) (
-        pkgs.lib.filesystem.listFilesRecursive (pkgs.lib.cleanSource ./.)
-      )
-    );
+    source = pkgs.lib.cleanSource ./.;
+    source-files = pkgs.lib.filesystem.listFilesRecursive source;
+    all-shell-scripts =
+      builtins.filter
+      (x: (pkgs.lib.hasSuffix ".sh" x || pkgs.lib.hasSuffix ".bash" x) && !(pkgs.lib.strings.hasInfix "/vendor/" x))
+      source-files;
+    shell-scripts = pkgs.lib.escapeShellArgs all-shell-scripts;
   in {
     formatter.x86_64-linux = pkgs.alejandra;
     checks.x86_64-linux =
@@ -154,7 +156,7 @@
           touch $out
         '';
         fmt-bash = pkgs.runCommand "fmt-bash" {} ''
-          ${pkgs.shfmt}/bin/shfmt -d ${shellScripts}
+          ${pkgs.shfmt}/bin/shfmt -d ${shell-scripts}
 
           touch $out
         '';
@@ -169,7 +171,7 @@
           touch $out
         '';
         shellcheck = pkgs.runCommand "shellcheck" {} ''
-          ${pkgs.shellcheck}/bin/shellcheck ${shellScripts}
+          ${pkgs.shellcheck}/bin/shellcheck --source-path="${pkgs.lib.escapeShellArg "${source}"}" ${shell-scripts}
 
           touch $out
         '';
@@ -217,28 +219,18 @@
       packages = with pkgs; let
         package-versions = import ./data/package-versions.nix {inherit pkgs;};
       in [
-        alsa-lib.dev
-        cargo-leptos
-        clang
         google-cloud-sdk
-        lua-language-server
-        nil
+        jq
         nil
         nushell
         package-versions.nodejs
         phpactor
-        pipewire
-        pkg-config
         postgresql_16
         rust-analyzer
         shellcheck
         shfmt
-        stylua
         terraform
         terraform-ls
-        trunk
-        udev.dev
-        wasm-bindgen-cli
 
         package-versions.phpPackages.composer
         package-versions.php-dev
@@ -254,7 +246,7 @@
           ];
         })
       ];
-      LIBCLANG_PATH = "${pkgs.libclang.lib}/lib";
+      RAMONA_FLAKE_ROOT = ./.;
     };
     homeConfigurations.ramona = home-manager.lib.homeManagerConfiguration {
       inherit pkgs;
@@ -376,5 +368,10 @@
           ];
       };
     };
+    hosts-nixos =
+      (import ./data/hosts.nix {
+        inherit (pkgs) lib;
+        flake = self;
+      }).nixos;
   };
 }
