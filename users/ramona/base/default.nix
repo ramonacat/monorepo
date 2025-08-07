@@ -6,7 +6,7 @@
   config = {
     home-manager = {
       useGlobalPkgs = true;
-      users.ramona = import ./home-manager.nix {inherit pkgs;};
+      users.ramona = import ../home-manager/base {inherit pkgs;};
       extraSpecialArgs = {inherit flake;};
     };
 
@@ -14,7 +14,7 @@
       isNormalUser = true;
       extraGroups = ["wheel" "docker" "cdrom" "audio" "adbusers"];
       openssh.authorizedKeys.keys = let
-        ssh-keys = import ../../data/ssh-keys.nix;
+        ssh-keys = import ../../../data/ssh-keys.nix;
       in [
         ssh-keys.ramona.default
         ssh-keys.ramona.nitrokey

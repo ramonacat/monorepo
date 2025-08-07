@@ -261,7 +261,7 @@
       modules = [
         nixvim.homeModules.nixvim
 
-        ./users/ramona/home-manager/base.nix
+        ./users/ramona/home-manager/base
       ];
     };
     homeConfigurations.ramona-wsl = home-manager.lib.homeManagerConfiguration {
@@ -272,8 +272,7 @@
       modules = [
         nixvim.homeModules.nixvim
 
-        ./users/ramona/home-manager/base.nix
-        ./users/ramona/home-manager/wsl.nix
+        ./users/ramona/home-manager/wsl
       ];
     };
     nixosConfigurations = let
@@ -297,7 +296,7 @@
           ++ [
             nix-minecraft.nixosModules.minecraft-servers
 
-            ./machines/hallewell.nix
+            ./machines/hallewell
           ];
       };
       shadowsoul = nixpkgs.lib.nixosSystem {
@@ -310,7 +309,7 @@
         modules =
           common-modules
           ++ [
-            ./machines/shadowsoul.nix
+            ./machines/shadowsoul
           ];
       };
       crimson = nixpkgs.lib.nixosSystem {
@@ -324,7 +323,7 @@
           common-modules
           ++ [
             disko.nixosModules.disko
-            ./machines/crimson.nix
+            ./machines/crimson
           ];
       };
       thornton = nixpkgs.lib.nixosSystem {
@@ -338,7 +337,7 @@
           common-modules
           ++ [
             disko.nixosModules.disko
-            ./machines/thornton.nix
+            ./machines/thornton
           ];
       };
       iso = nixpkgs.lib.nixosSystem {
@@ -355,7 +354,7 @@
 
             "${nixpkgs}/nixos/modules/installer/cd-dvd/installation-cd-minimal.nix"
 
-            ./machines/iso.nix
+            ./machines/iso
           ];
       };
     };

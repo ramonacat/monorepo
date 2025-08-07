@@ -1,18 +1,18 @@
 {config, ...}: {
   imports = [
-    ./base.nix
+    ../base
   ];
   config = {
     age.secrets =
       if config.ramona.machine.hasPublicIP
       then {
         user-password-public-ramona = {
-          file = ../../secrets/user-password-public-ramona.age;
+          file = ../../../secrets/user-password-public-ramona.age;
         };
       }
       else {
         user-password-private-ramona = {
-          file = ../../secrets/user-password-private-ramona.age;
+          file = ../../../secrets/user-password-private-ramona.age;
         };
       };
 

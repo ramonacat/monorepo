@@ -29,7 +29,7 @@ diff-closures() {
 	if current_closure=$(
 		nix shell 'nixpkgs#curl' -c curl "https://hallewell.ibis-draconis.ts.net/builds/${current_filename}" 2>/dev/null | tr -d '[:space:]'
 	); then
-		nix store diff-closures "$current_closure" "$new_closure" | sed 's/^\(.*\): \(.*\)$/**\1**: \2/'
+		nix store diff-closures "$current_closure" "$new_closure" | sed 's#^\(.*\): \(.*\)$#<strong>\1</strong>: \2<br/>#'
 	else
 		echo "failed to receive current closure"
 	fi

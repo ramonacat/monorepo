@@ -11,38 +11,7 @@ updates:
         dependency-type: "development"
 
   - package-ecosystem: "cargo"
-    directory: "apps/hat"
-    schedule:
-      interval: "daily"
-    groups:
-      production-dependencies:
-        dependency-type: "production"
-      development-dependencies:
-        dependency-type: "development"
-
-  - package-ecosystem: "cargo"
-    directory: "apps/home-automation"
-    schedule:
-      interval: "daily"
-    groups:
-      production-dependencies:
-        dependency-type: "production"
-      development-dependencies:
-        dependency-type: "development"
-
-  - package-ecosystem: "cargo"
-    directory: "apps/ras"
-    schedule:
-      interval: "daily"
-    groups:
-      production-dependencies:
-        dependency-type: "production"
-      development-dependencies:
-        dependency-type: "development"
-
-
-  - package-ecosystem: "cargo"
-    directory: "apps/rat"
+    directory: "apps/rad"
     schedule:
       interval: "daily"
     groups:
@@ -62,7 +31,17 @@ updates:
         dependency-type: "development"
 
   - package-ecosystem: "npm"
-    directory: "apps/ratweb2"
+    directory: "apps/sawin.gallery"
+    schedule:
+      interval: "daily"
+    groups:
+      production-dependencies:
+        dependency-type: "production"
+      development-dependencies:
+        dependency-type: "development"
+
+  - package-ecosystem: "cargo"
+    directory: "libs/rust/ratlib"
     schedule:
       interval: "daily"
     groups:
