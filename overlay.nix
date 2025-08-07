@@ -1,6 +1,4 @@
 architecture: {
-  pkgs,
-  crane-lib,
   inputs,
   packages,
 }: (_: prev: {
@@ -9,11 +7,7 @@ architecture: {
   ramona =
     prev.lib.mapAttrs' (name: value: {
       name = "${name}";
-      value =
-        (value {
-          inherit pkgs;
-          craneLib = crane-lib;
-        }).package;
+      value = value.package;
     })
-    packages;
+    packages.apps;
 })

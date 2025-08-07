@@ -75,15 +75,7 @@
     self,
     ...
   }: let
-    packages = {
-      rad = import ./packages/rad.nix;
-      ras2 = import ./packages/ras2.nix;
-      ramona-fun = import ./packages/ramona-fun.nix;
-      sawin-gallery = import ./packages/sawin-gallery.nix;
-    };
-    libraries = {
-      ratlib = import ./packages/libraries/ratlib.nix;
-    };
+    packages = import ./packages {inherit pkgs crane-lib;};
     package-versions = import ./data/package-versions.nix {inherit pkgs;};
     overlays = let
       common = [
@@ -95,7 +87,7 @@
         common
         ++ [
           nix-minecraft.overlay
-          (mine "x86_64" {inherit pkgs inputs packages crane-lib;})
+          (mine "x86_64" {inherit inputs packages;})
         ];
     };
     pkgsConfig = {
@@ -161,30 +153,18 @@
         '';
       }
       // (pkgs.lib.mergeAttrsList (
-        pkgs.lib.mapAttrsToList (_: value:
-          (value {
-            inherit pkgs;
-            craneLib = crane-lib;
-          }).checks)
-        libraries
+        pkgs.lib.mapAttrsToList (_: value: value.checks)
+        packages.libraries
       ))
       // (pkgs.lib.mergeAttrsList (
-        pkgs.lib.mapAttrsToList (_: value:
-          (value {
-            inherit pkgs;
-            craneLib = crane-lib;
-          }).checks)
-        packages
+        pkgs.lib.mapAttrsToList (_: value: value.checks)
+        packages.apps
       ));
     packages.x86_64-linux =
       rec {
         coverage = let
-          paths = pkgs.lib.mapAttrsToList (_: value:
-            (value {
-              inherit pkgs;
-              craneLib = crane-lib;
-            }).coverage) (
-            libraries // packages
+          paths = pkgs.lib.mapAttrsToList (_: value: value.coverage) (
+            packages.libraries // packages.apps
           );
         in
           pkgs.runCommand "coverage" {} (
@@ -212,12 +192,7 @@
           );
         default = coverage;
       }
-      // (builtins.mapAttrs (_: v:
-        (v {
-          inherit pkgs;
-          craneLib = crane-lib;
-        }).package)
-      packages);
+      // (builtins.mapAttrs (_: v: v.package) packages.apps);
     devShells.x86_64-linux.default = pkgs.mkShell {
       packages = with pkgs; [
         google-cloud-sdk
