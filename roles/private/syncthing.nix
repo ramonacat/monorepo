@@ -50,9 +50,9 @@ in {
           }
         )
         current-host-topology;
-      dataDir = lib.mkIf (settings ? dataDir) settings.dataDir;
-      configDir = lib.mkIf (settings ? configDir) settings.configDir;
     };
+    dataDir = lib.mkIf (settings ? dataDir) settings.dataDir;
+    configDir = lib.mkIf (settings ? configDir) settings.configDir;
   };
 
   networking.firewall.interfaces.tailscale0.allowedTCPPorts = [syncthing-gui-port];
