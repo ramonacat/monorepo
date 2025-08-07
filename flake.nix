@@ -84,6 +84,7 @@
     libraries = {
       ratlib = import ./packages/libraries/ratlib.nix;
     };
+    package-versions = import ./data/package-versions.nix {inherit pkgs;};
     overlays = let
       common = [
         (import rust-overlay)
@@ -116,12 +117,7 @@
           };
         };
     };
-    crane-lib = (crane.mkLib pkgs).overrideToolchain rustVersion;
-    rustVersion = pkgs.rust-bin.stable.latest.default.override {
-      extensions = ["llvm-tools-preview"];
-      targets = ["wasm32-unknown-unknown"];
-    };
-
+    crane-lib = (crane.mkLib pkgs).overrideToolchain package-versions.rust-version;
     source = pkgs.lib.cleanSource ./.;
     source-files = pkgs.lib.filesystem.listFilesRecursive source;
     all-shell-scripts =
@@ -223,9 +219,7 @@
         }).package)
       packages);
     devShells.x86_64-linux.default = pkgs.mkShell {
-      packages = with pkgs; let
-        package-versions = import ./data/package-versions.nix {inherit pkgs;};
-      in [
+      packages = with pkgs; [
         google-cloud-sdk
         jq
         nil
@@ -239,7 +233,7 @@
         terraform
         terraform-ls
 
-        package-versions.phpPackages.composer
+        package-versions.php-packages.composer
         package-versions.php-dev
 
         (rust-bin.stable.latest.default.override {
