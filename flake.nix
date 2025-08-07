@@ -88,25 +88,13 @@
       common = [
         (import rust-overlay)
       ];
-      mine = architecture: {
-        pkgs,
-        craneLib,
-      }: (_: prev: {
-        agenix = agenix.packages."${architecture}-linux".default;
-
-        ramona =
-          prev.lib.mapAttrs' (name: value: {
-            name = "${name}";
-            value = (value {inherit pkgs craneLib;}).package;
-          })
-          packages;
-      });
+      mine = import ./overlay.nix;
     in {
       x86_64 =
         common
         ++ [
           nix-minecraft.overlay
-          (mine "x86_64" {inherit pkgs craneLib;})
+          (mine "x86_64" {inherit pkgs inputs packages crane-lib;})
         ];
     };
     pkgsConfig = {
@@ -128,7 +116,7 @@
           };
         };
     };
-    craneLib = (crane.mkLib pkgs).overrideToolchain rustVersion;
+    crane-lib = (crane.mkLib pkgs).overrideToolchain rustVersion;
     rustVersion = pkgs.rust-bin.stable.latest.default.override {
       extensions = ["llvm-tools-preview"];
       targets = ["wasm32-unknown-unknown"];
@@ -177,15 +165,29 @@
         '';
       }
       // (pkgs.lib.mergeAttrsList (
-        pkgs.lib.mapAttrsToList (_: value: (value {inherit craneLib pkgs;}).checks) libraries
+        pkgs.lib.mapAttrsToList (_: value:
+          (value {
+            inherit pkgs;
+            craneLib = crane-lib;
+          }).checks)
+        libraries
       ))
       // (pkgs.lib.mergeAttrsList (
-        pkgs.lib.mapAttrsToList (_: value: (value {inherit craneLib pkgs;}).checks) packages
+        pkgs.lib.mapAttrsToList (_: value:
+          (value {
+            inherit pkgs;
+            craneLib = crane-lib;
+          }).checks)
+        packages
       ));
     packages.x86_64-linux =
       rec {
         coverage = let
-          paths = pkgs.lib.mapAttrsToList (_: value: (value {inherit craneLib pkgs;}).coverage) (
+          paths = pkgs.lib.mapAttrsToList (_: value:
+            (value {
+              inherit pkgs;
+              craneLib = crane-lib;
+            }).coverage) (
             libraries // packages
           );
         in
@@ -214,7 +216,12 @@
           );
         default = coverage;
       }
-      // (builtins.mapAttrs (_: v: (v {inherit pkgs craneLib;}).package) packages);
+      // (builtins.mapAttrs (_: v:
+        (v {
+          inherit pkgs;
+          craneLib = crane-lib;
+        }).package)
+      packages);
     devShells.x86_64-linux.default = pkgs.mkShell {
       packages = with pkgs; let
         package-versions = import ./data/package-versions.nix {inherit pkgs;};
