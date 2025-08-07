@@ -9,19 +9,22 @@ let
   crimson = ssh-keys.machines.crimson-rsa;
   thornton = ssh-keys.machines.thornton-rsa;
 
-  privateMachines = [hallewell shadowsoul angelsin-linux];
-  publicMachines = [crimson thornton];
+  workstations = [angelsin-linux];
 
-  allMachines = privateMachines ++ publicMachines;
+  privateMachines = [hallewell shadowsoul angelsin-linux];
+  publicServers = [crimson thornton];
+
+  allMachines = privateMachines ++ publicServers;
 in {
+  "wireless-passwords.age".publicKeys = users ++ workstations;
   "angelsin-linux-ssh-host-key-ed25519.age".publicKeys = users ++ [angelsin-linux];
   "angelsin-linux-ssh-host-key-rsa.age".publicKeys = users ++ [angelsin-linux];
   "backups-common-env.age".publicKeys = users ++ privateMachines;
   "backups-common-password.age".publicKeys = users ++ privateMachines;
   "backups-common-rclone.age".publicKeys = users ++ privateMachines;
-  "backups-public-env.age".publicKeys = users ++ publicMachines;
-  "backups-public-password.age".publicKeys = users ++ publicMachines;
-  "backups-public-rclone.age".publicKeys = users ++ publicMachines;
+  "backups-public-env.age".publicKeys = users ++ publicServers;
+  "backups-public-password.age".publicKeys = users ++ publicServers;
+  "backups-public-rclone.age".publicKeys = users ++ publicServers;
   "crimson-ssh-host-key-ed25519.age".publicKeys = users ++ [crimson];
   "crimson-ssh-host-key-rsa.age".publicKeys = users ++ [crimson];
   "github-pat-runner-registration.age".publicKeys = users ++ [hallewell];
@@ -46,6 +49,6 @@ in {
   "transmission-credentials.age".publicKeys = users ++ [shadowsoul];
   "user-password-private-ramona.age".publicKeys = users ++ privateMachines;
   "user-password-private-root.age".publicKeys = users ++ privateMachines;
-  "user-password-public-ramona.age".publicKeys = users ++ publicMachines;
-  "user-password-public-root.age".publicKeys = users ++ publicMachines;
+  "user-password-public-ramona.age".publicKeys = users ++ publicServers;
+  "user-password-public-root.age".publicKeys = users ++ publicServers;
 }
