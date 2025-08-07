@@ -146,12 +146,12 @@
     checks.x86_64-linux =
       {
         fmt-nix = pkgs.runCommand "fmt-nix" {} ''
-          ${pkgs.alejandra}/bin/alejandra --check ${./.}
+          ${pkgs.alejandra}/bin/alejandra --check ${source}
 
           touch $out
         '';
         fmt-lua = pkgs.runCommand "fmt-lua" {} ''
-          ${pkgs.stylua}/bin/stylua --check ${./.}
+          ${pkgs.stylua}/bin/stylua --check ${source}
 
           touch $out
         '';
@@ -161,12 +161,12 @@
           touch $out
         '';
         deadnix = pkgs.runCommand "deadnix" {} ''
-          ${pkgs.deadnix}/bin/deadnix --fail ${./.}
+          ${pkgs.deadnix}/bin/deadnix --fail ${source}
 
           touch $out
         '';
         statix = pkgs.runCommand "statix" {} ''
-          ${pkgs.statix}/bin/statix check ${./.}
+          ${pkgs.statix}/bin/statix check ${source}
 
           touch $out
         '';
