@@ -221,74 +221,23 @@
           };
         })
         configurations);
-    nixosConfigurations = {
-      angelsin-linux = nixpkgs.lib.nixosSystem {
-        inherit pkgs;
-        system = "x86_64-linux";
-        specialArgs = {
-          inherit inputs;
-          flake = self;
-        };
-        modules = [
-          ./machines/angelsin-linux
-        ];
-      };
-      hallewell = nixpkgs.lib.nixosSystem {
-        inherit pkgs;
-        system = "x86_64-linux";
-        specialArgs = {
-          inherit inputs;
-          flake = self;
-        };
-        modules = [
-          ./machines/hallewell
-        ];
-      };
-      shadowsoul = nixpkgs.lib.nixosSystem {
-        inherit pkgs;
-        system = "x86_64-linux";
-        specialArgs = {
-          inherit inputs;
-          flake = self;
-        };
-        modules = [
-          ./machines/shadowsoul
-        ];
-      };
-      crimson = nixpkgs.lib.nixosSystem {
-        inherit pkgs;
-        system = "x86_64-linux";
-        specialArgs = {
-          inherit inputs;
-          flake = self;
-        };
-        modules = [
-          ./machines/crimson
-        ];
-      };
-      thornton = nixpkgs.lib.nixosSystem {
-        inherit pkgs;
-        system = "x86_64-linux";
-        specialArgs = {
-          inherit inputs;
-          flake = self;
-        };
-        modules = [
-          ./machines/thornton
-        ];
-      };
-      iso = nixpkgs.lib.nixosSystem {
-        inherit pkgs;
-        system = "x86_64-linux";
-        specialArgs = {
-          inherit inputs;
-          flake = self;
-        };
-        modules = [
-          ./machines/iso
-        ];
-      };
-    };
+    nixosConfigurations = let
+      machines = pkgs.lib.mapAttrsToList (hostname: _: hostname) (builtins.readDir ./machines);
+    in
+      pkgs.lib.genAttrs machines (
+        hostname:
+          nixpkgs.lib.nixosSystem {
+            inherit pkgs;
+            system = "x86_64-linux";
+            specialArgs = {
+              inherit inputs;
+              flake = self;
+            };
+            modules = [
+              (./machines + "/${hostname}")
+            ];
+          }
+      );
     hosts-nixos =
       (import ./data/hosts.nix {
         inherit (pkgs) lib;
