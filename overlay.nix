@@ -1,6 +1,6 @@
 architecture: {
   inputs,
-  packages,
+  local-packages,
 }: (_: prev: {
   agenix = inputs.agenix.packages."${architecture}-linux".default;
 
@@ -9,5 +9,5 @@ architecture: {
       name = "${name}";
       value = value.package;
     })
-    packages.apps;
+    local-packages.apps;
 })
