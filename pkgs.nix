@@ -1,20 +1,14 @@
 {
   inputs,
   local-packages,
+  system,
 }: let
-  overlays = let
-    common = [
-      (import inputs.rust-overlay)
-    ];
-    mine = import ./overlay.nix;
-  in {
-    x86_64 =
-      common
-      ++ [
-        inputs.nix-minecraft.overlay
-        (mine "x86_64" {inherit inputs local-packages;})
-      ];
-  };
+  overlays = [
+    (import inputs.rust-overlay)
+    (_: prev: {
+      ramona = prev.lib.mapAttrs (_: v: v.package) local-packages.apps;
+    })
+  ];
   pkgsConfig = {
     allowUnfree = true;
     android_sdk.accept_license = true;
@@ -24,8 +18,8 @@
   };
 in
   import inputs.nixpkgs {
-    overlays = overlays.x86_64;
-    system = "x86_64-linux";
+    inherit overlays system;
+
     config =
       pkgsConfig
       // {
