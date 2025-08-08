@@ -160,7 +160,6 @@
         jq
         nil
         nushell
-        package-versions.nodejs
         phpactor
         postgresql_16
         rust-analyzer
@@ -169,19 +168,10 @@
         terraform
         terraform-ls
 
-        package-versions.php-packages.composer
+        package-versions.nodejs
         package-versions.php-dev
-
-        (rust-bin.stable.latest.default.override {
-          extensions = [
-            "rust-src"
-            "llvm-tools-preview"
-          ];
-          targets = [
-            "aarch64-unknown-linux-gnu"
-            "wasm32-unknown-unknown"
-          ];
-        })
+        package-versions.php-packages.composer
+        package-versions.rust-version
       ];
       RAMONA_FLAKE_ROOT = ./.;
     };
