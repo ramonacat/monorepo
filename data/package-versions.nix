@@ -15,7 +15,10 @@
     '';
   };
   rust-version = pkgs.rust-bin.stable.latest.default.override {
-    extensions = ["llvm-tools-preview"];
-    targets = ["wasm32-unknown-unknown"];
+    extensions = ["rust-src" "llvm-tools-preview"];
+    targets = [
+      "aarch64-unknown-linux-gnu"
+      "wasm32-unknown-unknown"
+    ];
   };
 }
