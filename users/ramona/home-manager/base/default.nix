@@ -1,5 +1,9 @@
-{pkgs, ...}: {
-  imports = import ../../../../libs/nix/nix-files-from-dir.nix ./.;
+{
+  inputs,
+  pkgs,
+  ...
+}: {
+  imports = [inputs.nixvim.homeModules.nixvim] ++ import ../../../../libs/nix/nix-files-from-dir.nix ./.;
   config = {
     systemd.user.enable = true;
     home = {
