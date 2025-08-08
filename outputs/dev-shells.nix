@@ -16,6 +16,7 @@ pkgs.mkShell {
     shfmt
     terraform
     terraform-ls
+    bash-language-server
 
     package-versions.nodejs
     package-versions.php-dev

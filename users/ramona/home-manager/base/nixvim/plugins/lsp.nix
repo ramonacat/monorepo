@@ -20,6 +20,7 @@ _: {
         ts_ls.enable = true;
         basedpyright.enable = true;
         pest_ls.enable = true;
+        bashls.enable = true;
       };
 
       keymaps.lspBuf = {
