@@ -61,16 +61,9 @@
   };
 
   outputs = inputs @ {
-    agenix,
     crane,
-    disko,
     home-manager,
-    lix-module,
-    nix-minecraft,
-    nixos-generators,
     nixpkgs,
-    nixvim,
-    nixos-hardware,
     self,
     ...
   }: let
@@ -195,34 +188,28 @@
     homeConfigurations.ramona = home-manager.lib.homeManagerConfiguration {
       inherit pkgs;
 
-      extraSpecialArgs = {flake = self;};
+      extraSpecialArgs = {
+        inherit inputs;
+        flake = self;
+      };
 
       modules = [
-        nixvim.homeModules.nixvim
-
         ./users/ramona/home-manager/base
       ];
     };
     homeConfigurations.ramona-wsl = home-manager.lib.homeManagerConfiguration {
       inherit pkgs;
 
-      extraSpecialArgs = {flake = self;};
+      extraSpecialArgs = {
+        inherit inputs;
+        flake = self;
+      };
 
       modules = [
-        nixvim.homeModules.nixvim
-
         ./users/ramona/home-manager/wsl
       ];
     };
-    nixosConfigurations = let
-      common-modules = [
-        agenix.nixosModules.default
-        home-manager.nixosModules.home-manager
-        lix-module.nixosModules.default
-        nixvim.nixosModules.nixvim
-        {home-manager.sharedModules = [nixvim.homeModules.nixvim];}
-      ];
-    in {
+    nixosConfigurations = {
       angelsin-linux = nixpkgs.lib.nixosSystem {
         inherit pkgs;
         system = "x86_64-linux";
@@ -230,13 +217,9 @@
           inherit inputs;
           flake = self;
         };
-        modules =
-          common-modules
-          ++ [
-            nixos-hardware.nixosModules.framework-13-7040-amd
-
-            ./machines/angelsin-linux
-          ];
+        modules = [
+          ./machines/angelsin-linux
+        ];
       };
       hallewell = nixpkgs.lib.nixosSystem {
         inherit pkgs;
@@ -245,13 +228,9 @@
           inherit inputs;
           flake = self;
         };
-        modules =
-          common-modules
-          ++ [
-            nix-minecraft.nixosModules.minecraft-servers
-
-            ./machines/hallewell
-          ];
+        modules = [
+          ./machines/hallewell
+        ];
       };
       shadowsoul = nixpkgs.lib.nixosSystem {
         inherit pkgs;
@@ -260,11 +239,9 @@
           inherit inputs;
           flake = self;
         };
-        modules =
-          common-modules
-          ++ [
-            ./machines/shadowsoul
-          ];
+        modules = [
+          ./machines/shadowsoul
+        ];
       };
       crimson = nixpkgs.lib.nixosSystem {
         inherit pkgs;
@@ -273,12 +250,9 @@
           inherit inputs;
           flake = self;
         };
-        modules =
-          common-modules
-          ++ [
-            disko.nixosModules.disko
-            ./machines/crimson
-          ];
+        modules = [
+          ./machines/crimson
+        ];
       };
       thornton = nixpkgs.lib.nixosSystem {
         inherit pkgs;
@@ -287,12 +261,9 @@
           inherit inputs;
           flake = self;
         };
-        modules =
-          common-modules
-          ++ [
-            disko.nixosModules.disko
-            ./machines/thornton
-          ];
+        modules = [
+          ./machines/thornton
+        ];
       };
       iso = nixpkgs.lib.nixosSystem {
         inherit pkgs;
@@ -301,15 +272,9 @@
           inherit inputs;
           flake = self;
         };
-        modules =
-          common-modules
-          ++ [
-            nixos-generators.nixosModules.all-formats
-
-            "${nixpkgs}/nixos/modules/installer/cd-dvd/installation-cd-minimal.nix"
-
-            ./machines/iso
-          ];
+        modules = [
+          ./machines/iso
+        ];
       };
     };
     hosts-nixos =
