@@ -1,5 +1,7 @@
 {config, ...}: {
-  imports = (import ../../libs/nix/nix-files-from-dir.nix ./.) ++ [../../modules/machine-kind.nix];
+  imports = [
+    ../../modules/machine-kind.nix
+  ];
   config = {
     age.secrets.wireless-passwords = {
       file = ../../secrets/wireless-passwords.age;

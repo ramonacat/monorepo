@@ -1,5 +1,11 @@
 _: {
-  imports = import ../../../../libs/nix/nix-files-from-dir.nix ./nixvim;
+  imports = [
+    ./plugins
+
+    ./colorscheme.nix
+    ./diagnostics.nix
+    ./options.nix
+  ];
   config = {
     programs.nixvim = {
       enable = true;

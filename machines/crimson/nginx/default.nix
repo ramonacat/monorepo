@@ -1,5 +1,9 @@
 {config, ...}: {
-  imports = import ../../libs/nix/nix-files-from-dir.nix ./nginx;
+  imports = [
+    ./host-ramona-fun.nix
+    ./host-savin-gallery.nix
+    ./host-sawin-gallery
+  ];
   config = {
     services.nginx = {
       enable = true;

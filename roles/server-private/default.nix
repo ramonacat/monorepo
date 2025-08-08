@@ -1,5 +1,9 @@
 _: {
-  imports = (import ../../libs/nix/nix-files-from-dir.nix ./.) ++ [../../modules/machine-kind.nix];
+  imports = [
+    ../../modules/machine-kind.nix
+
+    ./pam.nix
+  ];
   config = {
     ramona.machine = {
       type = "server";

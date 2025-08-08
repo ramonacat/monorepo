@@ -1,5 +1,11 @@
 _: {
-  imports = import ../../libs/nix/nix-files-from-dir.nix ./nas;
+  imports = [
+    ./backup.nix
+    # TODO should probably be a level up?
+    ./jellyfin.nix
+    ./nfs.nix
+    ./samba.nix
+  ];
   config = {
     users.users.nas = {
       isSystemUser = true;
