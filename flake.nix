@@ -70,45 +70,13 @@
     nixos-generators,
     nixpkgs,
     nixvim,
-    rust-overlay,
     nixos-hardware,
     self,
     ...
   }: let
-    packages = import ./packages {inherit pkgs crane-lib;};
+    pkgs = import ./pkgs.nix {inherit inputs local-packages;};
+    local-packages = import ./packages {inherit pkgs crane-lib;};
     package-versions = import ./data/package-versions.nix {inherit pkgs;};
-    overlays = let
-      common = [
-        (import rust-overlay)
-      ];
-      mine = import ./overlay.nix;
-    in {
-      x86_64 =
-        common
-        ++ [
-          nix-minecraft.overlay
-          (mine "x86_64" {inherit inputs packages;})
-        ];
-    };
-    pkgsConfig = {
-      allowUnfree = true;
-      android_sdk.accept_license = true;
-      permittedInsecurePackages = [
-        "libsoup-2.74.3"
-      ];
-    };
-    pkgs = import nixpkgs {
-      overlays = overlays.x86_64;
-      system = "x86_64-linux";
-      config =
-        pkgsConfig
-        // {
-          packageOverrides = pkgs: {
-            # Dark magic for transcoding acceleration on hallewell
-            vaapiIntel = pkgs.vaapiIntel.override {enableHybridCodec = true;};
-          };
-        };
-    };
     crane-lib = (crane.mkLib pkgs).overrideToolchain package-versions.rust-version;
     source = pkgs.lib.cleanSource ./.;
     source-files = pkgs.lib.filesystem.listFilesRecursive source;
@@ -154,17 +122,17 @@
       }
       // (pkgs.lib.mergeAttrsList (
         pkgs.lib.mapAttrsToList (_: value: value.checks)
-        packages.libraries
+        local-packages.libraries
       ))
       // (pkgs.lib.mergeAttrsList (
         pkgs.lib.mapAttrsToList (_: value: value.checks)
-        packages.apps
+        local-packages.apps
       ));
     packages.x86_64-linux =
       rec {
         coverage = let
           paths = pkgs.lib.mapAttrsToList (_: value: value.coverage) (
-            packages.libraries // packages.apps
+            local-packages.libraries // local-packages.apps
           );
         in
           pkgs.runCommand "coverage" {} (
@@ -192,7 +160,7 @@
           );
         default = coverage;
       }
-      // (builtins.mapAttrs (_: v: v.package) packages.apps);
+      // (builtins.mapAttrs (_: v: v.package) local-packages.apps);
     devShells.x86_64-linux.default = pkgs.mkShell {
       packages = with pkgs; [
         google-cloud-sdk
