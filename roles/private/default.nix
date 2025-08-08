@@ -1,3 +1,6 @@
 _: {
-  imports = import ../../libs/nix/nix-files-from-dir.nix ./.;
+  imports = [
+    ./restic-secrets.nix
+    ./syncthing.nix
+  ];
 }

@@ -3,7 +3,15 @@
   pkgs,
   ...
 }: {
-  imports = [inputs.nixvim.homeModules.nixvim] ++ import ../../../../libs/nix/nix-files-from-dir.nix ./.;
+  imports = [
+    inputs.nixvim.homeModules.nixvim
+
+    ./nixvim
+    ./atuin.nix
+    ./git.nix
+    ./ssh.nix
+    ./tmux.nix
+  ];
   config = {
     systemd.user.enable = true;
     home = {

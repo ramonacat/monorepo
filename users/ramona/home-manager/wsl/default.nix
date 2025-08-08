@@ -1,3 +1,9 @@
 _: {
-  imports = [../base] ++ import ../../../../libs/nix/nix-files-from-dir.nix ./.;
+  imports = [
+    ../base
+
+    ./nix.nix
+    ./ssh-agent-redirection.nix
+    ./updates.nix
+  ];
 }
