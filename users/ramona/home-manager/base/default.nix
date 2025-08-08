@@ -11,7 +11,7 @@
       username = "ramona";
       stateVersion = "21.05";
       packages = with pkgs; [
-        agenix
+        inputs.agenix.packages."${pkgs.system}".default
         atop
         jq
         ripgrep

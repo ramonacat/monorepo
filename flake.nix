@@ -62,175 +62,49 @@
 
   outputs = inputs @ {
     crane,
-    home-manager,
-    nixpkgs,
     self,
     ...
   }: let
-    pkgs = import ./pkgs.nix {inherit inputs local-packages;};
-    local-packages = import ./packages {inherit pkgs crane-lib;};
-    package-versions = import ./data/package-versions.nix {inherit pkgs;};
-    crane-lib = (crane.mkLib pkgs).overrideToolchain package-versions.rust-version;
-    source = pkgs.lib.cleanSource ./.;
-    source-files = pkgs.lib.filesystem.listFilesRecursive source;
-    all-shell-scripts =
-      builtins.filter
-      (x: (pkgs.lib.hasSuffix ".sh" x || pkgs.lib.hasSuffix ".bash" x) && !(pkgs.lib.strings.hasInfix "/vendor/" x))
-      source-files;
-    shell-scripts = pkgs.lib.escapeShellArgs all-shell-scripts;
-  in {
-    formatter.x86_64-linux = pkgs.alejandra;
-    checks.x86_64-linux =
-      {
-        fmt-nix = pkgs.runCommand "fmt-nix" {} ''
-          ${pkgs.alejandra}/bin/alejandra --check ${source}
-
-          touch $out
-        '';
-        fmt-lua = pkgs.runCommand "fmt-lua" {} ''
-          ${pkgs.stylua}/bin/stylua --check ${source}
-
-          touch $out
-        '';
-        fmt-bash = pkgs.runCommand "fmt-bash" {} ''
-          ${pkgs.shfmt}/bin/shfmt -d ${shell-scripts}
-
-          touch $out
-        '';
-        deadnix = pkgs.runCommand "deadnix" {} ''
-          ${pkgs.deadnix}/bin/deadnix --fail ${source}
-
-          touch $out
-        '';
-        statix = pkgs.runCommand "statix" {} ''
-          ${pkgs.statix}/bin/statix check ${source}
-
-          touch $out
-        '';
-        shellcheck = pkgs.runCommand "shellcheck" {} ''
-          ${pkgs.shellcheck}/bin/shellcheck --source-path="${pkgs.lib.escapeShellArg "${source}"}" ${shell-scripts}
-
-          touch $out
-        '';
-      }
-      // (pkgs.lib.mergeAttrsList (
-        pkgs.lib.mapAttrsToList (_: value: value.checks)
-        local-packages.libraries
-      ))
-      // (pkgs.lib.mergeAttrsList (
-        pkgs.lib.mapAttrsToList (_: value: value.checks)
-        local-packages.apps
-      ));
-    packages.x86_64-linux =
-      rec {
-        coverage = let
-          paths = pkgs.lib.mapAttrsToList (_: value: value.coverage) (
-            local-packages.libraries // local-packages.apps
-          );
-        in
-          pkgs.runCommand "coverage" {} (
-            "mkdir $out\n"
-            + (pkgs.lib.concatStringsSep "\n" (builtins.map (p: "ln -s ${p} $out/${p.name}") paths))
-            + "\n"
-          );
-        everything = let
-          allHosts =
-            builtins.mapAttrs (
-              _: value: value.config.system.build.toplevel
-            )
-            self.nixosConfigurations;
-          allHomes = builtins.mapAttrs (_: value: value.activationPackage) self.homeConfigurations;
-        in
-          pkgs.runCommand "everything" {} (
-            "mkdir -p $out/hosts\n"
-            + (pkgs.lib.concatStringsSep "\n" (
-              pkgs.lib.mapAttrsToList (k: p: "ln -s ${p} $out/hosts/${k}") allHosts
-            ))
-            + "\nmkdir -p $out/homes\n"
-            + (pkgs.lib.concatStringsSep "\n" (pkgs.lib.mapAttrsToList (k: v: "ln -s ${v} $out/homes/${k}") allHomes))
-            + "\nln -s ${self.nixosConfigurations.iso.config.system.build.isoImage} $out/iso\n"
-            + "\nln -s ${self.nixosConfigurations.iso.config.formats.kexec-bundle} $out/kexec-bundle\n"
-          );
-        default = coverage;
-      }
-      // (builtins.mapAttrs (_: v: v.package) local-packages.apps);
-    devShells.x86_64-linux.default = pkgs.mkShell {
-      packages = with pkgs; [
-        google-cloud-sdk
-        jq
-        nil
-        nushell
-        phpactor
-        postgresql_16
-        rust-analyzer
-        shellcheck
-        shfmt
-        terraform
-        terraform-ls
-
-        package-versions.nodejs
-        package-versions.php-dev
-        package-versions.php-packages.composer
-        package-versions.rust-version
-      ];
-      RAMONA_FLAKE_ROOT = ./.;
+    system = "x86_64-linux";
+    local-packages."${system}" = import ./packages {
+      crane-lib = crane-lib."${system}";
+      pkgs = pkgs."${system}";
     };
-    homeConfigurations = let
-      users = builtins.readDir ./users;
-      configurations = pkgs.lib.flatten (
-        pkgs.lib.mapAttrsToList
-        (
-          user: _: let
-            home-manager-directory = ./users + "/${user}/home-manager";
-          in
-            pkgs.lib.mapAttrsToList
-            (variant: _: {
-              inherit user variant;
-              path = home-manager-directory + "/${variant}";
-            })
-            (
-              if builtins.pathExists home-manager-directory
-              then builtins.readDir home-manager-directory
-              else {}
-            )
-        )
-        users
-      );
-    in
-      pkgs.lib.mergeAttrsList (builtins.map (x: {
-          "${x.user}-${x.variant}" = home-manager.lib.homeManagerConfiguration {
-            inherit pkgs;
-            extraSpecialArgs = {
-              inherit inputs;
-              flake = self;
-            };
+    pkgs."${system}" = import ./pkgs.nix {
+      inherit inputs;
+      local-packages = local-packages."${system}";
+      system = "x86_64-linux";
+    };
+    package-versions."${system}" = import ./data/package-versions.nix {pkgs = pkgs."${system}";};
+    crane-lib."${system}" = (crane.mkLib pkgs."${system}").overrideToolchain package-versions."${system}".rust-version;
+    output-arguments = {
+      inherit inputs;
 
-            modules = [
-              x.path
-            ];
-          };
-        })
-        configurations);
-    nixosConfigurations = let
-      machines = pkgs.lib.mapAttrsToList (hostname: _: hostname) (builtins.readDir ./machines);
-    in
-      pkgs.lib.genAttrs machines (
-        hostname:
-          nixpkgs.lib.nixosSystem {
-            inherit pkgs;
-            system = "x86_64-linux";
-            specialArgs = {
-              inherit inputs;
-              flake = self;
-            };
-            modules = [
-              (./machines + "/${hostname}")
-            ];
-          }
-      );
+      pkgs = pkgs."${system}";
+      local-packages = local-packages."${system}";
+      package-versions = package-versions."${system}";
+      flake = self;
+    };
+  in {
+    formatter."${system}" = pkgs."${system}".alejandra;
+    checks."${system}" = import ./outputs/checks.nix output-arguments;
+    packages."${system}" = import ./outputs/packages.nix output-arguments;
+    devShells."${system}".default = import ./outputs/dev-shells.nix output-arguments;
+    homeConfigurations = import ./outputs/home-configurations-x86_64-linux.nix {
+      inherit inputs;
+
+      pkgs = pkgs.x86_64-linux;
+      flake = self;
+    };
+    nixosConfigurations = import ./outputs/nixos-configurations-x86_64-linux.nix {
+      inherit inputs;
+
+      pkgs = pkgs.x86_64-linux;
+      flake = self;
+    };
     hosts-nixos =
       (import ./data/hosts.nix {
-        inherit (pkgs) lib;
+        inherit (pkgs."${system}") lib;
         flake = self;
       }).nixos;
   };
