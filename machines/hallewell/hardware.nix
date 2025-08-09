@@ -35,5 +35,11 @@
     hardware.graphics = {
       enable = true;
     };
+    swapDevices = [
+      {
+        size = 64 * 1024;
+        device = "/swapfile";
+      }
+    ];
   };
 }
