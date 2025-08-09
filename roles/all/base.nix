@@ -14,5 +14,6 @@
     ];
 
     system.stateVersion = "22.11";
+    zramSwap.enable = true;
   };
 }

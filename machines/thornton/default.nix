@@ -4,14 +4,20 @@ _: {
     ../../roles/hetzner-cloud
     ../../roles/installed
     ../../roles/server-public
+    ../../roles/builds-host
 
     ../../users/ramona/installed
     ../../users/root/installed
 
-    ./nginx
-
     ./github-runner.nix
     ./networking.nix
-    ./nix-serve.nix
   ];
+  config = {
+    swapDevices = [
+      {
+        size = 8192;
+        device = "/swapfile";
+      }
+    ];
+  };
 }
