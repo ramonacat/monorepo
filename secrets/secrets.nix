@@ -18,6 +18,8 @@ let
 in {
   "angelsin-linux-ssh-host-key-ed25519.age".publicKeys = users ++ [angelsin-linux];
   "angelsin-linux-ssh-host-key-rsa.age".publicKeys = users ++ [angelsin-linux];
+  "angelsin-linux-syncthing-cert.age".publicKeys = users ++ [angelsin-linux];
+  "angelsin-linux-syncthing-key.age".publicKeys = users ++ [angelsin-linux];
   "backups-common-env.age".publicKeys = users ++ privateMachines;
   "backups-common-password.age".publicKeys = users ++ privateMachines;
   "backups-common-rclone.age".publicKeys = users ++ privateMachines;
@@ -31,6 +33,8 @@ in {
   "github-pat-runner-registration.age".publicKeys = users ++ [hallewell shadowsoul];
   "hallewell-ssh-host-key-ed25519.age".publicKeys = users ++ [hallewell];
   "hallewell-ssh-host-key-rsa.age".publicKeys = users ++ [hallewell];
+  "hallewell-syncthing-cert.age".publicKeys = users ++ [hallewell];
+  "hallewell-syncthing-key.age".publicKeys = users ++ [hallewell];
   "minio-root.age".publicKeys = users ++ [hallewell];
   "minio-tempo.age".publicKeys = users ++ [hallewell];
   "minio-terraform-state.age".publicKeys = users;
@@ -42,6 +46,8 @@ in {
   "ras2-telegraf-db-config.age".publicKeys = users ++ [hallewell];
   "shadowsoul-ssh-host-key-ed25519.age".publicKeys = users ++ [shadowsoul];
   "shadowsoul-ssh-host-key-rsa.age".publicKeys = users ++ [shadowsoul];
+  "shadowsoul-syncthing-cert.age".publicKeys = users ++ [shadowsoul];
+  "shadowsoul-syncthing-key.age".publicKeys = users ++ [shadowsoul];
   "tailscale-auth-key.age".publicKeys = users ++ allMachines;
   "telegraf-database.age".publicKeys = users ++ [hallewell];
   "terraform-tokens.age".publicKeys = users;
