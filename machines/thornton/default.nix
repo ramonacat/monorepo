@@ -14,4 +14,10 @@ _: {
     ./networking.nix
     ./nix-serve.nix
   ];
+  config = {
+    swapDevices.file = {
+      size = 8192;
+      device = "/swapfile";
+    };
+  };
 }
