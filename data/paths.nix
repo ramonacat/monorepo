@@ -4,6 +4,9 @@
     nas-share = "${nas-root}/data";
     tailscale-www-root = "/var/www/hallewell.ibis-draconis.ts.net/";
   };
+  thornton = rec {
+    tailscale-www-root = "/var/www/thornton.ibis-draconis.ts.net/";
+  };
   shadowsoul = {
     transmission-downloads = "/var/lib/transmission/Downloads";
   };
