@@ -16,6 +16,8 @@ let
 
   allMachines = privateMachines ++ publicServers;
 in {
+  "angelsin-linux-syncthing-cert.age".publicKeys = users ++ [angelsin-linux];
+  "angelsin-linux-syncthing-key.age".publicKeys = users ++ [angelsin-linux];
   "wireless-passwords.age".publicKeys = users ++ workstations;
   "angelsin-linux-ssh-host-key-ed25519.age".publicKeys = users ++ [angelsin-linux];
   "angelsin-linux-ssh-host-key-rsa.age".publicKeys = users ++ [angelsin-linux];
