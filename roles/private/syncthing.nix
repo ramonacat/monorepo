@@ -37,6 +37,8 @@ in {
     overrideDevices = true;
     overrideFolders = true;
     guiAddress = "0.0.0.0:${builtins.toString syncthing-gui-port}";
+    # This does NOT open the gui port, we open it below only for the tailscale0 interface
+    openDefaultPorts = true;
     settings = {
       devices = lib.mapAttrs (_: id: {inherit id;}) connected-devices;
       folders =
