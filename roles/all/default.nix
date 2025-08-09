@@ -15,6 +15,7 @@
     ./networking.nix
     ./nginx-check.nix
     ./nix.nix
+    ./oomd.nix
     ./ssh.nix
   ];
 }
