@@ -1,9 +1,20 @@
 {
   lib,
   pkgs,
+  inputs,
   ...
 }: {
-  imports = import ../../libs/nix/nix-files-from-dir.nix ./.;
+  imports = [
+    inputs.agenix.nixosModules.default
+
+    ./nix.nix
+    ./rad.nix
+    ./restic-home.nix
+    ./ssh.nix
+    ./tailscale.nix
+    ./telegraf.nix
+    ./updates.nix
+  ];
   config = {
     services.fwupd.enable = lib.mkDefault true;
     environment.systemPackages = with pkgs; [pciutils];

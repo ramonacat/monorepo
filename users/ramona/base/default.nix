@@ -1,13 +1,14 @@
 {
   pkgs,
+  inputs,
   flake,
   ...
 }: {
   config = {
     home-manager = {
       useGlobalPkgs = true;
-      users.ramona = import ../home-manager/base {inherit pkgs;};
-      extraSpecialArgs = {inherit flake;};
+      users.ramona = import ../home-manager/base {inherit pkgs inputs;};
+      extraSpecialArgs = {inherit flake inputs;};
     };
 
     users.users.ramona = {

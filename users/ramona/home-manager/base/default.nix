@@ -1,5 +1,17 @@
-{pkgs, ...}: {
-  imports = import ../../../../libs/nix/nix-files-from-dir.nix ./.;
+{
+  inputs,
+  pkgs,
+  ...
+}: {
+  imports = [
+    inputs.nixvim.homeModules.nixvim
+
+    ./nixvim
+    ./atuin.nix
+    ./git.nix
+    ./ssh.nix
+    ./tmux.nix
+  ];
   config = {
     systemd.user.enable = true;
     home = {
@@ -7,7 +19,7 @@
       username = "ramona";
       stateVersion = "21.05";
       packages = with pkgs; [
-        agenix
+        inputs.agenix.packages."${pkgs.system}".default
         atop
         jq
         ripgrep

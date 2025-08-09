@@ -2,8 +2,12 @@
   lib,
   pkgs,
   config,
+  inputs,
   ...
 }: {
+  imports = [
+    inputs.nix-minecraft.nixosModules.minecraft-servers
+  ];
   options = {
     services.ramona.minecraft = lib.mkOption {
       description = "A minecraft server with ramona-standard configuration";

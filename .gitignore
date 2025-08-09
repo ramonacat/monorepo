@@ -16,3 +16,4 @@ infection.log
 .env
 test-results/
 coverage/
+*.tar

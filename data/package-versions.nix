@@ -1,7 +1,7 @@
 {pkgs}: rec {
   inherit (pkgs.nodePackages_latest) nodejs;
   php = pkgs.php84;
-  phpPackages = pkgs.php84Packages;
+  php-packages = pkgs.php84Packages;
   php-dev = php.buildEnv {
     extensions = {
       enabled,
@@ -13,5 +13,12 @@
       xdebug.mode=coverage
       zend.exception_string_param_max_len=128
     '';
+  };
+  rust-version = pkgs.rust-bin.stable.latest.default.override {
+    extensions = ["rust-src" "llvm-tools-preview"];
+    targets = [
+      "aarch64-unknown-linux-gnu"
+      "wasm32-unknown-unknown"
+    ];
   };
 }

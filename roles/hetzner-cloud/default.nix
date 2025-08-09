@@ -1,7 +1,8 @@
 {modulesPath, ...}: {
-  imports =
-    [
-      (modulesPath + "/profiles/qemu-guest.nix")
-    ]
-    ++ (import ../../libs/nix/nix-files-from-dir.nix ./.);
+  imports = [
+    (modulesPath + "/profiles/qemu-guest.nix")
+
+    ./disko.nix
+    ./hardware.nix
+  ];
 }

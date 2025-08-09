@@ -56,307 +56,56 @@
       url = "github:nix-community/disko/latest";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+
+    nixos-hardware.url = "github:NixOS/nixos-hardware/master";
   };
 
   outputs = inputs @ {
-    agenix,
     crane,
-    disko,
-    home-manager,
-    lix-module,
-    nix-minecraft,
-    nixos-generators,
-    nixpkgs,
-    nixvim,
-    rust-overlay,
     self,
     ...
   }: let
-    packages = {
-      rad = import ./packages/rad.nix;
-      ras2 = import ./packages/ras2.nix;
-      ramona-fun = import ./packages/ramona-fun.nix;
-      sawin-gallery = import ./packages/sawin-gallery.nix;
+    system = "x86_64-linux";
+    local-packages."${system}" = import ./packages {
+      crane-lib = crane-lib."${system}";
+      pkgs = pkgs."${system}";
     };
-    libraries = {
-      ratlib = import ./packages/libraries/ratlib.nix;
-    };
-    overlays = let
-      common = [
-        (import rust-overlay)
-      ];
-      mine = architecture: {
-        pkgs,
-        craneLib,
-      }: (_: prev: {
-        agenix = agenix.packages."${architecture}-linux".default;
-
-        ramona =
-          prev.lib.mapAttrs' (name: value: {
-            name = "${name}";
-            value = (value {inherit pkgs craneLib;}).package;
-          })
-          packages;
-      });
-    in {
-      x86_64 =
-        common
-        ++ [
-          nix-minecraft.overlay
-          (mine "x86_64" {inherit pkgs craneLib;})
-        ];
-    };
-    pkgsConfig = {
-      allowUnfree = true;
-      android_sdk.accept_license = true;
-      permittedInsecurePackages = [
-        "libsoup-2.74.3"
-      ];
-    };
-    pkgs = import nixpkgs {
-      overlays = overlays.x86_64;
+    pkgs."${system}" = import ./pkgs.nix {
+      inherit inputs;
+      local-packages = local-packages."${system}";
       system = "x86_64-linux";
-      config =
-        pkgsConfig
-        // {
-          packageOverrides = pkgs: {
-            # Dark magic for transcoding acceleration on hallewell
-            vaapiIntel = pkgs.vaapiIntel.override {enableHybridCodec = true;};
-          };
-        };
     };
-    craneLib = (crane.mkLib pkgs).overrideToolchain rustVersion;
-    rustVersion = pkgs.rust-bin.stable.latest.default.override {
-      extensions = ["llvm-tools-preview"];
-      targets = ["wasm32-unknown-unknown"];
-    };
+    package-versions."${system}" = import ./data/package-versions.nix {pkgs = pkgs."${system}";};
+    crane-lib."${system}" = (crane.mkLib pkgs."${system}").overrideToolchain package-versions."${system}".rust-version;
+    output-arguments = {
+      inherit inputs;
 
-    shellScripts = builtins.concatStringsSep " " (
-      builtins.filter (x: (pkgs.lib.hasSuffix ".sh" x || pkgs.lib.hasSuffix ".bash" x) && !(pkgs.lib.strings.hasInfix "/vendor/" x)) (
-        pkgs.lib.filesystem.listFilesRecursive (pkgs.lib.cleanSource ./.)
-      )
-    );
+      pkgs = pkgs."${system}";
+      local-packages = local-packages."${system}";
+      package-versions = package-versions."${system}";
+      flake = self;
+    };
   in {
-    formatter.x86_64-linux = pkgs.alejandra;
-    checks.x86_64-linux =
-      {
-        fmt-nix = pkgs.runCommand "fmt-nix" {} ''
-          ${pkgs.alejandra}/bin/alejandra --check ${./.}
+    formatter."${system}" = pkgs."${system}".alejandra;
+    checks."${system}" = import ./outputs/checks.nix output-arguments;
+    packages."${system}" = import ./outputs/packages.nix output-arguments;
+    devShells."${system}".default = import ./outputs/dev-shells.nix output-arguments;
+    homeConfigurations = import ./outputs/home-configurations-x86_64-linux.nix {
+      inherit inputs;
 
-          touch $out
-        '';
-        fmt-lua = pkgs.runCommand "fmt-lua" {} ''
-          ${pkgs.stylua}/bin/stylua --check ${./.}
-
-          touch $out
-        '';
-        fmt-bash = pkgs.runCommand "fmt-bash" {} ''
-          ${pkgs.shfmt}/bin/shfmt -d ${shellScripts}
-
-          touch $out
-        '';
-        deadnix = pkgs.runCommand "deadnix" {} ''
-          ${pkgs.deadnix}/bin/deadnix --fail ${./.}
-
-          touch $out
-        '';
-        statix = pkgs.runCommand "statix" {} ''
-          ${pkgs.statix}/bin/statix check ${./.}
-
-          touch $out
-        '';
-        shellcheck = pkgs.runCommand "shellcheck" {} ''
-          ${pkgs.shellcheck}/bin/shellcheck ${shellScripts}
-
-          touch $out
-        '';
-      }
-      // (pkgs.lib.mergeAttrsList (
-        pkgs.lib.mapAttrsToList (_: value: (value {inherit craneLib pkgs;}).checks) libraries
-      ))
-      // (pkgs.lib.mergeAttrsList (
-        pkgs.lib.mapAttrsToList (_: value: (value {inherit craneLib pkgs;}).checks) packages
-      ));
-    packages.x86_64-linux =
-      rec {
-        coverage = let
-          paths = pkgs.lib.mapAttrsToList (_: value: (value {inherit craneLib pkgs;}).coverage) (
-            libraries // packages
-          );
-        in
-          pkgs.runCommand "coverage" {} (
-            "mkdir $out\n"
-            + (pkgs.lib.concatStringsSep "\n" (builtins.map (p: "ln -s ${p} $out/${p.name}") paths))
-            + "\n"
-          );
-        everything = let
-          allHosts =
-            builtins.mapAttrs (
-              _: value: value.config.system.build.toplevel
-            )
-            self.nixosConfigurations;
-          allHomes = builtins.mapAttrs (_: value: value.activationPackage) self.homeConfigurations;
-        in
-          pkgs.runCommand "everything" {} (
-            "mkdir -p $out/hosts\n"
-            + (pkgs.lib.concatStringsSep "\n" (
-              pkgs.lib.mapAttrsToList (k: p: "ln -s ${p} $out/hosts/${k}") allHosts
-            ))
-            + "\nmkdir -p $out/homes\n"
-            + (pkgs.lib.concatStringsSep "\n" (pkgs.lib.mapAttrsToList (k: v: "ln -s ${v} $out/homes/${k}") allHomes))
-            + "\nln -s ${self.nixosConfigurations.iso.config.system.build.isoImage} $out/iso\n"
-            + "\nln -s ${self.nixosConfigurations.iso.config.formats.kexec-bundle} $out/kexec-bundle\n"
-          );
-        default = coverage;
-      }
-      // (builtins.mapAttrs (_: v: (v {inherit pkgs craneLib;}).package) packages);
-    devShells.x86_64-linux.default = pkgs.mkShell {
-      packages = with pkgs; let
-        package-versions = import ./data/package-versions.nix {inherit pkgs;};
-      in [
-        alsa-lib.dev
-        cargo-leptos
-        clang
-        google-cloud-sdk
-        lua-language-server
-        nil
-        nil
-        nushell
-        package-versions.nodejs
-        phpactor
-        pipewire
-        pkg-config
-        postgresql_16
-        rust-analyzer
-        shellcheck
-        shfmt
-        stylua
-        terraform
-        terraform-ls
-        trunk
-        udev.dev
-        wasm-bindgen-cli
-
-        package-versions.phpPackages.composer
-        package-versions.php-dev
-
-        (rust-bin.stable.latest.default.override {
-          extensions = [
-            "rust-src"
-            "llvm-tools-preview"
-          ];
-          targets = [
-            "aarch64-unknown-linux-gnu"
-            "wasm32-unknown-unknown"
-          ];
-        })
-      ];
-      LIBCLANG_PATH = "${pkgs.libclang.lib}/lib";
+      pkgs = pkgs.x86_64-linux;
+      flake = self;
     };
-    homeConfigurations.ramona = home-manager.lib.homeManagerConfiguration {
-      inherit pkgs;
+    nixosConfigurations = import ./outputs/nixos-configurations-x86_64-linux.nix {
+      inherit inputs;
 
-      extraSpecialArgs = {flake = self;};
-
-      modules = [
-        nixvim.homeModules.nixvim
-
-        ./users/ramona/home-manager/base
-      ];
+      pkgs = pkgs.x86_64-linux;
+      flake = self;
     };
-    homeConfigurations.ramona-wsl = home-manager.lib.homeManagerConfiguration {
-      inherit pkgs;
-
-      extraSpecialArgs = {flake = self;};
-
-      modules = [
-        nixvim.homeModules.nixvim
-
-        ./users/ramona/home-manager/wsl
-      ];
-    };
-    nixosConfigurations = let
-      common-modules = [
-        agenix.nixosModules.default
-        home-manager.nixosModules.home-manager
-        lix-module.nixosModules.default
-        nixvim.nixosModules.nixvim
-        {home-manager.sharedModules = [nixvim.homeModules.nixvim];}
-      ];
-    in {
-      hallewell = nixpkgs.lib.nixosSystem {
-        inherit pkgs;
-        system = "x86_64-linux";
-        specialArgs = {
-          inherit inputs;
-          flake = self;
-        };
-        modules =
-          common-modules
-          ++ [
-            nix-minecraft.nixosModules.minecraft-servers
-
-            ./machines/hallewell
-          ];
-      };
-      shadowsoul = nixpkgs.lib.nixosSystem {
-        inherit pkgs;
-        system = "x86_64-linux";
-        specialArgs = {
-          inherit inputs;
-          flake = self;
-        };
-        modules =
-          common-modules
-          ++ [
-            ./machines/shadowsoul
-          ];
-      };
-      crimson = nixpkgs.lib.nixosSystem {
-        inherit pkgs;
-        system = "x86_64-linux";
-        specialArgs = {
-          inherit inputs;
-          flake = self;
-        };
-        modules =
-          common-modules
-          ++ [
-            disko.nixosModules.disko
-            ./machines/crimson
-          ];
-      };
-      thornton = nixpkgs.lib.nixosSystem {
-        inherit pkgs;
-        system = "x86_64-linux";
-        specialArgs = {
-          inherit inputs;
-          flake = self;
-        };
-        modules =
-          common-modules
-          ++ [
-            disko.nixosModules.disko
-            ./machines/thornton
-          ];
-      };
-      iso = nixpkgs.lib.nixosSystem {
-        inherit pkgs;
-        system = "x86_64-linux";
-        specialArgs = {
-          inherit inputs;
-          flake = self;
-        };
-        modules =
-          common-modules
-          ++ [
-            nixos-generators.nixosModules.all-formats
-
-            "${nixpkgs}/nixos/modules/installer/cd-dvd/installation-cd-minimal.nix"
-
-            ./machines/iso
-          ];
-      };
-    };
+    hosts-nixos =
+      (import ./data/hosts.nix {
+        inherit (pkgs."${system}") lib;
+        flake = self;
+      }).nixos;
   };
 }
