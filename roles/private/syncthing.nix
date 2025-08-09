@@ -30,30 +30,35 @@
     (
       lib.mergeAttrsList (lib.mapAttrsToList (_: machines: machines) current-host-topology)
     );
-in {
-  services.syncthing = {
-    inherit enable;
-    inherit (settings) user;
-    overrideDevices = true;
-    overrideFolders = true;
-    guiAddress = "0.0.0.0:${builtins.toString syncthing-gui-port}";
-    settings = {
-      devices = lib.mapAttrs (_: id: {inherit id;}) connected-devices;
-      folders =
-        lib.mapAttrs
-        (
-          id: hosts: {
-            inherit id;
-            inherit (settings.folders."${id}") path;
+in
+  lib.mkIf enable {
+    age.secrets."${config.networking.hostName}-syncthing-cert.age".file = ../../secrets + "/${config.networking.hostName}-syncthing-cert.age";
+    age.secrets."${config.networking.hostName}-syncthing-key.age".file = ../../secrets + "/${config.networking.hostName}-syncthing-key.age";
+    services.syncthing = {
+      inherit (settings) user;
+      enable = true;
+      overrideDevices = true;
+      overrideFolders = true;
+      guiAddress = "0.0.0.0:${builtins.toString syncthing-gui-port}";
+      key = config.age.secrets."${config.networking.hostName}-syncthing-key.age".path;
+      cert = config.age.secrets."${config.networking.hostName}-syncthing-key.age".path;
+      settings = {
+        devices = lib.mapAttrs (_: id: {inherit id;}) connected-devices;
+        folders =
+          lib.mapAttrs
+          (
+            id: hosts: {
+              inherit id;
+              inherit (settings.folders."${id}") path;
 
-            devices = lib.mapAttrsToList (k: _: k) hosts;
-          }
-        )
-        current-host-topology;
+              devices = lib.mapAttrsToList (k: _: k) hosts;
+            }
+          )
+          current-host-topology;
+      };
+      dataDir = lib.mkIf (settings ? dataDir) settings.dataDir;
+      configDir = lib.mkIf (settings ? configDir) settings.configDir;
     };
-    dataDir = lib.mkIf (settings ? dataDir) settings.dataDir;
-    configDir = lib.mkIf (settings ? configDir) settings.configDir;
-  };
 
-  networking.firewall.interfaces.tailscale0.allowedTCPPorts = [syncthing-gui-port];
-}
+    networking.firewall.interfaces.tailscale0.allowedTCPPorts = [syncthing-gui-port];
+  }

@@ -4,7 +4,10 @@
   ...
 }:
 pkgs.mkShell {
+  # TODO make scripts/* into derivations, so those can have their dependencies defined explicitly, instead of just depending on the devshell providing them
   packages = with pkgs; [
+    bash-language-server
+    xidel
     google-cloud-sdk
     jq
     nil
@@ -14,14 +17,14 @@ pkgs.mkShell {
     rust-analyzer
     shellcheck
     shfmt
+    syncthing
     terraform
     terraform-ls
-    bash-language-server
 
     package-versions.nodejs
     package-versions.php-dev
     package-versions.php-packages.composer
     package-versions.rust-version
   ];
-  RAMONA_FLAKE_ROOT = ./.;
+  RAMONA_FLAKE_ROOT = ./..;
 }
