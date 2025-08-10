@@ -9,7 +9,6 @@ _: {
     ../../users/ramona/installed
     ../../users/root/installed
 
-    ./github-runner.nix
     ./networking.nix
   ];
   config = {
