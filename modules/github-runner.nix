@@ -38,10 +38,6 @@
             replace = true;
           };
         })
-        (lib.range 0 runner.count));
-
-      users.users.root.openssh.authorizedKeys.keys = [
-        (import ../data/ssh-keys.nix).root.ci
-      ];
+        (lib.range 0 (runner.count - 1)));
     };
 }

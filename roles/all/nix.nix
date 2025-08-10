@@ -4,8 +4,11 @@ in {
   config = {
     nix = {
       registry.nixpkgs.flake = inputs.nixpkgs;
-      settings.trusted-users = ["@wheel"];
-      settings.experimental-features = ["nix-command flakes"];
+      settings = {
+        trusted-users = ["@wheel"];
+        experimental-features = ["nix-command flakes"];
+        fallback = true;
+      };
       nixPath = [
         "nixpkgs=${nixpkgsPath}"
       ];

@@ -66,7 +66,6 @@
           #!/usr/bin/env bash
 
           set -euo pipefail
-          set -x
 
           ${pkgs.rcon}/bin/rcon -H localhost -p ${toString settings.rconPort} -P rcon <<EOS
             say [§4WARNING§r] starting server backup

@@ -1,7 +1,6 @@
 #!/usr/bin/env bash
 
 set -euo pipefail
-set -x
 
 if [[ "${1:-}" == "--no-fix" ]]; then
 	php ./vendor/bin/ecs
