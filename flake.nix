@@ -102,10 +102,34 @@
       pkgs = pkgs.x86_64-linux;
       flake = self;
     };
-    hosts-nixos =
-      (import ./data/hosts.nix {
-        inherit (pkgs."${system}") lib;
-        flake = self;
-      }).nixos;
+    hosts = {
+      inherit
+        (import ./data/hosts.nix {
+          inherit (pkgs."${system}") lib;
+          flake = self;
+        })
+        nixos
+        ;
+      github-runners =
+        builtins.map
+        (x: x.name)
+        (builtins.filter
+          (x: x.is-runner)
+          (pkgs."${system}".lib.mapAttrsToList (
+              k: v: {
+                name = k;
+                is-runner =
+                  (builtins.hasAttr "ramona" v.config.services)
+                  && (builtins.hasAttr "monorepo-github-runner" v.config.services.ramona)
+                  && v.config.services.ramona.monorepo-github-runner.enable;
+              }
+            )
+            self.nixosConfigurations));
+      builds-hosts = builtins.map (x: x.name) (builtins.filter (x: x.is-build-host) (pkgs."${system}".lib.mapAttrsToList (k: v: {
+          name = k;
+          is-build-host = builtins.elem "builds-host" v.config.ramona.roles;
+        })
+        self.nixosConfigurations));
+    };
   };
 }

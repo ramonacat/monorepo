@@ -7,5 +7,6 @@ _: {
       fsType = "nfs";
       options = ["x-systemd.after=tailscaled.service"];
     };
+    ramona.roles = ["nas-client"];
   };
 }

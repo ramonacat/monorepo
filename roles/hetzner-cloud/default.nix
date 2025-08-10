@@ -5,4 +5,7 @@
     ./disko.nix
     ./hardware.nix
   ];
+  config = {
+    ramona.roles = ["hetzner-cloud"];
+  };
 }
