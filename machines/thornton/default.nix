@@ -4,7 +4,6 @@ _: {
     ../../roles/hetzner-cloud
     ../../roles/installed
     ../../roles/server-public
-    ../../roles/builds-host
 
     ../../users/ramona/installed
     ../../users/root/installed
