@@ -92,11 +92,11 @@ main() {
 		echo -e "$output"
 	} >>"$GITHUB_STEP_SUMMARY"
 
+	mapfile -t builds_hosts < <(nix eval --json '.#hosts.builds-hosts' | jq --raw-output --compact-output '.[]')
+
 	if [[ "$branch_name" == "main" ]]; then
 		publish -- result/iso/iso/*.iso root@hallewell:/var/www/hallewell.ibis-draconis.ts.net/builds/nixos-latest.iso
 		publish -- result/kexec-bundle/* root@hallewell:/var/www/hallewell.ibis-draconis.ts.net/builds/kexec-bundle
-
-		mapfile -t builds_hosts < <(nix eval --json '.#hosts.builds-hosts' | jq -c '.[]')
 
 		for builds_host in "${builds_hosts[@]}"; do
 			publish -- *-closure "root@$builds_host:/var/www/$builds_host.ibis-draconis.ts.net/builds/"
