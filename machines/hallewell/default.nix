@@ -31,4 +31,7 @@ _: {
     ./tempo.nix
     ./znc.nix
   ];
+  config = {
+    ramona.machine.location = "home";
+  };
 }

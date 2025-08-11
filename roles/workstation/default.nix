@@ -21,6 +21,6 @@
         graves.pskRaw = "ext:graves";
       };
     };
-    ramona.roles = ["workstation"];
+    ramona.machine.roles = ["workstation"];
   };
 }

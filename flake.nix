@@ -110,26 +110,50 @@
         })
         nixos
         ;
-      github-runners =
-        builtins.map
-        (x: x.name)
-        (builtins.filter
-          (x: x.is-runner)
-          (pkgs."${system}".lib.mapAttrsToList (
-              k: v: {
-                name = k;
-                is-runner =
-                  (builtins.hasAttr "ramona" v.config.services)
-                  && (builtins.hasAttr "monorepo-github-runner" v.config.services.ramona)
-                  && v.config.services.ramona.monorepo-github-runner.enable;
-              }
-            )
-            self.nixosConfigurations));
       builds-hosts = builtins.map (x: x.name) (builtins.filter (x: x.is-build-host) (pkgs."${system}".lib.mapAttrsToList (k: v: {
           name = k;
-          is-build-host = builtins.elem "builds-host" v.config.ramona.roles;
+          is-build-host = builtins.elem "builds-host" v.config.ramona.machine.roles;
         })
         self.nixosConfigurations));
+      tailscale-tags =
+        pkgs."${system}".lib.mapAttrs
+        (
+          _: v:
+            pkgs."${system}".lib.unique (
+              if (v.config.ramona.machine.type == "server")
+              then
+                (
+                  ["tag:server"]
+                  ++ (
+                    if v.config.ramona.machine.hasPublicIP
+                    then ["tag:server-public" "tag:server-public-${v.config.ramona.machine.location}"]
+                    else ["tag:server-private" "tag:server-private-${v.config.ramona.machine.location}"]
+                  )
+                  ++ (
+                    if builtins.hasAttr "socket_listener" v.config.services.telegraf.extraConfig.inputs
+                    then ["tag:service-monitoring"]
+                    else []
+                  )
+                  ++ (
+                    if v.config.services.nix-serve.enable
+                    then ["tag:service-nix-serve"]
+                    else []
+                  )
+                  ++ (
+                    if v.config.services.sonarr.enable
+                    then ["tag:service-servarr"]
+                    else []
+                  )
+                  ++ (
+                    if v.config.services.transmission.enable
+                    then ["tag:service-transmission"]
+                    else []
+                  )
+                )
+              else []
+            )
+        )
+        (pkgs."${system}".lib.filterAttrs (_: v: v.config.ramona.machine.type != "live") self.nixosConfigurations);
     };
   };
 }

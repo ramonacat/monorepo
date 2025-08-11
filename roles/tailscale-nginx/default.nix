@@ -40,6 +40,6 @@
         "d '${certificateDirectory}' - ${config.services.nginx.user} ${config.services.nginx.group} - -"
       ];
     };
-    ramona.roles = ["tailscale-nginx"];
+    ramona.machine.roles = ["tailscale-nginx"];
   };
 }

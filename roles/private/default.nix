@@ -4,6 +4,6 @@ _: {
     ./syncthing.nix
   ];
   config = {
-    ramona.roles = ["private"];
+    ramona.machine.roles = ["private"];
   };
 }

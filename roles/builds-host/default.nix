@@ -7,7 +7,7 @@ _: {
     ./nix-serve.nix
   ];
   config = {
-    ramona.roles = ["builds-host"];
+    ramona.machine.roles = ["builds-host"];
 
     users.users.root.openssh.authorizedKeys.keys = [
       (import ../../data/ssh-keys.nix).root.ci

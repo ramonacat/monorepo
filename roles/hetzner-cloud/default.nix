@@ -6,6 +6,9 @@
     ./hardware.nix
   ];
   config = {
-    ramona.roles = ["hetzner-cloud"];
+    ramona.machine = {
+      roles = ["hetzner-cloud"];
+      location = "hetzner";
+    };
   };
 }
