@@ -4,9 +4,13 @@ _: {
     ../../roles/hetzner-cloud
     ../../roles/installed
     ../../roles/server-public
+    ../../roles/mysql-server
 
     ../../users/ramona/installed
     ../../users/root/installed
+
+    ./fleet
+    ./nginx
 
     ./networking.nix
   ];

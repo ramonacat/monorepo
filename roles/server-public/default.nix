@@ -9,5 +9,10 @@ _: {
       hasPublicIP = true;
     };
     ramona.machine.roles = ["server-public"];
+
+    security.acme = {
+      acceptTerms = true;
+      defaults.email = "ramona@luczkiewi.cz";
+    };
   };
 }
