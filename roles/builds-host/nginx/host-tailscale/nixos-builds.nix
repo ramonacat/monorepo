@@ -2,10 +2,8 @@
   config = {
     services.nginx = {
       virtualHosts."${config.networking.hostName}.ibis-draconis.ts.net" = {
-        locations."~ /builds/.*" = let
-          paths = import ../../../../data/paths.nix;
-        in {
-          root = paths.${config.networking.hostName}.tailscale-www-root;
+        locations."~ /builds/.*" = {
+          root = "/var/www/${config.networking.hostName}.ibis-draconis.ts.net";
         };
       };
     };

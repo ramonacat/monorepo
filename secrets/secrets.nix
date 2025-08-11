@@ -27,13 +27,13 @@ in {
   "backups-public-rclone.age".publicKeys = users ++ publicServers;
   "crimson-ssh-host-key-ed25519.age".publicKeys = users ++ [crimson];
   "crimson-ssh-host-key-rsa.age".publicKeys = users ++ [crimson];
-  "github-pat-runner-registration.age".publicKeys = users ++ [hallewell thornton];
+  "github-pat-runner-registration.age".publicKeys = users ++ [hallewell shadowsoul];
   "hallewell-ssh-host-key-ed25519.age".publicKeys = users ++ [hallewell];
   "hallewell-ssh-host-key-rsa.age".publicKeys = users ++ [hallewell];
   "minio-root.age".publicKeys = users ++ [hallewell];
   "minio-tempo.age".publicKeys = users ++ [hallewell];
   "minio-terraform-state.age".publicKeys = users;
-  "nix-serve-key.age".publicKeys = users ++ [hallewell thornton];
+  "nix-serve-key.age".publicKeys = users ++ [hallewell thornton shadowsoul];
   "photoprism-password.age".publicKeys = users ++ [hallewell];
   "rad-environment.age".publicKeys = users ++ allMachines;
   "rad-ras-token.age".publicKeys = users ++ allMachines;

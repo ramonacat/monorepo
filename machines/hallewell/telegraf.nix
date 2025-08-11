@@ -30,10 +30,8 @@
             content_encoding = "gzip";
             data_format = "influx";
           };
-          file = let
-            paths = import ../../data/paths.nix;
-          in {
-            files = ["${paths.hallewell.tailscale-www-root}/builds/*-closure"];
+          file = {
+            files = ["/var/www/${config.networking.hostName}.ibis-draconis.ts.net/builds/*-closure"];
             data_format = "value";
             data_type = "string";
             name_override = "latest_closure";
