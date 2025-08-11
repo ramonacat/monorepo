@@ -4,7 +4,7 @@ set -euo pipefail
 declare -ra ssh_options=('-o' 'StrictHostKeyChecking=no' '-o' 'UserKnownHostsFile=/dev/null' '-i' './id_ed25519')
 
 publish() {
-	scp "${ssh_options[@]}" "$@" || true
+	scp "${ssh_options[@]}" "$@"
 }
 
 make-table() {
@@ -102,7 +102,7 @@ main() {
 			publish -- *-closure "root@$builds_host:/var/www/$builds_host.ibis-draconis.ts.net/builds/"
 			publish -- *-home "root@$builds_host:/var/www/$builds_host.ibis-draconis.ts.net/builds/"
 
-			ssh "${ssh_options[@]}" "root@$builds_host" -- "chmod a+r /var/www/$builds_host.ibis-draconis.ts.net/builds/*" || true
+			ssh "${ssh_options[@]}" "root@$builds_host" -- "chmod a+r /var/www/$builds_host.ibis-draconis.ts.net/builds/*"
 
 		done
 
@@ -114,8 +114,8 @@ main() {
 			gcroot="/nix/var/nix/gcroots/$filename"
 
 			for builds_host in "${builds_hosts[@]}"; do
-				NIX_SSHOPTS="${ssh_options[*]}" nix-copy-closure --to "root@$builds_host" "$(cat "$closure")" || true
-				ssh "${ssh_options[@]}" "root@$builds_host" -- "rm $gcroot; ln -s $closure $gcroot" || true
+				NIX_SSHOPTS="${ssh_options[*]}" nix-copy-closure --to "root@$builds_host" "$closure"
+				ssh "${ssh_options[@]}" "root@$builds_host" -- "rm $gcroot; ln -s $closure $gcroot"
 			done
 		done
 	fi
