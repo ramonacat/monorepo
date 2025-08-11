@@ -1,8 +1,10 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
+declare -ra ssh_options=('-o' 'StrictHostKeyChecking=no' '-o' 'UserKnownHostsFile=/dev/null' '-i' './id_ed25519')
+
 publish() {
-	scp -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -i ./id_ed25519 "$@"
+	scp "${ssh_options[@]}" "$@" || true
 }
 
 make-table() {
@@ -67,43 +69,56 @@ make-rows-hosts() {
 	done
 }
 
-declare -r branch_name=$1
-declare headers
-declare output
+main() {
+	local -r branch_name=$1
+	local headers
+	local output
 
-output=$"# Build results\n## Homes\n"
-headers=$(make-row "name" "closure" "diff")
+	output=$"# Build results\n## Homes\n"
+	headers=$(make-row "name" "closure" "diff")
 
-nix build -L -v ".#everything"
+	nix build -L -v ".#everything"
 
-output+=$(make-table "$headers" "$(make-rows-homes)")
-output+=$(make-table "$headers" "$(make-rows-hosts)")
+	output+=$(make-table "$headers" "$(make-rows-homes)")
+	output+=$(make-table "$headers" "$(make-rows-hosts)")
 
-{
-	echo "READABLE_OUTPUT<<EOF"
-	echo -e "$output"
-	echo "EOF"
-} >>"$GITHUB_OUTPUT"
+	{
+		echo "READABLE_OUTPUT<<EOF"
+		echo -e "$output"
+		echo "EOF"
+	} >>"$GITHUB_OUTPUT"
 
-{
-	echo -e "$output"
-} >>"$GITHUB_STEP_SUMMARY"
+	{
+		echo -e "$output"
+	} >>"$GITHUB_STEP_SUMMARY"
 
-if [[ "$branch_name" == "main" ]]; then
-	publish -- result/iso/iso/*.iso root@hallewell:/var/www/hallewell.ibis-draconis.ts.net/builds/nixos-latest.iso
-	publish -- result/kexec-bundle/* root@hallewell:/var/www/hallewell.ibis-draconis.ts.net/builds/kexec-bundle
-	publish -- *-closure root@hallewell:/var/www/hallewell.ibis-draconis.ts.net/builds/
-	publish -- *-home root@hallewell:/var/www/hallewell.ibis-draconis.ts.net/builds/
+	if [[ "$branch_name" == "main" ]]; then
+		publish -- result/iso/iso/*.iso root@hallewell:/var/www/hallewell.ibis-draconis.ts.net/builds/nixos-latest.iso
+		publish -- result/kexec-bundle/* root@hallewell:/var/www/hallewell.ibis-draconis.ts.net/builds/kexec-bundle
 
-	ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -i ./id_ed25519 root@hallewell -- "chmod a+r /var/www/hallewell.ibis-draconis.ts.net/builds/*"
+		mapfile -t builds_hosts < <(nix eval --json '.#hosts.builds-hosts' | jq -c '.[]')
 
-	declare closure
-	declare gcroot
+		for builds_host in "${builds_hosts[@]}"; do
+			publish -- *-closure "root@$builds_host:/var/www/$builds_host.ibis-draconis.ts.net/builds/"
+			publish -- *-home "root@$builds_host:/var/www/$builds_host.ibis-draconis.ts.net/builds/"
 
-	for filename in *-closure *-home; do
-		closure=$(tr -d "\n" <"$filename")
-		gcroot="/nix/var/nix/gcroots/$filename"
+			ssh "${ssh_options[@]}" "root@$builds_host" -- "chmod a+r /var/www/$builds_host.ibis-draconis.ts.net/builds/*" || true
 
-		ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -i ./id_ed25519 root@hallewell -- "rm $gcroot; ln -s $closure $gcroot"
-	done
-fi
+		done
+
+		local closure
+		local gcroot
+
+		for filename in *-closure *-home; do
+			closure=$(tr -d "\n" <"$filename")
+			gcroot="/nix/var/nix/gcroots/$filename"
+
+			for builds_host in "${builds_hosts[@]}"; do
+				NIX_SSHOPTS="${ssh_options[*]}" nix-copy-closure --to "root@$builds_host" "$(cat "$closure")" || true
+				ssh "${ssh_options[@]}" "root@$builds_host" -- "rm $gcroot; ln -s $closure $gcroot" || true
+			done
+		done
+	fi
+}
+
+main "$1"

@@ -14,7 +14,7 @@ usage() {
 main() {
 	local -r hostname=$1
 
-	if ! nix eval --json '.#hosts-nixos' 2>/dev/null | jq --exit-status --arg hostname "$hostname" '. | index($hostname)' >/dev/null; then
+	if ! nix eval --json '.#hosts.nixos' 2>/dev/null | jq --exit-status --arg hostname "$hostname" '. | index($hostname)' >/dev/null; then
 		echo "host $hostname is not defined in the flake"
 		exit 1
 	fi

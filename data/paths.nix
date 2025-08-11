@@ -2,7 +2,6 @@
   hallewell = rec {
     nas-root = "/mnt/nas3";
     nas-share = "${nas-root}/data";
-    tailscale-www-root = "/var/www/hallewell.ibis-draconis.ts.net/";
   };
   shadowsoul = {
     transmission-downloads = "/var/lib/transmission/Downloads";

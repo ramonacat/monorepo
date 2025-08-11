@@ -8,5 +8,6 @@ _: {
       type = "server";
       hasPublicIP = true;
     };
+    ramona.roles = ["server-public"];
   };
 }

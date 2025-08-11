@@ -4,6 +4,8 @@ _: {
     ../../roles/installed
     ../../roles/private
     ../../roles/server-private
+    ../../roles/tailscale-nginx
+    ../../roles/builds-host
 
     ../../users/ramona/installed
     ../../users/root/installed
