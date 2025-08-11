@@ -24,7 +24,7 @@ main() {
 	fi
 
 	"$closure"/bin/switch-to-configuration switch
-	bin/nix-env --profile /nix/var/nix/profiles/system --set "$closure"
+	nix-env --profile /nix/var/nix/profiles/system --set "$closure"
 }
 
 main
