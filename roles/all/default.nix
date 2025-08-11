@@ -8,8 +8,6 @@
     inputs.home-manager.nixosModules.home-manager
     inputs.lix-module.nixosModules.default
 
-    ../../modules/roles.nix
-
     ./base.nix
     ./bcachefs.nix
     ./kernel.nix
@@ -21,6 +19,6 @@
     ./ssh.nix
   ];
   config = {
-    ramona.roles = ["all"];
+    ramona.machine.roles = ["all"];
   };
 }

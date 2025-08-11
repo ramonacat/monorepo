@@ -21,6 +21,6 @@
     environment.systemPackages = with pkgs; [pciutils];
     security.polkit.enable = true;
     programs.nix-ld.enable = true;
-    ramona.roles = ["installed"];
+    ramona.machine.roles = ["installed"];
   };
 }

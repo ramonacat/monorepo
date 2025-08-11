@@ -36,13 +36,13 @@ module "thornton-disko" {
 }
 
 module "thornton-install" {
-  source             = "github.com/nix-community/nixos-anywhere/terraform/install"
-  nixos_system       = module.thornton-system-build.result.out
-  nixos_partitioner  = module.thornton-disko.result.out
-  target_host        = hcloud_server.thornton.ipv4_address
-  extra_environment  = { 
+  source            = "github.com/nix-community/nixos-anywhere/terraform/install"
+  nixos_system      = module.thornton-system-build.result.out
+  nixos_partitioner = module.thornton-disko.result.out
+  target_host       = hcloud_server.thornton.ipv4_address
+  extra_environment = {
     RAMONA_FLAKE_ROOT = abspath("../"),
-    HOSTNAME = "thornton" 
+    HOSTNAME          = "thornton"
   }
   extra_files_script = "scripts/extra-files-script.bash"
 }

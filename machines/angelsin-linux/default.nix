@@ -13,4 +13,7 @@
     ./hardware.nix
     ./networking.nix
   ];
+  config = {
+    ramona.machine.location = "roaming";
+  };
 }

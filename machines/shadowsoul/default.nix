@@ -12,4 +12,7 @@ _: {
     ./networking.nix
     ./transmission.nix
   ];
+  config = {
+    ramona.machine.location = "pl1";
+  };
 }

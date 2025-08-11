@@ -84,6 +84,28 @@ resource "google_dns_record_set" "AAAA-thornton-devices-ramona-fun" {
   ]
 }
 
+resource "google_dns_record_set" "A-fleet-services-ramona-fun" {
+  name         = "fleet.services.${google_dns_managed_zone.ramona-fun.dns_name}"
+  managed_zone = google_dns_managed_zone.ramona-fun.name
+  type         = "A"
+  ttl          = "60"
+
+  rrdatas = [
+    hcloud_server.thornton.ipv4_address
+  ]
+}
+
+resource "google_dns_record_set" "AAAA-fleet-services-ramona-fun" {
+  name         = "fleet.services.${google_dns_managed_zone.ramona-fun.dns_name}"
+  managed_zone = google_dns_managed_zone.ramona-fun.name
+  type         = "AAAA"
+  ttl          = "60"
+
+  rrdatas = [
+    hcloud_server.thornton.ipv6_address
+  ]
+}
+
 resource "google_dns_record_set" "MX-ramona-fun" {
   name         = google_dns_managed_zone.ramona-fun.dns_name
   managed_zone = google_dns_managed_zone.ramona-fun.name
