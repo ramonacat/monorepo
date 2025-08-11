@@ -115,6 +115,7 @@ main() {
 
 			for builds_host in "${builds_hosts[@]}"; do
 				NIX_SSHOPTS="${ssh_options[*]}" nix-copy-closure --to "root@$builds_host" "$closure"
+
 				ssh "${ssh_options[@]}" "root@$builds_host" -- "rm $gcroot; ln -s $closure $gcroot"
 			done
 		done
