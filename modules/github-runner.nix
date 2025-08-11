@@ -34,7 +34,7 @@
             url = "https://github.com/ramonacat/monorepo";
             tokenFile = config.age.secrets.github-pat-runner-registration.path;
             extraLabels = ["nixos"];
-            extraPackages = with pkgs; [openssh];
+            extraPackages = with pkgs; [openssh jq];
             replace = true;
           };
         })
