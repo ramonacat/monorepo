@@ -6,9 +6,9 @@ edition = "2021"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-hostname = "0.4.0"
-reqwest = { version = "0.11.27", features = ["rustls-tls", "json", "blocking"], default-features = false }
-thiserror = "1.0.58"
-tokio = { version = "1.37.0", features = ["full"] }
+hostname = "0.4.1"
+reqwest = { version = "0.12.22", features = ["rustls-tls", "json", "blocking"], default-features = false }
+thiserror = "2.0.12"
+tokio = { version = "1.46.1", features = ["full"] }
 ratlib = { path = "../../libs/rust/ratlib/" }
 serde = { version = "1.0.197", features = ["derive"] }
