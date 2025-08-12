@@ -11,6 +11,8 @@
         Group = "fleet";
         LimitNOFILE = 8192;
         ExecStart = "${pkgs.fleet}/bin/fleet serve";
+        Restart = "always";
+        RestartSec = "5s";
       };
     };
 
