@@ -5,7 +5,7 @@ _: {
   config = {
     services.ramona.monorepo-github-runner = {
       enable = true;
-      count = 2;
+      count = 4;
     };
   };
 }
