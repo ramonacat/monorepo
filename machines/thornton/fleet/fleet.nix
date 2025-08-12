@@ -3,6 +3,7 @@
     systemd.services.fleet = {
       environment = {
         FLEET_MYSQL_PROTOCOL = "unix";
+        FLEET_MYSQL_ADDRESS = "/var/run/mysqld/mysqld.sock";
         FLEET_SERVER_TLS = "false";
       };
       serviceConfig = {
