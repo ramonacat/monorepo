@@ -10,7 +10,7 @@
         {
           name = "backup";
           ensurePermissions = {
-            "*.*" = "SELECT, SHOW VIEW, TRIGGER, LOCK TABLES, PROCESS, RELOAD, FLUSH_TABLES";
+            "*.*" = "SELECT, SHOW VIEW, TRIGGER, LOCK TABLES, PROCESS, RELOAD";
           };
         }
       ];
