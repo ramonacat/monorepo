@@ -5,6 +5,8 @@
 }:
 pkgs.mkShell {
   packages = with pkgs; [
+    bash-language-server
+    fleetctl
     google-cloud-sdk
     jq
     nil
@@ -16,7 +18,6 @@ pkgs.mkShell {
     shfmt
     terraform
     terraform-ls
-    bash-language-server
 
     package-versions.nodejs
     package-versions.php-dev
