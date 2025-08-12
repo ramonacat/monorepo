@@ -6,7 +6,7 @@ _: {
         enableACME = true;
 
         locations."/" = {
-          proxyPass = "https://localhost:8080/";
+          proxyPass = "http://localhost:8080/";
         };
       };
     };
