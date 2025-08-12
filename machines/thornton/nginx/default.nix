@@ -7,7 +7,7 @@
       enable = true;
     };
 
-    networking.firewall.interfaces.tailscale0.allowedTCPPorts = [
+    networking.firewall.allowedTCPPorts = [
       config.services.nginx.defaultHTTPListenPort
       config.services.nginx.defaultSSLListenPort
     ];
