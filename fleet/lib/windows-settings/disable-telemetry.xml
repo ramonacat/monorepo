@@ -1,0 +1,15 @@
+<SyncBody>
+<Replace>
+  <Item>
+    <Meta>
+      <Format xmlns="syncml:metinf">chr</Format>
+    </Meta>
+    <Target>
+      <LocURI>./Device/Vendor/MSFT/Policy/Config/System/AllowTelemetry</LocURI>
+    </Target>
+    <Data><![CDATA[
+        <enabled />
+        <data>0</data>
+    ]]></Data>
+  </Item>
+</Replace>
