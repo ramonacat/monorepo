@@ -31,7 +31,8 @@ jobs:
         run: ./.github/scripts/build.sh "${{ steps.extract_branch.outputs.branch }}"
 
       - name: Find Comment
-        if: github.ref != 'refs/heads/main'
+        # dependabot is excluded, because dependabot PRs don't have acceess to secrets
+        if: github.ref != 'refs/heads/main' && github.actor != 'dependabot[bot]'
         uses: peter-evans/find-comment@v3
         id: fc
         with:
@@ -41,7 +42,7 @@ jobs:
           token: "${{ secrets.PAT }}"
 
       - name: Create or update comment
-        if: github.ref != 'refs/heads/main'
+        if: github.ref != 'refs/heads/main' && github.actor != 'dependabot[bot]'
         uses: peter-evans/create-or-update-comment@v4
         with:
           comment-id: ${{ steps.fc.outputs.comment-id }}
