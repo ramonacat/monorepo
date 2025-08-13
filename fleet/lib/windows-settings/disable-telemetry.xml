@@ -1,14 +1,11 @@
 <Replace>
   <Item>
     <Meta>
-      <Format xmlns="syncml:metinf">chr</Format>
+      <Format xmlns="syncml:metinf">int</Format>
     </Meta>
     <Target>
       <LocURI>./Device/Vendor/MSFT/Policy/Config/System/AllowTelemetry</LocURI>
     </Target>
-    <Data><![CDATA[
-        <enabled />
-        <data>0</data>
-    ]]></Data>
+    <Data>0</Data>
   </Item>
 </Replace>
