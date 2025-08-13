@@ -21,11 +21,30 @@ main() {
 	args+=("-f" "./fleet/default.yml")
 
 	hacked-fleetctl config set --address "$FLEET_URL" --token "$FLEET_API_TOKEN"
-	hacked-fleetctl gitops --dry-run "${args[@]}"
+
+	local -r dry_run_result=$(hacked-fleetctl gitops --dry-run "${args[@]}" 2>&1)
+	local wet_run_result=''
 
 	if [[ "$branch_name" == "main" ]]; then
-		hacked-fleetctl gitops "${args[@]}"
+		wet_run_result=$(hacked-fleetctl gitops "${args[@]}")
 	fi
+
+	{
+		echo "READABLE_OUTPUT<<EOF"
+		echo "# fleet"
+
+		echo "# dry run result"
+		echo -e "${dry_run_result//$'\n'/<br/>}"
+
+		if [[ "$wet_run_result" != "" ]]; then
+			echo "# wet run result"
+			echo -e "${wet_run_result//$'\n'/<br/>}"
+		fi
+
+		echo "EOF"
+	} >>"$GITHUB_OUTPUT"
+
+	cat "$GITHUB_OUTPUT" >>"$GITHUB_STEP_SUMMARY"
 }
 
 if [[ $# -ne 1 ]]; then
