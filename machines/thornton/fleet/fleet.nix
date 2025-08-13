@@ -17,7 +17,6 @@
       image = "fleetdm/fleet:HEAD";
       ports = ["127.0.0.1:8080:8080"];
       environment = {
-        FLEET_FORCE_SERVER_H2C="true";
         FLEET_MDM_WINDOWS_WSTEP_IDENTITY_CERT = config.age.secrets.fleet-mdm-wstep-cert.path;
         FLEET_MDM_WINDOWS_WSTEP_IDENTITY_KEY = config.age.secrets.fleet-mdm-wstep-key.path;
         FLEET_MYSQL_ADDRESS = "/var/run/mysqld/mysqld.sock";
