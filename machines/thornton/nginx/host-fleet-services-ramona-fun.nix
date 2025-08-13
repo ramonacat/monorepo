@@ -7,6 +7,9 @@ _: {
 
         locations."/" = {
           proxyPass = "http://localhost:8080/";
+
+          # fleet seems to use websockets for osquery
+          proxyWebsockets = true;
         };
       };
     };
