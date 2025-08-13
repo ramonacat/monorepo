@@ -1,0 +1,15 @@
+policies:
+queries:
+agent_options:
+  path: ./lib/agent-options.yml
+controls:
+org_settings:
+  server_settings:
+    server_url: $FLEET_URL
+  org_info:
+    org_name: ramona
+  features:
+    enable_host_users: true
+    enable_software_inventory: true
+  secrets:
+    - secret: "$FLEET_GLOBAL_ENROLL_SECRET"
