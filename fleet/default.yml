@@ -20,3 +20,7 @@ org_settings:
     enable_software_inventory: true
   secrets:
     - secret: "$FLEET_GLOBAL_ENROLL_SECRET"
+  mdm:
+    windows_enabled_and_configured: true
+  gitops:
+    gitops_mode_enabled: true
