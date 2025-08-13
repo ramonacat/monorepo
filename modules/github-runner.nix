@@ -26,18 +26,15 @@
         file = ../secrets/github-pat-runner-registration.age;
       };
 
-      services.github-runners = builtins.listToAttrs (builtins.map
-        (i: {
-          name = "${config.networking.hostName}-${toString i}";
-          value = {
-            enable = true;
-            url = "https://github.com/ramonacat/monorepo";
-            tokenFile = config.age.secrets.github-pat-runner-registration.path;
-            extraLabels = ["nixos"];
-            extraPackages = with pkgs; [openssh jq];
-            replace = true;
-          };
-        })
-        (lib.range 0 (runner.count - 1)));
+      services.github-runners = lib.mergeAttrsList (builtins.map (i: {
+        "${config.networking.hostName}-${toString i}" = {
+          enable = true;
+          url = "https://github.com/ramonacat/monorepo";
+          tokenFile = config.age.secrets.github-pat-runner-registration.path;
+          extraLabels = ["nixos"];
+          extraPackages = with pkgs; [openssh jq proot];
+          replace = true;
+        };
+      }) (lib.range 1 runner.count));
     };
 }
