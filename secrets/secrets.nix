@@ -16,7 +16,6 @@ let
 
   allMachines = privateMachines ++ publicServers;
 in {
-  "wireless-passwords.age".publicKeys = users ++ workstations;
   "angelsin-linux-ssh-host-key-ed25519.age".publicKeys = users ++ [angelsin-linux];
   "angelsin-linux-ssh-host-key-rsa.age".publicKeys = users ++ [angelsin-linux];
   "backups-common-env.age".publicKeys = users ++ privateMachines;
@@ -27,6 +26,8 @@ in {
   "backups-public-rclone.age".publicKeys = users ++ publicServers;
   "crimson-ssh-host-key-ed25519.age".publicKeys = users ++ [crimson];
   "crimson-ssh-host-key-rsa.age".publicKeys = users ++ [crimson];
+  "fleet-mdm-wstep-cert.age".publicKeys = users ++ [thornton];
+  "fleet-mdm-wstep-key.age".publicKeys = users ++ [thornton];
   "github-pat-runner-registration.age".publicKeys = users ++ [hallewell shadowsoul];
   "hallewell-ssh-host-key-ed25519.age".publicKeys = users ++ [hallewell];
   "hallewell-ssh-host-key-rsa.age".publicKeys = users ++ [hallewell];
@@ -51,4 +52,5 @@ in {
   "user-password-private-root.age".publicKeys = users ++ privateMachines;
   "user-password-public-ramona.age".publicKeys = users ++ publicServers;
   "user-password-public-root.age".publicKeys = users ++ publicServers;
+  "wireless-passwords.age".publicKeys = users ++ workstations;
 }
