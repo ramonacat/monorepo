@@ -3,6 +3,7 @@ controls:
   windows_settings:
     custom_settings:
       - path: ./lib/windows-settings/disable-telemetry.xml
+      - path: ./lib/windows-settings/disable-search-on-taskbar.xml
 policies:
 queries:
 agent_options:
