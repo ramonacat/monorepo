@@ -17,12 +17,13 @@
       image = "fleetdm/fleet:HEAD";
       ports = ["127.0.0.1:8080:8080"];
       environment = {
+        FLEET_FORCE_SERVER_H2C="true";
+        FLEET_MDM_WINDOWS_WSTEP_IDENTITY_CERT = config.age.secrets.fleet-mdm-wstep-cert.path;
+        FLEET_MDM_WINDOWS_WSTEP_IDENTITY_KEY = config.age.secrets.fleet-mdm-wstep-key.path;
         FLEET_MYSQL_ADDRESS = "/var/run/mysqld/mysqld.sock";
         FLEET_MYSQL_PROTOCOL = "unix";
         FLEET_REDIS_ADDRESS = "host.containers.internal:6379";
         FLEET_SERVER_TLS = "false";
-        FLEET_MDM_WINDOWS_WSTEP_IDENTITY_CERT = config.age.secrets.fleet-mdm-wstep-cert.path;
-        FLEET_MDM_WINDOWS_WSTEP_IDENTITY_KEY = config.age.secrets.fleet-mdm-wstep-key.path;
       };
       user = "${builtins.toString config.users.users.fleet.uid}:${builtins.toString config.users.groups.fleet.gid}";
       volumes = [
