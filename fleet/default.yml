@@ -1,18 +1,16 @@
 controls:
+  windows_enabled_and_configured: true
   windows_settings:
     custom_settings:
       - path: ./lib/windows-settings/disable-telemetry.xml
-    profiles:
-      - name: Disable telemetry
-        query: SELECT 1 FROM mdm_bridge where mdm_command_input = "" and CAST(mdm_command_output AS INT) = 0;
 policies:
 queries:
 agent_options:
   path: ./lib/agent-options.yml
-controls:
 org_settings:
   server_settings:
     server_url: $FLEET_URL
+    ai_features_disabled: true
   org_info:
     org_name: ramona
   features:
@@ -20,7 +18,3 @@ org_settings:
     enable_software_inventory: true
   secrets:
     - secret: "$FLEET_GLOBAL_ENROLL_SECRET"
-  mdm:
-    windows_enabled_and_configured: true
-  gitops:
-    gitops_mode_enabled: true
