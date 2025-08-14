@@ -12,9 +12,6 @@
   pkgsConfig = {
     allowUnfree = true;
     android_sdk.accept_license = true;
-    permittedInsecurePackages = [
-      "libsoup-2.74.3"
-    ];
   };
 in
   import inputs.nixpkgs {
