@@ -41,7 +41,7 @@ in
       overrideFolders = true;
       guiAddress = "0.0.0.0:${builtins.toString syncthing-gui-port}";
       key = config.age.secrets."${config.networking.hostName}-syncthing-key.age".path;
-      cert = config.age.secrets."${config.networking.hostName}-syncthing-key.age".path;
+      cert = config.age.secrets."${config.networking.hostName}-syncthing-cert.age".path;
       # This does NOT open the gui port, we open it below only for the tailscale0 interface
       openDefaultPorts = true;
       settings = {
