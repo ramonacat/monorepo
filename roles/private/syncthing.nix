@@ -49,9 +49,12 @@ in
         folders =
           lib.mapAttrs
           (
-            id: hosts: {
+            id: hosts: let
+              folder-settings = settings.folders."${id}";
+            in {
               inherit id;
-              inherit (settings.folders."${id}") path;
+              inherit (folder-settings) path;
+              type = lib.mkIf (folder-settings ? type) folder-settings.type;
 
               devices = lib.mapAttrsToList (k: _: k) hosts;
             }

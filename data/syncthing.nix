@@ -16,6 +16,7 @@ rec {
       folders = {
         trnsmsn-dls = {
           path = "${paths.hallewell.nas-root}/dls/";
+          type = "receiveonly";
         };
         shared = {
           path = "${paths.hallewell.nas-share}/ramona/shared";
@@ -29,6 +30,7 @@ rec {
       folders = {
         trnsmsn-dls = {
           path = paths.shadowsoul.transmission-downloads;
+          type = "sendonly";
         };
       };
     };
