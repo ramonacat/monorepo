@@ -259,15 +259,15 @@
     "lix": {
       "flake": false,
       "locked": {
-        "lastModified": 1755827507,
-        "narHash": "sha256-Uy8Xd8ofiuwquDnpDSVIH5slTSFqAYQwCWAkFa9plF4=",
-        "rev": "a84355a813f57b919d5c676224ed9ea40b3e52ac",
+        "lastModified": 1755872768,
+        "narHash": "sha256-M4n7URonFJmn3F+VNA8wmQebI9g/1+DufnaZA6c+BhU=",
+        "rev": "7d4410952f852ba1f517fe539cfe8b2bd0b7bc3a",
         "type": "tarball",
-        "url": "https://git.lix.systems/api/v1/repos/lix-project/lix/archive/a84355a813f57b919d5c676224ed9ea40b3e52ac.tar.gz"
+        "url": "https://git.lix.systems/api/v1/repos/ramonacat/lix/archive/7d4410952f852ba1f517fe539cfe8b2bd0b7bc3a.tar.gz"
       },
       "original": {
         "type": "tarball",
-        "url": "https://git.lix.systems/lix-project/lix/archive/main.tar.gz"
+        "url": "https://git.lix.systems/ramonacat/lix/archive/perl-bindings-update.tar.gz"
       }
     },
     "lix-module": {
@@ -369,11 +369,11 @@
     },
     "nixpkgs": {
       "locked": {
-        "lastModified": 1755776958,
-        "narHash": "sha256-Qt/y8So1Rg/1quo8LvkbqRU1+nU6Nt19ZjOcs5+aQMo=",
+        "lastModified": 1755852287,
+        "narHash": "sha256-tFZb2XPBvejMNgeIB20iH/+SsLLeaFqOrhEvSGSJdHM=",
         "owner": "NixOS",
         "repo": "nixpkgs",
-        "rev": "1a01d22c982fc69956c3dba087d6d22b32b5984b",
+        "rev": "f68e7e745bea059a585e1a831dfbd691f5165bd7",
         "type": "github"
       },
       "original": {
