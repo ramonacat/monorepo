@@ -144,6 +144,11 @@
                     then ["tag:service-transmission"]
                     else []
                   )
+                  ++ (
+                    if builtins.elem "builds-host" v.config.ramona.machine.roles
+                    then ["tag:service-builds-host"]
+                    else []
+                  )
                 )
               else []
             )
