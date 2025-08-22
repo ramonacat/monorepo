@@ -12,7 +12,7 @@
     };
 
     lix = {
-      url = "https://git.lix.systems/lix-project/lix/archive/main.tar.gz";
+      url = "https://git.lix.systems/ramonacat/lix/archive/perl-bindings-update.tar.gz";
       flake = false;
     };
 
