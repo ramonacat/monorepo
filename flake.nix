@@ -12,7 +12,7 @@
     };
 
     lix = {
-      url = "https://git.lix.systems/ramonacat/lix/archive/perl-bindings-update.tar.gz";
+      url = "https://git.lix.systems/lix-project/lix/archive/main.tar.gz";
       flake = false;
     };
 
@@ -132,11 +132,6 @@
                   ++ (
                     if builtins.hasAttr "socket_listener" v.config.services.telegraf.extraConfig.inputs
                     then ["tag:service-monitoring"]
-                    else []
-                  )
-                  ++ (
-                    if v.config.services.nix-serve.enable
-                    then ["tag:service-nix-serve"]
                     else []
                   )
                   ++ (
