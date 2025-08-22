@@ -38,7 +38,7 @@ in {
   "minio-root.age".publicKeys = users ++ [hallewell];
   "minio-tempo.age".publicKeys = users ++ [hallewell];
   "minio-terraform-state.age".publicKeys = users;
-  "nix-serve-key.age".publicKeys = users ++ [hallewell thornton shadowsoul];
+  "nix-serve-key.age".publicKeys = users ++ [hallewell];
   "photoprism-password.age".publicKeys = users ++ [hallewell];
   "rad-environment.age".publicKeys = users ++ allMachines;
   "rad-ras-token.age".publicKeys = users ++ allMachines;
@@ -59,4 +59,5 @@ in {
   "user-password-public-ramona.age".publicKeys = users ++ publicServers;
   "user-password-public-root.age".publicKeys = users ++ publicServers;
   "wireless-passwords.age".publicKeys = users ++ workstations;
+  "nix-serve-ssh-key.age".publicKeys = users ++ allMachines;
 }

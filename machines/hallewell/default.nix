@@ -21,7 +21,6 @@ _: {
     ./minio.nix
     ./navidrome.nix
     ./networking.nix
-    ./nix-serve.nix
     ./paperless.nix
     ./photoprism.nix
     ./postgresql.nix
