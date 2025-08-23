@@ -18,11 +18,11 @@
 
     systemd.services.sshd.preStart = ''
       echo << EOF > /etc/ssh/ssh_host_rsa_key.pub
-      ${ssh-keys.machines."${config.networking.hostName}-rsa"}
+      ${ssh-keys.machines."${config.networking.hostName}".rsa}
       EOF
 
       echo << EOF > /etc/ssh/ssh_host_ed25519_key.pub
-      ${ssh-keys.machines."${config.networking.hostName}-ed25519"}
+      ${ssh-keys.machines."${config.networking.hostName}".ed25519}
       EOF
 
       cat ${config.age.secrets."${config.networking.hostName}-ssh-host-key-rsa".path} > /etc/ssh/ssh_host_rsa_key
