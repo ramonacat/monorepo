@@ -10,8 +10,9 @@ _: {
     ../../users/ramona/installed
     ../../users/root/installed
 
-    ./nginx
     ./nas
+    ./nginx
+    ./paperless
 
     ./atuin-server.nix
     ./github-runner.nix
@@ -21,7 +22,6 @@ _: {
     ./minio.nix
     ./navidrome.nix
     ./networking.nix
-    ./paperless.nix
     ./photoprism.nix
     ./postgresql.nix
     ./ras2.nix

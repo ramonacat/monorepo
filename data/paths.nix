@@ -2,6 +2,8 @@
   hallewell = rec {
     nas-root = "/mnt/nas3";
     nas-share = "${nas-root}/data";
+
+    paperless = "${nas-root}/paperless/";
   };
   shadowsoul = {
     transmission-downloads = "/var/lib/transmission/Downloads";

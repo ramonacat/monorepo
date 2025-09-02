@@ -6,6 +6,7 @@
   config = {
     programs.ssh = {
       enable = true;
+      enableDefaultConfig = false;
       matchBlocks = let
         hosts = import ../../../../data/hosts.nix {inherit flake lib;};
       in
