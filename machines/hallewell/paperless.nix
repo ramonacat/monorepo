@@ -5,6 +5,7 @@
     in {
       enable = true;
       address = "0.0.0.0";
+      domain = config.networking.hostName;
       port = 58080;
       dataDir = "${paths.hallewell.nas-root}/paperless/data/";
       mediaDir = "${paths.hallewell.nas-root}/paperless/media/";
