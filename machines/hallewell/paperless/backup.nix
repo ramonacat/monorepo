@@ -1,6 +1,6 @@
 {config, ...}: {
   config = {
-    services.restic.backups.nas = let
+    services.restic.backups.paperless = let
       paths = import ../../../data/paths.nix;
     in
       import ../../../libs/nix/mk-restic-config.nix config {
