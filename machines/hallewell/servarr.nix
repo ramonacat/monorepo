@@ -3,7 +3,6 @@
     flaresolver-port = 8191;
   in {
     services = {
-      jackett.enable = true;
       radarr = {
         enable = true;
         user = "nas";
@@ -30,7 +29,6 @@
     };
 
     networking.firewall.interfaces.tailscale0.allowedTCPPorts = [
-      config.services.jackett.port
       config.services.radarr.settings.server.port
       config.services.sonarr.settings.server.port
       config.services.lidarr.settings.server.port
@@ -56,7 +54,6 @@
         config.services.sonarr.dataDir
         config.services.radarr.dataDir
         config.services.lidarr.dataDir
-        config.services.jackett.dataDir
         # this path seems to be hardcoded in the service definition
         "/var/lib/prowlarr"
       ];
