@@ -24,6 +24,9 @@
           server.port = 8991;
         };
       };
+      prowlarr = {
+        enable = true;
+      };
     };
 
     networking.firewall.interfaces.tailscale0.allowedTCPPorts = [
@@ -31,6 +34,7 @@
       config.services.radarr.settings.server.port
       config.services.sonarr.settings.server.port
       config.services.lidarr.settings.server.port
+      config.services.prowlarr.settings.server.port
       flaresolver-port
     ];
 
@@ -53,6 +57,8 @@
         config.services.radarr.dataDir
         config.services.lidarr.dataDir
         config.services.jackett.dataDir
+        # this path seems to be hardcoded in the service definition
+        "/var/lib/prowlarr"
       ];
     };
   };
