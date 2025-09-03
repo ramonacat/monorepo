@@ -8,6 +8,7 @@ on:
 jobs:
   build:
     runs-on: self-hosted
+    if: ${{ github.actor != 'dependabot[bot]' }}
     steps:
       - name: Checkout the repo
         uses: actions/checkout@v5
