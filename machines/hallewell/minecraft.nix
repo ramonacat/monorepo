@@ -24,6 +24,13 @@ _: {
           accioandra99 = "95297204-bb30-4be2-8109-43608e0bc783";
         };
       };
+      ramona = {
+        port = 43002;
+        rconPort = 25577;
+        whitelist = {
+          Agares2 = "2535f2de-9174-4bc5-8bdf-233649bc0449";
+        };
+      };
     };
   };
 }
