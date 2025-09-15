@@ -18,6 +18,7 @@ _: {
     ./github-runner.nix
     ./grafana.nix
     ./hardware.nix
+    ./jellyfin.nix
     ./minecraft.nix
     ./minio.nix
     ./navidrome.nix
