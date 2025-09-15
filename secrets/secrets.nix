@@ -3,11 +3,11 @@ let
 
   users = [ssh-keys.ramona.default];
 
-  angelsin-linux = ssh-keys.machines.angelsin-linux-rsa;
-  shadowsoul = ssh-keys.machines.shadowsoul-rsa;
-  hallewell = ssh-keys.machines.hallewell-rsa;
-  crimson = ssh-keys.machines.crimson-rsa;
-  thornton = ssh-keys.machines.thornton-rsa;
+  angelsin-linux = ssh-keys.machines.angelsin-linux.rsa;
+  shadowsoul = ssh-keys.machines.shadowsoul.rsa;
+  hallewell = ssh-keys.machines.hallewell.rsa;
+  crimson = ssh-keys.machines.crimson.rsa;
+  thornton = ssh-keys.machines.thornton.rsa;
 
   workstations = [angelsin-linux];
 

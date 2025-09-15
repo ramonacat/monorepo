@@ -1,4 +1,0 @@
-CREATE TABLE hosts (
-    hostname TEXT NOT NULL PRIMARY KEY,
-    last_seen TIMESTAMPTZ NOT NULL
-);
