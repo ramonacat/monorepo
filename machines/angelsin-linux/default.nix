@@ -7,9 +7,6 @@
     ../../roles/private
     ../../roles/workstation
 
-    ../../users/ramona/installed
-    ../../users/root/installed
-
     ./hardware.nix
     ./networking.nix
   ];

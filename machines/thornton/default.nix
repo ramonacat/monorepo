@@ -6,9 +6,6 @@ _: {
     ../../roles/server-public
     ../../roles/mysql-server
 
-    ../../users/ramona/installed
-    ../../users/root/installed
-
     ./fleet
     ./nginx
 

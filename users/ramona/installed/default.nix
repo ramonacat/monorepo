@@ -1,7 +1,4 @@
 {config, ...}: {
-  imports = [
-    ../base
-  ];
   config = {
     age.secrets =
       if config.ramona.machine.hasPublicIP

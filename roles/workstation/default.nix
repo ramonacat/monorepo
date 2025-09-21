@@ -1,5 +1,7 @@
 {config, ...}: {
   imports = [
+    ../../users/ramona/workstation
+
     ../../modules/machine-kind.nix
   ];
   config = {

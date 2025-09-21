@@ -4,10 +4,6 @@
   ...
 }: {
   imports = [
-    inputs.nixvim.homeModules.nixvim
-
-    ./nixvim
-    ./atuin.nix
     ./git.nix
     ./ssh.nix
     ./tmux.nix

@@ -7,6 +7,9 @@
   imports = [
     inputs.agenix.nixosModules.default
 
+    ../../users/ramona/installed
+    ../../users/root/installed
+
     ./updates
 
     ./nix.nix
