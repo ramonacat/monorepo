@@ -7,9 +7,6 @@ _: {
     ../../roles/tailscale-nginx
     ../../roles/builds-host
 
-    ../../users/ramona/installed
-    ../../users/root/installed
-
     ./nas
     ./nginx
     ./paperless

@@ -8,6 +8,9 @@
     inputs.home-manager.nixosModules.home-manager
     inputs.lix-module.nixosModules.default
 
+    ../../users/root/base
+    ../../users/ramona/base
+
     ./base.nix
     ./bcachefs.nix
     ./kernel.nix

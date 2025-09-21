@@ -7,9 +7,6 @@
 
     ../../modules/machine-kind.nix
 
-    ../../users/ramona/base
-    ../../users/root/base
-
     ./filesystems.nix
   ];
   config = {

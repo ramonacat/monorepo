@@ -1,7 +1,5 @@
 _: {
   imports = [
-    ../base
-
     ./updates
 
     ./nix.nix
