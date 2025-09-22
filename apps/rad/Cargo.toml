@@ -11,4 +11,4 @@ reqwest = { version = "0.12.23", features = ["rustls-tls", "json", "blocking"], 
 thiserror = "2.0.14"
 tokio = { version = "1.37.0", features = ["full"] }
 ratlib = { path = "../../libs/rust/ratlib/" }
-serde = { version = "1.0.225", features = ["derive"] }
+serde = { version = "1.0.226", features = ["derive"] }
