@@ -25,12 +25,13 @@
       services.nginx-tailscale-ssl-keyrefresh = {
         path = ["/run/current-system/sw/"];
         script = "${pkgs.tailscale}/bin/tailscale cert --cert-file=${certificateFile} --key-file=${certificateKey} --min-validity=2160h ${config.networking.hostName}.ibis-draconis.ts.net && chown ${config.services.nginx.user}:${config.services.nginx.group} ${certificateDirectory}/* && systemctl reload nginx";
+        serviceConfig = {Type = "oneshot";};
       };
 
       timers.nginx-tailscale-ssl-keyrefresh = {
         wantedBy = ["timers.target"];
         timerConfig = {
-          OnUnitActiveSec = "85d";
+          OnUnitActiveSec = "30d";
           Persistent = true;
           Unit = "nginx-tailscale-ssl-keyrefresh.service";
         };
