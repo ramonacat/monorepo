@@ -9,7 +9,7 @@
 
     src = ../apps/ras2;
 
-    vendorHash = "sha256-5d/fVzMOGW8fWM6wiNpEADud+iQJmobnJgVqjiIr/Hk=";
+    vendorHash = "sha256-8mqmZ2U74ywsQSalx/nNqGQCsBajdwx16ikZrvCJfgE=";
     composerNoPlugins = false;
   };
   devPhp = package-versions.php-dev;
