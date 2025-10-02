@@ -10,7 +10,10 @@
         "delayacct"
       ];
       kernelPackages = lib.mkOverride 500 pkgs.linuxPackages_latest;
-      kernel.features.debug = true;
+      kernel = {
+        features.debug = true;
+        sysctl."kernel.sysrq" = 1;
+      };
     };
   };
 }
