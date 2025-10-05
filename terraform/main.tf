@@ -14,7 +14,7 @@ terraform {
     shared_credentials_files = ["/home/ramona/minio-terraform-state"]
 
     endpoints = {
-      s3 = "http://hallewell:9000/"
+      s3 = "http://thornton:9000/"
     }
   }
   required_providers {
