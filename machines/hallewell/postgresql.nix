@@ -12,7 +12,5 @@ _: {
         backup-path = "${paths.hallewell.nas-root}/postgres-backup";
       };
     };
-
-    networking.firewall.interfaces.tailscale0.allowedTCPPorts = [5432];
   };
 }
