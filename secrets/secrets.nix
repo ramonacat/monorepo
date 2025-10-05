@@ -47,7 +47,7 @@ in {
   "shadowsoul-syncthing-cert.age".publicKeys = users ++ [shadowsoul];
   "shadowsoul-syncthing-key.age".publicKeys = users ++ [shadowsoul];
   "tailscale-auth-key.age".publicKeys = users ++ allMachines;
-  "telegraf-database.age".publicKeys = users ++ [hallewell];
+  "telegraf-database.age".publicKeys = users ++ [hallewell thornton];
   "terraform-tokens.age".publicKeys = users;
   "thornton-ssh-host-key-ed25519.age".publicKeys = users ++ [thornton];
   "thornton-ssh-host-key-rsa.age".publicKeys = users ++ [thornton];
