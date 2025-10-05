@@ -5,9 +5,10 @@ _: {
     ../../roles/installed
     ../../roles/server-public
 
+    ./grafana.nix
+    ./minio.nix
     ./networking.nix
     ./postgresql.nix
-    ./minio.nix
     ./telegraf.nix
   ];
   config = {

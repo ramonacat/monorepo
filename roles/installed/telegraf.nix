@@ -50,7 +50,7 @@
           };
         };
         outputs.socket_writer = {
-          address = "tcp://hallewell:8094";
+          address = "tcp://thornton:8094";
           content_encoding = "gzip";
           data_format = "influx";
         };
