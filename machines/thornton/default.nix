@@ -4,6 +4,7 @@ _: {
     ../../roles/hetzner-cloud
     ../../roles/installed
     ../../roles/server-public
+    ../../roles/tailscale-nginx
 
     ./nginx
 
