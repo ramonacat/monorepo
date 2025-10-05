@@ -35,7 +35,6 @@ pkgs.mkShell {
     })
 
     bash-language-server
-    fleetctl
     google-cloud-sdk
     nil
     nushell
