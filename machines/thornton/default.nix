@@ -10,6 +10,7 @@ _: {
     ./networking.nix
     ./postgresql.nix
     ./telegraf.nix
+    ./tempo.nix
   ];
   config = {
     swapDevices = [
