@@ -5,6 +5,8 @@ _: {
     ../../roles/installed
     ../../roles/server-public
 
+    ./nginx
+
     ./grafana.nix
     ./minio.nix
     ./networking.nix
