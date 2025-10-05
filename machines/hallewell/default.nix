@@ -12,6 +12,7 @@ _: {
     ./paperless
 
     ./atuin-server.nix
+    ./bcachefs.nix
     ./github-runner.nix
     ./hardware.nix
     ./jellyfin.nix
