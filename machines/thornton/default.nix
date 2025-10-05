@@ -6,6 +6,7 @@ _: {
     ../../roles/server-public
 
     ./networking.nix
+    ./postgresql.nix
   ];
   config = {
     swapDevices = [
