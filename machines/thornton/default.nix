@@ -7,6 +7,8 @@ _: {
 
     ./networking.nix
     ./postgresql.nix
+    ./minio.nix
+    ./telegraf.nix
   ];
   config = {
     swapDevices = [
