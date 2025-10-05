@@ -33,7 +33,7 @@ in {
   "hallewell-ssh-host-key-rsa.age".publicKeys = users ++ [hallewell];
   "hallewell-syncthing-cert.age".publicKeys = users ++ [hallewell];
   "hallewell-syncthing-key.age".publicKeys = users ++ [hallewell];
-  "minio-root.age".publicKeys = users ++ [hallewell];
+  "minio-root.age".publicKeys = users ++ [hallewell thornton];
   "minio-tempo.age".publicKeys = users ++ [hallewell];
   "minio-terraform-state.age".publicKeys = users;
   "nix-serve-key.age".publicKeys = users ++ [hallewell];
