@@ -4,7 +4,7 @@
   ...
 }: {
   config = {
-    services.nginx.virtualHosts."hallewell.ibis-draconis.ts.net".locations = {
+    services.nginx.virtualHosts."${config.networking.hostName}.ibis-draconis.ts.net".locations = {
       "~ /ras/.*" = {
         root = "${pkgs.ramona.ras2}/share/php/ras2/public/";
 
