@@ -1,7 +1,7 @@
 {config, ...}: {
   config = let
     minio-port = 9000;
-    minio-webui-port = 9000;
+    minio-webui-port = 9001;
   in {
     age.secrets.minio-root = {
       file = ../../secrets/minio-root.age;
