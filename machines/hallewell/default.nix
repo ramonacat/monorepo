@@ -13,19 +13,15 @@ _: {
 
     ./atuin-server.nix
     ./github-runner.nix
-    ./grafana.nix
     ./hardware.nix
     ./jellyfin.nix
     ./minecraft.nix
-    ./minio.nix
     ./navidrome.nix
     ./networking.nix
     ./photoprism.nix
     ./postgresql.nix
-    ./ras2.nix
     ./servarr.nix
     ./telegraf.nix
-    ./tempo.nix
     ./znc.nix
   ];
   config = {
