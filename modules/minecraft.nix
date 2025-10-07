@@ -57,37 +57,35 @@
 
     services.restic.backups =
       lib.mapAttrs' (name: settings: let
-          path = "${paths.hallewell.nas-root}/minecraft/${name}";
-          backupPath = "${paths.hallewell.nas-root}/minecraft/${name}-backup";
-        in {
-          name = "minecraft-" + name;
-          value = let
-            informerScript = pkgs.writeShellScriptBin ("backup-minecraft-server-" + name) "
+        path = "${paths.hallewell.nas-root}/minecraft/${name}";
+        backupPath = "${paths.hallewell.nas-root}/minecraft/${name}-backup";
+      in {
+        name = "minecraft-" + name;
+        value = let
+          informerScript = pkgs.writeShellScriptBin ("backup-minecraft-server-" + name) "
           #!/usr/bin/env bash
 
           set -euo pipefail
 
-          ${pkgs.rcon}/bin/rcon -H localhost -p ${toString settings.rconPort} -P rcon <<EOS
-            say [§4WARNING§r] starting server backup
-EOS
+          ${pkgs.rcon-cli}/bin/rcon-cli --host localhost --port ${toString settings.rconPort} --password rcon 'say [§4WARNING§r] starting server backup'
         ";
-          in
-            import ../libs/nix/mk-restic-config.nix config {
-              timerConfig = {
-                OnCalendar = "*-*-* *:00:00";
-                RandomizedDelaySec = "30min";
-              };
-              backupPrepareCommand = ''
-                ${informerScript}/bin/backup-minecraft-server-${name}
-
-                ${pkgs.bcachefs-tools}/bin/bcachefs subvolume snapshot ${path} ${backupPath}
-              '';
-              backupCleanupCommand = ''
-                ${pkgs.bcachefs-tools}/bin/bcachefs subvolume delete ${backupPath}
-              '';
-              paths = [backupPath];
+        in
+          import ../libs/nix/mk-restic-config.nix config {
+            timerConfig = {
+              OnCalendar = "*-*-* *:00:00";
+              RandomizedDelaySec = "30min";
             };
-        })
+            backupPrepareCommand = ''
+              ${informerScript}/bin/backup-minecraft-server-${name}
+
+              ${pkgs.bcachefs-tools}/bin/bcachefs subvolume snapshot ${path} ${backupPath}
+            '';
+            backupCleanupCommand = ''
+              ${pkgs.bcachefs-tools}/bin/bcachefs subvolume delete ${backupPath}
+            '';
+            paths = [backupPath];
+          };
+      })
       servers;
 
     networking.firewall.allowedTCPPorts = lib.mapAttrsToList (_: settings: settings.port) servers;
