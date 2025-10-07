@@ -1,4 +1,8 @@
-{config, ...}: {
+{
+  config,
+  pkgs,
+  ...
+}: {
   config = {
     age.secrets.transmission-credentials = {
       file = ../../secrets/transmission-credentials.age;
@@ -8,6 +12,7 @@
 
     services.transmission = {
       enable = true;
+      package = pkgs.transmission_4;
       openFirewall = true;
       performanceNetParameters = true;
       credentialsFile = config.age.secrets.transmission-credentials.path;
