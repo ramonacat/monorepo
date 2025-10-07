@@ -5,14 +5,14 @@
       openFirewall = true;
     };
 
+    systemd.services.jellyfin.environment.LIBVA_DRIVER_NAME = "iHD";
+
     hardware.graphics = {
       enable = true;
       extraPackages = with pkgs; [
+        intel-ocl
         intel-media-driver
-        vaapiIntel
-        vaapiVdpau
-        libvdpau-va-gl
-        intel-compute-runtime # OpenCL filter support (hardware tonemapping and subtitle burn-in)
+        intel-compute-runtime-legacy1
       ];
     };
   };
