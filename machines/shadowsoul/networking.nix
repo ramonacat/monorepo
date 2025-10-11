@@ -22,7 +22,7 @@ _: {
           BindCarrier = ["enp0s31f6" "enp1s0"];
         };
       };
-      enp0s31f6 = {
+      "30-ethernet-enp0s31f6" = {
         matchConfig = {Name = "enp0s31f6";};
         networkConfig = {Bond = "bond0";};
       };
