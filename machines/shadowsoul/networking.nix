@@ -15,6 +15,13 @@ _: {
       };
     };
     systemd.network.networks = {
+      bond0 = {
+        matchConfig = {Name = "bond0";};
+        networkConfig = {
+          DHCP = true;
+          BindCarrier = ["enp0s31" "enp1s0"];
+        };
+      };
       enp0s31 = {
         matchConfig = {Name = "enp0s31";};
         networkConfig = {Bond = "bond0";};
