@@ -19,11 +19,11 @@ _: {
         matchConfig = {Name = "bond0";};
         networkConfig = {
           DHCP = true;
-          BindCarrier = ["enp0s31" "enp1s0"];
+          BindCarrier = ["enp0s31f6" "enp1s0"];
         };
       };
-      enp0s31 = {
-        matchConfig = {Name = "enp0s31";};
+      enp0s31f6 = {
+        matchConfig = {Name = "enp0s31f6";};
         networkConfig = {Bond = "bond0";};
       };
       enp1s0 = {
