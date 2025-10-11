@@ -26,7 +26,7 @@ _: {
         matchConfig = {Name = "enp0s31f6";};
         networkConfig = {Bond = "bond0";};
       };
-      enp1s0 = {
+      "30-ethernet-enp1s0" = {
         matchConfig = {Name = "enp1s0";};
         networkConfig = {Bond = "bond0";};
       };
