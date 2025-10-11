@@ -10,15 +10,21 @@
       kernelModules = ["kvm-intel"];
       extraModulePackages = [];
     };
+    fileSystems = {
+      "/" = {
+        device = "/dev/disk/by-uuid/a1d31050-d300-425c-bf6b-bfd8ba9039f2";
+        fsType = "bcachefs";
+      };
 
-    fileSystems."/" = {
-      device = "/dev/disk/by-uuid/a1d31050-d300-425c-bf6b-bfd8ba9039f2";
-      fsType = "bcachefs";
-    };
+      "/boot" = {
+        device = "/dev/disk/by-uuid/A408-FCA2";
+        fsType = "vfat";
+      };
 
-    fileSystems."/boot" = {
-      device = "/dev/disk/by-uuid/A408-FCA2";
-      fsType = "vfat";
+      "/var/lib/transmission/Downloads/sonarr" = {
+        device = "192.168.2.69:/mnt/storage/Agares";
+        fsType = "nfs";
+      };
     };
 
     swapDevices = [{device = "/dev/disk/by-uuid/f968be24-cead-4d7f-9f7e-f9a7646a9a39";}];
