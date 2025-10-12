@@ -14,6 +14,7 @@ _: {
         };
       };
     };
+
     systemd.network.networks = {
       bond0 = {
         matchConfig = {Name = "bond0";};

@@ -24,6 +24,7 @@
       "/var/lib/transmission/Downloads/sonarr" = {
         device = "192.168.2.69:/mnt/storage/Agares";
         fsType = "nfs";
+        options = ["x-systemd.required-by=transmission.service" "x-systemd.required-by=syncthing.service"];
       };
     };
 
