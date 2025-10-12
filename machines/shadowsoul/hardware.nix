@@ -5,11 +5,16 @@
 }: {
   config = {
     boot = {
-      initrd.availableKernelModules = ["xhci_pci" "ahci" "nvme" "usbhid" "usb_storage" "sd_mod" "rtsx_usb_sdmmc" "e1000e" "igb"];
-      initrd.kernelModules = [];
+      initrd = {
+        availableKernelModules = ["xhci_pci" "ahci" "nvme" "usbhid" "usb_storage" "sd_mod" "rtsx_usb_sdmmc" "e1000e" "igb"];
+        kernelModules = [];
+        postDeviceCommands = "sleep 10";
+      };
+
       kernelModules = ["kvm-intel"];
       extraModulePackages = [];
     };
+
     fileSystems = {
       "/" = {
         device = "/dev/disk/by-uuid/a1d31050-d300-425c-bf6b-bfd8ba9039f2";
