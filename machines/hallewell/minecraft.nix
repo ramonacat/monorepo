@@ -2,7 +2,11 @@ _: {
   imports = [
     ../../modules/minecraft.nix
   ];
-  config = {
+  config = let
+    paths = import ../../data/paths.nix;
+  in {
+    services.minecraft-servers.dataDir = "${paths.hallewell.nas-root}/minecraft/";
+
     services.ramona.minecraft = {
       gierki = {
         port = 43000;
