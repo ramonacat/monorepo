@@ -25,7 +25,6 @@
     };
   };
   config = let
-    paths = import ../data/paths.nix;
     servers = config.services.ramona.minecraft;
   in {
     services.minecraft-servers = {
@@ -57,8 +56,8 @@
 
     services.restic.backups =
       lib.mapAttrs' (name: settings: let
-        path = "${paths.hallewell.nas-root}/minecraft/${name}";
-        backupPath = "${paths.hallewell.nas-root}/minecraft/${name}-backup";
+        path = "${config.services.minecraft-servers.dataDir}/${name}";
+        backupPath = "${path}-backup";
       in {
         name = "minecraft-" + name;
         value = let
