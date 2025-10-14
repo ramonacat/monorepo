@@ -10,7 +10,7 @@ _: {
           Name = "bond0";
         };
         bondConfig = {
-          Mode = "balance-rr";
+          Mode = "balance-xor";
         };
       };
     };
