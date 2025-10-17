@@ -4,7 +4,7 @@
       initrd.availableKernelModules = ["xhci_pci" "ahci" "nvme" "usbhid" "usb_storage" "sd_mod" "sr_mod" "bcache" "amdgpu" "e1000e"];
       initrd.kernelModules = [];
       kernelModules = ["kvm-intel" "vfio" "vfio_pci" "vfio_iommu_type1" "vfio_virqfd" "amdgpu" "i2c-dev"];
-      kernelParams = ["systemd.setenv=SYSTEMD_SULOGIN_FORCE=1"];
+      kernelParams = ["drm.edid_firmware=edid/1920x1080.bin"];
       extraModulePackages = [];
       loader.systemd-boot.enable = true;
       loader.efi.canTouchEfiVariables = true;
