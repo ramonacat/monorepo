@@ -12,8 +12,8 @@
         submodule {
           options = {
             enable = lib.mkOption {type = bool;};
-            path = lib.mkOption {type = lib.types.string;};
-            backup-path = lib.mkOption {type = lib.types.string;};
+            path = lib.mkOption {type = lib.types.str;};
+            backup-path = lib.mkOption {type = lib.types.str;};
           };
         };
     };
