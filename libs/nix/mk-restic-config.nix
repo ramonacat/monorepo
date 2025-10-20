@@ -23,6 +23,9 @@ in
       "--keep-monthly 3"
       "--keep-yearly 3"
     ];
+    checkOpts = [
+      "--read-data-subset=1G"
+    ];
     extraOptions = ["--retry-lock=5m"];
   }
   // options
