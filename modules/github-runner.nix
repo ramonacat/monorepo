@@ -34,7 +34,6 @@
           extraLabels = ["nixos"];
           extraPackages = with pkgs; [openssh jq proot];
           replace = true;
-          workDir = "/mnt/nas3/github-runners/${toString i}";
         };
       }) (lib.range 1 runner.count));
     };
