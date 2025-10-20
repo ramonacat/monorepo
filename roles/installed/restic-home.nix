@@ -4,8 +4,8 @@
       import ../../libs/nix/mk-restic-config.nix config
       {
         timerConfig = {
-          OnCalendar = "*-*-* 00/1:00:00";
-          RandomizedDelaySec = "30m";
+          OnCalendar = "*-*-* 00/6:00:00";
+          RandomizedDelaySec = "3h";
         };
         paths = [
           "/home/"
