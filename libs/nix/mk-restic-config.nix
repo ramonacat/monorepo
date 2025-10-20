@@ -32,7 +32,7 @@ in
       "--keep-yearly 3"
     ];
     checkOpts = [
-      "--read-data-subset=1G"
+      "--read-data-subset=50M"
     ];
   }
   // options
