@@ -31,7 +31,10 @@
         agent.omit_hostname = false;
         inputs = {
           cpu = {};
-          disk = {};
+          disk = {
+            ignore_fs = ["tmpfs" "devtmpfs" "devfs" "iso9660" "overlay" "aufs" "squashfs" "efivarfs"];
+            ignore_mount_opts = ["bind"];
+          };
           diskio = {};
           mem = {};
           syslog = {

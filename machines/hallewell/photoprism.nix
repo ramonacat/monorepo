@@ -1,4 +1,8 @@
-{config, ...}: {
+{
+  config,
+  pkgs,
+  ...
+}: {
   config = let
     paths = import ../../data/paths.nix;
   in {
@@ -22,7 +26,7 @@
     services.restic.backups.photoprism = let
       backupPath = "${paths.hallewell.nas-root}/photoprism/";
     in
-      import ../../libs/nix/mk-restic-config.nix config {
+      import ../../libs/nix/mk-restic-config.nix {inherit config pkgs;} {
         timerConfig = {
           OnCalendar = "*-*-* 00/1:00:00";
           RandomizedDelaySec = "15m";

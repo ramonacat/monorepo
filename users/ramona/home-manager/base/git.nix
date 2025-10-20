@@ -2,22 +2,24 @@ _: {
   config = {
     programs.git = {
       enable = true;
-      userName = "Ramona Łuczkiewicz";
-      userEmail = "ja@agares.info";
       maintenance = {
         enable = true;
-        repositories = ["/home/ramona/Projects/monorepo/" "/home/ramona/Projects/ligeia"];
+        repositories = ["/home/ramona/Projects/monorepo/"];
       };
-      aliases = {
-        st = "status -sb";
-        cleanbr = "! git branch -d `git branch --merged | grep -v '^*\\|main\\|master\\|staging\\|devel'`";
-      };
-      extraConfig = {
+      settings = {
+        alias = {
+          st = "status -sb";
+          cleanbr = "! git branch -d `git branch --merged | grep -v '^*\\|main\\|master\\|staging\\|devel'`";
+        };
         push = {
           autoSetupRemote = true;
         };
         init = {
           defaultBranch = "main";
+        };
+        user = {
+          name = "Ramona Łuczkiewicz";
+          email = "ramona@luczkiewi.cz";
         };
       };
     };

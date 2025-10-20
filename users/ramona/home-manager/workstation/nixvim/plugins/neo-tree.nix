@@ -2,10 +2,10 @@ _: {
   config = {
     programs.nixvim.plugins.neo-tree = {
       enable = true;
-      filesystem = {
-        useLibuvFileWatcher = true;
-        followCurrentFile.enabled = true;
-        filteredItems.alwaysShow = [
+      settings.filesystem = {
+        use_libuv_file_watcher = true;
+        follow_current_file.enabled = true;
+        filtered_items.always_show = [
           ".github"
           ".gitignore"
         ];
