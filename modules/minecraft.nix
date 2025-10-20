@@ -69,7 +69,7 @@
           ${pkgs.rcon-cli}/bin/rcon-cli --host localhost --port ${toString settings.rconPort} --password rcon 'say [§4WARNING§r] starting server backup'
         ";
         in
-          import ../libs/nix/mk-restic-config.nix config {
+          import ../libs/nix/mk-restic-config.nix {inherit config pkgs;} {
             timerConfig = {
               OnCalendar = "*-*-* *:00:00";
               RandomizedDelaySec = "30min";

@@ -50,7 +50,7 @@
       services.restic.backups.postgresql = let
         backupPath = server.backup-path;
       in
-        import ../libs/nix/mk-restic-config.nix config {
+        import ../libs/nix/mk-restic-config.nix {inherit config pkgs;} {
           timerConfig = {
             OnCalendar = "*-*-* 00/6:00:00";
             RandomizedDelaySec = "3h";

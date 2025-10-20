@@ -1,4 +1,7 @@
-config: options: let
+{
+  config,
+  pkgs,
+}: options: let
   repository =
     if config.ramona.machine.hasPublicIP
     then "public"
@@ -10,6 +13,11 @@ config: options: let
 in
   {
     repository = "b2:${bucket}:/${repository}/";
+    package = pkgs.restic.overrideAttrs {
+      postFixup = ''
+        wrapProgram $out/bin/restic --add-flag '--retry-lock=1h'
+      '';
+    };
     rcloneConfigFile = config.age.secrets."backups-${repository}-rclone".path;
     environmentFile = config.age.secrets."backups-${repository}-env".path;
     passwordFile = config.age.secrets."backups-${repository}-password".path;
@@ -26,6 +34,5 @@ in
     checkOpts = [
       "--read-data-subset=1G"
     ];
-    extraOptions = ["--retry-lock=5m"];
   }
   // options

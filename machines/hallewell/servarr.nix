@@ -1,4 +1,8 @@
-{config, ...}: {
+{
+  config,
+  pkgs,
+  ...
+}: {
   config = let
     flaresolver-port = 8191;
   in {
@@ -45,7 +49,7 @@
       extraOptions = ["--network=host"];
     };
 
-    services.restic.backups.servarr = import ../../libs/nix/mk-restic-config.nix config {
+    services.restic.backups.servarr = import ../../libs/nix/mk-restic-config.nix {inherit config pkgs;} {
       timerConfig = {
         OnCalendar = "*-*-* 00/1:00:00";
         RandomizedDelaySec = "30m";
