@@ -31,8 +31,5 @@ in
       "--keep-monthly 3"
       "--keep-yearly 3"
     ];
-    checkOpts = [
-      "--read-data-subset=50M"
-    ];
   }
   // options
