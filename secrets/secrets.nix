@@ -37,15 +37,18 @@ in {
   "minio-tempo.age".publicKeys = users ++ [thornton];
   "minio-terraform-state.age".publicKeys = users;
   "nix-serve-key.age".publicKeys = users ++ [hallewell];
+  "nix-serve-ssh-key.age".publicKeys = users ++ allMachines;
   "photoprism-password.age".publicKeys = users ++ [hallewell];
   "rad-environment.age".publicKeys = users ++ allMachines;
   "rad-ras-token.age".publicKeys = users ++ allMachines;
+  "radarr-api-key.age".publicKeys = users ++ [hallewell];
   "ras2-db-config.age".publicKeys = users ++ [thornton];
   "ras2-telegraf-db-config.age".publicKeys = users ++ [thornton];
   "shadowsoul-ssh-host-key-ed25519.age".publicKeys = users ++ [shadowsoul];
   "shadowsoul-ssh-host-key-rsa.age".publicKeys = users ++ [shadowsoul];
   "shadowsoul-syncthing-cert.age".publicKeys = users ++ [shadowsoul];
   "shadowsoul-syncthing-key.age".publicKeys = users ++ [shadowsoul];
+  "sonarr-api-key.age".publicKeys = users ++ [hallewell];
   "tailscale-auth-key.age".publicKeys = users ++ allMachines;
   "telegraf-database.age".publicKeys = users ++ [thornton];
   "terraform-tokens.age".publicKeys = users;
@@ -57,5 +60,4 @@ in {
   "user-password-public-ramona.age".publicKeys = users ++ publicServers;
   "user-password-public-root.age".publicKeys = users ++ publicServers;
   "wireless-passwords.age".publicKeys = users ++ workstations;
-  "nix-serve-ssh-key.age".publicKeys = users ++ allMachines;
 }
