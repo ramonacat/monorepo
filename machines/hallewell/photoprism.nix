@@ -24,7 +24,8 @@
     networking.firewall.interfaces.tailscale0.allowedTCPPorts = [2342];
 
     services.restic.backups.photoprism = let
-      backupPath = "${paths.hallewell.nas-root}/photoprism/";
+      path = "${paths.hallewell.nas-root}/photoprism/";
+      backup-path = "${paths.hallewell.nas-root}/photoprism-backup/";
     in
       import ../../libs/nix/mk-restic-config.nix {inherit config pkgs;} {
         timerConfig = {
@@ -32,8 +33,15 @@
           RandomizedDelaySec = "15m";
         };
         paths = [
-          backupPath
+          backup-path
         ];
+        backupPrepareCommand = ''
+          ${pkgs.bcachefs-tools}/bin/bcachefs subvolume snapshot "${path}" "${backup-path}"
+        '';
+        backupCleanupCommand = ''
+
+          ${pkgs.bcachefs-tools}/bin/bcachefs subvolume delete "${backup-path}"
+        '';
       };
   };
 }
