@@ -8,6 +8,7 @@ _: {
     ./hardware.nix
     ./networking.nix
     ./snmpd.nix
+    ./storage.nix
     ./transmission.nix
   ];
   config = {
