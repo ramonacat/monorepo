@@ -9,6 +9,7 @@
 
     ./hardware.nix
     ./networking.nix
+    ./nixos-hardware-1581-workaround.nix
   ];
   config = {
     ramona.machine.location = "roaming";
