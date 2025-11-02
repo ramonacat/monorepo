@@ -7,6 +7,7 @@ _: {
     ../../roles/tailscale-nginx
     ../../roles/builds-host
 
+    ./jellyfin
     ./nas
     ./nginx
     ./paperless
@@ -15,7 +16,6 @@ _: {
     ./bcachefs.nix
     ./github-runner.nix
     ./hardware.nix
-    ./jellyfin.nix
     ./minecraft.nix
     ./navidrome.nix
     ./networking.nix
