@@ -8,7 +8,7 @@
     in {
       enable = true;
       openFirewall = true;
-      dataDir = "${paths.hallewell.jellyfin}/data";
+      dataDir = "${paths.hallewell.jellyfin}/";
       configDir = "${paths.hallewell.jellyfin}/config";
     };
 
