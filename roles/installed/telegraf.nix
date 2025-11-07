@@ -60,6 +60,8 @@
       };
     };
 
+    systemd.services.telegraf.requires = ["tailscale.service"];
+
     services.rsyslogd = {
       enable = true;
       defaultConfig = ''
