@@ -4,8 +4,8 @@
       paths = import ../../data/paths.nix;
     in {
       script = "
-                find ${paths.hallewell.dls} -name '*.rar' -execdir ${pkgs.unrar}/bin/unrar -u x {} \;
-            ";
+        find ${paths.hallewell.dls} -name '*.rar' -execdir ${pkgs.unrar}/bin/unrar -u x {} \\;
+      ";
     };
 
     systemd.timers.autounrar-dls = {
