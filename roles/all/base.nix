@@ -4,9 +4,12 @@
     users.mutableUsers = false;
 
     environment.systemPackages = with pkgs; [
+      atop
       htop
       iotop
+      neovim
       perf
+      sysstat
     ];
 
     system.stateVersion = "22.11";
