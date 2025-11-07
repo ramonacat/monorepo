@@ -15,7 +15,7 @@ rec {
       user = "nas";
       folders = {
         trnsmsn-dls = {
-          path = "${paths.hallewell.nas-root}/dls/";
+          path = "${paths.hallewell.dls}";
           type = "receiveonly";
         };
         shared = {

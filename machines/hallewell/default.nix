@@ -13,6 +13,7 @@ _: {
     ./paperless
 
     ./atuin-server.nix
+    ./autounrar-dls.nix
     ./bcachefs.nix
     ./github-runner.nix
     ./hardware.nix

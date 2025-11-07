@@ -5,6 +5,7 @@
 
     paperless = "${nas-root}/paperless";
     jellyfin = "${nas-root}/jellyfin";
+    dls = "${nas-root}/dls";
   };
   shadowsoul = {
     transmission-downloads = "/var/lib/transmission/Downloads";
