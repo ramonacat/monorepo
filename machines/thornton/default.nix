@@ -9,6 +9,7 @@ _: {
     ./nginx
 
     ./grafana.nix
+    ./hardware.nix
     ./minio.nix
     ./networking.nix
     ./postgresql.nix
