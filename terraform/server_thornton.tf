@@ -13,6 +13,12 @@ resource "hcloud_server" "thornton" {
   }
 }
 
+resource "hcloud_volume" "thornton-db" {
+  name      = "thornton-db"
+  size      = 50
+  server_id = hcloud_server.thornton.id
+}
+
 resource "hcloud_rdns" "thornton-ipv4" {
   ip_address = hcloud_server.thornton.ipv4_address
   dns_ptr    = trimsuffix(google_dns_record_set.A-thornton-devices-ramona-fun.name, ".")
