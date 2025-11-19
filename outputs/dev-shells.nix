@@ -16,7 +16,7 @@ pkgs.mkShell {
         cp generate-syncthing-keys.bash $out/bin/generate-syncthing-keys
 
         wrapProgram $out/bin/generate-syncthing-keys \
-            --prefix PATH : "${lib.makeBinPath [jq syncthing xidel inputs.agenix.packages."${pkgs.system}".default]}"
+            --prefix PATH : "${lib.makeBinPath [jq syncthing xidel inputs.agenix.packages."${pkgs.stdenv.hostPlatform.system}".default]}"
       '';
     })
 
