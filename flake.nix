@@ -149,6 +149,11 @@
                     then ["tag:service-builds-host"]
                     else []
                   )
+                  ++ (
+                    if v.config.services.jellyfin.enable
+                    then ["tag:service-jellyfin"]
+                    else []
+                  )
                 )
               else []
             )
