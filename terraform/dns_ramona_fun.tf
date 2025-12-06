@@ -142,3 +142,12 @@ resource "google_dns_record_set" "TXT-_dmarc-ramona-fun" {
     "\"v=DMARC1; p=none; rua=mailto:dmarc@ramona.fun; ruf=mailto:dmarc@ramona.fun; fo=1\""
   ]
 }
+
+resource "google_dns_record_set" "CNAME-jellyfin-ramona-fun" {
+  name         = "jellyfin.${google_dns_managed_zone.ramona-fun.dns_name}"
+  managed_zone = google_dns_managed_zone.ramona-fun.name
+  type         = "CNAME"
+  ttl          = "60"
+
+  rrdatas = ["cb380c2c50bc.sn.mynetname.net."]
+}
