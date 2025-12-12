@@ -11,7 +11,7 @@
     systemd.timers.autounrar-dls = {
       wantedBy = ["timers.target"];
       timerConfig = {
-        OnCalendar = "*-*-* *:*:*";
+        OnCalendar = "*-*-* *:*:00";
         Unit = "autounrar-dls.service";
       };
     };
