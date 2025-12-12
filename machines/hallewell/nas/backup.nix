@@ -17,6 +17,7 @@
         ];
         exclude = [
           "${paths.hallewell.nas-share}/Movies/"
+          "${paths.hallewell.nas-share}/Media/"
         ];
       };
   };
