@@ -25,7 +25,7 @@
 
     services.restic.backups.photoprism = let
       path = "${paths.hallewell.nas-root}/photoprism/";
-      backup-path = "${paths.hallewell.nas-root}/photoprism-backup/";
+      backup-path = "${paths.hallewell.nas-root}/photoprism-backup";
     in
       import ../../libs/nix/mk-restic-config.nix {inherit config pkgs;} {
         timerConfig = {
