@@ -7,6 +7,7 @@
       paths = import ../../../data/paths.nix;
     in {
       enable = true;
+      host = "0.0.0.0";
       mediaLocation = paths.hallewell.immich;
       # null gives access to all devices
       accelerationDevices = null;
