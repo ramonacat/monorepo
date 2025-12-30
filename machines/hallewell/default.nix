@@ -7,6 +7,7 @@ _: {
     ../../roles/tailscale-nginx
     ../../roles/builds-host
 
+    ./immich
     ./jellyfin
     ./nas
     ./nginx
