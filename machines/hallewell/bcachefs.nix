@@ -5,37 +5,38 @@ _: {
     in {
       enable = true;
       fileSystems = [paths.hallewell.nas-root];
+      interval = "*-*-01 02:00:00";
     };
     systemd = {
-      services.bcachefs-disable-rebalance = {
-        script = "echo -n 0 > /sys/fs/bcachefs/8f552709-24e3-4387-8183-23878c94d00b/options/rebalance_enabled";
+      services.bcachefs-disable-reconcile = {
+        script = "echo -n 0 > /sys/fs/bcachefs/8f552709-24e3-4387-8183-23878c94d00b/options/reconcile_enabled";
         serviceConfig = {
           Type = "oneshot";
         };
       };
 
-      services.bcachefs-enable-rebalance = {
-        script = "echo -n 1 > /sys/fs/bcachefs/8f552709-24e3-4387-8183-23878c94d00b/options/rebalance_enabled";
+      services.bcachefs-enable-reconcile = {
+        script = "echo -n 1 > /sys/fs/bcachefs/8f552709-24e3-4387-8183-23878c94d00b/options/reconcile_enabled";
         serviceConfig = {
           Type = "oneshot";
         };
       };
 
-      timers.bcachefs-enable-rebalance = {
+      timers.bcachefs-enable-reconcile = {
         wantedBy = ["timers.target"];
         timerConfig = {
           OnCalendar = "*-*-* 10:00:00";
           Persistent = true;
-          Unit = "bcachefs-enable-rebalance.service";
+          Unit = "bcachefs-enable-reconcile.service";
         };
       };
 
-      timers.bcachefs-disable-rebalance = {
+      timers.bcachefs-disable-reconcile = {
         wantedBy = ["timers.target"];
         timerConfig = {
           OnCalendar = "*-*-* 21:00:00";
           Persistent = true;
-          Unit = "bcachefs-disable-rebalance.service";
+          Unit = "bcachefs-disable-reconcile.service";
         };
       };
     };
