@@ -12,8 +12,8 @@
         src = prev.fetchFromGitHub {
           owner = "koverstreet";
           repo = "bcachefs-tools";
-          rev = "dca1a7bd60e5fb52f172cb793c2fe946f35c86a0";
-          hash = "sha256-I1qaq6zrv4iA/5kL9MmxEEDM2Fk3r37VtptGNyXX03A=";
+          rev = "0e8c88cd35b9ac3582d831a34ff26c0c1c7cc9b9";
+          hash = "sha256-l2D5IuqpqF+K7Kj6amm9wBY+2beD1KFyVQh+3Eb8NLc=";
         };
       });
     })
