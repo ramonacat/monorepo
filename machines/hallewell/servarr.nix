@@ -94,6 +94,18 @@
                     "0a3f082873eb454bde444150b70253cc" # Extras
                     "712d74cd88bceb883ee32f773656b1f5" # Sing-Along Versions
                     "cae4ca30163749b891686f95532519bd" # AV1
+                    "ae9b7c9ebde1f3bd336a8cbd1ec4c5e5" # No-RlsGroup
+
+                    # Movie Versions
+                    "570bc9ebecd92723d2d21500f4be314c" # Remaster
+                    "eca37840c13c6ef2dd0262b141a5482f" # 4K Remaster
+                    "e0c07d59beb37348e975a930d5e50319" # Criterion Collection
+                    "9d27d9d2181838f76dee150882bdc58c" # Masters of Cinema
+                    "db9b4c4b53d312a3ca5f1378f6440fc9" # Vinegar Syndrome
+                    "957d0f44b592285f26449575e8b1167e" # Special Edition
+                    "eecf3a857724171f968a66cb5719e152" # IMAX
+                    "9f6cbff8cfe4ebbc1bde14c7b7bec0de" # IMAX Enhanced
+                    "957d0f44b592285f26449575e8b1167e" # Special Edition
 
                     # Streaming Services
                     "cc5e51a9e85a6296ceefe097a77f12f4" # BCORE
@@ -113,6 +125,24 @@
                     "c9fd353f8f5f1baf56dc601c4cb29920" # PCOK
                     "e36a0ba1bc902b26ee40818a1d59b8bd" # PMTP
                     "c2863d2a50c9acad1fb50e53ece60817" # STAN
+
+                    # Audio Formats
+                    "496f355514737f7d83bf7aa4d24f8169" # TrueHD ATMOS
+                    "2f22d89048b01681dde8afe203bf2e95" # DTS X
+                    "417804f7f2c4308c1f4c5d380d4c4475" # ATMOS (undefined)
+                    "1af239278386be2919e1bcee0bde047e" # DDPlus ATMOS
+                    "3cafb66171b47f226146a0770576870f" # TrueHD
+                    "dcf3ec6938fa32445f590a4da84256cd" # DTS-HD MA
+                    "a570d4a0e56a2874b64e5bfa55202a1b" # FLAC
+                    "e7c2fcae07cbada050a0af3357491d7b" # PCM
+                    "8e109e50e0a0b83a5098b056e13bf6db" # DTS-HD HRA
+                    "185f1dd7264c4562b9022d963ac37424" # DDPlus
+                    "f9f847ac70a0af62ea4a08280b859636" # DTS-ES
+                    "1c1a4c5e823891c75bc50380a6866f73" # DTS
+                    "240770601cc226190c367ef59aba7463" # AAC
+                    "c2998bd0d90ed5621d8df281e839436e" # DD
+                    "6ba9033150e7896bdc9ec4b44f2b230f" # MP3
+                    "a061e2e700f81932daf888599f8a8273" # Opus
                   ];
                   assign_scores_to = [
                     {name = "Remux + WEB 2160p";}
@@ -120,14 +150,13 @@
                   ];
                 }
               ];
-              quality_profiles = [
-                {
-                  name = "Remux + WEB 2160p";
+              quality_profiles = let
+                quality-profile-common = {
                   reset_unmatched_scores = {enabled = true;};
                   upgrade = {
                     allowed = true;
                     until_quality = "Remux-2160p";
-                    until_score = "10000";
+                    until_score = "100000";
                   };
                   qualities = [
                     {name = "Remux-2160p";}
@@ -158,46 +187,22 @@
                     }
                     {name = "SDTV";}
                   ];
-                }
-                {
-                  # This is the same as above but with PL as the language (languages have to be set in the UI).
-                  name = "Remux + WEB 2160p (PL)";
-                  reset_unmatched_scores = {enabled = true;};
-                  upgrade = {
-                    allowed = true;
-                    until_quality = "Remux-2160p";
-                    until_score = "10000";
-                  };
-                  qualities = [
-                    {name = "Remux-2160p";}
-                    {name = "Bluray-2160p";}
-                    {
-                      name = "WEB 2160p";
-                      qualities = ["WEBDL-2160p" "WEBRip-2160p"];
-                    }
-                    {name = "HDTV-2160p";}
-                    {name = "Remux-1080p";}
-                    {name = "Bluray-1080p";}
-                    {
-                      name = "WEB 1080p";
-                      qualities = ["WEBDL-1080p" "WEBRip-1080p"];
-                    }
-                    {name = "HDTV-1080p";}
-                    {name = "Bluray-720p";}
-                    {
-                      name = "WEB 720p";
-                      qualities = ["WEBDL-720p" "WEBRip-720p"];
-                    }
-                    {name = "HDTV-720p";}
-                    {name = "Bluray-576p";}
-                    {name = "Bluray-480p";}
-                    {
-                      name = "WEB 480p";
-                      qualities = ["WEBDL-480p" "WEBRip-480p"];
-                    }
-                    {name = "SDTV";}
-                  ];
-                }
+                };
+              in [
+                (quality-profile-common
+                  // {
+                    name = "Remux + WEB 2160p";
+                  })
+                (quality-profile-common
+                  // {
+                    # This is the same as above but with PL as the language (languages have to be set in the UI).
+                    name = "Remux + WEB 2160p (PL)";
+                  })
+                (quality-profile-common
+                  // {
+                    # This is the same as above but with IT as the language (languages have to be set in the UI).
+                    name = "Remux + WEB 2160p (PL)";
+                  })
               ];
             };
           };
@@ -250,6 +255,7 @@
                     "23297a736ca77c0fc8e70f8edd7ee56c" # Upscaled
                     "fbcb31d8dabd2a319072b84fc0b7249c" # Extras
                     "15a05bc7c1a36e2b57fd628f8977e2fc" # AV1
+                    "82d40da2bc6923f41e14394075dd4b03" # No-RlsGroup
 
                     # Streaming Services
                     "d660701077794679fd59e8bdf4ce3a29" # AMZN
@@ -269,15 +275,32 @@
                     "ae58039e1319178e6be73caab5c42166" # SHO
                     "1efe8da11bfd74fbbcd4d8117ddb9213" # STAN
                     "9623c5c9cac8e939c1b9aedd32f640bf" # SYFY
+
+                    # Audio Formats
+                    "0d7824bb924701997f874e7ff7d4844a" # TrueHD ATMOS
+                    "9d00418ba386a083fbf4d58235fc37ef" # DTS X
+                    "b6fbafa7942952a13e17e2b1152b539a" # ATMOS (undefined)
+                    "4232a509ce60c4e208d13825b7c06264" # DDPlus ATMOS
+                    "1808e4b9cee74e064dfae3f1db99dbfe" # TrueHD
+                    "c429417a57ea8c41d57e6990a8b0033f" # DTS-HD MA
+                    "851bd64e04c9374c51102be3dd9ae4cc" # FLAC
+                    "30f70576671ca933adbdcfc736a69718" # PCM
+                    "cfa5fbd8f02a86fc55d8d223d06a5e1f" # DTS-HD HRA
+                    "63487786a8b01b7f20dd2bc90dd4a477" # DDPlus
+                    "c1a25cd67b5d2e08287c957b1eb903ec" # DTS-ES
+                    "5964f2a8b3be407d083498e4459d05d0" # DTS
+                    "a50b8a0c62274a7c38b09a9619ba9d86" # AAC
+                    "dbe00161b08a25ac6154c55f95e6318d" # DD
+                    "3e8b714263b26f486972ee1e0fe7606c" # MP3
+                    "28f6ef16d61e2d1adfce3156ed8257e3" # Opus
                   ];
                   assign_scores_to = [
                     {name = "Remux + WEB 2160p";}
                   ];
                 }
               ];
-              quality_profiles = [
-                {
-                  name = "Remux + WEB 2160p";
+              quality_profiles = let
+                quality-profile-common = {
                   reset_unmatched_scores = {enabled = true;};
                   upgrade = {
                     allowed = true;
@@ -314,7 +337,20 @@
                     {name = "SDTV";}
                     {name = "DVD";}
                   ];
-                }
+                };
+              in [
+                (quality-profile-common
+                  // {
+                    name = "Remux + WEB 2160p";
+                  })
+                (quality-profile-common
+                  // {
+                    name = "Remux + WEB 2160p (PL)";
+                  })
+                (quality-profile-common
+                  // {
+                    name = "Remux + WEB 2160p (IT)";
+                  })
               ];
             };
           };
