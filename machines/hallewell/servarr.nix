@@ -147,6 +147,7 @@
                   assign_scores_to = [
                     {name = "Remux + WEB 2160p";}
                     {name = "Remux + WEB 2160p (PL)";}
+                    {name = "Remux + WEB 2160p (IT)";}
                   ];
                 }
               ];
@@ -296,16 +297,17 @@
                   ];
                   assign_scores_to = [
                     {name = "Remux + WEB 2160p";}
+                    {name = "Remux + WEB 2160p (PL)";}
+                    {name = "Remux + WEB 2160p (IT)";}
                   ];
                 }
               ];
               quality_profiles = let
                 quality-profile-common = {
-                  reset_unmatched_scores = {enabled = true;};
                   upgrade = {
                     allowed = true;
                     until_quality = "Bluray-2160p Remux";
-                    until_score = "10000";
+                    until_score = "100000";
                   };
                   qualities = [
                     {name = "Bluray-2160p Remux";}
