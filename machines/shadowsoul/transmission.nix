@@ -23,7 +23,7 @@
         peer-limit-per-torrent = 500;
         peer-port = 51413;
         peer-port-random-on-start = false;
-        ratio-limit = 3;
+        ratio-limit = 1.5;
         ratio-limit-enabled = true;
         rpc-bind-address = "0.0.0.0";
         rpc-host-whitelist-enabled = false;
