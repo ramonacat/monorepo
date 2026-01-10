@@ -202,7 +202,7 @@
                 (quality-profile-common
                   // {
                     # This is the same as above but with IT as the language (languages have to be set in the UI).
-                    name = "Remux + WEB 2160p (PL)";
+                    name = "Remux + WEB 2160p (IT)";
                   })
               ];
             };
