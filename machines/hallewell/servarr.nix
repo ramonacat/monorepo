@@ -227,6 +227,7 @@
                     "9965a052eb87b0d10313b1cea89eb451" # Remux Tier 01
                     "8a1d0c3d7497e741736761a1da866a2e" # Remux Tier 02
                     "e6886871085226c3da1830830146846c" # Generated Dynamic HDR
+                    "d6e9318c875905d6cfb5bee961afcea9" # Languages/Original Only
 
                     # this is degermanised version of https://github.com/recyclarr/config-templates/blob/dd49e8697c8bed32f7d1f4bcf1f12b8ccbedd776/sonarr/includes/custom-formats/sonarr-v4-custom-formats-uhd-remux-web-german.yml
                     # Unified HDR
