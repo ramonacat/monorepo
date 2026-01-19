@@ -8,7 +8,7 @@ edition = "2021"
 [dependencies]
 hostname = "0.4.2"
 reqwest = { version = "0.12.28", features = ["rustls-tls", "json", "blocking"], default-features = false }
-thiserror = "2.0.17"
+thiserror = "2.0.18"
 tokio = { version = "1.49.0", features = ["full"] }
 ratlib = { path = "../../libs/rust/ratlib/" }
 serde = { version = "1.0.228", features = ["derive"] }
