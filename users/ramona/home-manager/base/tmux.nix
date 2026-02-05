@@ -11,12 +11,12 @@
       plugins = with pkgs.tmuxPlugins; [
         sensible
         {
-          plugin = kanagawa;
+          plugin = ukiyo;
           extraConfig = ''
-            set -g @kanagawa-theme 'dragon'
-            set -g @kanagawa-plugins 'time'
-            set -g @kanagawa-show-powerline true
-            set -g @kanagawa-ignore-window-colors true
+            set -g @ukiyo-theme 'kanagawa/dragon'
+            set -g @ukiyo-plugins 'time'
+            set -g @ukiyo-show-powerline true
+            set -g @ukiyo-ignore-window-colors true
           '';
         }
       ];
