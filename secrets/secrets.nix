@@ -29,6 +29,7 @@ in {
   "crimson-ssh-host-key-ed25519.age".publicKeys = users ++ [crimson];
   "crimson-ssh-host-key-rsa.age".publicKeys = users ++ [crimson];
   "github-pat-runner-registration.age".publicKeys = users ++ [hallewell];
+  "grafana-secret-key.age".publicKeys = users ++ [thornton];
   "hallewell-ssh-host-key-ed25519.age".publicKeys = users ++ [hallewell];
   "hallewell-ssh-host-key-rsa.age".publicKeys = users ++ [hallewell];
   "hallewell-syncthing-cert.age".publicKeys = users ++ [hallewell];

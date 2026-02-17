@@ -4,6 +4,8 @@
   ...
 }: {
   config = {
+    age.secrets.grafana-secret-key.file = ../../secrets/grafana-secret-key.age;
+
     services.grafana = {
       enable = true;
       settings = {
@@ -11,6 +13,9 @@
           http_addr = "0.0.0.0";
           http_port = 3000;
           domain = "thornton.ibis-draconis.ts.net";
+        };
+        security = {
+          secret_key = "$__file{${config.age.secrets.grafana-secret-key.path}}";
         };
       };
     };
