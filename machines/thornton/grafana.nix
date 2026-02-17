@@ -7,6 +7,7 @@
     age.secrets.grafana-secret-key = {
       file = ../../secrets/grafana-secret-key.age;
       group = "grafana";
+      mode = "440";
     };
 
     services.grafana = {
