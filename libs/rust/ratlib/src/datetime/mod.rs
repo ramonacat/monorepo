@@ -14,14 +14,14 @@ where
         return serialize_date_time_tz(dt, se);
     }
 
-    Ok(se.serialize_none()?)
+    se.serialize_none()
 }
 
 pub fn deserialize_date_time_tz_option<'de, D>(de: D) -> Result<Option<DateTime<Tz>>, D::Error>
 where
     D: Deserializer<'de>,
 {
-    Ok(de.deserialize_option(OptionDateTimeTzVisitor)?)
+    de.deserialize_option(OptionDateTimeTzVisitor)
 }
 
 struct OptionDateTimeTzVisitor;
@@ -107,7 +107,7 @@ mod tests {
     use arbitrary::{Arbitrary, Unstructured};
     use chrono::{DateTime, NaiveDateTime, Timelike};
     use chrono_tz::Tz;
-    use rand::RngCore;
+    use rand::Rng as _;
     use serde::{Deserialize, Serialize};
 
     use super::{deserialize_date_time_tz, serialize_date_time_tz};
@@ -125,7 +125,7 @@ mod tests {
     fn can_roundtrip_datetime() {
         for _ in 0..1000 {
             let mut random_data = [0u8; 128];
-            rand::thread_rng().fill_bytes(&mut random_data);
+            rand::rng().fill_bytes(&mut random_data);
             let mut unstructured = Unstructured::new(&random_data);
             // TODO we should consider > 1s precision!
             let datetime = NaiveDateTime::arbitrary(&mut unstructured)
