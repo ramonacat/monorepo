@@ -36,7 +36,7 @@
         "laminas/laminas-httphandlerrunner": "^2.10",
         "doctrine/dbal": "^4.0",
         "doctrine/migrations": "^3.8",
-        "webmozart/assert": "^1.11",
+        "webmozart/assert": "^2.1",
         "monolog/monolog": "^3.7",
         "psr/log": "^3.0",
         "psr/container": "^2.0",
