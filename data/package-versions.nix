@@ -1,5 +1,5 @@
 {pkgs}: rec {
-  inherit (pkgs.nodePackages_latest) nodejs;
+  nodejs = pkgs.nodejs_latest;
   php = pkgs.php84;
   php-packages = pkgs.php84Packages;
   php-dev = php.buildEnv {
