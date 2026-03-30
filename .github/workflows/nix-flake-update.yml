@@ -19,7 +19,7 @@ jobs:
         uses: actions/checkout@v6
  
       - name: Install Nix
-        uses: DeterminateSystems/nix-installer-action@v21
+        uses: DeterminateSystems/nix-installer-action@v22
  
       - name: Setup ssh credentials
         run: ./.github/scripts/credentials.sh
