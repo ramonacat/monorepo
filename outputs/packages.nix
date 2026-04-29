@@ -12,7 +12,7 @@ rec {
   in
     pkgs.runCommand "coverage" {} (
       "mkdir $out\n"
-      + (pkgs.lib.concatStringsSep "\n" (builtins.map (p: "ln -s ${p} $out/${p.name}") paths))
+      + (pkgs.lib.concatStringsSep "\n" (map (p: "ln -s ${p} $out/${p.name}") paths))
       + "\n"
     );
   everything = let
@@ -25,7 +25,6 @@ rec {
       + "\nmkdir -p $out/homes\n"
       + (pkgs.lib.concatStringsSep "\n" (pkgs.lib.mapAttrsToList (k: v: "ln -s ${v} $out/homes/${k}") all-homes))
       + "\nln -s ${flake.nixosConfigurations.iso.config.system.build.isoImage} $out/iso\n"
-      + "\nln -s ${flake.nixosConfigurations.iso.config.formats.kexec-bundle} $out/kexec-bundle\n"
     );
   default = coverage;
 }

@@ -96,7 +96,6 @@ main() {
 
 	if [[ "$branch_name" == "main" ]]; then
 		publish -- result/iso/iso/*.iso root@hallewell:/var/www/hallewell.ibis-draconis.ts.net/builds/nixos-latest.iso
-		publish -- result/kexec-bundle/* root@hallewell:/var/www/hallewell.ibis-draconis.ts.net/builds/kexec-bundle
 
 		for builds_host in "${builds_hosts[@]}"; do
 			publish -- *-closure "root@$builds_host:/var/www/$builds_host.ibis-draconis.ts.net/builds/"
