@@ -18,7 +18,6 @@ _: {
         };
         availableKernelModules = [
           "tpm_tis"
-          "aes_generic"
           "cryptd"
         ];
       };
