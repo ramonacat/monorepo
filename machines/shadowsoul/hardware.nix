@@ -8,7 +8,6 @@
       initrd = {
         availableKernelModules = ["xhci_pci" "ahci" "nvme" "usbhid" "usb_storage" "sd_mod" "rtsx_usb_sdmmc" "e1000e" "igb"];
         kernelModules = [];
-        postDeviceCommands = "sleep 10";
       };
 
       kernelModules = ["kvm-intel"];
