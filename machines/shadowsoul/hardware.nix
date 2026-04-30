@@ -18,6 +18,7 @@
       "/" = {
         device = "/dev/disk/by-uuid/a1d31050-d300-425c-bf6b-bfd8ba9039f2";
         fsType = "bcachefs";
+        options = ["x-systemd.wants=/dev/sda" "x.systemd.wants=/dev/nvme0n1"];
       };
 
       "/boot" = {

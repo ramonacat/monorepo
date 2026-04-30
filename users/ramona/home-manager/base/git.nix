@@ -6,6 +6,7 @@ _: {
         enable = true;
         repositories = ["/home/ramona/Projects/monorepo/"];
       };
+      signing.format = null;
       settings = {
         alias = {
           st = "status -sb";
