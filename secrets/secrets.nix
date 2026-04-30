@@ -34,9 +34,6 @@ in {
   "hallewell-ssh-host-key-rsa.age".publicKeys = users ++ [hallewell];
   "hallewell-syncthing-cert.age".publicKeys = users ++ [hallewell];
   "hallewell-syncthing-key.age".publicKeys = users ++ [hallewell];
-  "minio-root.age".publicKeys = users ++ [thornton];
-  "minio-tempo.age".publicKeys = users ++ [thornton];
-  "minio-terraform-state.age".publicKeys = users;
   "nix-serve-key.age".publicKeys = users ++ [hallewell];
   "nix-serve-ssh-key.age".publicKeys = users ++ allMachines;
   "photoprism-password.age".publicKeys = users ++ [hallewell];

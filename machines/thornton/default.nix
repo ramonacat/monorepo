@@ -10,13 +10,11 @@ _: {
 
     ./grafana.nix
     ./hardware.nix
-    ./minio.nix
     ./networking.nix
     ./postgresql.nix
     ./ras2.nix
     ./ras2.nix
     ./telegraf.nix
-    ./tempo.nix
   ];
   config = {
     swapDevices = [
