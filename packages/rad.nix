@@ -1,6 +1,7 @@
 {
   pkgs,
   crane-lib,
+  ...
 }: let
   mk-rust-package = import ../libs/nix/mk-rust-package.nix;
 in

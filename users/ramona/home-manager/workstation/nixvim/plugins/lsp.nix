@@ -1,4 +1,4 @@
-_: {
+{pkgs, ...}: {
   config = {
     programs.nixvim.plugins.lsp = {
       enable = true;
@@ -23,8 +23,7 @@ _: {
         ts_ls.enable = true;
         twiggy_language_server = {
           enable = true;
-          # not in nixpkgs, install manually
-          package = null;
+          package = pkgs.ramona.twiggy-language-server;
         };
       };
 
