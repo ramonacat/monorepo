@@ -32,6 +32,7 @@
       outputHashAlgo = "sha256";
       outputHashMode = "recursive";
     };
+    hack = pkgs.writeText "hack.js" "global.__DEBUG__ = false;";
   in
     pkgs.stdenvNoCC.mkDerivation {
       pname = "twiggy-language-server";
@@ -40,7 +41,7 @@
       buildPhase = ''
         mkdir $out/
         cp -r ./* $out/
-        echo '#!${pkgs.nodejs_24}/bin/node' | cat - ./bin/twiggy-language-server > $out/bin/twiggy-language-server
+        echo '#!${pkgs.nodejs_24}/bin/node --require ${hack}' | cat - ./bin/twiggy-language-server > $out/bin/twiggy-language-server
       '';
     };
   coverage = pkgs.runCommand "${package.name}-coverage" {} "echo > $out";
