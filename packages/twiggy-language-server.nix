@@ -39,9 +39,11 @@
       version = "v26.4.1";
       src = stage1;
       buildPhase = ''
-        mkdir $out/
-        cp -r ./* $out/
-        echo '#!${pkgs.nodejs_24}/bin/node --require ${hack}' | cat - ./bin/twiggy-language-server > $out/bin/twiggy-language-server
+        mkdir -p $out/bin/
+        cp -r ./node_modules/ $out/node_modlues/
+        cp ./bin/twiggy-language-server $out/bin/.twiggy-language-server-original.js
+        echo '#!/usr/bin/env bash\n${pkgs.nodejs_24}/bin/node --require ${hack} $out/bin/.twiggy-language-server-original.js' > $out/bin/twiggy-language-server
+        chmod +x $out/bin/twiggy-language-server
       '';
     };
   coverage = pkgs.runCommand "${package.name}-coverage" {} "echo > $out";
