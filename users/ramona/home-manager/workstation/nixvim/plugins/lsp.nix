@@ -23,7 +23,9 @@
         ts_ls.enable = true;
         twiggy_language_server = {
           enable = true;
-          package = pkgs.ramona.twiggy-language-server;
+          package = pkgs.writeShellScriptBin "twiggy-language-server" ''
+            ${pkgs.nodejs_24}/bin/npx twiggy-language-server "$@"
+          '';
         };
       };
 
