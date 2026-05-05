@@ -4,23 +4,28 @@ _: {
       enable = true;
       inlayHints = true;
       servers = {
-        nixd.enable = true;
         rust_analyzer = {
           enable = true;
           installRustc = false;
           installCargo = false;
         };
+        basedpyright.enable = true;
+        bashls.enable = true;
+        csharp_ls.enable = true;
+        jdtls.enable = true;
         lua_ls.enable = true;
         nil_ls.enable = true;
-        terraformls.enable = true;
-        csharp_ls.enable = true;
+        nixd.enable = true;
         nushell.enable = true;
-        jdtls.enable = true;
-        phpactor.enable = true;
-        ts_ls.enable = true;
-        basedpyright.enable = true;
         pest_ls.enable = true;
-        bashls.enable = true;
+        phpactor.enable = true;
+        terraformls.enable = true;
+        ts_ls.enable = true;
+        twiggy_language_server = {
+          enable = true;
+          # not available in nixpkgs, need to install manually (npm install -g twiggy-language-server)
+          package = null;
+        };
       };
 
       keymaps.lspBuf = {
