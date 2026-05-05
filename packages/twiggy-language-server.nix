@@ -42,7 +42,7 @@
         mkdir -p $out/bin/
         cp -r ./node_modules/ $out/node_modlues/
         cp ./bin/twiggy-language-server $out/bin/.twiggy-language-server-original.js
-        echo '#!/usr/bin/env bash\n${pkgs.nodejs_24}/bin/node --require ${hack} $out/bin/.twiggy-language-server-original.js' > $out/bin/twiggy-language-server
+        echo "#!/usr/bin/env bash\n${pkgs.nodejs_24}/bin/node --require ${hack} $out/bin/.twiggy-language-server-original.js" > $out/bin/twiggy-language-server
         chmod +x $out/bin/twiggy-language-server
       '';
     };
