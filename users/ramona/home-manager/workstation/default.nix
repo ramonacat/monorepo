@@ -5,5 +5,6 @@
     ./nixvim
 
     ./atuin.nix
+    ./npm.nix
   ];
 }
