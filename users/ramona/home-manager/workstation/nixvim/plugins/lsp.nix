@@ -11,6 +11,7 @@
         };
         basedpyright.enable = true;
         bashls.enable = true;
+        buf_ls.enable = true;
         csharp_ls.enable = true;
         jdtls.enable = true;
         lua_ls.enable = true;
