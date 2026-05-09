@@ -34,7 +34,18 @@ provider "tailscale" {
   oauth_client_secret = var.tailscale_oauth_client_secret
 }
 
+locals {
+  gcs_project_id = "ramona-infra"
+}
+
 provider "google" {
-  project = "ramona-infra"
-  region  = "europe-west10"
+  project               = local.gcs_project_id
+  region                = "europe-west10"
+  user_project_override = true
+  billing_project       = local.gcs_project_id
+}
+
+resource "google_project_service" "billing" {
+  project = local.gcs_project_id
+  service = "billingbudgets.googleapis.com"
 }
