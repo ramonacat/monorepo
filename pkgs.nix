@@ -8,6 +8,7 @@
     inputs.bun2nix.overlays.default
     (_: prev: {
       ramona = prev.lib.mapAttrs (_: v: v.package) local-packages.apps;
+      github-runner = prev.github-runner.override {nodeRuntimes = ["node24"];};
     })
   ];
   pkgsConfig = {
@@ -24,7 +25,6 @@ in
         packageOverrides = pkgs: {
           # Dark magic for transcoding acceleration on hallewell
           vaapiIntel = pkgs.vaapiIntel.override {enableHybridCodec = true;};
-          github-runner = pkgs.github-runner.override {nodeRuntimes = ["node24"];};
         };
       };
   }
