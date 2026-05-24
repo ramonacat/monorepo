@@ -24,6 +24,7 @@ in
         packageOverrides = pkgs: {
           # Dark magic for transcoding acceleration on hallewell
           vaapiIntel = pkgs.vaapiIntel.override {enableHybridCodec = true;};
+          github-runner = pkgs.github-runner.override {nodeRuntimes = ["node24"];};
         };
       };
   }
