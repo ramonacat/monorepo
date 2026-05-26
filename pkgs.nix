@@ -8,7 +8,6 @@
     inputs.bun2nix.overlays.default
     (_: prev: {
       ramona = prev.lib.mapAttrs (_: v: v.package) local-packages.apps;
-      github-runner = prev.github-runner.override {nodeRuntimes = ["node24"];};
     })
   ];
   pkgsConfig = {

@@ -26,7 +26,7 @@
         file = ../secrets/github-pat-runner-registration.age;
       };
 
-      services.github-runners = lib.mergeAttrsList (builtins.map (i: {
+      services.github-runners = lib.mergeAttrsList (map (i: {
         "${config.networking.hostName}-${toString i}" = {
           enable = true;
           url = "https://github.com/ramonacat/monorepo";
@@ -34,6 +34,7 @@
           extraLabels = ["nixos"];
           extraPackages = with pkgs; [openssh jq proot];
           replace = true;
+          nodeRuntimes = ["node24"];
         };
       }) (lib.range 1 runner.count));
     };
