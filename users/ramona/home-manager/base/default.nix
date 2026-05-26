@@ -14,6 +14,8 @@
       homeDirectory = "/home/ramona";
       username = "ramona";
       stateVersion = "21.05";
+      # this check can fail sometimes on unstable, as home-manager and nixpkgs don't upgrade in perfect sync
+      enableNixpkgsReleaseCheck = false;
       packages = with pkgs; [
         inputs.agenix.packages."${pkgs.stdenv.hostPlatform.system}".default
         atop
