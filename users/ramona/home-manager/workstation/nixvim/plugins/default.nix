@@ -9,6 +9,7 @@ _: {
     ./mini.nix
     ./neo-tree.nix
     ./rainbow-delimiters.nix
+    ./rustacean.nix
     ./telescope.nix
     ./treesitter-context.nix
     ./treesitter.nix

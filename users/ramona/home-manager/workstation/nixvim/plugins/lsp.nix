@@ -4,11 +4,6 @@
       enable = true;
       inlayHints = true;
       servers = {
-        rust_analyzer = {
-          enable = true;
-          installRustc = false;
-          installCargo = false;
-        };
         basedpyright.enable = true;
         bashls.enable = true;
         buf_ls.enable = true;
