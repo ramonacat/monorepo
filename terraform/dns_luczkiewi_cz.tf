@@ -1,5 +1,6 @@
 resource "dnsimple_zone" "luczkiewi-cz" {
-  name = "luczkiewi.cz"
+  name   = "luczkiewi.cz"
+  active = true
 }
 
 module "fastmail-dns--luczkiewi-cz" {

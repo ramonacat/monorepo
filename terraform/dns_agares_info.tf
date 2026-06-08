@@ -1,5 +1,6 @@
 resource "dnsimple_zone" "agares-info" {
-  name = "agares.info"
+  name   = "agares.info"
+  active = true
 }
 
 module "fastmail-dns--agares-info" {

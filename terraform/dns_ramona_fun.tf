@@ -42,7 +42,8 @@ moved {
 }
 
 resource "dnsimple_zone" "ramona-fun" {
-  name = "ramona.fun"
+  name   = "ramona.fun"
+  active = true
 }
 
 module "fastmail-dns--ramona-fun" {
