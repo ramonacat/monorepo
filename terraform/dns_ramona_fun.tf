@@ -12,8 +12,42 @@ resource "ovh_domain_name_servers" "ramona-fun" {
   servers { host = "ns4.dnsimple-edge.org" }
 }
 
+moved {
+  from = dnsimple_zone_record.MX-1--ramona-fun
+  to   = module.fastmail-dns--ramona-fun.dnsimple_zone_record.MX-1
+}
+moved {
+  from = dnsimple_zone_record.MX-2--ramona-fun
+  to   = module.fastmail-dns--ramona-fun.dnsimple_zone_record.MX-2
+}
+moved {
+  from = dnsimple_zone_record.CNAME--fm1-_domainkey-ramona-fun
+  to   = module.fastmail-dns--ramona-fun.dnsimple_zone_record.CNAME--fm1-_domainkey
+}
+moved {
+  from = dnsimple_zone_record.CNAME--fm2-_domainkey-ramona-fun
+  to   = module.fastmail-dns--ramona-fun.dnsimple_zone_record.CNAME--fm2-_domainkey
+}
+moved {
+  from = dnsimple_zone_record.CNAME--fm3-_domainkey-ramona-fun
+  to   = module.fastmail-dns--ramona-fun.dnsimple_zone_record.CNAME--fm3-_domainkey
+}
+moved {
+  from = dnsimple_zone_record.TXT--ramona-fun
+  to   = module.fastmail-dns--ramona-fun.dnsimple_zone_record.TXT
+}
+moved {
+  from = dnsimple_zone_record.TXT--_dmarc-ramona-fun
+  to   = module.fastmail-dns--ramona-fun.dnsimple_zone_record.TXT--_dmarc
+}
+
 resource "dnsimple_zone" "ramona-fun" {
   name = "ramona.fun"
+}
+
+module "fastmail-dns--ramona-fun" {
+  source    = "./fastmail-dns"
+  zone_name = dnsimple_zone.ramona-fun.name
 }
 
 resource "google_dns_managed_zone" "ramona-fun" {
@@ -151,24 +185,6 @@ resource "google_dns_record_set" "AAAA-thornton-devices-ramona-fun" {
   ]
 }
 
-resource "dnsimple_zone_record" "MX-1--ramona-fun" {
-  zone_name = dnsimple_zone.ramona-fun.name
-  name      = ""
-  type      = "MX"
-  value     = "in1-smtp.messagingengine.com."
-  priority  = 10
-  ttl       = 60
-}
-
-resource "dnsimple_zone_record" "MX-2--ramona-fun" {
-  zone_name = dnsimple_zone.ramona-fun.name
-  name      = ""
-  type      = "MX"
-  value     = "in2-smtp.messagingengine.com."
-  priority  = 20
-  ttl       = 60
-}
-
 resource "google_dns_record_set" "MX-ramona-fun" {
   name         = google_dns_managed_zone.ramona-fun.dns_name
   managed_zone = google_dns_managed_zone.ramona-fun.name
@@ -181,14 +197,6 @@ resource "google_dns_record_set" "MX-ramona-fun" {
   ]
 }
 
-resource "dnsimple_zone_record" "CNAME--fm1-_domainkey-ramona-fun" {
-  zone_name = dnsimple_zone.ramona-fun.name
-  name      = "fm1._domainkey"
-  type      = "CNAME"
-  value     = "fm1.ramona.fun.dkim.fmhosted.com."
-  ttl       = 60
-}
-
 resource "google_dns_record_set" "CNAME-fm1-_domainkey-ramona-fun" {
   name         = "fm1._domainkey.${google_dns_managed_zone.ramona-fun.dns_name}"
   managed_zone = google_dns_managed_zone.ramona-fun.name
@@ -196,14 +204,6 @@ resource "google_dns_record_set" "CNAME-fm1-_domainkey-ramona-fun" {
   ttl          = "60"
 
   rrdatas = ["fm1.ramona.fun.dkim.fmhosted.com."]
-}
-
-resource "dnsimple_zone_record" "CNAME--fm2-_domainkey-ramona-fun" {
-  zone_name = dnsimple_zone.ramona-fun.name
-  name      = "fm2._domainkey"
-  type      = "CNAME"
-  value     = "fm2.ramona.fun.dkim.fmhosted.com."
-  ttl       = 60
 }
 
 resource "google_dns_record_set" "CNAME-fm2-_domainkey-ramona-fun" {
@@ -215,14 +215,6 @@ resource "google_dns_record_set" "CNAME-fm2-_domainkey-ramona-fun" {
   rrdatas = ["fm2.ramona.fun.dkim.fmhosted.com."]
 }
 
-resource "dnsimple_zone_record" "CNAME--fm3-_domainkey-ramona-fun" {
-  zone_name = dnsimple_zone.ramona-fun.name
-  name      = "fm3._domainkey"
-  type      = "CNAME"
-  value     = "fm3.ramona.fun.dkim.fmhosted.com."
-  ttl       = 60
-}
-
 resource "google_dns_record_set" "CNAME-fm3-_domainkey-ramona-fun" {
   name         = "fm3._domainkey.${google_dns_managed_zone.ramona-fun.dns_name}"
   managed_zone = google_dns_managed_zone.ramona-fun.name
@@ -232,14 +224,6 @@ resource "google_dns_record_set" "CNAME-fm3-_domainkey-ramona-fun" {
   rrdatas = ["fm3.ramona.fun.dkim.fmhosted.com."]
 }
 
-resource "dnsimple_zone_record" "TXT--ramona-fun" {
-  zone_name = dnsimple_zone.ramona-fun.name
-  name      = ""
-  type      = "TXT"
-  value     = "\"v=spf1 include:spf.messagingengine.com ?all\""
-  ttl       = 60
-}
-
 resource "google_dns_record_set" "TXT-ramona-fun" {
   name         = google_dns_managed_zone.ramona-fun.dns_name
   managed_zone = google_dns_managed_zone.ramona-fun.name
@@ -247,14 +231,6 @@ resource "google_dns_record_set" "TXT-ramona-fun" {
   type         = "TXT"
 
   rrdatas = ["\"v=spf1 include:spf.messagingengine.com ?all\""]
-}
-
-resource "dnsimple_zone_record" "TXT--_dmarc-ramona-fun" {
-  zone_name = dnsimple_zone.ramona-fun.name
-  name      = "_dmarc"
-  type      = "TXT"
-  value     = "\"v=DMARC1; p=none; rua=mailto:dmarc@ramona.fun; ruf=mailto:dmarc@ramona.fun; fo=1\""
-  ttl       = 60
 }
 
 resource "google_dns_record_set" "TXT-_dmarc-ramona-fun" {
