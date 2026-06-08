@@ -119,7 +119,7 @@
           })
           nixos
           ;
-        builds-hosts = builtins.map (x: x.name) (
+        builds-hosts = map (x: x.name) (
           builtins.filter (x: x.is-build-host) (
             pkgs."${system}".lib.mapAttrsToList (k: v: {
               name = k;
