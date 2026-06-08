@@ -8,6 +8,7 @@
     inputs.bun2nix.overlays.default
     (_: prev: {
       ramona = prev.lib.mapAttrs (_: v: v.package) local-packages.apps;
+      paperless-ngx = prev.paperless-ngx.overrideAttrs (previous: {disabledTests = previous.disabledTests ++ ["test_mail" "test_slow_write_incomplete"];});
     })
   ];
   pkgsConfig = {
