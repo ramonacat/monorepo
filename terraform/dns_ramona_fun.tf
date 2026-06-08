@@ -47,7 +47,8 @@ resource "dnsimple_zone" "ramona-fun" {
 }
 
 module "fastmail-dns--ramona-fun" {
-  source    = "./fastmail-dns"
+  source = "./fastmail-dns"
+
   zone_name = dnsimple_zone.ramona-fun.name
 }
 

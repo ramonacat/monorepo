@@ -34,13 +34,6 @@ in
 
     touch $out
   '';
-  tflint = pkgs.runCommand "tflint" { } ''
-    pushd "${source}/terraform"
-
-    ${pkgs.tflint}/bin/tflint
-
-    touch $out
-  '';
   deadnix = pkgs.runCommand "deadnix" { } ''
     ${pkgs.deadnix}/bin/deadnix --fail ${source}
 
