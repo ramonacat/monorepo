@@ -7,7 +7,7 @@ _: {
       openFirewall = false;
 
       config = {
-        LoadModule = ["adminlog simple_away"];
+        LoadModule = [ "adminlog simple_away" ];
         User.ramona = {
           Admin = true;
           Pass.password = {
@@ -17,13 +17,15 @@ _: {
           };
           Network.oftc = {
             Server = "irc.oftc.net +6697";
-            Chan = {"#bcache" = {};};
+            Chan = {
+              "#bcache" = { };
+            };
             Nick = "ramonacat";
           };
         };
       };
     };
 
-    networking.firewall.interfaces.tailscale0.allowedTCPPorts = [5000];
+    networking.firewall.interfaces.tailscale0.allowedTCPPorts = [ 5000 ];
   };
 }

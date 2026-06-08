@@ -1,4 +1,4 @@
-{config, ...}: {
+{ config, ... }: {
   config = {
     services.snmpd = {
       enable = true;
@@ -10,6 +10,6 @@
       '';
     };
 
-    networking.firewall.interfaces.bond0.allowedUDPPorts = [config.services.snmpd.port];
+    networking.firewall.interfaces.bond0.allowedUDPPorts = [ config.services.snmpd.port ];
   };
 }

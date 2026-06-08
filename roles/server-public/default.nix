@@ -8,7 +8,7 @@ _: {
       type = "server";
       hasPublicIP = true;
     };
-    ramona.machine.roles = ["server-public"];
+    ramona.machine.roles = [ "server-public" ];
 
     security.acme = {
       acceptTerms = true;

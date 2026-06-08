@@ -3,26 +3,29 @@
   config,
   lib,
   ...
-}: {
+}:
+{
   options = {
     services.ramona.postgresql-server = lib.mkOption {
       description = "a postgresql server with backups";
-      default = {};
-      type = with lib.types;
+      default = { };
+      type =
+        with lib.types;
         submodule {
           options = {
-            enable = lib.mkOption {type = bool;};
-            path = lib.mkOption {type = lib.types.str;};
-            backup-path = lib.mkOption {type = lib.types.str;};
+            enable = lib.mkOption { type = bool; };
+            path = lib.mkOption { type = lib.types.str; };
+            backup-path = lib.mkOption { type = lib.types.str; };
           };
         };
     };
   };
 
-  config = let
-    server = config.services.ramona.postgresql-server;
-    postgresPackage = pkgs.postgresql_17;
-  in
+  config =
+    let
+      server = config.services.ramona.postgresql-server;
+      postgresPackage = pkgs.postgresql_17;
+    in
     lib.mkIf server.enable {
       services.postgresql = {
         enable = true;
@@ -37,7 +40,7 @@
 
         package = postgresPackage;
         dataDir = server.path;
-        initdbArgs = ["--data-checksums"];
+        initdbArgs = [ "--data-checksums" ];
         enableTCPIP = true;
         settings = {
           wal_level = "replica";
@@ -47,10 +50,11 @@
         };
       };
 
-      services.restic.backups.postgresql = let
-        backupPath = server.backup-path;
-      in
-        import ../libs/nix/mk-restic-config.nix {inherit config pkgs;} {
+      services.restic.backups.postgresql =
+        let
+          backupPath = server.backup-path;
+        in
+        import ../libs/nix/mk-restic-config.nix { inherit config pkgs; } {
           timerConfig = {
             OnCalendar = "*-*-* 00/6:00:00";
             RandomizedDelaySec = "3h";
@@ -68,6 +72,6 @@
           ];
         };
 
-      networking.firewall.interfaces.tailscale0.allowedTCPPorts = [5432];
+      networking.firewall.interfaces.tailscale0.allowedTCPPorts = [ 5432 ];
     };
 }

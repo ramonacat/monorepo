@@ -1,13 +1,14 @@
-{pkgs}: rec {
+{ pkgs }: rec {
   nodejs = pkgs.nodejs_latest;
   php = pkgs.php84;
   php-packages = pkgs.php84Packages;
   php-dev = php.buildEnv {
-    extensions = {
-      enabled,
-      all,
-    }:
-      enabled ++ [all.xdebug];
+    extensions =
+      {
+        enabled,
+        all,
+      }:
+      enabled ++ [ all.xdebug ];
     extraConfig = ''
       memory_limit=1G
       xdebug.mode=coverage
@@ -15,7 +16,10 @@
     '';
   };
   rust-version = pkgs.rust-bin.stable.latest.default.override {
-    extensions = ["rust-src" "llvm-tools-preview"];
+    extensions = [
+      "rust-src"
+      "llvm-tools-preview"
+    ];
     targets = [
       "aarch64-unknown-linux-gnu"
       "wasm32-unknown-unknown"

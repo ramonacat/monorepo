@@ -3,7 +3,8 @@
   pkgs,
   config,
   ...
-}: {
+}:
+{
   config = {
     boot = {
       kernelParams = [
@@ -17,13 +18,18 @@
       };
     };
     environment = {
-      systemPackages = let
-        inherit (config.boot.kernelPackages) kernel;
-      in [
-        (pkgs.writeShellApplication
-          {
+      systemPackages =
+        let
+          inherit (config.boot.kernelPackages) kernel;
+        in
+        [
+          (pkgs.writeShellApplication {
             name = "decode-kernel-stacktrace";
-            runtimeInputs = with pkgs; [stdenv gcc util-linux];
+            runtimeInputs = with pkgs; [
+              stdenv
+              gcc
+              util-linux
+            ];
             text = ''
               exec ${kernel.dev}/lib/modules/${kernel.modDirVersion}/source/scripts/decode_stacktrace.sh \
                   ${kernel.dev}/vmlinux \
@@ -31,7 +37,7 @@
                   /run/booted-system/kernel-modules/lib/modules/${kernel.modDirVersion} \
             '';
           })
-      ];
+        ];
     };
   };
 }

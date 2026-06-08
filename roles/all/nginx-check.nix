@@ -2,7 +2,8 @@
   lib,
   config,
   ...
-}: {
+}:
+{
   config = {
     system.activationScripts = lib.mkIf config.services.nginx.enable {
       nginx-config-test = ''

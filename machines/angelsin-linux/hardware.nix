@@ -13,7 +13,7 @@ _: {
         luks.devices = {
           cryptroot = {
             device = "/dev/disk/by-uuid/c6104151-4b5e-40b3-af13-b69c30c41de";
-            crypttabExtraOpts = ["tpm2-device=auto"];
+            crypttabExtraOpts = [ "tpm2-device=auto" ];
           };
         };
         availableKernelModules = [

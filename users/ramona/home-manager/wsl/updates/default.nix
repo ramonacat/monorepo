@@ -3,7 +3,8 @@
   lib,
   flake,
   ...
-}: {
+}:
+{
   config = {
     systemd.user.services.updater = {
       Unit = {
@@ -12,31 +13,42 @@
         RefuseManualStop = true;
         RefuseManualStart = true;
       };
-      Service = let
-        updaterScript = pkgs.stdenvNoCC.mkDerivation {
-          name = "updater";
-          src = ./scripts;
-          nativeBuildInputs = with pkgs; [makeWrapper];
-          installPhase = ''
-            mkdir --parents $out/bin/
+      Service =
+        let
+          updaterScript = pkgs.stdenvNoCC.mkDerivation {
+            name = "updater";
+            src = ./scripts;
+            nativeBuildInputs = with pkgs; [ makeWrapper ];
+            installPhase = ''
+              mkdir --parents $out/bin/
 
-            cp updates.bash $out/bin/
+              cp updates.bash $out/bin/
 
-            wrapProgram $out/bin/updates.bash \
-                --set UPDATES_LIB '${../../../../../scripts/lib/updates.bash}' \
-                --set BUILDERS '${builtins.toJSON flake.hosts.builds-hosts}' \
-                --prefix PATH : ${lib.makeBinPath (with pkgs; [curl nix jq])}
-          '';
+              wrapProgram $out/bin/updates.bash \
+                  --set UPDATES_LIB '${../../../../../scripts/lib/updates.bash}' \
+                  --set BUILDERS '${builtins.toJSON flake.hosts.builds-hosts}' \
+                  --prefix PATH : ${
+                    lib.makeBinPath (
+                      with pkgs;
+                      [
+                        curl
+                        nix
+                        jq
+                      ]
+                    )
+                  }
+            '';
+          };
+        in
+        {
+          Type = "oneshot";
+          ExecStart = "${updaterScript}/bin/updates.bash";
         };
-      in {
-        Type = "oneshot";
-        ExecStart = "${updaterScript}/bin/updates.bash";
-      };
     };
 
     systemd.user.timers.updater = {
       Install = {
-        WantedBy = ["timers.target"];
+        WantedBy = [ "timers.target" ];
       };
       Timer = {
         OnBootSec = "1m";

@@ -1,4 +1,4 @@
-{lib, ...}: {
+{ lib, ... }: {
   config = {
     networking = {
       useDHCP = lib.mkForce true;

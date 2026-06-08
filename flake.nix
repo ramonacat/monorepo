@@ -64,105 +64,114 @@
     };
   };
 
-  outputs = inputs @ {
-    crane,
-    self,
-    ...
-  }: let
-    system = "x86_64-linux";
-    local-packages."${system}" = import ./packages {
-      crane-lib = crane-lib."${system}";
-      pkgs = pkgs."${system}";
-    };
-    pkgs."${system}" = import ./pkgs.nix {
-      inherit inputs;
-      local-packages = local-packages."${system}";
+  outputs =
+    inputs@{
+      crane,
+      self,
+      ...
+    }:
+    let
       system = "x86_64-linux";
-    };
-    package-versions."${system}" = import ./data/package-versions.nix {pkgs = pkgs."${system}";};
-    crane-lib."${system}" = (crane.mkLib pkgs."${system}").overrideToolchain package-versions."${system}".rust-version;
-    output-arguments = {
-      inherit inputs;
+      local-packages."${system}" = import ./packages {
+        crane-lib = crane-lib."${system}";
+        pkgs = pkgs."${system}";
+      };
+      pkgs."${system}" = import ./pkgs.nix {
+        inherit inputs;
+        local-packages = local-packages."${system}";
+        system = "x86_64-linux";
+      };
+      package-versions."${system}" = import ./data/package-versions.nix { pkgs = pkgs."${system}"; };
+      crane-lib."${system}" =
+        (crane.mkLib pkgs."${system}").overrideToolchain
+          package-versions."${system}".rust-version;
+      output-arguments = {
+        inherit inputs;
 
-      pkgs = pkgs."${system}";
-      local-packages = local-packages."${system}";
-      package-versions = package-versions."${system}";
-      flake = self;
-    };
-  in {
-    formatter."${system}" = pkgs."${system}".alejandra;
-    checks."${system}" = import ./outputs/checks.nix output-arguments;
-    packages."${system}" = import ./outputs/packages.nix output-arguments;
-    devShells."${system}".default = import ./outputs/dev-shells.nix output-arguments;
-    homeConfigurations = import ./outputs/home-configurations-x86_64-linux.nix {
-      inherit inputs;
+        pkgs = pkgs."${system}";
+        local-packages = local-packages."${system}";
+        package-versions = package-versions."${system}";
+        flake = self;
+      };
+    in
+    {
+      formatter."${system}" = pkgs."${system}".nixfmt-tree;
+      checks."${system}" = import ./outputs/checks.nix output-arguments;
+      packages."${system}" = import ./outputs/packages.nix output-arguments;
+      devShells."${system}".default = import ./outputs/dev-shells.nix output-arguments;
+      homeConfigurations = import ./outputs/home-configurations-x86_64-linux.nix {
+        inherit inputs;
 
-      pkgs = pkgs.x86_64-linux;
-      flake = self;
-    };
-    nixosConfigurations = import ./outputs/nixos-configurations-x86_64-linux.nix {
-      inherit inputs;
+        pkgs = pkgs.x86_64-linux;
+        flake = self;
+      };
+      nixosConfigurations = import ./outputs/nixos-configurations-x86_64-linux.nix {
+        inherit inputs;
 
-      pkgs = pkgs.x86_64-linux;
-      flake = self;
-    };
-    hosts = {
-      inherit
-        (import ./data/hosts.nix {
-          inherit (pkgs."${system}") lib;
-          flake = self;
-        })
-        nixos
-        ;
-      builds-hosts = builtins.map (x: x.name) (builtins.filter (x: x.is-build-host) (pkgs."${system}".lib.mapAttrsToList (k: v: {
-          name = k;
-          is-build-host = builtins.elem "builds-host" v.config.ramona.machine.roles;
-        })
-        self.nixosConfigurations));
-      tailscale-tags =
-        pkgs."${system}".lib.mapAttrs
-        (
-          _: v:
-            pkgs."${system}".lib.unique (
-              if (v.config.ramona.machine.type == "server")
-              then
-                (
-                  ["tag:server"]
-                  ++ (
-                    if v.config.ramona.machine.hasPublicIP
-                    then ["tag:server-public" "tag:server-public-${v.config.ramona.machine.location}"]
-                    else ["tag:server-private" "tag:server-private-${v.config.ramona.machine.location}"]
+        pkgs = pkgs.x86_64-linux;
+        flake = self;
+      };
+      hosts = {
+        inherit
+          (import ./data/hosts.nix {
+            inherit (pkgs."${system}") lib;
+            flake = self;
+          })
+          nixos
+          ;
+        builds-hosts = builtins.map (x: x.name) (
+          builtins.filter (x: x.is-build-host) (
+            pkgs."${system}".lib.mapAttrsToList (k: v: {
+              name = k;
+              is-build-host = builtins.elem "builds-host" v.config.ramona.machine.roles;
+            }) self.nixosConfigurations
+          )
+        );
+        tailscale-tags =
+          pkgs."${system}".lib.mapAttrs
+            (
+              _: v:
+              pkgs."${system}".lib.unique (
+                if (v.config.ramona.machine.type == "server") then
+                  (
+                    [ "tag:server" ]
+                    ++ (
+                      if v.config.ramona.machine.hasPublicIP then
+                        [
+                          "tag:server-public"
+                          "tag:server-public-${v.config.ramona.machine.location}"
+                        ]
+                      else
+                        [
+                          "tag:server-private"
+                          "tag:server-private-${v.config.ramona.machine.location}"
+                        ]
+                    )
+                    ++ (
+                      if builtins.hasAttr "socket_listener" v.config.services.telegraf.extraConfig.inputs then
+                        [ "tag:service-monitoring" ]
+                      else
+                        [ ]
+                    )
+                    ++ (if v.config.services.sonarr.enable then [ "tag:service-servarr" ] else [ ])
+                    ++ (if v.config.services.transmission.enable then [ "tag:service-transmission" ] else [ ])
+                    ++ (
+                      if builtins.elem "builds-host" v.config.ramona.machine.roles then
+                        [ "tag:service-builds-host" ]
+                      else
+                        [ ]
+                    )
+                    ++ (if v.config.services.jellyfin.enable then [ "tag:service-jellyfin" ] else [ ])
                   )
-                  ++ (
-                    if builtins.hasAttr "socket_listener" v.config.services.telegraf.extraConfig.inputs
-                    then ["tag:service-monitoring"]
-                    else []
-                  )
-                  ++ (
-                    if v.config.services.sonarr.enable
-                    then ["tag:service-servarr"]
-                    else []
-                  )
-                  ++ (
-                    if v.config.services.transmission.enable
-                    then ["tag:service-transmission"]
-                    else []
-                  )
-                  ++ (
-                    if builtins.elem "builds-host" v.config.ramona.machine.roles
-                    then ["tag:service-builds-host"]
-                    else []
-                  )
-                  ++ (
-                    if v.config.services.jellyfin.enable
-                    then ["tag:service-jellyfin"]
-                    else []
-                  )
-                )
-              else []
+                else
+                  [ ]
+              )
             )
-        )
-        (pkgs."${system}".lib.filterAttrs (_: v: v.config.ramona.machine.type != "live") self.nixosConfigurations);
+            (
+              pkgs."${system}".lib.filterAttrs (
+                _: v: v.config.ramona.machine.type != "live"
+              ) self.nixosConfigurations
+            );
+      };
     };
-  };
 }

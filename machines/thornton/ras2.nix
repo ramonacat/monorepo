@@ -3,10 +3,12 @@
   config,
   pkgs,
   ...
-}: let
-  package-versions = import ../../data/package-versions.nix {inherit pkgs;};
+}:
+let
+  package-versions = import ../../data/package-versions.nix { inherit pkgs; };
   phpPackage = package-versions.php;
-in {
+in
+{
   age.secrets.ras2-telegraf-db-config = {
     file = ../../secrets/ras2-telegraf-db-config.age;
     group = "ras2";
@@ -52,9 +54,12 @@ in {
     group = "ras2";
   };
 
-  networking.firewall.interfaces.tailscale0.allowedTCPPorts = [80 443];
+  networking.firewall.interfaces.tailscale0.allowedTCPPorts = [
+    80
+    443
+  ];
 
-  users.groups.ras2 = {};
+  users.groups.ras2 = { };
 
   systemd = {
     services.phpfpm-ras2 = {
@@ -66,7 +71,7 @@ in {
     };
 
     timers.db-maintenance = {
-      wantedBy = ["timers.target"];
+      wantedBy = [ "timers.target" ];
       timerConfig = {
         OnCalendar = "*-*-* 00/1:00:00";
         Persistent = true;

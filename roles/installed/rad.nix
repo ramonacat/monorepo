@@ -2,7 +2,8 @@
   config,
   pkgs,
   ...
-}: {
+}:
+{
   config = {
     age.secrets.rad-environment = {
       file = ../../secrets/rad-environment.age;
@@ -13,7 +14,7 @@
       mode = "440";
     };
     systemd.services.rad = {
-      wantedBy = ["multi-user.target"];
+      wantedBy = [ "multi-user.target" ];
       serviceConfig = {
         User = "rad";
         ExecStart = "${pkgs.ramona.rad}/bin/rad";
@@ -27,6 +28,6 @@
       group = "rad";
     };
 
-    users.groups.rad = {};
+    users.groups.rad = { };
   };
 }

@@ -4,7 +4,7 @@ _: {
       enable = true;
       maintenance = {
         enable = true;
-        repositories = ["/home/ramona/Projects/monorepo/"];
+        repositories = [ "/home/ramona/Projects/monorepo/" ];
       };
       signing.format = null;
       settings = {

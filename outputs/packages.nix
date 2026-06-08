@@ -5,25 +5,33 @@
   ...
 }:
 rec {
-  coverage = let
-    paths = pkgs.lib.mapAttrsToList (_: value: value.coverage) (
-      local-packages.libraries // local-packages.apps
-    );
-  in
-    pkgs.runCommand "coverage" {} (
+  coverage =
+    let
+      paths = pkgs.lib.mapAttrsToList (_: value: value.coverage) (
+        local-packages.libraries // local-packages.apps
+      );
+    in
+    pkgs.runCommand "coverage" { } (
       "mkdir $out\n"
       + (pkgs.lib.concatStringsSep "\n" (map (p: "ln -s ${p} $out/${p.name}") paths))
       + "\n"
     );
-  everything = let
-    all-hosts = builtins.mapAttrs (_: value: value.config.system.build.toplevel) flake.nixosConfigurations;
-    all-homes = builtins.mapAttrs (_: value: value.activationPackage) flake.homeConfigurations;
-  in
-    pkgs.runCommand "everything" {} (
+  everything =
+    let
+      all-hosts = builtins.mapAttrs (
+        _: value: value.config.system.build.toplevel
+      ) flake.nixosConfigurations;
+      all-homes = builtins.mapAttrs (_: value: value.activationPackage) flake.homeConfigurations;
+    in
+    pkgs.runCommand "everything" { } (
       "mkdir -p $out/hosts\n"
-      + (pkgs.lib.concatStringsSep "\n" (pkgs.lib.mapAttrsToList (k: p: "ln -s ${p} $out/hosts/${k}") all-hosts))
+      + (pkgs.lib.concatStringsSep "\n" (
+        pkgs.lib.mapAttrsToList (k: p: "ln -s ${p} $out/hosts/${k}") all-hosts
+      ))
       + "\nmkdir -p $out/homes\n"
-      + (pkgs.lib.concatStringsSep "\n" (pkgs.lib.mapAttrsToList (k: v: "ln -s ${v} $out/homes/${k}") all-homes))
+      + (pkgs.lib.concatStringsSep "\n" (
+        pkgs.lib.mapAttrsToList (k: v: "ln -s ${v} $out/homes/${k}") all-homes
+      ))
       + "\nln -s ${flake.nixosConfigurations.iso.config.system.build.isoImage} $out/iso\n"
     );
   default = coverage;

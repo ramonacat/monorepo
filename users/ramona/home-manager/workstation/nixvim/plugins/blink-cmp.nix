@@ -6,8 +6,11 @@ _: {
         keymap = {
           preset = "super-tab";
           "<C-Space>" = false;
-          "<C-p>" = ["show"];
-          "<CR>" = ["accept" "fallback"];
+          "<C-p>" = [ "show" ];
+          "<CR>" = [
+            "accept"
+            "fallback"
+          ];
         };
         sources.providers = {
           crates = {

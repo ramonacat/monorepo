@@ -1,5 +1,5 @@
 _: {
   config = {
-    boot.loader.grub.devices = ["/dev/sda"];
+    boot.loader.grub.devices = [ "/dev/sda" ];
   };
 }
