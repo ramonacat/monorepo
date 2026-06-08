@@ -14,7 +14,7 @@
         in
         builtins.listToAttrs (
           map (hostname: {
-            name = "Match ${hostname}";
+            name = "Host ${hostname}";
             value = {
               ForwardAgent = true;
             };
