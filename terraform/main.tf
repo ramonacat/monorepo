@@ -10,6 +10,12 @@ terraform {
     tailscale = {
       source = "tailscale/tailscale"
     }
+    dnsimple = {
+      source = "dnsimple/dnsimple"
+    }
+    ovh = {
+      source = "ovh/ovh"
+    }
   }
 }
 
@@ -22,6 +28,26 @@ variable "tailscale_oauth_client_secret" {
 }
 
 variable "tailscale_oauth_client_id" {
+  sensitive = true
+}
+
+variable "dnsimple_token" {
+  sensitive = true
+}
+
+variable "dnsimple_account" {
+  sensitive = true
+}
+
+variable "ovh_application_key" {
+  sensitive = true
+}
+
+variable "ovh_application_secret" {
+  sensitive = true
+}
+
+variable "ovh_consumer_key" {
   sensitive = true
 }
 
@@ -43,6 +69,18 @@ provider "google" {
   region                = "europe-west10"
   user_project_override = true
   billing_project       = local.gcs_project_id
+}
+
+provider "dnsimple" {
+  account = var.dnsimple_account
+  token   = var.dnsimple_token
+}
+
+provider "ovh" {
+  endpoint           = "ovh-eu"
+  application_key    = var.ovh_application_key
+  application_secret = var.ovh_application_secret
+  consumer_key       = var.ovh_consumer_key
 }
 
 resource "google_project_service" "billing" {
