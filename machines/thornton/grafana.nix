@@ -2,7 +2,8 @@
   config,
   pkgs,
   ...
-}: {
+}:
+{
   config = {
     age.secrets.grafana-secret-key = {
       file = ../../secrets/grafana-secret-key.age;
@@ -24,16 +25,18 @@
       };
     };
 
-    networking.firewall.allowedTCPPorts = [config.services.grafana.settings.server.http_port];
+    networking.firewall.allowedTCPPorts = [ config.services.grafana.settings.server.http_port ];
 
-    services.restic.backups.grafana = import ../../libs/nix/mk-restic-config.nix {inherit config pkgs;} {
-      timerConfig = {
-        OnCalendar = "*-*-* 00/1:00:00";
-        RandomizedDelaySec = "30m";
-      };
-      paths = [
-        config.services.grafana.dataDir
-      ];
-    };
+    services.restic.backups.grafana =
+      import ../../libs/nix/mk-restic-config.nix { inherit config pkgs; }
+        {
+          timerConfig = {
+            OnCalendar = "*-*-* 00/1:00:00";
+            RandomizedDelaySec = "30m";
+          };
+          paths = [
+            config.services.grafana.dataDir
+          ];
+        };
   };
 }

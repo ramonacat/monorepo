@@ -2,13 +2,19 @@
   inputs,
   local-packages,
   system,
-}: let
+}:
+let
   overlays = [
     (import inputs.rust-overlay)
     inputs.bun2nix.overlays.default
     (_: prev: {
       ramona = prev.lib.mapAttrs (_: v: v.package) local-packages.apps;
-      paperless-ngx = prev.paperless-ngx.overrideAttrs (previous: {disabledTests = previous.disabledTests ++ ["test_mail" "test_slow_write_incomplete"];});
+      paperless-ngx = prev.paperless-ngx.overrideAttrs (previous: {
+        disabledTests = previous.disabledTests ++ [
+          "test_mail"
+          "test_slow_write_incomplete"
+        ];
+      });
     })
   ];
   pkgsConfig = {
@@ -16,15 +22,13 @@
     android_sdk.accept_license = true;
   };
 in
-  import inputs.nixpkgs {
-    inherit overlays system;
+import inputs.nixpkgs {
+  inherit overlays system;
 
-    config =
-      pkgsConfig
-      // {
-        packageOverrides = pkgs: {
-          # Dark magic for transcoding acceleration on hallewell
-          vaapiIntel = pkgs.vaapiIntel.override {enableHybridCodec = true;};
-        };
-      };
-  }
+  config = pkgsConfig // {
+    packageOverrides = pkgs: {
+      # Dark magic for transcoding acceleration on hallewell
+      vaapiIntel = pkgs.vaapiIntel.override { enableHybridCodec = true; };
+    };
+  };
+}

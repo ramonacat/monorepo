@@ -1,4 +1,4 @@
-{modulesPath, ...}: {
+{ modulesPath, ... }: {
   imports = [
     (modulesPath + "/profiles/qemu-guest.nix")
 
@@ -7,7 +7,7 @@
   ];
   config = {
     ramona.machine = {
-      roles = ["hetzner-cloud"];
+      roles = [ "hetzner-cloud" ];
       location = "hetzner";
     };
   };

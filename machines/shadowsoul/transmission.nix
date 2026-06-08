@@ -2,7 +2,8 @@
   config,
   pkgs,
   ...
-}: {
+}:
+{
   config = {
     age.secrets.transmission-credentials = {
       file = ../../secrets/transmission-credentials.age;
@@ -34,6 +35,8 @@
       };
     };
 
-    networking.firewall.interfaces.tailscale0.allowedTCPPorts = [config.services.transmission.settings.rpc-port];
+    networking.firewall.interfaces.tailscale0.allowedTCPPorts = [
+      config.services.transmission.settings.rpc-port
+    ];
   };
 }

@@ -3,7 +3,8 @@
   pkgs,
   inputs,
   ...
-}: {
+}:
+{
   imports = [
     inputs.agenix.nixosModules.default
 
@@ -21,9 +22,9 @@
   ];
   config = {
     services.fwupd.enable = lib.mkDefault true;
-    environment.systemPackages = with pkgs; [pciutils];
+    environment.systemPackages = with pkgs; [ pciutils ];
     security.polkit.enable = true;
     programs.nix-ld.enable = true;
-    ramona.machine.roles = ["installed"];
+    ramona.machine.roles = [ "installed" ];
   };
 }

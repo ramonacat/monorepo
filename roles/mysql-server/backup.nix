@@ -2,11 +2,13 @@
   config,
   pkgs,
   ...
-}: {
+}:
+{
   config = {
-    services.restic.backups.mysql = let
-      backups-path = "/tmp/mysql-backup/";
-    in
+    services.restic.backups.mysql =
+      let
+        backups-path = "/tmp/mysql-backup/";
+      in
       import ../../libs/nix/mk-restic-config.nix config {
         timerConfig = {
           OnCalendar = "*-*-* 00/6:00:00";
@@ -20,7 +22,7 @@
         backupCleanupCommand = ''
           rm -r "${backups-path}" || true
         '';
-        paths = [backups-path];
+        paths = [ backups-path ];
       };
   };
 }

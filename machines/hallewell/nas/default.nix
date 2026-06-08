@@ -10,6 +10,6 @@ _: {
       uid = 16969;
       group = "nas";
     };
-    users.groups.nas = {};
+    users.groups.nas = { };
   };
 }

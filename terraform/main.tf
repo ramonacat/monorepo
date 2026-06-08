@@ -1,8 +1,19 @@
 terraform {
-  backend "gcs" {
+  backend "s3" {
     bucket = "ramona-fun-tfstate"
-    prefix = "terraform/state"
+    key    = "tfstate"
+    region = "us-west-002"
+    endpoints = {
+      s3 = "https://s3.us-west-002.backblazeb2.com"
+    }
+
+    skip_credentials_validation = true
+    skip_region_validation      = true
+    skip_metadata_api_check     = true
+    skip_requesting_account_id  = true
+    skip_s3_checksum            = true
   }
+
   required_providers {
     hcloud = {
       source = "hetznercloud/hcloud"
@@ -10,28 +21,22 @@ terraform {
     tailscale = {
       source = "tailscale/tailscale"
     }
+    dnsimple = {
+      source = "dnsimple/dnsimple"
+    }
+    ovh = {
+      source = "ovh/ovh"
+    }
+    b2 = {
+      source = "Backblaze/b2"
+    }
   }
 }
 
-variable "hcloud_token" {
-  sensitive = true
-}
-
-variable "tailscale_oauth_client_secret" {
-  sensitive = true
-}
-
-variable "tailscale_oauth_client_id" {
-  sensitive = true
-}
-
 provider "hcloud" {
-  token = var.hcloud_token
 }
 
 provider "tailscale" {
-  oauth_client_id     = var.tailscale_oauth_client_id
-  oauth_client_secret = var.tailscale_oauth_client_secret
 }
 
 locals {
@@ -45,7 +50,17 @@ provider "google" {
   billing_project       = local.gcs_project_id
 }
 
+provider "dnsimple" {
+}
+
+provider "ovh" {
+  endpoint = "ovh-eu"
+}
+
 resource "google_project_service" "billing" {
   project = local.gcs_project_id
   service = "billingbudgets.googleapis.com"
+}
+
+provider "b2" {
 }

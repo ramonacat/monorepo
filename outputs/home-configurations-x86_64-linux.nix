@@ -3,7 +3,8 @@
   inputs,
   flake,
   ...
-}: {
+}:
+{
   "ramona-wsl" = inputs.home-manager.lib.homeManagerConfiguration {
     inherit pkgs;
     extraSpecialArgs = {

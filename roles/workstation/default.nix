@@ -1,4 +1,4 @@
-{config, ...}: {
+{ config, ... }: {
   imports = [
     ../../users/ramona/workstation
 
@@ -23,6 +23,6 @@
         graves.pskRaw = "ext:graves";
       };
     };
-    ramona.machine.roles = ["workstation"];
+    ramona.machine.roles = [ "workstation" ];
   };
 }

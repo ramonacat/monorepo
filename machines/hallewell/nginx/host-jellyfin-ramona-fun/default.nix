@@ -1,4 +1,4 @@
-{config, ...}: {
+{ config, ... }: {
   config = {
     services.nginx = {
       virtualHosts."jellyfin.ramona.fun" = {

@@ -1,4 +1,4 @@
-{config, ...}: {
+{ config, ... }: {
   imports = [
     ./host-ramona-fun.nix
     ./host-savin-gallery.nix

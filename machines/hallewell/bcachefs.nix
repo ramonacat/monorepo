@@ -1,12 +1,14 @@
 _: {
   config = {
-    services.bcachefs.autoScrub = let
-      paths = import ../../data/paths.nix;
-    in {
-      enable = true;
-      fileSystems = [paths.hallewell.nas-root];
-      interval = "*-*-01 02:00:00";
-    };
+    services.bcachefs.autoScrub =
+      let
+        paths = import ../../data/paths.nix;
+      in
+      {
+        enable = true;
+        fileSystems = [ paths.hallewell.nas-root ];
+        interval = "*-*-01 02:00:00";
+      };
     systemd = {
       services.bcachefs-disable-reconcile = {
         script = "echo -n 0 > /sys/fs/bcachefs/8f552709-24e3-4387-8183-23878c94d00b/options/reconcile_enabled";
@@ -23,7 +25,7 @@ _: {
       };
 
       timers.bcachefs-enable-reconcile = {
-        wantedBy = ["timers.target"];
+        wantedBy = [ "timers.target" ];
         timerConfig = {
           OnCalendar = "*-*-* 10:00:00";
           Persistent = true;
@@ -32,7 +34,7 @@ _: {
       };
 
       timers.bcachefs-disable-reconcile = {
-        wantedBy = ["timers.target"];
+        wantedBy = [ "timers.target" ];
         timerConfig = {
           OnCalendar = "*-*-* 21:00:00";
           Persistent = true;

@@ -9,6 +9,6 @@ _: {
       type = "server";
       hasPublicIP = false;
     };
-    ramona.machine.roles = ["private"];
+    ramona.machine.roles = [ "private" ];
   };
 }

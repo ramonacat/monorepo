@@ -1,7 +1,8 @@
 {
   flake,
   lib,
-}: rec {
+}:
+rec {
   nixos = builtins.filter (k: k != "iso") (lib.mapAttrsToList (k: _: k) flake.nixosConfigurations);
   windows = [
     "angelsin"

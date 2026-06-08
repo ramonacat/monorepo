@@ -8,43 +8,54 @@ rec {
     moonfall = "RNSUEIE-ZBLKXNS-HWIQ55X-IS4CELE-NA6UFXO-VBWN64L-PBIPSVE-R7FQYQL";
     shadowsoul = "7NXR3IB-O4X73UQ-YVL6C5D-WEVRNVZ-5R6MIZH-P73UNPX-LRNJV6K-UEJNUQS";
   };
-  settings = let
-    paths = import ./paths.nix;
-  in {
-    hallewell = {
-      user = "nas";
-      folders = {
-        trnsmsn-dls = {
-          path = "${paths.hallewell.dls}";
-          type = "receiveonly";
+  settings =
+    let
+      paths = import ./paths.nix;
+    in
+    {
+      hallewell = {
+        user = "nas";
+        folders = {
+          trnsmsn-dls = {
+            path = "${paths.hallewell.dls}";
+            type = "receiveonly";
+          };
+          shared = {
+            path = "${paths.hallewell.nas-share}/ramona/shared";
+          };
         };
-        shared = {
-          path = "${paths.hallewell.nas-share}/ramona/shared";
+        dataDir = "${paths.hallewell.nas-root}/syncthing/data/";
+        configDir = "${paths.hallewell.nas-root}/syncthing/config/";
+      };
+      shadowsoul = {
+        user = "transmission";
+        folders = {
+          trnsmsn-dls = {
+            path = paths.shadowsoul.transmission-downloads;
+            type = "sendonly";
+          };
         };
       };
-      dataDir = "${paths.hallewell.nas-root}/syncthing/data/";
-      configDir = "${paths.hallewell.nas-root}/syncthing/config/";
-    };
-    shadowsoul = {
-      user = "transmission";
-      folders = {
-        trnsmsn-dls = {
-          path = paths.shadowsoul.transmission-downloads;
-          type = "sendonly";
+      default = {
+        user = "ramona";
+        folders = {
+          shared = {
+            path = paths.common.ramona-shared;
+          };
         };
       };
     };
-    default = {
-      user = "ramona";
-      folders = {
-        shared = {
-          path = paths.common.ramona-shared;
-        };
-      };
-    };
-  };
   topology = with devices; {
-    "trnsmsn-dls" = {inherit hallewell shadowsoul;};
-    "shared" = {inherit church angelsin evillian hallewell moonfall angelsin-linux;};
+    "trnsmsn-dls" = { inherit hallewell shadowsoul; };
+    "shared" = {
+      inherit
+        church
+        angelsin
+        evillian
+        hallewell
+        moonfall
+        angelsin-linux
+        ;
+    };
   };
 }

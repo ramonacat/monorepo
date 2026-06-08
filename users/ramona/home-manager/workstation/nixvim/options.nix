@@ -15,7 +15,7 @@ _: {
       };
       autoCmd = [
         {
-          event = ["CursorHold"];
+          event = [ "CursorHold" ];
           pattern = "*";
           command = "checktime";
         }

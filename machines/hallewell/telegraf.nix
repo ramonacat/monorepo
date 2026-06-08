@@ -2,7 +2,8 @@
   config,
   pkgs,
   ...
-}: {
+}:
+{
   config = {
     services.telegraf = {
       extraConfig = {
@@ -11,7 +12,7 @@
         };
         inputs = {
           file = {
-            files = ["/var/www/${config.networking.hostName}.ibis-draconis.ts.net/builds/*-closure"];
+            files = [ "/var/www/${config.networking.hostName}.ibis-draconis.ts.net/builds/*-closure" ];
             data_format = "value";
             data_type = "string";
             name_override = "latest_closure";
@@ -25,7 +26,7 @@
             ];
             version = 2;
             community = "public";
-            path = ["${pkgs.net-snmp.out}/share/snmp/mibs/"];
+            path = [ "${pkgs.net-snmp.out}/share/snmp/mibs/" ];
             field = [
               {
                 oid = "RFC1213-MIB::sysName.0";
@@ -37,7 +38,7 @@
               {
                 oid = "IF-MIB::ifTable";
                 name = "snmp_interface";
-                inherit_tags = ["sysName"];
+                inherit_tags = [ "sysName" ];
                 field = [
                   {
                     oid = "IF-MIB::ifDescr";

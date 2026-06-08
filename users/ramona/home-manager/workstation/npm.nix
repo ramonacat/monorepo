@@ -1,8 +1,10 @@
-_: let
+_:
+let
   mutable-npm-path = "~/.mutable_nodejs_modules";
-in {
+in
+{
   home.file.".npmrc".text = ''
     prefix = ${mutable-npm-path}
   '';
-  home.sessionPath = ["${mutable-npm-path}/bin/"];
+  home.sessionPath = [ "${mutable-npm-path}/bin/" ];
 }

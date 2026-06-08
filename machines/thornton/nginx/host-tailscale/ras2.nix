@@ -2,7 +2,8 @@
   pkgs,
   config,
   ...
-}: {
+}:
+{
   config = {
     services.nginx.virtualHosts."${config.networking.hostName}.ibis-draconis.ts.net".locations = {
       "~ /ras/.*" = {

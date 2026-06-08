@@ -2,7 +2,8 @@
   modulesPath,
   inputs,
   ...
-}: {
+}:
+{
   imports = [
     (modulesPath + "/installer/scan/not-detected.nix")
     inputs.home-manager.nixosModules.home-manager
@@ -22,6 +23,6 @@
     ./ssh.nix
   ];
   config = {
-    ramona.machine.roles = ["all"];
+    ramona.machine.roles = [ "all" ];
   };
 }

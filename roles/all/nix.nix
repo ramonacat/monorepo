@@ -1,12 +1,14 @@
-{inputs, ...}: let
+{ inputs, ... }:
+let
   nixpkgsPath = "/etc/channels/nixpkgs";
-in {
+in
+{
   config = {
     nix = {
       registry.nixpkgs.flake = inputs.nixpkgs;
       settings = {
-        trusted-users = ["@wheel"];
-        experimental-features = ["nix-command flakes"];
+        trusted-users = [ "@wheel" ];
+        experimental-features = [ "nix-command flakes" ];
         fallback = true;
       };
       nixPath = [

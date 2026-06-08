@@ -1,4 +1,4 @@
-_: {
+{ pkgs, ... }: {
   imports = [
     ./plugins
 
@@ -12,6 +12,7 @@ _: {
       viAlias = true;
       vimAlias = true;
       vimdiffAlias = true;
+      nixpkgs.pkgs = pkgs;
     };
     home.sessionVariables.EDITOR = "vim";
   };

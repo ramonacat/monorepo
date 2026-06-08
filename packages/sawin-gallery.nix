@@ -1,5 +1,6 @@
-{pkgs, ...}: let
-  package-versions = import ../data/package-versions.nix {inherit pkgs;};
+{ pkgs, ... }:
+let
+  package-versions = import ../data/package-versions.nix { inherit pkgs; };
   package-options = {
     name = "sawin.gallery";
     npmDeps = pkgs.importNpmLock {
@@ -15,31 +16,38 @@
     inherit (package-versions) nodejs;
     inherit (pkgs.importNpmLock) npmConfigHook;
   };
-  package = pkgs.buildNpmPackage (package-options
+  package = pkgs.buildNpmPackage (
+    package-options
     // {
       buildPhase = ''
         npm run build
         mkdir $out/
         cp -r ./dist/* $out/
       '';
-    });
-  package-checks = pkgs.buildNpmPackage (package-options
+    }
+  );
+  package-checks = pkgs.buildNpmPackage (
+    package-options
     // {
       buildPhase = ''
         npm run build
         mkdir $out/
         cp -r ./* $out/
       '';
-    });
-in rec {
+    }
+  );
+in
+rec {
   inherit package;
-  coverage = pkgs.runCommand "${package.name}-coverage" {} "echo > $out";
+  coverage = pkgs.runCommand "${package.name}-coverage" { } "echo > $out";
   checks = {
-    "${package.name}--prettier" = pkgs.runCommand "${package.name}--prettier" {nativeBuildInputs = [package-versions.nodejs];} ''
-      cp -r ${package-checks}/* .
-      npx prettier .
+    "${package.name}--prettier" =
+      pkgs.runCommand "${package.name}--prettier" { nativeBuildInputs = [ package-versions.nodejs ]; }
+        ''
+          cp -r ${package-checks}/* .
+          npx prettier .
 
-      mkdir $out/
-    '';
+          mkdir $out/
+        '';
   };
 }

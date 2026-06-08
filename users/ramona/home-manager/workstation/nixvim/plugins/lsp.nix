@@ -1,4 +1,4 @@
-{pkgs, ...}: {
+{ pkgs, ... }: {
   config = {
     programs.nixvim.plugins.lsp = {
       enable = true;
@@ -35,7 +35,10 @@
         "<leader>rn" = "rename";
         "<leader>ca" = {
           action = "code_action";
-          mode = ["v" "n"];
+          mode = [
+            "v"
+            "n"
+          ];
         };
         gr = "references";
       };

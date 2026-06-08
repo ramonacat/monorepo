@@ -1,8 +1,8 @@
 _: {
   config = {
     boot = {
-      supportedFilesystems = ["bcachefs"];
-      initrd.supportedFilesystems = ["bcachefs"];
+      supportedFilesystems = [ "bcachefs" ];
+      initrd.supportedFilesystems = [ "bcachefs" ];
     };
   };
 }

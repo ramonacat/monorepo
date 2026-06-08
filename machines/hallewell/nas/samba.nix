@@ -18,19 +18,21 @@ _: {
           "map to guest" = "bad user";
           "acl allow execute always" = true;
         };
-        public = let
-          paths = import ../../../data/paths.nix;
-        in {
-          path = paths.hallewell.nas-share;
-          browseable = "yes";
-          writeable = "yes";
-          "read only" = "no";
-          "guest ok" = "yes";
-          "create mask" = "0775";
-          "directory mask" = "0755";
-          "force user" = "nas";
-          "force group" = "nas";
-        };
+        public =
+          let
+            paths = import ../../../data/paths.nix;
+          in
+          {
+            path = paths.hallewell.nas-share;
+            browseable = "yes";
+            writeable = "yes";
+            "read only" = "no";
+            "guest ok" = "yes";
+            "create mask" = "0775";
+            "directory mask" = "0755";
+            "force user" = "nas";
+            "force group" = "nas";
+          };
       };
     };
   };
