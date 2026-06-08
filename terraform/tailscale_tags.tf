@@ -9,9 +9,15 @@ data "tailscale_device" "pikvm" {
   hostname = "pikvm"
 }
 
-resource "tailscale_device_tags" "tags" {
-  for_each  = data.external.tailscale-tags.result
-  device_id = lookup({ for device in data.tailscale_devices.all.devices : device.hostname => device.node_id }, each.key)
+moved {
+  from = tailscale_device_tags.tags
+  to   = tailscale_device_tags.devices
+}
+
+resource "tailscale_device_tags" "devices" {
+  for_each = data.external.tailscale-tags.result
+
+  device_id = { for device in data.tailscale_devices.all.devices : device.hostname => device.node_id }[each.key]
   tags      = split(" ", each.value)
 }
 

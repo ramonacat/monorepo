@@ -1,0 +1,18 @@
+name: terraform linting
+on: 
+  pull_request: ~
+  push:
+    branches:
+      - 'main'
+
+jobs:
+  tflint:
+    runs-on: self-hosted
+    steps:
+      - name: Checkout the repo
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 1
+
+      - name: tflint
+        run: nix develop --command sh -c "tflint --init && tflint"

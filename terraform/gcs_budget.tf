@@ -1,4 +1,9 @@
-resource "google_billing_budget" "budget" {
+moved {
+  from = google_billing_budget.budget
+  to   = google_billing_budget.main
+}
+
+resource "google_billing_budget" "main" {
   billing_account = "011C80-70ED0E-2572B5"
   display_name    = "Budget"
   amount {

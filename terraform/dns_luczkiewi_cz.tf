@@ -11,7 +11,8 @@ resource "dnsimple_zone" "luczkiewi-cz" {
 }
 
 module "fastmail-dns--luczkiewi-cz" {
-  source    = "./fastmail-dns"
+  source = "./fastmail-dns"
+
   zone_name = dnsimple_zone.luczkiewi-cz.name
 }
 

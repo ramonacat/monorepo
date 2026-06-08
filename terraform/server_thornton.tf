@@ -32,17 +32,20 @@ resource "hcloud_rdns" "thornton-ipv6" {
 }
 
 module "thornton-system-build" {
-  source    = "github.com/nix-community/nixos-anywhere/terraform/nix-build"
+  source = "github.com/nix-community/nixos-anywhere/terraform/nix-build?ref=1.13.0"
+
   attribute = "..#nixosConfigurations.thornton.config.system.build.toplevel"
 }
 
 module "thornton-disko" {
-  source    = "github.com/nix-community/nixos-anywhere/terraform/nix-build"
+  source = "github.com/nix-community/nixos-anywhere/terraform/nix-build?ref=1.13.0"
+
   attribute = "..#nixosConfigurations.thornton.config.system.build.diskoScript"
 }
 
 module "thornton-install" {
-  source            = "github.com/nix-community/nixos-anywhere/terraform/install"
+  source = "github.com/nix-community/nixos-anywhere/terraform/install?ref=1.13.0"
+
   nixos_system      = module.thornton-system-build.result.out
   nixos_partitioner = module.thornton-disko.result.out
   target_host       = hcloud_server.thornton.ipv4_address

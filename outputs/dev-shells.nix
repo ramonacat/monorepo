@@ -46,6 +46,7 @@ pkgs.mkShell {
     postgresql_16
     shfmt
     backblaze-b2
+    tflint
 
     (pkgs.writeShellScriptBin "terraform" ''
       pushd "$RAMONA_FLAKE_ROOT/secrets/"

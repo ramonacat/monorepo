@@ -29,6 +29,11 @@ in
 
     touch $out
   '';
+  fmt-terraform = pkgs.runCommand "fmt-terraform" { } ''
+    ${pkgs.terraform}/bin/terraform fmt -recursive -check -diff "${source}/terraform"
+
+    touch $out
+  '';
   deadnix = pkgs.runCommand "deadnix" { } ''
     ${pkgs.deadnix}/bin/deadnix --fail ${source}
 

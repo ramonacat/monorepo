@@ -12,7 +12,8 @@ resource "dnsimple_zone" "agares-info" {
 }
 
 module "fastmail-dns--agares-info" {
-  source    = "./fastmail-dns"
+  source = "./fastmail-dns"
+
   zone_name = dnsimple_zone.agares-info.name
 }
 

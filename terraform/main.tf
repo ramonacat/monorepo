@@ -1,4 +1,5 @@
 terraform {
+  required_version = ">= 1.15.5"
   backend "s3" {
     bucket = "ramona-fun-tfstate"
     key    = "tfstate"
@@ -15,20 +16,33 @@ terraform {
   }
 
   required_providers {
+    google = {
+      source  = "google"
+      version = ">= 7.35.0"
+    }
     hcloud = {
-      source = "hetznercloud/hcloud"
+      source  = "hetznercloud/hcloud"
+      version = ">= 1.65.0"
     }
     tailscale = {
-      source = "tailscale/tailscale"
+      source  = "tailscale/tailscale"
+      version = ">= 0.29.2"
     }
     dnsimple = {
-      source = "dnsimple/dnsimple"
+      source  = "dnsimple/dnsimple"
+      version = ">= 2.1.2"
     }
     ovh = {
-      source = "ovh/ovh"
+      source  = "ovh/ovh"
+      version = ">= 2.13.1"
     }
     b2 = {
-      source = "Backblaze/b2"
+      source  = "Backblaze/b2"
+      version = ">= 0.12.1"
+    }
+    external = {
+      source  = "external"
+      version = ">= 2.4.0"
     }
   }
 }
