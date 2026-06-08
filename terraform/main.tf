@@ -44,6 +44,10 @@ terraform {
       source  = "external"
       version = ">= 2.4.0"
     }
+    github = {
+      source  = "integrations/github"
+      version = ">= 6.0"
+    }
   }
 }
 
@@ -77,4 +81,8 @@ resource "google_project_service" "billing" {
 }
 
 provider "b2" {
+}
+
+provider "github" {
+  owner = "ramonacat"
 }
