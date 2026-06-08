@@ -1,3 +1,12 @@
+resource "dnsimple_zone" "agares-info" {
+  name = "agares.info"
+}
+
+module "fastmail-dns--agares-info" {
+  source    = "./fastmail-dns"
+  zone_name = dnsimple_zone.agares-info.name
+}
+
 resource "google_dns_managed_zone" "agares-info" {
   name        = "agares-info"
   dns_name    = "agares.info."

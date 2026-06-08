@@ -1,3 +1,12 @@
+resource "dnsimple_zone" "luczkiewi-cz" {
+  name = "luczkiewi.cz"
+}
+
+module "fastmail-dns--luczkiewi-cz" {
+  source    = "./fastmail-dns"
+  zone_name = dnsimple_zone.luczkiewi-cz.name
+}
+
 resource "google_dns_managed_zone" "luczkiewi-cz" {
   name        = "luczkiewi-cz"
   dns_name    = "luczkiewi.cz."
