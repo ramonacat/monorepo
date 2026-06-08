@@ -1,8 +1,19 @@
 terraform {
-  backend "gcs" {
+  backend "s3" {
     bucket = "ramona-fun-tfstate"
-    prefix = "terraform/state"
+    key    = "tfstate"
+    region = "us-west-002"
+    endpoints = {
+      s3 = "https://s3.us-west-002.backblazeb2.com"
+    }
+
+    skip_credentials_validation = true
+    skip_region_validation      = true
+    skip_metadata_api_check     = true
+    skip_requesting_account_id  = true
+    skip_s3_checksum            = true
   }
+
   required_providers {
     hcloud = {
       source = "hetznercloud/hcloud"
@@ -15,6 +26,9 @@ terraform {
     }
     ovh = {
       source = "ovh/ovh"
+    }
+    b2 = {
+      source = "Backblaze/b2"
     }
   }
 }
@@ -48,6 +62,14 @@ variable "ovh_application_secret" {
 }
 
 variable "ovh_consumer_key" {
+  sensitive = true
+}
+
+variable "b2_key_id" {
+  sensitive = true
+}
+
+variable "b2_application_key" {
   sensitive = true
 }
 
@@ -86,4 +108,9 @@ provider "ovh" {
 resource "google_project_service" "billing" {
   project = local.gcs_project_id
   service = "billingbudgets.googleapis.com"
+}
+
+provider "b2" {
+  application_key    = var.b2_application_key
+  application_key_id = var.b2_key_id
 }

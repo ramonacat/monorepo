@@ -41,16 +41,21 @@ pkgs.mkShell {
       '';
     })
 
-    bash-language-server
     google-cloud-sdk
-    nil
     nushell
-    phpactor
     postgresql_16
-    rust-analyzer
     shfmt
-    terraform
-    terraform-ls
+    backblaze-b2
+
+    (pkgs.writeShellScriptBin "terraform" ''
+      pushd "$RAMONA_FLAKE_ROOT/secrets/"
+      set -a
+      eval "$(agenix -d terraform-tokens.age)" 
+      set +a
+      popd
+
+      exec ${pkgs.terraform}/bin/terraform "$@"
+    '')
 
     package-versions.nodejs
     package-versions.php-dev
