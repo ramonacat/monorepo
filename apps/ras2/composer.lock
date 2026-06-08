@@ -4311,11 +4311,11 @@
         },
         {
             "name": "phpstan/phpstan",
-            "version": "2.1.54",
+            "version": "2.2.2",
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/phpstan/phpstan/zipball/8be50c3992107dc837b17da4d140fbbdf9a5c5bd",
-                "reference": "8be50c3992107dc837b17da4d140fbbdf9a5c5bd",
+                "url": "https://api.github.com/repos/phpstan/phpstan/zipball/e5cc34d491a90e79c216d824f60fe21fd4d93bd6",
+                "reference": "e5cc34d491a90e79c216d824f60fe21fd4d93bd6",
                 "shasum": ""
             },
             "require": {
@@ -4337,6 +4337,17 @@
             "notification-url": "https://packagist.org/downloads/",
             "license": [
                 "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Ondřej Mirtes"
+                },
+                {
+                    "name": "Markus Staab"
+                },
+                {
+                    "name": "Vincent Langlet"
+                }
             ],
             "description": "PHPStan - PHP Static Analysis Tool",
             "keywords": [
@@ -4360,7 +4371,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2026-04-29T13:31:09+00:00"
+            "time": "2026-06-05T09:00:01+00:00"
         },
         {
             "name": "phpstan/phpstan-strict-rules",
@@ -7029,16 +7040,16 @@
         },
         {
             "name": "symplify/easy-coding-standard",
-            "version": "13.1.3",
+            "version": "13.1.5",
             "source": {
                 "type": "git",
                 "url": "https://github.com/easy-coding-standard/ecs.git",
-                "reference": "d894d088d7ebb9326f9eed28bf251481c813b89f"
+                "reference": "96294d652c17ccffabb7d36f9d116dd5f0e6b84e"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/easy-coding-standard/ecs/zipball/d894d088d7ebb9326f9eed28bf251481c813b89f",
-                "reference": "d894d088d7ebb9326f9eed28bf251481c813b89f",
+                "url": "https://api.github.com/repos/easy-coding-standard/ecs/zipball/96294d652c17ccffabb7d36f9d116dd5f0e6b84e",
+                "reference": "96294d652c17ccffabb7d36f9d116dd5f0e6b84e",
                 "shasum": ""
             },
             "require": {
@@ -7073,9 +7084,9 @@
                 "static analysis"
             ],
             "support": {
-                "source": "https://github.com/easy-coding-standard/ecs/tree/13.1.3"
+                "source": "https://github.com/easy-coding-standard/ecs/tree/13.1.5"
             },
-            "time": "2026-05-04T21:45:57+00:00"
+            "time": "2026-05-30T09:12:26+00:00"
         },
         {
             "name": "thecodingmachine/phpstan-safe-rule",
