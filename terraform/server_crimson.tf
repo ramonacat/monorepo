@@ -26,17 +26,17 @@ resource "hcloud_rdns" "crimson-ipv6" {
 }
 
 module "crimson-system-build" {
-  source    = "github.com/nix-community/nixos-anywhere/terraform/nix-build"
+  source    = "github.com/nix-community/nixos-anywhere/terraform/nix-build?ref=1.13.0"
   attribute = "..#nixosConfigurations.crimson.config.system.build.toplevel"
 }
 
 module "crimson-disko" {
-  source    = "github.com/nix-community/nixos-anywhere/terraform/nix-build"
+  source    = "github.com/nix-community/nixos-anywhere/terraform/nix-build?ref=1.13.0"
   attribute = "..#nixosConfigurations.crimson.config.system.build.diskoScript"
 }
 
 module "crimson-install" {
-  source            = "github.com/nix-community/nixos-anywhere/terraform/install"
+  source            = "github.com/nix-community/nixos-anywhere/terraform/install?ref=1.13.0"
   nixos_system      = module.crimson-system-build.result.out
   nixos_partitioner = module.crimson-disko.result.out
   target_host       = hcloud_server.crimson.ipv4_address
