@@ -1,15 +1,15 @@
-// TODO get this from tailscale provider instead of hardcoding
-variable "hallewell_tailscale_ip_address" {
-  type    = string
-  default = "100.109.240.138"
-}
-
 resource "ovh_domain_name_servers" "ramona-fun" {
   domain = "ramona.fun"
   servers { host = "ns1.dnsimple-edge.com" }
   servers { host = "ns2.dnsimple-edge.net" }
   servers { host = "ns3.dnsimple-edge.io" }
   servers { host = "ns4.dnsimple-edge.org" }
+}
+
+// TODO get this from tailscale provider instead of hardcoding
+variable "hallewell_tailscale_ip_address" {
+  type    = string
+  default = "100.109.240.138"
 }
 
 moved {
