@@ -8,5 +8,11 @@ let
 in
 mk-rust-library {
   inherit pkgs crane-lib;
-  src-path = ../../libs/rust/ratlib;
+
+  src-path = ../../.;
+  additional-package-arguments = {
+    pname = "ratlib-1.0.0";
+    version = "1.0.0";
+    cargoExtraArgs = "-p ratlib";
+  };
 }

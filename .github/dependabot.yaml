@@ -21,7 +21,7 @@ updates:
         dependency-type: "development"
 
   - package-ecosystem: "cargo"
-    directory: "apps/rad"
+    directory: "/"
     schedule:
       interval: "daily"
     groups:
@@ -42,16 +42,6 @@ updates:
 
   - package-ecosystem: "npm"
     directory: "apps/sawin.gallery"
-    schedule:
-      interval: "daily"
-    groups:
-      production-dependencies:
-        dependency-type: "production"
-      development-dependencies:
-        dependency-type: "development"
-
-  - package-ecosystem: "cargo"
-    directory: "libs/rust/ratlib"
     schedule:
       interval: "daily"
     groups:

@@ -51,7 +51,7 @@ rec {
     in
     pkgs.runCommand "${package.name}--coverage" { } ''
       cat ${rawCoverage} | sed "s#/build/source#${
-        builtins.replaceStrings [ ((builtins.toString ../../.) + "/") ] [ "" ] (builtins.toString src-path)
+        builtins.replaceStrings [ ((toString ../../.) + "/") ] [ "" ] (toString src-path)
       }#g" > $out
     '';
 }
