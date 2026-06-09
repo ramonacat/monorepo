@@ -10,6 +10,16 @@ updates:
       development-dependencies:
         dependency-type: "development"
 
+  - package-ecosystem: "terraform"
+    directory: "terraform/"
+    schedule:
+      interval: "daily"
+    groups:
+      production-dependencies:
+        dependency-type: "production"
+      development-dependencies:
+        dependency-type: "development"
+
   - package-ecosystem: "cargo"
     directory: "apps/rad"
     schedule:
