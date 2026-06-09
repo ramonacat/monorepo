@@ -1,0 +1,72 @@
+name: terraform
+on: 
+  pull_request: ~
+  push:
+    branches:
+      - 'main'
+
+jobs:
+  terraform:
+    runs-on: self-hosted
+    steps:
+      - name: Checkout the repo
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 1
+
+      - name: put the SSH key in a file
+        run: mkdir -p $HOME/.ssh && echo "${{ secrets.SSH_KEY }}" > $HOME/.ssh/id_ed25519 && ssh-keygen -y -f ~/.ssh/id_ed25519 > ~/.ssh/id_ed25519.pub
+
+      - name: tflint
+        run: nix develop --command sh -c "cd terraform && tflint --init && tflint"
+
+      - name: terraform init
+        run: nix develop --command sh -c "cd terraform && terraform init -input=false"
+
+      - name: terraform validate
+        if: github.ref != 'refs/heads/main'
+        run: nix develop --command sh -c "cd terraform && terraform validate"
+
+      - name: terraform plan
+        if: github.ref != 'refs/heads/main'
+        id: terraform-plan
+        run: nix develop --command sh -c "./.github/scripts/terraform-plan.sh"
+
+      - name: Find Comment
+        # dependabot is excluded, because dependabot PRs don't have acceess to secrets
+        if: github.ref != 'refs/heads/main' && github.actor != 'dependabot[bot]'
+        uses: peter-evans/find-comment@v4
+        id: fc
+        with:
+          issue-number: ${{ github.event.pull_request.number }}
+          comment-author: 'ramonacat'
+          body-includes: terraform plan
+          token: "${{ secrets.PAT }}"
+
+      - name: Create or update comment
+        if: github.ref != 'refs/heads/main' && github.actor != 'dependabot[bot]'
+        uses: peter-evans/create-or-update-comment@v5
+        with:
+          comment-id: ${{ steps.fc.outputs.comment-id }}
+          issue-number: ${{ github.event.pull_request.number }}
+          body: "terraform plan: <br/>\n${{ steps.terraform-plan.outputs.READABLE_OUTPUT }}"
+          edit-mode: replace
+          token: "${{ secrets.PAT }}"
+
+      - name: upload plan
+        if: github.ref != 'refs/heads/main'
+        uses: actions/upload-artifact@v7
+        with:
+            name: "${{ github.sha }}.tfplan.age"
+            path: plan.tfplan
+            archive: false
+
+      - name: download plan
+        if: github.ref == 'refs/heads/main'
+        uses: actions/download-artifact@v8
+        with:
+            name: "${{ github.sha }}.tfplan.age"
+
+      - name: terraform apply
+        if: github.ref == 'refs/heads/main'
+        run: nix develop --command sh -c "cd terraform && age -d -i ~/.ssh/id_ed25519 plan.tfplan.age > plan.tfplan && terraform apply -input=false plan.tfplan && rm plan.tfplan"
