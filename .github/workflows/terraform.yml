@@ -57,14 +57,16 @@ jobs:
       - name: find merge parent
         id: find_merge_parent
         run: ./.github/scripts/find-merge-parent.sh
+      
+      - name: move plan so the artifact can have the correct name
+        run: mv terraform/plan.tfplan.age "${{ steps.find_merge_parent.outputs.parent }}.tfplan.age"
 
       - name: upload plan
         if: github.ref != 'refs/heads/main'
         uses: actions/upload-artifact@v7
         with:
-            name: "${{ steps.find_merge_parent.outputs.parent }}.tfplan.age"
-            path: terraform/plan.tfplan.age
-            archive: false
+          path: "${{ steps.find_merge_parent.outputs.parent }}.tfplan.age"
+          archive: false
 
       - name: download plan
         if: github.ref == 'refs/heads/main'
@@ -74,4 +76,4 @@ jobs:
 
       - name: terraform apply
         if: github.ref == 'refs/heads/main'
-        run: nix develop --command sh -c "cd terraform && age -d -i ~/.ssh/id_ed25519 ../plan.tfplan.age > plan.tfplan && terraform apply -input=false plan.tfplan && rm plan.tfplan"
+        run: nix develop --command sh -c "cd terraform && age -d -i ~/.ssh/id_ed25519 \"../${{ steps.find_merge_parent.outputs.parent }}.tfplan.age\" > plan.tfplan && terraform apply -input=false plan.tfplan && rm plan.tfplan"
