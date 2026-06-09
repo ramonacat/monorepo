@@ -22,6 +22,7 @@ let
         composerNoDev = false;
         composerNoScripts = false;
         php = devPhp;
+        vendorHash = "sha256-3OnapP85YrEdLjVqKuEDfQiTHKfoAAXPT+GIn4xfxfE=";
       }
     )
   );

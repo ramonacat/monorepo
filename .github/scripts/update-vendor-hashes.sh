@@ -15,9 +15,12 @@ while IFS= read -r line; do
 	fi
 
 	if grep -q "vendorHash" "packages/$line.nix"; then
-		sed -Ei 's#(\s*vendorHash\s*=\s*)".*"(.*)#\1""\2#' "packages/$line.nix"
-		new_hash=$(nix build ".#packages.x86_64-linux.$line" 2>&1 | grep 'got:' | sed -E 's#\s*got:\s*(.*)\s*#\1#')
-		sed -Ei "s#(\\s*vendorHash\\s*=\\s*)\".*\"(.*)#\1\"$new_hash\"\2#" "packages/$line.nix"
+		build_output=$(nix build ".#packages.x86_64-linux.$line" 2>&1)
+
+		specified_hash=$(echo "$build_output" | grep 'specified:' | sed -E 's#\s*specified:\s*(.*)\s*#\1#')
+		new_hash=$(echo "$build_output" | grep 'specified:' | sed -E 's#\s*got:\s*(.*)\s*#\1#')
+
+		sed -Ei "s#(\\s*vendorHash\\s*=\\s*)\"$specified_hash\"(.*)#\1\"$new_hash\"\2#" "packages/$line.nix"
 
 		git commit -am"packages/$line: update vendorHash"
 	fi
