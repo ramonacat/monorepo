@@ -21,13 +21,13 @@ resource "hcloud_volume" "thornton-db" {
 
 resource "hcloud_rdns" "thornton-ipv4" {
   ip_address = hcloud_server.thornton.ipv4_address
-  dns_ptr    = trimsuffix(google_dns_record_set.A-thornton-devices-ramona-fun.name, ".")
+  dns_ptr    = dnsimple_zone_record.A--thornton-devices-ramona-fun.qualified_name
   server_id  = hcloud_server.thornton.id
 }
 
 resource "hcloud_rdns" "thornton-ipv6" {
   ip_address = hcloud_server.thornton.ipv6_address
-  dns_ptr    = trimsuffix(google_dns_record_set.AAAA-thornton-devices-ramona-fun.name, ".")
+  dns_ptr    = dnsimple_zone_record.AAAA--thornton-devices-ramona-fun.qualified_name
   server_id  = hcloud_server.thornton.id
 }
 

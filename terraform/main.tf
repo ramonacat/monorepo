@@ -16,10 +16,6 @@ terraform {
   }
 
   required_providers {
-    google = {
-      source  = "google"
-      version = ">= 7.35.0"
-    }
     hcloud = {
       source  = "hetznercloud/hcloud"
       version = ">= 1.65.0"
@@ -57,27 +53,11 @@ provider "hcloud" {
 provider "tailscale" {
 }
 
-locals {
-  gcs_project_id = "ramona-infra"
-}
-
-provider "google" {
-  project               = local.gcs_project_id
-  region                = "europe-west10"
-  user_project_override = true
-  billing_project       = local.gcs_project_id
-}
-
 provider "dnsimple" {
 }
 
 provider "ovh" {
   endpoint = "ovh-eu"
-}
-
-resource "google_project_service" "billing" {
-  project = local.gcs_project_id
-  service = "billingbudgets.googleapis.com"
 }
 
 provider "b2" {

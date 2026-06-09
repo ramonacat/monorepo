@@ -15,13 +15,13 @@ resource "hcloud_server" "crimson" {
 
 resource "hcloud_rdns" "crimson-ipv4" {
   ip_address = hcloud_server.crimson.ipv4_address
-  dns_ptr    = trimsuffix(google_dns_record_set.A-crimson-devices-ramona-fun.name, ".")
+  dns_ptr    = dnsimple_zone_record.A--crimson-devices-ramona-fun.qualified_name
   server_id  = hcloud_server.crimson.id
 }
 
 resource "hcloud_rdns" "crimson-ipv6" {
   ip_address = hcloud_server.crimson.ipv6_address
-  dns_ptr    = trimsuffix(google_dns_record_set.AAAA-crimson-devices-ramona-fun.name, ".")
+  dns_ptr    = dnsimple_zone_record.AAAA--crimson-devices-ramona-fun.qualified_name
   server_id  = hcloud_server.crimson.id
 }
 
