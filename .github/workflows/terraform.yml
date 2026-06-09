@@ -59,6 +59,7 @@ jobs:
         run: ./.github/scripts/find-merge-parent.sh
       
       - name: move plan so the artifact can have the correct name
+        if: github.ref != 'refs/heads/main'
         run: mv terraform/plan.tfplan.age "${{ steps.find_merge_parent.outputs.parent }}.tfplan.age"
 
       - name: upload plan
