@@ -2,6 +2,7 @@ let
   ssh-keys = import ../data/ssh-keys.nix;
 
   users = [ ssh-keys.ramona.default ];
+  ci = [ ssh-keys.root.ci ];
 
   angelsin-linux = ssh-keys.machines.angelsin-linux.rsa;
   shadowsoul = ssh-keys.machines.shadowsoul.rsa;
@@ -16,6 +17,7 @@ let
     shadowsoul
     angelsin-linux
   ];
+
   publicServers = [
     crimson
     thornton
@@ -57,7 +59,7 @@ in
   "sonarr-api-key.age".publicKeys = users ++ [ hallewell ];
   "tailscale-auth-key.age".publicKeys = users ++ allMachines;
   "telegraf-database.age".publicKeys = users ++ [ thornton ];
-  "terraform-tokens.age".publicKeys = users;
+  "terraform-tokens.age".publicKeys = users ++ ci;
   "thornton-ssh-host-key-ed25519.age".publicKeys = users ++ [ thornton ];
   "thornton-ssh-host-key-rsa.age".publicKeys = users ++ [ thornton ];
   "transmission-credentials.age".publicKeys = users ++ [ shadowsoul ];

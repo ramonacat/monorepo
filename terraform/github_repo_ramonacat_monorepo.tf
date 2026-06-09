@@ -34,6 +34,6 @@ resource "github_branch_protection" "ramonacat-monorepo--main" {
   pattern       = "main"
 
   required_status_checks {
-    contexts = ["build", "flake-check", "upload-coverage", "tflint"]
+    contexts = ["build", "flake-check", "upload-coverage", "terraform"]
   }
 }

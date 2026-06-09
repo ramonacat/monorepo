@@ -41,19 +41,21 @@ pkgs.mkShell {
       '';
     })
 
-    google-cloud-sdk
     nushell
     postgresql_16
     shfmt
     backblaze-b2
     tflint
+    inputs.agenix.packages."${pkgs.stdenv.hostPlatform.system}".default
+    age
+    shellcheck
 
     (pkgs.writeShellScriptBin "terraform" ''
-      pushd "$RAMONA_FLAKE_ROOT/secrets/"
+      pushd "$RAMONA_FLAKE_ROOT/secrets/" >/dev/null
       set -a
-      eval "$(agenix -d terraform-tokens.age)" 
+      eval "$(agenix -d terraform-tokens.age)" >/dev/null
       set +a
-      popd
+      popd >/dev/null
 
       exec ${pkgs.terraform}/bin/terraform "$@"
     '')
