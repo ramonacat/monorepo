@@ -60,11 +60,11 @@ jobs:
       
       - name: upload the plan
         if: github.ref != 'refs/heads/main'
-        run: scp terraform/plan.tfplan.age "root@hallewell:/var/ci/terraform-plans/${{ steps.find_merge_parent.outputs.parent }}.tfplan.age"
+        run: "scp -oStrictHostKeyChecking=no -oUserKnownHostsFile=/dev/null -i $HOME/.ssh/id_ed25519 terraform/plan.tfplan.age root@hallewell.ibis-draconis.ts.net:/var/ci/terraform-plans/${{ steps.find_merge_parent.outputs.parent }}.tfplan.age"
 
       - name: download plan
         if: github.ref == 'refs/heads/main'
-        run: scp "root@hallewell:/var/ci/terraform-plans/${{ steps.find_merge_parent.outputs.parent }}.tfplan.age" terraform/plan.tfplan.age 
+        run: "scp -oStrictHostKeyChecking=no -oUserKnownHostsFile=/dev/null -i $HOME/.ssh/id_ed25519 root@hallewell.ibis-draconis.ts.net:/var/ci/terraform-plans/${{ steps.find_merge_parent.outputs.parent }}.tfplan.age terraform/plan.tfplan.age" 
 
       - name: terraform apply
         if: github.ref == 'refs/heads/main'
