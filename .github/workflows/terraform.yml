@@ -53,18 +53,18 @@ jobs:
           edit-mode: replace
           token: "${{ secrets.PAT }}"
 
+      # apparently github creates a made up merge commit and runs the actions in pull requests on that, so it's also needed on the feature branch
+      - name: find merge parent
+        id: find_merge_parent
+        run: ./.github/scripts/find-merge-parent.sh
+
       - name: upload plan
         if: github.ref != 'refs/heads/main'
         uses: actions/upload-artifact@v7
         with:
-            name: "${{ github.sha }}.tfplan.age"
+            name: "${{ steps.find_merge_parent.outputs.parent }}.tfplan.age"
             path: terraform/plan.tfplan.age
             archive: false
-
-      - name: find merge parent
-        if: github.ref == 'refs/heads/main'
-        id: find_merge_parent
-        run: ./.github/scripts/find-merge-parent.sh
 
       - name: download plan
         if: github.ref == 'refs/heads/main'
