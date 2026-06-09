@@ -10,9 +10,9 @@ changed_apps=$(git diff --name-only "origin/$GITHUB_BASE_REF" | grep -oP '(?<=^a
 echo -e "changed:\n$changed_apps"
 
 while IFS= read -r line; do
-    if [[ -z "$line" ]]; then
-        continue
-    fi
+	if [[ -z "$line" ]]; then
+		continue
+	fi
 
 	if grep -q "vendorHash" "packages/$line.nix"; then
 		sed -Ei 's#(\s*vendorHash\s*=\s*)".*"(.*)#\1""\2#' "packages/$line.nix"
