@@ -17,12 +17,12 @@ let
   devPackage = php.buildComposerProject (
     _:
     (
-      {
+      packageAttributes // {
+        pname = "ras2-dev";
         composerNoDev = false;
         composerNoScripts = false;
         php = devPhp;
       }
-      // packageAttributes
     )
   );
 in
