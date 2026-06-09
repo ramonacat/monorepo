@@ -16,9 +16,9 @@ mk-rust-package {
       || (builtins.match ".*/migrations/.*" path != null)
       || (builtins.match ".*/.sqlx/.*" path != null)
     );
-  additional-package-arguments = { src }: {
-    sourceRoot = "${src.name}/apps/rad/";
-    cargoToml = "${src}/apps/rad/Cargo.toml";
-    cargoLock = "${src}/apps/rad/Cargo.lock";
+  additional-package-arguments = {
+    pname = "rad-1.0.0";
+    version = "1.0.0";
+    cargoExtraArgs = "-p rad";
   };
 }

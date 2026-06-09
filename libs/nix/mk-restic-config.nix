@@ -1,3 +1,4 @@
+# todo this should be a module
 {
   config,
   pkgs,
