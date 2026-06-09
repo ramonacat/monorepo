@@ -16,11 +16,23 @@ while IFS= read -r line; do
 
 	if grep -q "vendorHash" "packages/$line.nix"; then
 		build_output=$(nix build ".#packages.x86_64-linux.$line" 2>&1)
+		echo -e "$line:\n$build_output"
 
 		specified_hash=$(echo "$build_output" | grep 'specified:' | sed -E 's#\s*specified:\s*(.*)\s*#\1#')
-		new_hash=$(echo "$build_output" | grep 'specified:' | sed -E 's#\s*got:\s*(.*)\s*#\1#')
+		new_hash=$(echo "$build_output" | grep 'got:' | sed -E 's#\s*got:\s*(.*)\s*#\1#')
 
-		sed -Ei "s#(\\s*vendorHash\\s*=\\s*)\"$specified_hash\"(.*)#\1\"$new_hash\"\2#" "packages/$line.nix"
+		replaced=$(cat "packages/$line.nix" | python -c "import sys;print(sys.stdin.read().replace('$specified_hash', '$new_hash'))")
+		echo "$replaced" >"packages/$line.nix"
+
+		# TODO do something about the duplicated logic
+		build_output=$(nix build ".#packages.x86_64-linux.$line-coverage" 2>&1)
+		echo -e "$line-coverage:\n$build_output"
+
+		specified_hash=$(echo "$build_output" | grep 'specified:' | sed -E 's#\s*specified:\s*(.*)\s*#\1#')
+		new_hash=$(echo "$build_output" | grep 'got:' | sed -E 's#\s*got:\s*(.*)\s*#\1#')
+
+		replaced=$(cat "packages/$line.nix" | python -c "import sys;print(sys.stdin.read().replace('$specified_hash', '$new_hash'))")
+		echo "$replaced" >"packages/$line.nix"
 
 		git commit -am"packages/$line: update vendorHash"
 	fi

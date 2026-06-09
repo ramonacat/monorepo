@@ -37,3 +37,6 @@ rec {
   default = coverage;
 }
 // (builtins.mapAttrs (_: v: v.package) local-packages.apps)
+// (pkgs.lib.mapAttrs' (
+  name: v: pkgs.lib.nameValuePair (name + "-coverage") (v.coverage)
+) local-packages.apps)

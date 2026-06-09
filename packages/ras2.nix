@@ -17,12 +17,13 @@ let
   devPackage = php.buildComposerProject (
     _:
     (
-      packageAttributes // {
+      packageAttributes
+      // {
         pname = "ras2-dev";
         composerNoDev = false;
         composerNoScripts = false;
         php = devPhp;
-        vendorHash = "sha256-3OnapP85YrEdLjVqKuEDfQiTHKfoAAXPT+GIn4xfxfE=";
+        vendorHash = "sha256-3OnapP85YrEdLjVqKuEDfQiTHKfoAAXPT+GIn4xfx1E=";
       }
     )
   );
