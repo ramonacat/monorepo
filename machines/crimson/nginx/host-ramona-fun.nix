@@ -8,7 +8,7 @@
         root = "${pkgs.ramona.ramona-fun}/public/";
 
         locations."~ /public/.*" = {
-          root = "/var/www/ramona.fun/public/";
+          root = "/var/www/ramona.fun/";
         };
       };
     };

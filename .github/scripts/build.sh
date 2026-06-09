@@ -95,6 +95,7 @@ main() {
 	mapfile -t builds_hosts < <(nix eval --json '.#hosts.builds-hosts' | jq --raw-output --compact-output '.[]')
 
 	if [[ "$branch_name" == "main" ]]; then
+		publish -- result/iso/iso/*.iso root@crimson:/var/www/ramona.fun/public/nixos-latest.iso
 		publish -- result/iso/iso/*.iso root@hallewell:/var/www/hallewell.ibis-draconis.ts.net/builds/nixos-latest.iso
 
 		for builds_host in "${builds_hosts[@]}"; do

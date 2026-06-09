@@ -49,10 +49,3 @@ jobs:
           body: ${{ steps.build-all.outputs.READABLE_OUTPUT }}
           edit-mode: replace
           token: "${{ secrets.PAT }}"
-
-      - name: upload iso as artifact
-        if: github.ref == 'refs/heads/main'
-        uses: actions/upload-artifact@v7
-        with:
-          name: iso
-          path: result/iso/iso/*.iso
