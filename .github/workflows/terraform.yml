@@ -58,7 +58,7 @@ jobs:
         uses: actions/upload-artifact@v7
         with:
             name: "${{ github.sha }}.tfplan.age"
-            path: plan.tfplan.age
+            path: terraform/plan.tfplan.age
             archive: false
 
       - name: find merge parent
@@ -74,4 +74,4 @@ jobs:
 
       - name: terraform apply
         if: github.ref == 'refs/heads/main'
-        run: nix develop --command sh -c "cd terraform && age -d -i ~/.ssh/id_ed25519 plan.tfplan.age > plan.tfplan && terraform apply -input=false plan.tfplan && rm plan.tfplan"
+        run: nix develop --command sh -c "cd terraform && age -d -i ~/.ssh/id_ed25519 ../plan.tfplan.age > plan.tfplan && terraform apply -input=false plan.tfplan && rm plan.tfplan"
