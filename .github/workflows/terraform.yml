@@ -62,7 +62,7 @@ jobs:
             archive: false
 
       - name: find merge parent
-        if: github.ref != 'refs/heads/main'
+        if: github.ref == 'refs/heads/main'
         id: find-merge-parent
         run: ./.github/scripts/find-merge-parent.sh
 
