@@ -35,12 +35,12 @@ rec {
       rawCoverage = pkgs.runCommand "${package.name}--coverage" {
         buildInputs = [ devPhp ];
       } "
-  cd ${devPackage}/share/php/ras2/
+  cd ${devPackage}/share/php/ras2-dev/
   php ./vendor/bin/phpunit --coverage-clover $out
   ";
     in
     pkgs.runCommand "${devPackage.name}--clover" { } ''
-      cat ${rawCoverage} | sed "s#${devPackage}/share/php/#apps/#g" > $out
+      cat ${rawCoverage} | sed "s#${devPackage}/share/php/ras2-dev#apps/ras2#g" > $out
     '';
   checks = {
     "${package.name}--ecs" =
@@ -55,7 +55,7 @@ rec {
         ''
           mkdir -p $out
 
-          cp -r ${devPackage}/share/php/ras2/* $out/
+          cp -r ${devPackage}/share/php/ras2-dev/* $out/
 
           cd $out/
 
