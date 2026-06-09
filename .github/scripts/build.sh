@@ -95,9 +95,6 @@ main() {
 	mapfile -t builds_hosts < <(nix eval --json '.#hosts.builds-hosts' | jq --raw-output --compact-output '.[]')
 
 	if [[ "$branch_name" == "main" ]]; then
-		publish -- result/iso/iso/*.iso root@crimson:/var/www/ramona.fun/public/nixos-latest.iso
-		publish -- result/iso/iso/*.iso root@hallewell:/var/www/hallewell.ibis-draconis.ts.net/builds/nixos-latest.iso
-
 		for builds_host in "${builds_hosts[@]}"; do
 			publish -- *-closure "root@$builds_host:/var/www/$builds_host.ibis-draconis.ts.net/builds/"
 			publish -- *-home "root@$builds_host:/var/www/$builds_host.ibis-draconis.ts.net/builds/"
@@ -119,6 +116,9 @@ main() {
 				ssh "${ssh_options[@]}" "root@$builds_host" -- "rm $gcroot; ln -s $closure $gcroot"
 			done
 		done
+
+		publish -- result/iso/iso/*.iso root@crimson:/var/www/ramona.fun/public/nixos-latest.iso
+		publish -- result/iso/iso/*.iso root@hallewell:/var/www/hallewell.ibis-draconis.ts.net/builds/nixos-latest.iso
 	fi
 }
 
