@@ -12,7 +12,7 @@ jobs:
       - name: Checkout the repo
         uses: actions/checkout@v6
         with:
-          fetch-depth: 1
+          fetch-depth: 50
 
       - name: put the SSH key in a file
         run: mkdir -p $HOME/.ssh && echo "${{ secrets.SSH_KEY }}" > $HOME/.ssh/id_ed25519 && ssh-keygen -y -f ~/.ssh/id_ed25519 > ~/.ssh/id_ed25519.pub
@@ -58,19 +58,19 @@ jobs:
         uses: actions/upload-artifact@v7
         with:
             name: "${{ github.sha }}.tfplan.age"
-            path: plan.tfplan
+            path: plan.tfplan.age
             archive: false
 
       - name: find merge parent
         if: github.ref == 'refs/heads/main'
-        id: find-merge-parent
+        id: find_merge_parent
         run: ./.github/scripts/find-merge-parent.sh
 
       - name: download plan
         if: github.ref == 'refs/heads/main'
         uses: actions/download-artifact@v8
         with:
-            name: "${{ steps.find-merge-parent.outputs.parent }}.tfplan.age"
+            name: "${{ steps.find_merge_parent.outputs.parent }}.tfplan.age"
 
       - name: terraform apply
         if: github.ref == 'refs/heads/main'
