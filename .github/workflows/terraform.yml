@@ -61,11 +61,16 @@ jobs:
             path: plan.tfplan
             archive: false
 
+      - name: find merge parent
+        if: github.ref != 'refs/heads/main'
+        id: find-merge-parent
+        run: ./.github/scripts/find-merge-parent.sh
+
       - name: download plan
         if: github.ref == 'refs/heads/main'
         uses: actions/download-artifact@v8
         with:
-            name: "${{ github.sha }}.tfplan.age"
+            name: "${{ steps.find-merge-parent.outputs.parent }}.tfplan.age"
 
       - name: terraform apply
         if: github.ref == 'refs/heads/main'
