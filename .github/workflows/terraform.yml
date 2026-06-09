@@ -24,17 +24,17 @@ jobs:
         run: nix develop --command sh -c "cd terraform && terraform init -input=false"
 
       - name: terraform validate
-        if: github.ref != 'refs/heads/main'
+        if: github.head_ref != 'refs/heads/main'
         run: nix develop --command sh -c "cd terraform && terraform validate"
 
       - name: terraform plan
-        if: github.ref != 'refs/heads/main'
+        if: github.head_ref != 'refs/heads/main'
         id: terraform-plan
         run: nix develop --command sh -c "./.github/scripts/terraform-plan.sh"
 
       - name: Find Comment
         # dependabot is excluded, because dependabot PRs don't have acceess to secrets
-        if: github.ref != 'refs/heads/main' && github.actor != 'dependabot[bot]'
+        if: github.head_ref != 'refs/heads/main' && github.actor != 'dependabot[bot]'
         uses: peter-evans/find-comment@v4
         id: fc
         with:
@@ -44,7 +44,7 @@ jobs:
           token: "${{ secrets.PAT }}"
 
       - name: Create or update comment
-        if: github.ref != 'refs/heads/main' && github.actor != 'dependabot[bot]'
+        if: github.head_ref != 'refs/heads/main' && github.actor != 'dependabot[bot]'
         uses: peter-evans/create-or-update-comment@v5
         with:
           comment-id: ${{ steps.fc.outputs.comment-id }}
@@ -59,13 +59,13 @@ jobs:
         run: ./.github/scripts/find-merge-parent.sh
       
       - name: upload the plan
-        if: github.ref != 'refs/heads/main'
+        if: github.head_ref != 'refs/heads/main'
         run: "scp -oStrictHostKeyChecking=no -oUserKnownHostsFile=/dev/null -i $HOME/.ssh/id_ed25519 terraform/plan.tfplan.age root@hallewell.ibis-draconis.ts.net:/var/ci/terraform-plans/${{ steps.find_merge_parent.outputs.parent }}.tfplan.age"
 
       - name: download plan
-        if: github.ref == 'refs/heads/main'
+        if: github.head_ref == 'refs/heads/main'
         run: "scp -oStrictHostKeyChecking=no -oUserKnownHostsFile=/dev/null -i $HOME/.ssh/id_ed25519 root@hallewell.ibis-draconis.ts.net:/var/ci/terraform-plans/${{ steps.find_merge_parent.outputs.parent }}.tfplan.age terraform/plan.tfplan.age" 
 
       - name: terraform apply
-        if: github.ref == 'refs/heads/main'
+        if: github.head_ref == 'refs/heads/main'
         run: nix develop --command sh -c "cd terraform && age -d -i ~/.ssh/id_ed25519 plan.tfplan.age > plan.tfplan && terraform apply -input=false plan.tfplan && rm plan.tfplan"
