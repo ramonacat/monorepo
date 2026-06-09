@@ -8,4 +8,9 @@ _: {
     ./nginx
     ./networking.nix
   ];
+  config = {
+    users.users.root.openssh.authorizedKeys.keys = [
+      (import ../../data/ssh-keys.nix).root.ci
+    ];
+  };
 }
