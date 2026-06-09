@@ -10,19 +10,21 @@ let
 
     src = ../apps/ras2;
 
-    vendorHash = "sha256-3gT22Gn+5xyGGoFILjEY5LtCGPGSSxi22bIQcyNRppo=";
+    vendorHash = "sha256-3OnapP85YrEdLjVqKuEDfQiTHKfoAAXPT+GIn4xfxfE=";
     composerNoPlugins = false;
   };
   devPhp = package-versions.php-dev;
   devPackage = php.buildComposerProject (
     _:
     (
-      {
+      packageAttributes
+      // {
+        pname = "ras2-dev";
         composerNoDev = false;
         composerNoScripts = false;
         php = devPhp;
+        vendorHash = "sha256-hhehBhGKeSZZiK6nGmi4j4FtmDdR5y7DogCfknpIHAA=";
       }
-      // packageAttributes
     )
   );
 in
@@ -33,12 +35,12 @@ rec {
       rawCoverage = pkgs.runCommand "${package.name}--coverage" {
         buildInputs = [ devPhp ];
       } "
-  cd ${devPackage}/share/php/ras2/
+  cd ${devPackage}/share/php/ras2-dev/
   php ./vendor/bin/phpunit --coverage-clover $out
   ";
     in
     pkgs.runCommand "${devPackage.name}--clover" { } ''
-      cat ${rawCoverage} | sed "s#${devPackage}/share/php/#apps/#g" > $out
+      cat ${rawCoverage} | sed "s#${devPackage}/share/php/ras2-dev#apps/ras2#g" > $out
     '';
   checks = {
     "${package.name}--ecs" =
@@ -53,7 +55,7 @@ rec {
         ''
           mkdir -p $out
 
-          cp -r ${devPackage}/share/php/ras2/* $out/
+          cp -r ${devPackage}/share/php/ras2-dev/* $out/
 
           cd $out/
 
