@@ -23,7 +23,7 @@ let
         composerNoDev = false;
         composerNoScripts = false;
         php = devPhp;
-        vendorHash = "sha256-3OnapP85YrEdLjVqKuEDfQiTHKfoAAXPT+GIn4xfx1E=";
+        vendorHash = "sha256-hhehBhGKeSZZiK6nGmi4j4FtmDdR5y7DogCfknpIHAA=";
       }
     )
   );
