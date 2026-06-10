@@ -77,6 +77,7 @@ module "disko" {
 module "install" {
   source = "github.com/nix-community/nixos-anywhere/terraform/install?ref=1.13.0"
 
+  instance_id       = var.skip_instance_id ? null : hcloud_server.node.id
   nixos_system      = module.system-build.result.out
   nixos_partitioner = module.disko.result.out
   target_host       = hcloud_server.node.ipv4_address
