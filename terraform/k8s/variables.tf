@@ -1,3 +1,7 @@
+variable "name" {
+  type = string
+}
+
 variable "dns_zone_name" {
   type = string
 }
@@ -12,5 +16,9 @@ variable "location" {
 }
 
 variable "control_plane_nodes" {
-  type = map(object({ tailscale_tags : set(string) }))
+  type = map(object({ tailscale_tags : set(string), private_ipv4 : string }))
+}
+
+variable "subnet_id" {
+  type = string
 }
