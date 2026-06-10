@@ -1,57 +1,43 @@
-resource "hcloud_server" "thornton" {
-  name        = "thornton"
-  image       = "debian-12"
-  server_type = "cpx11"
+module "node--thornton" {
+  source = "./node"
 
-  ssh_keys = [
-    hcloud_ssh_key.ramona.id
-  ]
-
-  public_net {
-    ipv4_enabled = true
-    ipv6_enabled = true
-  }
+  dns_zone_name = dnsimple_zone.ramona-fun.name
+  name          = "thornton"
+  ssh_keys      = [hcloud_ssh_key.ramona.id]
+  location      = "hel1"
+  image         = "debian-12"
 }
 
 resource "hcloud_volume" "thornton-db" {
   name      = "thornton-db"
   size      = 50
-  server_id = hcloud_server.thornton.id
+  server_id = module.node--thornton.server_id
 }
 
-resource "hcloud_rdns" "thornton-ipv4" {
-  ip_address = hcloud_server.thornton.ipv4_address
-  dns_ptr    = dnsimple_zone_record.A--thornton-devices-ramona-fun.qualified_name
-  server_id  = hcloud_server.thornton.id
+moved {
+  from = hcloud_server.thornton
+  to   = module.node--thornton.hcloud_server.node
+}
+moved {
+  from = hcloud_rdns.thornton-ipv4
+  to   = module.node--thornton.hcloud_rdns.node-ipv4
+}
+moved {
+  from = hcloud_rdns.thornton-ipv6
+  to   = module.node--thornton.hcloud_rdns.node-ipv6
 }
 
-resource "hcloud_rdns" "thornton-ipv6" {
-  ip_address = hcloud_server.thornton.ipv6_address
-  dns_ptr    = dnsimple_zone_record.AAAA--thornton-devices-ramona-fun.qualified_name
-  server_id  = hcloud_server.thornton.id
+moved {
+  from = module.thornton-system-build
+  to   = module.node--thornton.module.system-build
 }
 
-module "thornton-system-build" {
-  source = "github.com/nix-community/nixos-anywhere/terraform/nix-build?ref=1.13.0"
-
-  attribute = "..#nixosConfigurations.thornton.config.system.build.toplevel"
+moved {
+  from = module.thornton-disko
+  to   = module.node--thornton.module.disko
 }
 
-module "thornton-disko" {
-  source = "github.com/nix-community/nixos-anywhere/terraform/nix-build?ref=1.13.0"
-
-  attribute = "..#nixosConfigurations.thornton.config.system.build.diskoScript"
-}
-
-module "thornton-install" {
-  source = "github.com/nix-community/nixos-anywhere/terraform/install?ref=1.13.0"
-
-  nixos_system      = module.thornton-system-build.result.out
-  nixos_partitioner = module.thornton-disko.result.out
-  target_host       = hcloud_server.thornton.ipv4_address
-  extra_environment = {
-    RAMONA_FLAKE_ROOT = abspath("../"),
-    HOSTNAME          = "thornton"
-  }
-  extra_files_script = "scripts/extra-files-script.bash"
+moved {
+  from = module.thornton-install
+  to   = module.node--thornton.module.install
 }

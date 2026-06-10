@@ -1,46 +1,37 @@
-resource "hcloud_server" "crimson" {
-  name        = "crimson"
-  image       = "debian-12"
-  server_type = "cpx11"
+module "node--crimson" {
+  source = "./node"
 
-  ssh_keys = [
-    hcloud_ssh_key.ramona.id
-  ]
-
-  public_net {
-    ipv4_enabled = true
-    ipv6_enabled = true
-  }
+  dns_zone_name = dnsimple_zone.ramona-fun.name
+  name          = "crimson"
+  ssh_keys      = [hcloud_ssh_key.ramona.id]
+  location      = "hel1"
+  image         = "debian-12"
 }
 
-resource "hcloud_rdns" "crimson-ipv4" {
-  ip_address = hcloud_server.crimson.ipv4_address
-  dns_ptr    = dnsimple_zone_record.A--crimson-devices-ramona-fun.qualified_name
-  server_id  = hcloud_server.crimson.id
+moved {
+  from = hcloud_server.crimson
+  to   = module.node--crimson.hcloud_server.node
+}
+moved {
+  from = hcloud_rdns.crimson-ipv4
+  to   = module.node--crimson.hcloud_rdns.node-ipv4
+}
+moved {
+  from = hcloud_rdns.crimson-ipv6
+  to   = module.node--crimson.hcloud_rdns.node-ipv6
 }
 
-resource "hcloud_rdns" "crimson-ipv6" {
-  ip_address = hcloud_server.crimson.ipv6_address
-  dns_ptr    = dnsimple_zone_record.AAAA--crimson-devices-ramona-fun.qualified_name
-  server_id  = hcloud_server.crimson.id
+moved {
+  from = module.crimson-system-build
+  to   = module.node--crimson.module.system-build
 }
 
-module "crimson-system-build" {
-  source = "github.com/nix-community/nixos-anywhere/terraform/nix-build?ref=1.13.0"
-
-  attribute = "..#nixosConfigurations.crimson.config.system.build.toplevel"
+moved {
+  from = module.crimson-disko
+  to   = module.node--crimson.module.disko
 }
 
-module "crimson-disko" {
-  source = "github.com/nix-community/nixos-anywhere/terraform/nix-build?ref=1.13.0"
-
-  attribute = "..#nixosConfigurations.crimson.config.system.build.diskoScript"
-}
-
-module "crimson-install" {
-  source = "github.com/nix-community/nixos-anywhere/terraform/install?ref=1.13.0"
-
-  nixos_system      = module.crimson-system-build.result.out
-  nixos_partitioner = module.crimson-disko.result.out
-  target_host       = hcloud_server.crimson.ipv4_address
+moved {
+  from = module.crimson-install
+  to   = module.node--crimson.module.install
 }

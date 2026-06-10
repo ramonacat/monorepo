@@ -25,3 +25,12 @@ resource "tailscale_device_tags" "pikvm" {
   device_id = data.tailscale_device.pikvm.node_id
   tags      = ["tag:server", "tag:server-private", "tag:server-private-home"]
 }
+
+resource "tailscale_dns_configuration" "default" {
+  override_local_dns = true
+
+  nameservers {
+    address            = "8.8.8.8"
+    use_with_exit_node = false
+  }
+}
