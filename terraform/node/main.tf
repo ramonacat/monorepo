@@ -84,6 +84,8 @@ module "install" {
     RAMONA_FLAKE_ROOT = abspath("../"),
     HOSTNAME          = var.name
     TAILNET_KEY       = tailscale_tailnet_key.default.key
+    # this is needed because the CI runs as a user which is not in /etc/passwd, which confuses agenix
+    SSH_KEY_PATH = "~/.ssh/id_ed25519"
   }
   extra_files_script = abspath("scripts/extra-files-script.bash")
 }
