@@ -52,3 +52,9 @@ resource "tailscale_dns_configuration" "default" {
     use_with_exit_node = false
   }
 }
+
+resource "tailscale_tailnet_settings" "default" {
+  acls_externally_managed_on = true
+  devices_approval_on        = true
+  users_approval_on          = true
+}
