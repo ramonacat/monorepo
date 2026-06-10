@@ -35,20 +35,29 @@ let
   allMachines = privateMachines ++ publicServers;
 in
 {
-  "darkmore-control-plane-0-ssh-host-key-ed25519.age".publicKeys = users ++ [
-    darkmore-control-plane-0
-  ];
-  "darkmore-control-plane-0-ssh-host-key-rsa.age".publicKeys = users ++ [ darkmore-control-plane-0 ];
+  "darkmore-control-plane-0-ssh-host-key-ed25519.age".publicKeys =
+    users
+    ++ ci
+    ++ [
+      darkmore-control-plane-0
+    ];
+  "darkmore-control-plane-0-ssh-host-key-rsa.age".publicKeys =
+    users ++ ci ++ [ darkmore-control-plane-0 ];
   "darkmore-control-plane-1-ssh-host-key-ed25519.age".publicKeys = users ++ [
     darkmore-control-plane-1
   ];
-  "darkmore-control-plane-1-ssh-host-key-rsa.age".publicKeys = users ++ [ darkmore-control-plane-1 ];
-  "darkmore-control-plane-2-ssh-host-key-ed25519.age".publicKeys = users ++ [
-    darkmore-control-plane-2
-  ];
-  "darkmore-control-plane-2-ssh-host-key-rsa.age".publicKeys = users ++ [ darkmore-control-plane-2 ];
-  "angelsin-linux-ssh-host-key-ed25519.age".publicKeys = users ++ [ angelsin-linux ];
-  "angelsin-linux-ssh-host-key-rsa.age".publicKeys = users ++ [ angelsin-linux ];
+  "darkmore-control-plane-1-ssh-host-key-rsa.age".publicKeys =
+    users ++ ci ++ [ darkmore-control-plane-1 ];
+  "darkmore-control-plane-2-ssh-host-key-ed25519.age".publicKeys =
+    users
+    ++ ci
+    ++ [
+      darkmore-control-plane-2
+    ];
+  "darkmore-control-plane-2-ssh-host-key-rsa.age".publicKeys =
+    users ++ ci ++ [ darkmore-control-plane-2 ];
+  "angelsin-linux-ssh-host-key-ed25519.age".publicKeys = users ++ ci ++ [ angelsin-linux ];
+  "angelsin-linux-ssh-host-key-rsa.age".publicKeys = users ++ ci ++ [ angelsin-linux ];
   "angelsin-linux-syncthing-cert.age".publicKeys = users ++ [ angelsin-linux ];
   "angelsin-linux-syncthing-key.age".publicKeys = users ++ [ angelsin-linux ];
   "backups-common-env.age".publicKeys = users ++ privateMachines;
@@ -57,12 +66,12 @@ in
   "backups-public-env.age".publicKeys = users ++ publicServers;
   "backups-public-password.age".publicKeys = users ++ publicServers;
   "backups-public-rclone.age".publicKeys = users ++ publicServers;
-  "crimson-ssh-host-key-ed25519.age".publicKeys = users ++ [ crimson ];
-  "crimson-ssh-host-key-rsa.age".publicKeys = users ++ [ crimson ];
+  "crimson-ssh-host-key-ed25519.age".publicKeys = users ++ ci ++ [ crimson ];
+  "crimson-ssh-host-key-rsa.age".publicKeys = users ++ ci ++ [ crimson ];
   "github-pat-runner-registration.age".publicKeys = users ++ [ hallewell ];
   "grafana-secret-key.age".publicKeys = users ++ [ thornton ];
-  "hallewell-ssh-host-key-ed25519.age".publicKeys = users ++ [ hallewell ];
-  "hallewell-ssh-host-key-rsa.age".publicKeys = users ++ [ hallewell ];
+  "hallewell-ssh-host-key-ed25519.age".publicKeys = users ++ ci ++ [ hallewell ];
+  "hallewell-ssh-host-key-rsa.age".publicKeys = users ++ ci ++ [ hallewell ];
   "hallewell-syncthing-cert.age".publicKeys = users ++ [ hallewell ];
   "hallewell-syncthing-key.age".publicKeys = users ++ [ hallewell ];
   "nix-serve-key.age".publicKeys = users ++ [ hallewell ];
@@ -73,16 +82,16 @@ in
   "radarr-api-key.age".publicKeys = users ++ [ hallewell ];
   "ras2-db-config.age".publicKeys = users ++ [ thornton ];
   "ras2-telegraf-db-config.age".publicKeys = users ++ [ thornton ];
-  "shadowsoul-ssh-host-key-ed25519.age".publicKeys = users ++ [ shadowsoul ];
-  "shadowsoul-ssh-host-key-rsa.age".publicKeys = users ++ [ shadowsoul ];
+  "shadowsoul-ssh-host-key-ed25519.age".publicKeys = users ++ ci ++ [ shadowsoul ];
+  "shadowsoul-ssh-host-key-rsa.age".publicKeys = users ++ ci ++ [ shadowsoul ];
   "shadowsoul-syncthing-cert.age".publicKeys = users ++ [ shadowsoul ];
   "shadowsoul-syncthing-key.age".publicKeys = users ++ [ shadowsoul ];
   "sonarr-api-key.age".publicKeys = users ++ [ hallewell ];
   "telegraf-database.age".publicKeys = users ++ [ thornton ];
   "terraform-tokens.age".publicKeys = users ++ ci;
   "thornton-ssh-host-key-ed25519.age".publicKeys = users ++ [ thornton ];
-  "thornton-ssh-host-key-rsa.age".publicKeys = users ++ [ thornton ];
-  "transmission-credentials.age".publicKeys = users ++ [ shadowsoul ];
+  "thornton-ssh-host-key-rsa.age".publicKeys = users ++ ci ++ [ thornton ];
+  "transmission-credentials.age".publicKeys = users ++ ci ++ [ shadowsoul ];
   "user-password-private-ramona.age".publicKeys = users ++ privateMachines;
   "user-password-private-root.age".publicKeys = users ++ privateMachines;
   "user-password-public-ramona.age".publicKeys = users ++ publicServers;
