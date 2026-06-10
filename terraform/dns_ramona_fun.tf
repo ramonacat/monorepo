@@ -1,5 +1,6 @@
 resource "ovh_domain_name_servers" "ramona-fun" {
   domain = "ramona.fun"
+
   servers { host = "ns1.dnsimple-edge.com" }
   servers { host = "ns2.dnsimple-edge.net" }
   servers { host = "ns3.dnsimple-edge.io" }
@@ -52,7 +53,6 @@ module "fastmail-dns--ramona-fun" {
   zone_name = dnsimple_zone.ramona-fun.name
 }
 
-
 resource "dnsimple_zone_record" "A--ras2-services-ramona-fun" {
   zone_name = dnsimple_zone.ramona-fun.name
   name      = "ras2.services"
@@ -66,7 +66,7 @@ resource "dnsimple_zone_record" "A--ramona-fun" {
   zone_name = dnsimple_zone.ramona-fun.name
   name      = ""
   type      = "A"
-  value     = hcloud_server.crimson.ipv4_address
+  value     = module.node--crimson.ipv4
   ttl       = 60
 }
 
@@ -74,24 +74,28 @@ resource "dnsimple_zone_record" "AAAA--ramona-fun" {
   zone_name = dnsimple_zone.ramona-fun.name
   name      = ""
   type      = "AAAA"
-  value     = hcloud_server.crimson.ipv6_address
+  value     = module.node--crimson.ipv6
   ttl       = 60
 }
 
-resource "dnsimple_zone_record" "A--crimson-devices-ramona-fun" {
-  zone_name = dnsimple_zone.ramona-fun.name
-  name      = "crimson.devices"
-  type      = "A"
-  value     = hcloud_server.crimson.ipv4_address
-  ttl       = 60
+moved {
+  from = dnsimple_zone_record.A--crimson-devices-ramona-fun
+  to   = module.node--crimson.dnsimple_zone_record.A--node
 }
 
-resource "dnsimple_zone_record" "AAAA--crimson-devices-ramona-fun" {
-  zone_name = dnsimple_zone.ramona-fun.name
-  name      = "crimson.devices"
-  type      = "AAAA"
-  value     = hcloud_server.crimson.ipv6_address
-  ttl       = 60
+moved {
+  from = dnsimple_zone_record.AAAA--crimson-devices-ramona-fun
+  to   = module.node--crimson.dnsimple_zone_record.AAAA--node
+}
+
+moved {
+  from = dnsimple_zone_record.A--thornton-devices-ramona-fun
+  to   = module.node--thornton.dnsimple_zone_record.A--node
+}
+
+moved {
+  from = dnsimple_zone_record.AAAA--thornton-devices-ramona-fun
+  to   = module.node--thornton.dnsimple_zone_record.AAAA--node
 }
 
 moved {
@@ -99,25 +103,9 @@ moved {
   to   = dnsimple_zone_record.A--thornton-devices-ramona-fun
 }
 
-resource "dnsimple_zone_record" "A--thornton-devices-ramona-fun" {
-  zone_name = dnsimple_zone.ramona-fun.name
-  name      = "thornton.devices"
-  type      = "A"
-  value     = hcloud_server.thornton.ipv4_address
-  ttl       = 60
-}
-
 moved {
   from = dnsimple_zone_record.AAAA--thronton-devices-ramona-fun
   to   = dnsimple_zone_record.AAAA--thornton-devices-ramona-fun
-}
-
-resource "dnsimple_zone_record" "AAAA--thornton-devices-ramona-fun" {
-  zone_name = dnsimple_zone.ramona-fun.name
-  name      = "thornton.devices"
-  type      = "AAAA"
-  value     = hcloud_server.thornton.ipv6_address
-  ttl       = 60
 }
 
 resource "dnsimple_zone_record" "CNAME--jellyfin-ramona-fun" {

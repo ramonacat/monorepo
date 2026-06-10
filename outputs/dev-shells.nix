@@ -41,6 +41,20 @@ pkgs.mkShell {
       '';
     })
 
+    (stdenvNoCC.mkDerivation {
+      name = "generate-host-keys";
+      src = ../scripts;
+      nativeBuildInputs = [ makeWrapper ];
+      installPhase = ''
+        mkdir -p $out/bin/;
+
+        cp generate-host-keys.bash $out/bin/generate-host-keys
+
+        wrapProgram $out/bin/generate-host-keys \
+            --prefix PATH : "${lib.makeBinPath [ ]}"
+      '';
+    })
+
     nushell
     postgresql_16
     shfmt

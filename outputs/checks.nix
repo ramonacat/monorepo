@@ -15,7 +15,7 @@ let
 in
 {
   fmt-nix = pkgs.runCommand "fmt-nix" { } ''
-    ${pkgs.nixfmt-tree}/bin/treefmt --ci ${source}
+    ${pkgs.nixfmt-tree}/bin/treefmt --fail-on-change --ci ${source}
 
     touch $out
   '';

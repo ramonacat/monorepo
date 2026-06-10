@@ -14,7 +14,7 @@ resource "dnsimple_zone_record" "A--sawin-gallery" {
   zone_name = dnsimple_zone.sawin-gallery.name
   name      = ""
   type      = "A"
-  value     = hcloud_server.crimson.ipv4_address
+  value     = module.node--crimson.ipv4
   ttl       = 60
 }
 
@@ -22,6 +22,6 @@ resource "dnsimple_zone_record" "AAAA--sawin-gallery" {
   zone_name = dnsimple_zone.sawin-gallery.name
   name      = ""
   type      = "AAAA"
-  value     = hcloud_server.crimson.ipv6_address
+  value     = module.node--crimson.ipv6
   ttl       = 60
 }
