@@ -13,11 +13,10 @@ resource "hcloud_network_subnet" "k8s" {
 module "k8s--darkmore" {
   source = "./k8s"
 
-  name                = "darkmore"
-  subnet_id           = hcloud_network_subnet.k8s.id
-  dns_zone_name       = dnsimple_zone.ramona-fun.name
-  ssh_keys            = [hcloud_ssh_key.ramona.id, hcloud_ssh_key.ci.id]
-  install_private_key = var.ssh_private_key
+  name          = "darkmore"
+  subnet_id     = hcloud_network_subnet.k8s.id
+  dns_zone_name = dnsimple_zone.ramona-fun.name
+  ssh_keys      = [hcloud_ssh_key.ramona.id, hcloud_ssh_key.ci.id]
   control_plane_nodes = {
     "darkmore-control-plane-0" = { tailscale_tags = split(" ", data.external.tailscale_tags.result["darkmore-control-plane-0"]), private_ipv4 : "10.70.0.10" },
     "darkmore-control-plane-1" = { tailscale_tags = split(" ", data.external.tailscale_tags.result["darkmore-control-plane-1"]), private_ipv4 : "10.70.0.11" },

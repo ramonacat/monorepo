@@ -1,13 +1,12 @@
 module "node--crimson" {
   source = "./node"
 
-  dns_zone_name       = dnsimple_zone.ramona-fun.name
-  name                = "crimson"
-  ssh_keys            = [hcloud_ssh_key.ramona.id]
-  location            = "hel1"
-  image               = "debian-12"
-  tailscale_tags      = split(" ", data.external.tailscale_tags.result["crimson"])
-  install_private_key = var.ssh_private_key
+  dns_zone_name  = dnsimple_zone.ramona-fun.name
+  name           = "crimson"
+  ssh_keys       = [hcloud_ssh_key.ramona.id]
+  location       = "hel1"
+  image          = "debian-12"
+  tailscale_tags = split(" ", data.external.tailscale_tags.result["crimson"])
 }
 
 moved {
