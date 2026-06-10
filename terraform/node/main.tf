@@ -85,5 +85,5 @@ module "install" {
     HOSTNAME          = var.name
     TAILNET_KEY       = tailscale_tailnet_key.default.key
   }
-  extra_files_script = abspath("../scripts/extra-files-script.bash")
+  extra_files_script = abspath("scripts/extra-files-script.bash")
 }
