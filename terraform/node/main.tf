@@ -38,7 +38,7 @@ resource "tailscale_device_tags" "node" {
 resource "hcloud_server" "node" {
   name               = var.name
   image              = var.image
-  server_type        = "cpx11"
+  server_type        = "cx23"
   location           = var.location
   placement_group_id = var.placement_group_id
 
