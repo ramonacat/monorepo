@@ -43,9 +43,12 @@ in
     ];
   "darkmore-control-plane-0-ssh-host-key-rsa.age".publicKeys =
     users ++ ci ++ [ darkmore-control-plane-0 ];
-  "darkmore-control-plane-1-ssh-host-key-ed25519.age".publicKeys = users ++ [
-    darkmore-control-plane-1
-  ];
+  "darkmore-control-plane-1-ssh-host-key-ed25519.age".publicKeys =
+    users
+    ++ ci
+    ++ [
+      darkmore-control-plane-1
+    ];
   "darkmore-control-plane-1-ssh-host-key-rsa.age".publicKeys =
     users ++ ci ++ [ darkmore-control-plane-1 ];
   "darkmore-control-plane-2-ssh-host-key-ed25519.age".publicKeys =
