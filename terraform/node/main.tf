@@ -86,5 +86,4 @@ module "install" {
     TAILNET_KEY       = tailscale_tailnet_key.default.key
   }
   extra_files_script = abspath("scripts/extra-files-script.bash")
-  ssh_private_key    = var.install_private_key
 }
