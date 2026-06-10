@@ -33,3 +33,8 @@ variable "image" {
   type    = string
   default = "debian-13"
 }
+
+variable "install_private_key" {
+  type      = string
+  sensitive = true
+}
