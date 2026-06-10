@@ -7,7 +7,7 @@ populate-ssh-keys() {
 	local -r hostname=$2
 	local -a ssh_private_key=()
 
-	if [[ -z "$3" ]]; then
+	if [[ "${3:-}" != '' ]]; then
 		ssh_private_key=("-i" "$3")
 	fi
 
