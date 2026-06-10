@@ -1,12 +1,13 @@
 module "node--thornton" {
   source = "./node"
 
-  dns_zone_name  = dnsimple_zone.ramona-fun.name
-  name           = "thornton"
-  ssh_keys       = [hcloud_ssh_key.ramona.id]
-  location       = "hel1"
-  image          = "debian-12"
-  tailscale_tags = split(" ", data.external.tailscale_tags.result["thornton"])
+  dns_zone_name    = dnsimple_zone.ramona-fun.name
+  name             = "thornton"
+  ssh_keys         = [hcloud_ssh_key.ramona.id]
+  location         = "hel1"
+  image            = "debian-12"
+  tailscale_tags   = split(" ", data.external.tailscale_tags.result["thornton"])
+  skip_instance_id = true
 }
 
 resource "hcloud_volume" "thornton-db" {

@@ -33,3 +33,8 @@ variable "image" {
   type    = string
   default = "debian-13"
 }
+
+variable "skip_instance_id" {
+  type    = bool
+  default = false
+}
