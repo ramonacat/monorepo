@@ -38,7 +38,7 @@
       {
         streamConfig = ''
           upstream k8s_control_plane {
-              ${lib.strings.join ";\n" control-plane-endpoints};
+              ${lib.strings.join "" (map (endpoint: "server ${endpoint};") control-plane-endpoints)};
           }
 
           server {
