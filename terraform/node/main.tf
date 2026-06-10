@@ -14,10 +14,25 @@ terraform {
   }
 }
 
+data "tailscale_devices" "all" {
+}
+
 resource "tailscale_tailnet_key" "default" {
   expiry              = 86400
   preauthorized       = true
   recreate_if_invalid = "always"
+  tags                = var.tailscale_tags
+}
+
+locals {
+  tailscale_device = lookup({ for device in data.tailscale_devices.all.devices : device.hostname => device }, var.name, null)
+}
+
+resource "tailscale_device_tags" "node" {
+  count = local.tailscale_device == null ? 0 : 1
+
+  device_id = local.tailscale_device.node_id
+  tags      = var.tailscale_tags
 }
 
 resource "hcloud_server" "node" {

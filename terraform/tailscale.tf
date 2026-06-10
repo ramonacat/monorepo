@@ -1,8 +1,6 @@
-data "external" "tailscale-tags" {
+// TODO this should be in the node module
+data "external" "tailscale_tags" {
   program = ["bash", abspath("./scripts/external-tailscale-tags.bash")]
-}
-
-data "tailscale_devices" "all" {
 }
 
 data "tailscale_device" "pikvm" {
@@ -14,16 +12,20 @@ moved {
   to   = tailscale_device_tags.devices
 }
 
-resource "tailscale_device_tags" "devices" {
-  for_each = data.external.tailscale-tags.result
-
-  device_id = { for device in data.tailscale_devices.all.devices : device.hostname => device.node_id }[each.key]
-  tags      = split(" ", each.value)
-}
-
 resource "tailscale_device_tags" "pikvm" {
   device_id = data.tailscale_device.pikvm.node_id
   tags      = ["tag:server", "tag:server-private", "tag:server-private-home"]
+}
+
+// TODO create a module for physical machines that sets up dns, tailscale tags, etc.
+resource "tailscale_device_tags" "hallewell" {
+  device_id = data.tailscale_device.pikvm.node_id
+  tags      = split(" ", data.external.tailscale_tags.result["hallewell"])
+}
+
+resource "tailscale_device_tags" "shadowsoul" {
+  device_id = data.tailscale_device.pikvm.node_id
+  tags      = split(" ", data.external.tailscale_tags.result["shadowsoul"])
 }
 
 resource "tailscale_dns_configuration" "default" {

@@ -1,3 +1,4 @@
+# TODO convert to sops so we can avoid the long list that defines all the secrets here
 let
   ssh-keys = import ../data/ssh-keys.nix;
 
@@ -10,6 +11,10 @@ let
   crimson = ssh-keys.machines.crimson.rsa;
   thornton = ssh-keys.machines.thornton.rsa;
 
+  darkmore-control-plane-0 = ssh-keys.machines.darkmore-control-plane-0.rsa;
+  darkmore-control-plane-1 = ssh-keys.machines.darkmore-control-plane-1.rsa;
+  darkmore-control-plane-2 = ssh-keys.machines.darkmore-control-plane-2.rsa;
+
   workstations = [ angelsin-linux ];
 
   privateMachines = [
@@ -21,11 +26,27 @@ let
   publicServers = [
     crimson
     thornton
+
+    darkmore-control-plane-0
+    darkmore-control-plane-1
+    darkmore-control-plane-2
   ];
 
   allMachines = privateMachines ++ publicServers;
 in
 {
+  "darkmore-control-plane-0-ssh-host-key-ed25519.age".publicKeys = users ++ [
+    darkmore-control-plane-0
+  ];
+  "darkmore-control-plane-0-ssh-host-key-rsa.age".publicKeys = users ++ [ darkmore-control-plane-0 ];
+  "darkmore-control-plane-1-ssh-host-key-ed25519.age".publicKeys = users ++ [
+    darkmore-control-plane-1
+  ];
+  "darkmore-control-plane-1-ssh-host-key-rsa.age".publicKeys = users ++ [ darkmore-control-plane-1 ];
+  "darkmore-control-plane-2-ssh-host-key-ed25519.age".publicKeys = users ++ [
+    darkmore-control-plane-2
+  ];
+  "darkmore-control-plane-2-ssh-host-key-rsa.age".publicKeys = users ++ [ darkmore-control-plane-2 ];
   "angelsin-linux-ssh-host-key-ed25519.age".publicKeys = users ++ [ angelsin-linux ];
   "angelsin-linux-ssh-host-key-rsa.age".publicKeys = users ++ [ angelsin-linux ];
   "angelsin-linux-syncthing-cert.age".publicKeys = users ++ [ angelsin-linux ];
@@ -57,7 +78,6 @@ in
   "shadowsoul-syncthing-cert.age".publicKeys = users ++ [ shadowsoul ];
   "shadowsoul-syncthing-key.age".publicKeys = users ++ [ shadowsoul ];
   "sonarr-api-key.age".publicKeys = users ++ [ hallewell ];
-  "tailscale-auth-key.age".publicKeys = users ++ allMachines;
   "telegraf-database.age".publicKeys = users ++ [ thornton ];
   "terraform-tokens.age".publicKeys = users ++ ci;
   "thornton-ssh-host-key-ed25519.age".publicKeys = users ++ [ thornton ];

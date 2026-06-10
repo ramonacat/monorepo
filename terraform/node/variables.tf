@@ -10,6 +10,10 @@ variable "ssh_keys" {
   type = list(string)
 }
 
+variable "tailscale_tags" {
+  type = list(string)
+}
+
 variable "dns_suffix" {
   type    = string
   default = ".devices"
