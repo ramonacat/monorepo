@@ -4,8 +4,10 @@
     ../../roles/hetzner-cloud
     ../../roles/installed
     ../../roles/server-public
+    ../../roles/tailscale-nginx
 
     ./networking.nix
+    ./kubernetes.nix
   ];
   options = {
     ramona.darkmore-control-plane = lib.mkOption {
@@ -14,6 +16,7 @@
         submodule {
           options = {
             id = lib.mkOption { type = int; };
+            total-count = lib.mkOption { type = int; };
           };
         };
     };
