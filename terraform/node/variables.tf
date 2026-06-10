@@ -10,6 +10,11 @@ variable "ssh_keys" {
   type = list(string)
 }
 
+variable "placement_group_id" {
+  type    = string
+  default = null
+}
+
 variable "tailscale_tags" {
   type = list(string)
 }
