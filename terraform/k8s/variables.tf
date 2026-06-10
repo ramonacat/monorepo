@@ -22,3 +22,8 @@ variable "control_plane_nodes" {
 variable "subnet_id" {
   type = string
 }
+
+variable "install_private_key" {
+  type      = string
+  sensitive = true
+}
