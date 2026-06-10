@@ -38,7 +38,10 @@ pkgs.lib.genAttrs machines (
           (../machine-templates + "/${set-name}")
           {
             config = {
-              ramona.darkmore-control-plane.id = i;
+              ramona.darkmore-control-plane = {
+                id = i;
+                total-count = 3;
+              };
             };
           }
         ];

@@ -36,7 +36,7 @@
         timers.nginx-tailscale-ssl-keyrefresh = {
           wantedBy = [ "timers.target" ];
           timerConfig = {
-            OnUnitActiveSec = "30d";
+            OnCalendar = "monthly";
             Persistent = true;
             Unit = "nginx-tailscale-ssl-keyrefresh.service";
           };
