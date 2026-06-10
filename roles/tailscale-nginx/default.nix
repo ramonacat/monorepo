@@ -42,6 +42,8 @@
           };
         };
 
+        services.nginx.wants = [ config.systemd.services.nginx-tailscale-ssl-keyrefresh.name ];
+
         tmpfiles.rules = [
           "d '${certificateDirectory}' - ${config.services.nginx.user} ${config.services.nginx.group} - -"
         ];
