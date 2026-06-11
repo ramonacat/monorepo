@@ -35,25 +35,23 @@
             ExecStart =
               let
                 kubelet-script = pkgs.writeShellScriptBin "kubelet-wrapper" ''
-                  config=""
+                  local -a arguments=()
                   if [[ -f "${kubelet-config}" ]]; then
-                    config="--config=${kubelet-config}"
+                    arguments+="--config=${kubelet-config}"
                   fi
 
-                  kubeconfig =""
+                  kubeconfig=""
                   if [[ -f "${kubelet-kubeconfig}" ]]; then
-                    kubeconfig="--kubeconfig=${kubelet-kubeconfig}"
+                    arguments+="--kubeconfig=${kubelet-kubeconfig}"
                   fi
 
-                  exec ${pkgs.kubernetes}/bin/kubelet \
+                  exec ${pkgs.kubernetes}/bin/kubelet "''${arguments[@]}" \
                       --hostname-override=${config.networking.hostName} \
                       --fail-swap-on=false \
-                      "$config" \
-                      "$kubeconfig" \
                       --bootstrap-kubeconfig=/etc/kubernetes/bootstrap-kubelet.conf
                 '';
               in
-              "exec ${kubelet-script}/bin/kubelet-wrapper";
+              "${kubelet-script}/bin/kubelet-wrapper";
           };
         };
       };
