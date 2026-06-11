@@ -77,6 +77,7 @@
 
           server {
               listen ${toString control-plane-port};
+              proxy_pass k8s_control_plane;
           }
         '';
       };
