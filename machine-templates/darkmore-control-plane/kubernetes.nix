@@ -15,7 +15,6 @@
     ];
 
     # using services.kubernetes will create a configuration that assumes using those for everything, which is not compatible with kubeadm
-    # default settings are fine, and what kubeadm expects
     systemd.services.kubelet = {
       description = "kubernetes kubelet service";
       wantedBy = [ "default.target" ];
@@ -30,7 +29,10 @@
         ExecStart = ''
           ${pkgs.kubernetes}/bin/kubelet \
               --hostname-override=${config.networking.hostName} \
-              --fail-swap-on=false
+              --fail-swap-on=false \
+              --config=/var/lib/kubelet/config.yaml \
+              --kubeconfig=/etc/kubernetes/kubelet.conf \
+              --bootstrap-kubeconfig=/etc/kubernetes/bootstrap-kubelet.conf
         '';
       };
     };
