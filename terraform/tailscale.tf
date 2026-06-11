@@ -88,24 +88,6 @@ resource "tailscale_acl" "default" {
           ip = [
             "tcp:9091", // transmission
           ]
-        },
-        {
-          src = ["tag:kubernetes-darkmore-control-plane"],
-          dst = ["tag:kubernetes-darkmore-control-plane"],
-          ip = [
-            "tcp:6443",        // k8s API server
-            "tcp:2379-2380",   // etcd
-            "tcp:10250",       // kubelet API
-            "tcp:10256",       // kube-proxy
-            "tcp:10257",       // kube-controller-manager
-            "tcp:10259",       // kube-scheduler
-            "tcp:30000-32767", // NodePort services
-            "udp:30000-32767", // NodePort services
-
-            "tcp:4240", // cilium - health checks
-            "tcp:4250", // cilium - mutual authentication port
-            "udp:8472", // cilium - VXLAN
-          ]
         }
       ],
       tagOwners = {
