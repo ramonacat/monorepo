@@ -35,14 +35,14 @@
             ExecStart =
               let
                 kubelet-script = pkgs.writeShellScriptBin "kubelet-wrapper" ''
-                  local -a arguments=()
+                  declare -a arguments=()
                   if [[ -f "${kubelet-config}" ]]; then
-                    arguments+="--config=${kubelet-config}"
+                    arguments+=("--config=${kubelet-config}")
                   fi
 
                   kubeconfig=""
                   if [[ -f "${kubelet-kubeconfig}" ]]; then
-                    arguments+="--kubeconfig=${kubelet-kubeconfig}"
+                    arguments+=("--kubeconfig=${kubelet-kubeconfig}")
                   fi
 
                   exec ${pkgs.kubernetes}/bin/kubelet "''${arguments[@]}" \
