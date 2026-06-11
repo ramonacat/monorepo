@@ -21,4 +21,10 @@
         };
     };
   };
+  config = {
+    ramona.machine.tailscale-tags = [
+      "tag:kubernetes-darkmore"
+      "tag:kubernetes-darkmore-control-plane"
+    ];
+  };
 }

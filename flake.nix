@@ -162,6 +162,8 @@
                         [ ]
                     )
                     ++ (if v.config.services.jellyfin.enable then [ "tag:service-jellyfin" ] else [ ])
+                    # TODO migrate to use this instead of a centralized config here
+                    ++ v.config.ramona.machine.tailscale-tags
                   )
                 else
                   [ ]
