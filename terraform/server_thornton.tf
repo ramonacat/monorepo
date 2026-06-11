@@ -1,7 +1,6 @@
 module "node--thornton" {
   source = "./node"
 
-  depends_on       = [tailscale_acl.default]
   dns_zone_name    = dnsimple_zone.ramona-fun.name
   name             = "thornton"
   ssh_keys         = [hcloud_ssh_key.ramona.id]
