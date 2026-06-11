@@ -46,6 +46,15 @@
             iptables
             socat
           ];
+          preStart = ''
+            for f in ${pkgs.cni-plugins}/bin/*; do
+              plugin_name=$(basename $f)
+
+              [ -f "$plugin_name" ] && rm "/opt/cni/bin/$plugin_name"
+                
+              ln -s "$f" "/opt/cni/bin/$plugin_name"
+            done
+          '';
           serviceConfig = {
             MemoryAccounting = true;
             Restart = "on-failure";
@@ -84,6 +93,7 @@
         control-plane-endpoints = map (hostname: "${hostname}:6443") control-plane-hostnames;
       in
       {
+        enable = true;
         streamConfig = ''
           upstream k8s_control_plane {
               ${lib.strings.join "" (map (endpoint: "server ${endpoint};") control-plane-endpoints)};
@@ -113,12 +123,9 @@
         10256 # kube-proxy
         10257 # kube-controller-manager
         10259 # kube-scheduler
-
-        4240 # cilium - health checks
-        4250 # cilium - mutual authentication port
       ];
       allowedUDPPorts = [
-        8472 # cilium - VXLAN
+        8472 # VXLAN
       ];
       allowedTCPPortRanges = [
         {

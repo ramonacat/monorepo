@@ -93,5 +93,11 @@ Generally the flake should build anywhere, so the machines can be rebuilt by che
 
 # Kubernetes setup
 ```
-kubeadm reset && $(rm /etc/cni/net.d/* || true) && kubeadm init --control-plane-endpoint "127.0.0.1:6444" --apiserver-advertise-address=10.70.0.10  --pod-network-cidr=10.71.0.0/16 --service-cidr=10.72.0.0/16 --upload-certs
+kubeadm reset && $(rm /etc/cni/net.d/* || true) && kubeadm init --control-plane-endpoint "127.0.0.1:6444" --apiserver-advertise-address=10.70.0.10  --pod-network-cidr=10.72.0.0/16 --service-cidr=10.73.0.0/16 --upload-certs
+export KUBECONFIG=/etc/kubernetes/admin.conf
+nix-shell -p kubernetes-helm
+kubectl create ns kube-flannel
+kubectl label --overwrite ns kube-flannel pod-security.kubernetes.io/enforce=privileged
+helm repo add flannel https://flannel-io.github.io/flannel/
+helm install flannel --set podCidr="10.72.0.0/16" --namespace kube-flannel flannel/flannel
 ```

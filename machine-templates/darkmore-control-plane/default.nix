@@ -4,7 +4,6 @@
     ../../roles/hetzner-cloud
     ../../roles/installed
     ../../roles/server-public
-    ../../roles/tailscale-nginx
 
     ./networking.nix
     ./kubernetes.nix
