@@ -22,4 +22,13 @@ resource "hcloud_firewall" "fw" {
     source_ips  = ["0.0.0.0/0"]
     description = "tailscale internal"
   }
+
+  # ssh over public network is used for initial provisioning of nodes
+  rule {
+    direction   = "in"
+    protocol    = "tcp"
+    port        = "22"
+    source_ips  = ["0.0.0.0/0"]
+    description = "ssh"
+  }
 }
