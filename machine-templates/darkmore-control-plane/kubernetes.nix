@@ -10,7 +10,7 @@
       enable = true;
       settings = {
         plugins."io.containerd.grpc.v1.cri" = {
-          cni.bin_dir = "/opt/cni/bin";
+          cni.bin_dir = "/opt/cni/bin/";
         };
       };
     };
@@ -99,6 +99,12 @@
           }
         '';
       };
+
+    boot.kernelModules = [
+      # needed by flannel
+      "br_netfilter"
+      "overlay"
+    ];
 
     networking.firewall.interfaces.tailscale0 = {
       allowedTCPPorts = [
