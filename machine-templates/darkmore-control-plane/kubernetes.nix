@@ -30,7 +30,7 @@
         ExecStart = ''
           ${pkgs.kubernetes}/bin/kubelet \
               --hostname-override=${config.networking.hostName} \
-              --fail-on-swap=false
+              --fail-swap-on=false
         '';
       };
     };
