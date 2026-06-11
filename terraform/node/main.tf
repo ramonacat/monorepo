@@ -41,6 +41,7 @@ resource "hcloud_server" "node" {
   server_type        = "cx23"
   location           = var.location
   placement_group_id = var.placement_group_id
+  firewall_ids       = var.firewall_ids
 
   ssh_keys = var.ssh_keys
 

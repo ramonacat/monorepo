@@ -8,6 +8,7 @@ module "node--thornton" {
   image            = "debian-12"
   tailscale_tags   = split(" ", data.external.tailscale_tags.result["thornton"])
   skip_instance_id = true
+  firewall_ids     = [hcloud_firewall.fw.id]
 }
 
 resource "hcloud_volume" "thornton-db" {

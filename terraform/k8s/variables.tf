@@ -22,3 +22,7 @@ variable "control_plane_nodes" {
 variable "subnet_id" {
   type = string
 }
+
+variable "firewall_ids" {
+  type = list(string)
+}

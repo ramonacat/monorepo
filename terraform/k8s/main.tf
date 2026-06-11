@@ -21,6 +21,7 @@ module "k8s--control-plane-nodes" {
   ssh_keys           = var.ssh_keys
   dns_zone_name      = var.dns_zone_name
   tailscale_tags     = var.control_plane_nodes[each.value].tailscale_tags
+  firewall_ids       = var.firewall_ids
 }
 
 resource "hcloud_server_network" "node" {

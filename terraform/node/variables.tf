@@ -19,6 +19,10 @@ variable "tailscale_tags" {
   type = list(string)
 }
 
+variable "firewall_ids" {
+  type = list(string)
+}
+
 variable "dns_suffix" {
   type    = string
   default = ".devices"
@@ -38,3 +42,4 @@ variable "skip_instance_id" {
   type    = bool
   default = false
 }
+
