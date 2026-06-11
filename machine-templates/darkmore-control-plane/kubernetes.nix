@@ -59,5 +59,21 @@
           }
         '';
       };
+
+    networking.firewall.interfaces.tailscale0 = {
+      allowedTCPPorts = [
+        6443 # kube-apiserver
+        2379 # etcd
+        2380 # etcd
+        10250 # kubelet
+        10256 # kube-proxy
+      ];
+      allowedTCPPortRanges = [
+        {
+          from = 30000;
+          to = 32767;
+        }
+      ];
+    };
   };
 }
