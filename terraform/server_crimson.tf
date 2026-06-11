@@ -8,6 +8,7 @@ module "node--crimson" {
   image            = "debian-12"
   tailscale_tags   = split(" ", data.external.tailscale_tags.result["crimson"])
   skip_instance_id = true
+  firewall_ids     = [hcloud_firewall.fw.id]
 }
 
 moved {
