@@ -13,16 +13,24 @@
       pkgs.kubernetes
       pkgs.kubectl
     ];
-    services.kubernetes = {
-      apiserverAddress = "https://localhost:6444";
-      clusterCidr = "10.71.0.0/16";
 
-      kubelet = {
-        enable = true;
-        extraConfig = {
-          failSwapOn = false;
-          swapBehavior = "LimitedSwap";
-        };
+    # using services.kubernetes will create a configuration that assumes using those for everything, which is not compatible with kubeadm
+    # default settings are fine, and what kubeadm expects
+    systemd.services.kubelet = {
+      description = "kubernetes kubelet service";
+      wantedBy = [ "default.target" ];
+      after = [
+        "containerd.service"
+        "network.target"
+      ];
+      serviceConfig = {
+        MemoryAccounting = true;
+        Restart = "on-failure";
+        RestartSec = "1000ms";
+        ExecStart = ''
+          ${pkgs.kubernetes}/bin/kubelet
+              --hostname-override=${config.networking.hostName}
+        '';
       };
     };
 
