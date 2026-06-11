@@ -5,19 +5,14 @@ set -euo pipefail
 populate-ssh-keys() {
 	local -r secrets_path=$1
 	local -r hostname=$2
-	local -a ssh_private_key=()
-
-	if [[ "${3:-}" != '' ]]; then
-		ssh_private_key=("-i" "$3")
-	fi
 
 	pushd "$secrets_path" >/dev/null || {
 		echo "$secrets_path could not be opened"
 		exit 1
 	}
 
-	local -r rsa_key=$(agenix "${ssh_private_key[@]}" -d "$hostname-ssh-host-key-rsa.age")
-	local -r ed25519_key=$(agenix "${ssh_private_key[@]}" -d "$hostname-ssh-host-key-ed25519.age")
+	local -r rsa_key=$(agenix -d "$hostname-ssh-host-key-rsa.age")
+	local -r ed25519_key=$(agenix -d "$hostname-ssh-host-key-ed25519.age")
 
 	popd >/dev/null || {
 		echo "failed to leave $secrets_path"
