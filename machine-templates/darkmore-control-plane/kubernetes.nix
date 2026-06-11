@@ -116,8 +116,22 @@
         2380 # etcd
         10250 # kubelet
         10256 # kube-proxy
+        10257 # kube-controller-manager
+        10259 # kube-scheduler
+
+        4240 # cilium - health checks
+        4250 # cilium - mutual authentication port
+      ];
+      allowedUDPPorts = [
+        8472 # cilium - VXLAN
       ];
       allowedTCPPortRanges = [
+        {
+          from = 30000;
+          to = 32767;
+        }
+      ];
+      allowedUDPPortRanges = [
         {
           from = 30000;
           to = 32767;

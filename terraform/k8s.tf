@@ -8,7 +8,6 @@ resource "hcloud_network_subnet" "k8s" {
 module "k8s--darkmore" {
   source = "./k8s"
 
-  depends_on    = [tailscale_acl.default]
   name          = "darkmore"
   subnet_id     = hcloud_network_subnet.k8s.id
   dns_zone_name = dnsimple_zone.ramona-fun.name
