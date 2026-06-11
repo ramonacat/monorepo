@@ -8,7 +8,13 @@
   config = {
     virtualisation.containerd = {
       enable = true;
+      settings = {
+        plugins."io.containerd.grpc.v1.cri" = {
+          cni.bin_dir = "/opt/cni/bin";
+        };
+      };
     };
+
     environment.systemPackages = [
       pkgs.kubernetes
       pkgs.kubectl
