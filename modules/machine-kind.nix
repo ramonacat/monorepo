@@ -27,6 +27,10 @@
             };
             hasPublicIP = lib.mkOption { type = bool; };
             roles = lib.mkOption { type = listOf str; };
+            tailscale-tags = lib.mkOption {
+              type = listOf str;
+              default = [ ];
+            };
           };
         };
     };
