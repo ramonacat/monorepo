@@ -15,27 +15,44 @@
     ];
 
     # using services.kubernetes will create a configuration that assumes using those for everything, which is not compatible with kubeadm
-    systemd.services.kubelet = {
-      description = "kubernetes kubelet service";
-      wantedBy = [ "default.target" ];
-      after = [
-        "containerd.service"
-        "network.target"
-      ];
-      serviceConfig = {
-        MemoryAccounting = true;
-        Restart = "on-failure";
-        RestartSec = "1000ms";
-        ExecStart = ''
-          ${pkgs.kubernetes}/bin/kubelet \
-              --hostname-override=${config.networking.hostName} \
-              --fail-swap-on=false \
-              --config=/var/lib/kubelet/config.yaml \
-              --kubeconfig=/etc/kubernetes/kubelet.conf \
-              --bootstrap-kubeconfig=/etc/kubernetes/bootstrap-kubelet.conf
-        '';
+    systemd =
+      let
+        kubelet-config = "/var/lib/kubelet/config.yaml";
+        kubelet-kubeconfig = "/etc/kubernetes/kubelet.conf";
+      in
+      {
+        services.kubelet = {
+          description = "kubernetes kubelet service";
+          wantedBy = [ "default.target" ];
+          after = [
+            "containerd.service"
+            "network.target"
+          ];
+          serviceConfig = {
+            MemoryAccounting = true;
+            Restart = "on-failure";
+            RestartSec = "1000ms";
+            ExecStart = ''
+              config=""
+              if [[ -f "${kubelet-config}" ]]; then
+                config="--config=${kubelet-config}"
+              fi
+
+              kubeconfig =""
+              if [[ -f "${kubelet-kubeconfig}" ]]; then
+                kubeconfig="--kubeconfig=${kubelet-kubeconfig}"
+              fi
+
+              ${pkgs.kubernetes}/bin/kubelet \
+                  --hostname-override=${config.networking.hostName} \
+                  --fail-swap-on=false \
+                  "$config" \
+                  "$kubeconfig" \
+                  --bootstrap-kubeconfig=/etc/kubernetes/bootstrap-kubelet.conf
+            '';
+          };
+        };
       };
-    };
 
     services.nginx =
       let
