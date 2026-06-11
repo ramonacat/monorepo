@@ -108,6 +108,7 @@
 
     networking.firewall.interfaces.tailscale0 = {
       allowedTCPPorts = [
+        443 # coredns
         6443 # kube-apiserver
         6444 # loadbalanced kube-apiserver, for administration access
         2379 # etcd
