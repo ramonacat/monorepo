@@ -32,24 +32,28 @@
             MemoryAccounting = true;
             Restart = "on-failure";
             RestartSec = "1000ms";
-            ExecStart = ''
-              config=""
-              if [[ -f "${kubelet-config}" ]]; then
-                config="--config=${kubelet-config}"
-              fi
+            ExecStart =
+              let
+                kubelet-script = pkgs.writeShellScriptBin "kubelet-wrapper" ''
+                  config=""
+                  if [[ -f "${kubelet-config}" ]]; then
+                    config="--config=${kubelet-config}"
+                  fi
 
-              kubeconfig =""
-              if [[ -f "${kubelet-kubeconfig}" ]]; then
-                kubeconfig="--kubeconfig=${kubelet-kubeconfig}"
-              fi
+                  kubeconfig =""
+                  if [[ -f "${kubelet-kubeconfig}" ]]; then
+                    kubeconfig="--kubeconfig=${kubelet-kubeconfig}"
+                  fi
 
-              ${pkgs.kubernetes}/bin/kubelet \
-                  --hostname-override=${config.networking.hostName} \
-                  --fail-swap-on=false \
-                  "$config" \
-                  "$kubeconfig" \
-                  --bootstrap-kubeconfig=/etc/kubernetes/bootstrap-kubelet.conf
-            '';
+                  exec ${pkgs.kubernetes}/bin/kubelet \
+                      --hostname-override=${config.networking.hostName} \
+                      --fail-swap-on=false \
+                      "$config" \
+                      "$kubeconfig" \
+                      --bootstrap-kubeconfig=/etc/kubernetes/bootstrap-kubelet.conf
+                '';
+              in
+              "exec ${kubelet-script}/bin/kubelet-wrapper";
           };
         };
       };
