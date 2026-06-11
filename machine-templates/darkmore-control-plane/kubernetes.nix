@@ -28,8 +28,9 @@
         Restart = "on-failure";
         RestartSec = "1000ms";
         ExecStart = ''
-          ${pkgs.kubernetes}/bin/kubelet
-              --hostname-override=${config.networking.hostName}
+          ${pkgs.kubernetes}/bin/kubelet \
+              --hostname-override=${config.networking.hostName} \
+              --fail-on-swap=false
         '';
       };
     };
