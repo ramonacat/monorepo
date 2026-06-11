@@ -90,3 +90,8 @@ Automatic updates can be stopped:
     - nodes: `touch /var/.stop_updates`
 
 Generally the flake should build anywhere, so the machines can be rebuilt by checking out the repo and doing `nixos-rebuild --flake .#<HOSTNAME>`. Terraform will work with the normal `terraform validate`/`terraform plan`/`terraform apply` worflow as long as you have the SSH key and are in the `nix develop` shell (there's a wrapper defined in `outputs/dev-shells.nix` that decrypts `secrets/terraform-tokens.age` and exports the secrets as environment variables).
+
+# Kubernetes setup
+```
+kubeadm reset && kubeadm init --control-plane-endpoint "localhost:6444" --apiserver-bind-port=6443 --apiserver-advertise-address=$(tailscale ip -4) --apiserver-cert-extra-sans=$(tailscale ip -4),$(hostname) --pod-network-cidr=10.71.0.0/16 --service-cidr=10.72.0.0/16 --upload-certs
+```

@@ -66,6 +66,7 @@
                   exec ${pkgs.kubernetes}/bin/kubelet "''${arguments[@]}" \
                       --hostname-override=${config.networking.hostName} \
                       --fail-swap-on=false \
+                      --node-ip=$(${pkgs.tailscale}/bin/tailscale ip -4)
                       --bootstrap-kubeconfig=/etc/kubernetes/bootstrap-kubelet.conf
                 '';
               in
