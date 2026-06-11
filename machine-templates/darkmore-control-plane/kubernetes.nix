@@ -66,7 +66,7 @@
                   exec ${pkgs.kubernetes}/bin/kubelet "''${arguments[@]}" \
                       --hostname-override=${config.networking.hostName} \
                       --fail-swap-on=false \
-                      --node-ip=$(${pkgs.tailscale}/bin/tailscale ip -4)
+                      --node-ip=10.70.0.${toString (10 + config.ramona.darkmore-control-plane.id)}
                       --bootstrap-kubeconfig=/etc/kubernetes/bootstrap-kubelet.conf
                 '';
               in
@@ -78,14 +78,9 @@
     services.nginx =
       let
         control-plane-port = 6444;
-        control-plane-hostnames = map (
-          i:
-          let
-            set-name = "darkmore-control-plane";
-            hostname = "${set-name}-${toString i}";
-          in
-          "${hostname}.ibis-draconis.ts.net"
-        ) (lib.range 0 (config.ramona.darkmore-control-plane.total-count - 1));
+        control-plane-hostnames = map (i: "10.70.0.${toString (i + 10)}") (
+          lib.range 0 (config.ramona.darkmore-control-plane.total-count - 1)
+        );
         control-plane-endpoints = map (hostname: "${hostname}:6443") control-plane-hostnames;
       in
       {
@@ -107,7 +102,7 @@
       "overlay"
     ];
 
-    networking.firewall.interfaces.tailscale0 = {
+    networking.firewall.interfaces.enp7s0 = {
       allowedTCPPorts = [
         443 # coredns
         6443 # kube-apiserver
