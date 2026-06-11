@@ -19,6 +19,10 @@
 
       kubelet = {
         enable = true;
+        extraConfig = {
+          failSwapOn = false;
+          swapBehavior = "LimitedSwap";
+        };
       };
     };
 
