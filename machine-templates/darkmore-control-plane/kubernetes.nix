@@ -84,6 +84,7 @@
         control-plane-endpoints = map (hostname: "${hostname}:6443") control-plane-hostnames;
       in
       {
+        enable = true;
         streamConfig = ''
           upstream k8s_control_plane {
               ${lib.strings.join "" (map (endpoint: "server ${endpoint};") control-plane-endpoints)};
