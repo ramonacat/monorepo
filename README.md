@@ -93,5 +93,5 @@ Generally the flake should build anywhere, so the machines can be rebuilt by che
 
 # Kubernetes setup
 ```
-kubeadm reset && kubeadm init --control-plane-endpoint "localhost:6444" --apiserver-bind-port=6443 --apiserver-advertise-address=$(tailscale ip -4) --apiserver-cert-extra-sans=$(tailscale ip -4),$(hostname) --pod-network-cidr=10.71.0.0/16 --service-cidr=10.72.0.0/16 --upload-certs
+kubeadm reset && $(rm /etc/cni/net.d/* || true) && kubeadm init --control-plane-endpoint "127.0.0.1:6444" --apiserver-advertise-address=10.70.0.10  --pod-network-cidr=10.71.0.0/16 --service-cidr=10.72.0.0/16 --upload-certs
 ```
