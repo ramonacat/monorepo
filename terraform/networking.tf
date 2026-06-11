@@ -18,7 +18,7 @@ resource "hcloud_firewall" "fw" {
   rule {
     direction   = "in"
     protocol    = "udp"
-    port        = "41641"
+    port        = "3478"
     source_ips  = ["0.0.0.0/0"]
     description = "tailscale internal"
   }
