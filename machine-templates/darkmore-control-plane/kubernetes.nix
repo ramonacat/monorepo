@@ -28,6 +28,18 @@
             "containerd.service"
             "network.target"
           ];
+          # these are various binaries needed by the kubelet when it runs, the list is stolen from: https://github.com/NixOS/nixpkgs/blob/nixos-unstable/nixos/modules/services/cluster/kubernetes/kubelet.nix#L332
+          # be careful removing things, as they are not needed for startup, but cause things to fail later if missing
+          path = with pkgs; [
+            gitMinimal
+            openssh
+            util-linuxMinimal
+            iproute2
+            ethtool
+            thin-provisioning-tools
+            iptables
+            socat
+          ];
           serviceConfig = {
             MemoryAccounting = true;
             Restart = "on-failure";
@@ -85,6 +97,7 @@
     networking.firewall.interfaces.tailscale0 = {
       allowedTCPPorts = [
         6443 # kube-apiserver
+        6444 # loadbalanced kube-apiserver, for administration access
         2379 # etcd
         2380 # etcd
         10250 # kubelet
