@@ -94,7 +94,7 @@ Generally the flake should build anywhere, so the machines can be rebuilt by che
 
 # Kubernetes setup
 ```
-# On any of the nodes, afterwards kubeadm will give you a `kubeadm init` command. Modify it to ensure that `--apiserver-advertise-address` and `--control-plane-endpoint` are correct
+# On any of the nodes, afterwards kubeadm will give you a `kubeadm init` command. Modify it to ensure that `--apiserver-advertise-address` is correct (see below)
 # Ensure the 10.70.0.0/16 IP matches the one the machine uses, as well as the hostname
 kubeadm reset 
 rm /etc/cni/net.d/*
@@ -107,5 +107,14 @@ helm repo add flannel https://flannel-io.github.io/flannel/
 helm install flannel --set podCidr="10.72.0.0/16" --namespace kube-flannel flannel/flannel
 
 # joining the cluster
+kubeadm reset 
+rm /etc/cni/net.d/*
+kubeadm join 127.0.0.1:6444 --token ... \
+  --discovery-token-ca-cert-hash sha256:... \
+  --control-plane --certificate-key ... \
+  --apiserver-advertise-address 10.70.0.11
+
+export KUBECONFIG=/etc/kubernetes/admin.conf
+kubectl annotate node darkmore-control-plane-1 flannel.alpha.coreos.com/node-public-ip=10.70.0.11
 
 ```
