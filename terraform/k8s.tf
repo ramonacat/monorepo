@@ -14,6 +14,6 @@ module "k8s--darkmore" {
   ssh_keys      = [hcloud_ssh_key.ramona.id, hcloud_ssh_key.ci.id]
   firewall_ids  = [hcloud_firewall.fw.id]
   control_plane_nodes = { for node in jsondecode(file("./k8s-nodes.json"))["darkmore"] : node.hostname => {
-    tailscale_tags = split(" ", data.external.tailscale_tags.result[node.hostname]), private_ipv4 : "10.70.0.10"
+    tailscale_tags = split(" ", data.external.tailscale_tags.result[node.hostname]), private_ipv4 : node.ip
   } }
 }
