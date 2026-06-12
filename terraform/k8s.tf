@@ -13,10 +13,7 @@ module "k8s--darkmore" {
   dns_zone_name = dnsimple_zone.ramona-fun.name
   ssh_keys      = [hcloud_ssh_key.ramona.id, hcloud_ssh_key.ci.id]
   firewall_ids  = [hcloud_firewall.fw.id]
-
-  control_plane_nodes = {
-    "darkmore-control-plane-0" = { tailscale_tags = split(" ", data.external.tailscale_tags.result["darkmore-control-plane-0"]), private_ipv4 : "10.70.0.10" },
-    "darkmore-control-plane-1" = { tailscale_tags = split(" ", data.external.tailscale_tags.result["darkmore-control-plane-1"]), private_ipv4 : "10.70.0.11" },
-    "darkmore-control-plane-2" = { tailscale_tags = split(" ", data.external.tailscale_tags.result["darkmore-control-plane-2"]), private_ipv4 : "10.70.0.12" },
-  }
+  control_plane_nodes = { for node in jsondecode(file("./k8s-nodes.json"))["darkmore"] : node.hostname => {
+    tailscale_tags = split(" ", data.external.tailscale_tags.result[node.hostname]), private_ipv4 : "10.70.0.10"
+  } }
 }

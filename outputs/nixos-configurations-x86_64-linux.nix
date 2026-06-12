@@ -21,14 +21,16 @@ pkgs.lib.genAttrs machines (
   }
 )
 // pkgs.lib.mergeAttrsList (
+  let
+    all-nodes = (builtins.fromJSON (builtins.readFile ../terraform/k8s-nodes.json)).darkmore;
+  in
   map (
-    i:
+    node:
     let
       set-name = "darkmore-control-plane";
-      hostname = "${set-name}-${toString i}";
     in
     {
-      "${hostname}" = inputs.nixpkgs.lib.nixosSystem {
+      "${node.hostname}" = inputs.nixpkgs.lib.nixosSystem {
         inherit pkgs;
         system = "x86_64";
         specialArgs = {
@@ -39,13 +41,13 @@ pkgs.lib.genAttrs machines (
           {
             config = {
               ramona.darkmore-control-plane = {
-                id = i;
-                total-count = 3;
+                inherit (node) ip hostname;
+                inherit all-nodes;
               };
             };
           }
         ];
       };
     }
-  ) (pkgs.lib.range 0 2)
+  ) all-nodes
 )

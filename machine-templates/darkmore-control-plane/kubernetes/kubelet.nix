@@ -1,0 +1,66 @@
+{ pkgs, config, ... }: {
+  systemd =
+    let
+      kubelet-config = "/var/lib/kubelet/config.yaml";
+      kubelet-kubeconfig = "/etc/kubernetes/kubelet.conf";
+    in
+    {
+      services.kubelet = {
+        description = "kubernetes kubelet service";
+        wantedBy = [ "default.target" ];
+        after = [
+          "containerd.service"
+          "network.target"
+        ];
+        # these are various binaries needed by the kubelet when it runs, the list is stolen from: https://github.com/NixOS/nixpkgs/blob/nixos-unstable/nixos/modules/services/cluster/kubernetes/kubelet.nix#L332
+        # be careful removing things, as they are not needed for startup, but cause things to fail later if missing
+        path = with pkgs; [
+          gitMinimal
+          openssh
+          util-linuxMinimal
+          iproute2
+          ethtool
+          thin-provisioning-tools
+          iptables
+          socat
+          nftables
+        ];
+        preStart = ''
+          for f in ${pkgs.cni-plugins}/bin/*; do
+            plugin_name=$(basename $f)
+
+            [ -f "/opt/cni/bin/$plugin_name" ] && rm "/opt/cni/bin/$plugin_name"
+              
+            ln -s "$f" "/opt/cni/bin/$plugin_name"
+          done
+        '';
+        serviceConfig = {
+          MemoryAccounting = true;
+          Restart = "on-failure";
+          RestartSec = "1000ms";
+          ExecStart =
+            let
+              kubelet-script = pkgs.writeShellScriptBin "kubelet-wrapper" ''
+                declare -a arguments=()
+                if [[ -f "${kubelet-config}" ]]; then
+                  arguments+=("--config=${kubelet-config}")
+                fi
+
+                kubeconfig=""
+                if [[ -f "${kubelet-kubeconfig}" ]]; then
+                  arguments+=("--kubeconfig=${kubelet-kubeconfig}")
+                fi
+
+                exec ${pkgs.kubernetes}/bin/kubelet "''${arguments[@]}" \
+                    --hostname-override=${config.networking.hostName} \
+                    --fail-swap-on=false \
+                    --node-ip=${config.ramona.darkmore-control-plane.ip}
+                    --bootstrap-kubeconfig=/etc/kubernetes/bootstrap-kubelet.conf
+              '';
+            in
+            "${kubelet-script}/bin/kubelet-wrapper";
+        };
+      };
+    };
+
+}
