@@ -25,15 +25,21 @@
           socat
           nftables
         ];
-        preStart = ''
-          for f in ${pkgs.cni-plugins}/bin/*; do
-            plugin_name=$(basename $f)
+        preStart =
+          let
+            bin-path = config.ramona.kubernetes.cni.bin;
+          in
+          ''
+            shopt -s nullglob
 
-            [ -f "/opt/cni/bin/$plugin_name" ] && rm "/opt/cni/bin/$plugin_name"
-              
-            ln -s "$f" "/opt/cni/bin/$plugin_name"
-          done
-        '';
+            for f in ${pkgs.cni-plugins}/bin/*; do
+              plugin_name=$(basename $f)
+
+              [ -f "${bin-path}/$plugin_name" ] && rm "${bin-path}/$plugin_name"
+                
+              ln -s "$f" "${bin-path}/$plugin_name"
+            done
+          '';
         serviceConfig = {
           MemoryAccounting = true;
           Restart = "on-failure";
