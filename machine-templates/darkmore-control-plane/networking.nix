@@ -1,7 +1,7 @@
 { config, ... }: {
   config = {
     networking = {
-      hostName = "darkmore-control-plane-${toString config.ramona.darkmore-control-plane.id}";
+      hostName = config.ramona.darkmore-control-plane.hostname;
     };
   };
 }

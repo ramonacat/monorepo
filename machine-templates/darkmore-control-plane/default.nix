@@ -5,8 +5,8 @@
     ../../roles/installed
     ../../roles/server-public
 
+    ./kubernetes
     ./networking.nix
-    ./kubernetes.nix
   ];
   options = {
     ramona.darkmore-control-plane = lib.mkOption {
@@ -14,8 +14,16 @@
         with lib.types;
         submodule {
           options = {
-            id = lib.mkOption { type = int; };
-            total-count = lib.mkOption { type = int; };
+            ip = lib.mkOption { type = str; };
+            hostname = lib.mkOption { type = str; };
+            all-nodes = lib.mkOption {
+              type = listOf (submodule {
+                options = {
+                  ip = lib.mkOption { type = str; };
+                  hostname = lib.mkOption { type = str; };
+                };
+              });
+            };
           };
         };
     };

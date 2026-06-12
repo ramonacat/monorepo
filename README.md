@@ -86,6 +86,7 @@ All the instructions below assume running in `nix develop` shell from this flake
 ## Disaster recovery
 
 Automatic updates can be stopped:
+
     - for home manager: `touch ~/.stop_updates`
     - nodes: `touch /var/.stop_updates`
 
@@ -93,7 +94,8 @@ Generally the flake should build anywhere, so the machines can be rebuilt by che
 
 # Kubernetes setup
 ```
-kubeadm reset && $(rm /etc/cni/net.d/* || true) && kubeadm init --control-plane-endpoint "127.0.0.1:6444" --apiserver-advertise-address=10.70.0.10  --pod-network-cidr=10.72.0.0/16 --service-cidr=10.73.0.0/16 --upload-certs
+# On any of the nodes, afterwards kubeadm will give you a `kubeadm init` command. Modify it to ensure that `--apiserver-advertise-address` and `--control-plane-endpoint` are correct
+kubeadm reset && $(rm /etc/cni/net.d/* || true) && kubeadm init --control-plane-endpoint "127.0.0.1:6444" --apiserver-advertise-address=10.70.0.10  --pod-network-cidr=10.72.0.0/16 --upload-certs
 export KUBECONFIG=/etc/kubernetes/admin.conf
 nix-shell -p kubernetes-helm
 kubectl create ns kube-flannel
