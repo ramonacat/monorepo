@@ -87,8 +87,8 @@ All the instructions below assume running in `nix develop` shell from this flake
 
 Automatic updates can be stopped:
 
-    - for home manager: `touch ~/.stop_updates`
-    - nodes: `touch /var/.stop_updates`
+- for home manager: `touch ~/.stop_updates`
+- nodes: `touch /var/.stop_updates`
 
 Generally the flake should build anywhere, so the machines can be rebuilt by checking out the repo and doing `nixos-rebuild --flake .#<HOSTNAME>`. Terraform will work with the normal `terraform validate`/`terraform plan`/`terraform apply` worflow as long as you have the SSH key and are in the `nix develop` shell (there's a wrapper defined in `outputs/dev-shells.nix` that decrypts `secrets/terraform-tokens.age` and exports the secrets as environment variables).
 
