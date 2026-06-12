@@ -32,6 +32,8 @@
           ''
             shopt -s nullglob
 
+            mkdir -p "${bin-path}"
+
             for f in ${pkgs.cni-plugins}/bin/*; do
               plugin_name=$(basename $f)
 
