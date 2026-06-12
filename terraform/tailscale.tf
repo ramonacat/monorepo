@@ -25,6 +25,11 @@ resource "tailscale_device_tags" "pikvm" {
   tags      = ["tag:server", "tag:server-private", "tag:server-private-home"]
 }
 
+resource "tailscale_device_tags" "homeassistant" {
+  device_id = data.tailscale_device.pikvm.node_id
+  tags      = ["tag:server", "tag:server-private", "tag:server-private-home"]
+}
+
 removed {
   from = tailscale_device_tags.devices
 
