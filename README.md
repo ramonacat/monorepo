@@ -86,6 +86,7 @@ All the instructions below assume running in `nix develop` shell from this flake
 ## Disaster recovery
 
 Automatic updates can be stopped:
+
     - for home manager: `touch ~/.stop_updates`
     - nodes: `touch /var/.stop_updates`
 

@@ -10,7 +10,14 @@
       enable = true;
       settings = {
         plugins."io.containerd.grpc.v1.cri" = {
-          cni.bin_dir = "/opt/cni/bin/";
+          cni = {
+            bin_dir = "/opt/cni/bin/";
+            conf_dir = "/etc/cni/net.d/";
+          };
+          containerd.runtimes.runc = {
+            runtime_type = "io.containerd.runc.v2";
+            options.SystemdCgroup = true;
+          };
         };
       };
     };
@@ -45,12 +52,13 @@
             thin-provisioning-tools
             iptables
             socat
+            nftables
           ];
           preStart = ''
             for f in ${pkgs.cni-plugins}/bin/*; do
               plugin_name=$(basename $f)
 
-              [ -f "$plugin_name" ] && rm "/opt/cni/bin/$plugin_name"
+              [ -f "/opt/cni/bin/$plugin_name" ] && rm "/opt/cni/bin/$plugin_name"
                 
               ln -s "$f" "/opt/cni/bin/$plugin_name"
             done
@@ -112,33 +120,11 @@
       "overlay"
     ];
 
-    networking.firewall.interfaces.enp7s0 = {
-      allowedTCPPorts = [
-        443 # coredns
-        6443 # kube-apiserver
-        6444 # loadbalanced kube-apiserver, for administration access
-        2379 # etcd
-        2380 # etcd
-        10250 # kubelet
-        10256 # kube-proxy
-        10257 # kube-controller-manager
-        10259 # kube-scheduler
-      ];
-      allowedUDPPorts = [
-        8472 # VXLAN
-      ];
-      allowedTCPPortRanges = [
-        {
-          from = 30000;
-          to = 32767;
-        }
-      ];
-      allowedUDPPortRanges = [
-        {
-          from = 30000;
-          to = 32767;
-        }
-      ];
-    };
+    networking.firewall.trustedInterfaces = [
+      "enp7s0"
+      "cni0"
+      "flannel.0"
+      "flannel.1"
+    ];
   };
 }
