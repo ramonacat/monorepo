@@ -41,6 +41,7 @@
     environment.systemPackages = [
       pkgs.kubernetes
       pkgs.kubectl
+      pkgs.kubernetes-helm
     ];
 
     boot.kernelModules = [

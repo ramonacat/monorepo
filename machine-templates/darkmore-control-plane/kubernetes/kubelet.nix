@@ -54,16 +54,12 @@
                   arguments+=("--config=${kubelet-config}")
                 fi
 
-                kubeconfig=""
-                if [[ -f "${kubelet-kubeconfig}" ]]; then
-                  arguments+=("--kubeconfig=${kubelet-kubeconfig}")
-                fi
-
                 exec ${pkgs.kubernetes}/bin/kubelet "''${arguments[@]}" \
                     --hostname-override=${config.networking.hostName} \
                     --fail-swap-on=false \
-                    --node-ip=${config.ramona.darkmore-control-plane.ip}
-                    --bootstrap-kubeconfig=/etc/kubernetes/bootstrap-kubelet.conf
+                    --node-ip=${config.ramona.darkmore-control-plane.ip} \
+                    --bootstrap-kubeconfig=/etc/kubernetes/bootstrap-kubelet.conf \
+                    --kubeconfig=${kubelet-kubeconfig}
               '';
             in
             "${kubelet-script}/bin/kubelet-wrapper";
