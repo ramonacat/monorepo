@@ -23,7 +23,13 @@
             ${pkgs.nodejs_24}/bin/npx twiggy-language-server "$@"
           '';
         };
-        yamlls.enable = true;
+        yamlls = {
+          enable = true;
+          schemas = {
+            # path for fluxcd
+            "kubernetes" = "/clusters/**";
+          };
+        };
       };
 
       keymaps.lspBuf = {
