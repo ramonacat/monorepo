@@ -74,9 +74,11 @@ provider "github" {
 provider "flux" {
   kubernetes = {}
   git = {
-    url      = "https://github.com/ramonacat/monorepo.git"
-    username = "ramonacat"
-    // getting the token from a variable, as it appears that there's no way to do this through environment variables
-    password = var.github_token
+    url = "https://github.com/ramonacat/monorepo.git"
+    http = {
+      username = "git"
+      // getting the token from a variable, as it appears that there's no way to do this through environment variables
+      password = var.github_token
+    }
   }
 }
