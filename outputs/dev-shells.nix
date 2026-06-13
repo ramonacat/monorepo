@@ -55,15 +55,6 @@ pkgs.mkShell {
       '';
     })
 
-    nushell
-    postgresql_16
-    shfmt
-    backblaze-b2
-    tflint
-    inputs.agenix.packages."${pkgs.stdenv.hostPlatform.system}".default
-    age
-    shellcheck
-
     (pkgs.writeShellScriptBin "terraform" ''
       pushd "$RAMONA_FLAKE_ROOT/secrets/" >/dev/null
       set -a
@@ -73,6 +64,29 @@ pkgs.mkShell {
 
       exec ${pkgs.terraform}/bin/terraform "$@"
     '')
+
+    (pkgs.writeShellScriptBin "kubectl" ''
+      set -e
+
+      export KUBECONFIG=$(mktemp)
+      chown $(id -u):$(id -g) $KUBECONFIG
+      cleanup() { rm $KUBECONFIG; }
+      trap cleanup EXIT
+
+      agenix -d darkmore-kubeconfig.age >$KUBECONFIG
+
+      ${pkgs.kubernetes}/bin/kubectl "$@"
+    '')
+
+    age
+    backblaze-b2
+    fluxcd
+    inputs.agenix.packages."${pkgs.stdenv.hostPlatform.system}".default
+    nushell
+    postgresql_16
+    shellcheck
+    shfmt
+    tflint
 
     package-versions.nodejs
     package-versions.php-dev

@@ -57,6 +57,10 @@
       "flannel.1"
     ];
 
+    networking.firewall.interfaces.tailscale0.allowedTCPPorts = [
+      6433 # kubernetes api server (for admin access)
+    ];
+
     ramona.updates = {
       mode = "boot";
       post-update = "touch /var/run/reboot-required";
