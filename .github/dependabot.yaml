@@ -49,3 +49,8 @@ updates:
         dependency-type: "production"
       development-dependencies:
         dependency-type: "development"
+
+  - package-ecosystem: "helm"
+    directory: "clusters/"
+    schedule:
+      interval: "daily"
