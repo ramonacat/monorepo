@@ -23,8 +23,10 @@ main() {
 		exit
 	fi
 
-	"$closure"/bin/switch-to-configuration switch
+	"$closure"/bin/switch-to-configuration "$UPDATES_MODE"
 	nix-env --profile /nix/var/nix/profiles/system --set "$closure"
+
+	[ -n "$UPDATES_POST" ] && $UPDATES_POST
 }
 
 main
