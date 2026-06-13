@@ -120,6 +120,9 @@ resource "tailscale_acl" "default" {
 
         "tag:kubernetes-darkmore"               = [],
         "tag:kubernetes-darkmore-control-plane" = [],
+
+        "tag:k8s-operator" : [],
+        "tag:k8s" : ["tag:k8s-operator"]
       },
       tests = [
         {

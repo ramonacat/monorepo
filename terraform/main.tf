@@ -48,6 +48,10 @@ terraform {
       source  = "fluxcd/flux"
       version = ">= 1.8.8"
     }
+    kubernetes = {
+      source  = "hashicorp/kubernetes"
+      version = ">= 3.2.0"
+    }
   }
 }
 
@@ -81,4 +85,7 @@ provider "flux" {
       password = var.github_token
     }
   }
+}
+
+provider "kubernetes" {
 }

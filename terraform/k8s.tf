@@ -24,3 +24,20 @@ resource "flux_bootstrap_git" "monorepo--darkmore" {
   embedded_manifests = true
   path               = "clusters/darkmore"
 }
+
+resource "tailscale_oauth_client" "kubernetes" {
+  scopes = ["services", "devices:core", "auth_keys"]
+  tags   = ["tag:k8s-operator"]
+}
+
+resource "kubernetes_secret_v1" "tailscale" {
+  metadata {
+    name      = "tailscale"
+    namespace = "tailscale"
+  }
+
+  data = {
+    clientId     = tailscale_oauth_client.kubernetes.id
+    clientSecret = tailscale_oauth_client.kubernetes.key
+  }
+}
