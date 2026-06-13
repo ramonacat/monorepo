@@ -47,10 +47,15 @@ resource "helm_release" "flannel" {
 }
 
 resource "helm_release" "tailscale" {
-  name       = "tailscale"
-  chart      = "tailscale-operator"
-  repository = "https://pkgs.tailscale.com/helmcharts"
-  namespace  = "tailscale"
+  name             = "tailscale"
+  chart            = "tailscale-operator"
+  repository       = "https://pkgs.tailscale.com/helmcharts"
+  namespace        = "tailscale"
+  create_namespace = true
+
+  lifecycle {
+    ignore_changes = [create_namespace]
+  }
 
   set_sensitive = [
     {
@@ -65,10 +70,11 @@ resource "helm_release" "tailscale" {
 }
 
 resource "helm_release" "kured" {
-  name       = "kured"
-  chart      = "kured"
-  repository = "https://kubereboot.github.io/charts"
-  namespace  = "kured"
+  name             = "kured"
+  chart            = "kured"
+  repository       = "https://kubereboot.github.io/charts"
+  namespace        = "kured"
+  create_namespace = true
 
   set = [
     {
