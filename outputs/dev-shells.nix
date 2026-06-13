@@ -90,21 +90,6 @@ pkgs.mkShell {
       ${pkgs.kubernetes}/bin/kubectl "$@"
     '')
 
-    (pkgs.writeShellScriptBin "flux" ''
-      set -e
-
-      export KUBECONFIG=$(mktemp)
-      chown $(id -u):$(id -g) $KUBECONFIG
-      cleanup() { rm $KUBECONFIG; }
-      trap cleanup EXIT
-
-      pushd "$RAMONA_FLAKE_ROOT/secrets/" >/dev/null
-      agenix -d darkmore-kubeconfig.age >$KUBECONFIG
-      popd >/dev/null
-
-      ${pkgs.fluxcd}/bin/flux "$@"
-    '')
-
     age
     backblaze-b2
     inputs.agenix.packages."${pkgs.stdenv.hostPlatform.system}".default

@@ -44,12 +44,12 @@ terraform {
       source  = "integrations/github"
       version = ">= 6.0"
     }
-    flux = {
-      source  = "fluxcd/flux"
-      version = ">= 1.8.8"
-    }
     kubernetes = {
       source  = "hashicorp/kubernetes"
+      version = ">= 3.2.0"
+    }
+    helm = {
+      source  = "hashicorp/helm"
       version = ">= 3.2.0"
     }
   }
@@ -75,17 +75,8 @@ provider "github" {
   owner = "ramonacat"
 }
 
-provider "flux" {
-  kubernetes = {}
-  git = {
-    url = "https://github.com/ramonacat/monorepo.git"
-    http = {
-      username = "git"
-      // getting the token from a variable, as it appears that there's no way to do this through environment variables
-      password = var.github_token
-    }
-  }
+provider "kubernetes" {
 }
 
-provider "kubernetes" {
+provider "helm" {
 }
