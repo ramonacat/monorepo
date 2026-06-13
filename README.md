@@ -117,4 +117,7 @@ kubeadm join 127.0.0.1:6444 --token ... \
 export KUBECONFIG=/etc/kubernetes/admin.conf
 kubectl annotate node darkmore-control-plane-1 flannel.alpha.coreos.com/node-public-ip=10.70.0.11
 
+# after all nodes are joined
+kubectl taint nodes --all node-role.kubernetes.io/control-plane-
+kubectl label nodes --all node.kubernetes.io/exclude-from-external-load-balancers-
 ```
