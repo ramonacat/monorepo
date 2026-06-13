@@ -51,6 +51,6 @@ updates:
         dependency-type: "development"
 
   - package-ecosystem: "helm"
-    directory: "clusters/"
+    directory: "kubernetes/darkmore/"
     schedule:
       interval: "daily"

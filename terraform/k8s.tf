@@ -23,6 +23,7 @@ resource "flux_bootstrap_git" "monorepo--darkmore" {
 
   embedded_manifests = true
   path               = "clusters/darkmore"
+  components_extra   = ["source-watcher"]
 }
 
 resource "tailscale_oauth_client" "kubernetes" {
