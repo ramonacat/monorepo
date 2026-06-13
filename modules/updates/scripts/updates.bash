@@ -24,7 +24,10 @@ main() {
 	fi
 
 	"$closure"/bin/switch-to-configuration "$UPDATES_MODE"
-	nix-env --profile /nix/var/nix/profiles/system --set "$closure"
+
+	if [[ "$UPDATES_MODE" == "switch" ]]; then
+		nix-env --profile /nix/var/nix/profiles/system --set "$closure"
+	fi
 
 	[ -n "$UPDATES_POST" ] && $UPDATES_POST
 }
