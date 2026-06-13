@@ -56,11 +56,21 @@ pkgs.mkShell {
     })
 
     (pkgs.writeShellScriptBin "terraform" ''
+      set -e
+
+      export KUBECONFIG=$(mktemp)
+      chown $(id -u):$(id -g) $KUBECONFIG
+      cleanup() { rm $KUBECONFIG; }
+      trap cleanup EXIT
+
       pushd "$RAMONA_FLAKE_ROOT/secrets/" >/dev/null
       set -a
       eval "$(agenix -d terraform-tokens.age)" >/dev/null
       set +a
+      agenix -d darkmore-kubeconfig.age >$KUBECONFIG
       popd >/dev/null
+
+      export KUBE_CONFIG_PATH="$KUBECONFIG"
 
       exec ${pkgs.terraform}/bin/terraform "$@"
     '')
@@ -73,7 +83,9 @@ pkgs.mkShell {
       cleanup() { rm $KUBECONFIG; }
       trap cleanup EXIT
 
+      pushd "$RAMONA_FLAKE_ROOT/secrets/" >/dev/null
       agenix -d darkmore-kubeconfig.age >$KUBECONFIG
+      popd >/dev/null
 
       ${pkgs.kubernetes}/bin/kubectl "$@"
     '')

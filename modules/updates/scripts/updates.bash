@@ -10,7 +10,7 @@ main() {
 		exit
 	fi
 
-	local -r current_closure=$(readlink -f /nix/var/nix/profiles/system)
+	local -r current_closure=$(readlink -f /run/current-system)
 	local -r hostname=$(tr -d '[:space:]' </etc/hostname)
 	local closure
 	if ! closure=$(read-closure "builds/$hostname-closure"); then

@@ -17,3 +17,10 @@ module "k8s--darkmore" {
     tailscale_tags = split(" ", data.external.tailscale_tags.result[node.hostname]), private_ipv4 : node.ip
   } }
 }
+
+resource "flux_bootstrap_git" "monorepo--darkmore" {
+  depends_on = [github_repository.ramonacat-monorepo]
+
+  embedded_manifests = true
+  path               = "clusters/darkmore"
+}

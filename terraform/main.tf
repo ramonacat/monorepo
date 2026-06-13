@@ -44,6 +44,10 @@ terraform {
       source  = "integrations/github"
       version = ">= 6.0"
     }
+    flux = {
+      source  = "fluxcd/flux"
+      version = ">= 1.8.8"
+    }
   }
 }
 
@@ -65,4 +69,9 @@ provider "b2" {
 
 provider "github" {
   owner = "ramonacat"
+}
+
+provider "flux" {
+  kubernetes = {}
+  git        = { url = "https://github.com/ramonacat/monorepo.git" }
 }
