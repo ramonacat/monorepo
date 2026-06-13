@@ -11,7 +11,7 @@
     ../../users/ramona/installed
     ../../users/root/installed
 
-    ./updates
+    ../../modules/updates
 
     ./nix.nix
     ./rad.nix

@@ -56,5 +56,10 @@
       "flannel.0"
       "flannel.1"
     ];
+
+    ramona.updates = {
+      mode = "boot";
+      post-update = "touch /var/run/reboot-required";
+    };
   };
 }
