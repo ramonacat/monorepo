@@ -23,6 +23,7 @@
             ${pkgs.nodejs_24}/bin/npx twiggy-language-server "$@"
           '';
         };
+        yamlls.enable = true;
       };
 
       keymaps.lspBuf = {
