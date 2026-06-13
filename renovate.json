@@ -3,9 +3,7 @@
   "extends": [
     "config:recommended"
   ],
-  "packageRules": [
-    {"automerge": true}
-  ],
+  "automerge": true,
   "nix": {
     "enabled": true
   }
