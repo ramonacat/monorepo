@@ -20,6 +20,6 @@ jobs:
         id: extract_branch
 
       - name: run the update script
-        if: "${{ startsWith(steps.extract_branch.outputs.branch, 'dependabot') }}"
+        if: "${{ startsWith(steps.extract_branch.outputs.branch, 'renovate') }}"
         run: "git checkout $GITHUB_HEAD_REF && nix develop --command 'python ./.github/scripts/update-vendor-hashes.py'"
     
