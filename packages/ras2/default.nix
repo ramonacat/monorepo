@@ -1,32 +1,20 @@
-{ pkgs, ... }:
+{ pkgs, ... }@inputs:
 let
   inherit (package-versions) php;
-  package-versions = import ../data/package-versions.nix { inherit pkgs; };
+  package-versions = import ../../data/package-versions.nix { inherit pkgs; };
   packageAttributes = {
     inherit php;
 
     pname = "ras2";
     version = "1.0.0";
 
-    src = ../apps/ras2;
+    src = ../../apps/ras2;
 
     vendorHash = "sha256-3OnapP85YrEdLjVqKuEDfQiTHKfoAAXPT+GIn4xfxfE=";
     composerNoPlugins = false;
   };
   devPhp = package-versions.php-dev;
-  devPackage = php.buildComposerProject (
-    _:
-    (
-      packageAttributes
-      // {
-        pname = "ras2-dev";
-        composerNoDev = false;
-        composerNoScripts = false;
-        php = devPhp;
-        vendorHash = "sha256-hhehBhGKeSZZiK6nGmi4j4FtmDdR5y7DogCfknpIHAA=";
-      }
-    )
-  );
+  devPackage = import ./dev-package.nix (inputs // { inherit packageAttributes; });
 in
 rec {
   package = php.buildComposerProject (_: packageAttributes);
