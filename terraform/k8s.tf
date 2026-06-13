@@ -18,26 +18,44 @@ module "k8s--darkmore" {
   } }
 }
 
-resource "flux_bootstrap_git" "monorepo--darkmore" {
-  depends_on = [github_repository.ramonacat-monorepo]
-
-  embedded_manifests = true
-  path               = "clusters/darkmore"
-}
-
 resource "tailscale_oauth_client" "kubernetes" {
   scopes = ["services", "devices:core", "auth_keys"]
   tags   = ["tag:k8s-operator"]
 }
 
-resource "kubernetes_secret_v1" "tailscale" {
+resource "kubernetes_namespace_v1" "kube-flannel" {
   metadata {
-    name      = "tailscale"
-    namespace = "tailscale"
-  }
+    name = "kube-flannel"
 
-  data = {
-    clientId     = tailscale_oauth_client.kubernetes.id
-    clientSecret = tailscale_oauth_client.kubernetes.key
+    labels = {
+      "pod-security.kubernetes.io/enforce" = "privileged"
+    }
   }
+}
+
+resource "helm_release" "flannel" {
+  name       = "flannel"
+  chart      = "flannel"
+  repository = "https://flannel-io.github.io/flannel/"
+  version    = "v0.28.5"
+  namespace  = kubernetes_namespace_v1.kube-flannel.metadata[0].name
+
+  set = [{
+    name  = "podCidr",
+    value = "10.72.0.0/16"
+  }]
+}
+
+resource "helm_release" "tailscale" {
+  name       = "tailscale"
+  chart      = "tailscale-operator"
+  repository = "https://pkgs.tailscale.com/helmcharts"
+  namespace  = "tailscale"
+
+  set_sensitive = [
+    { name = "clientId"
+    value = tailscale_oauth_client.kubernetes.id },
+    { name = "clientSecret"
+    value = tailscale_oauth_client.kubernetes.key }
+  ]
 }
