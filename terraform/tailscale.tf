@@ -93,6 +93,13 @@ resource "tailscale_acl" "default" {
           ip = [
             "tcp:9091", // transmission
           ]
+        },
+        {
+          src = ["tag:builds-host"],
+          dst = ["tag:kubernetes-darkmore-control-plane"],
+          ip = [
+            "tcp:6443" // kubernetes apiserver (needed for deplyoments)
+          ]
         }
       ],
       tagOwners = {

@@ -6,6 +6,7 @@
 }:
 {
   options = {
+    #TODO this should be a role
     services.ramona.monorepo-github-runner = lib.mkOption {
       description = "github runner for this monorepo";
       default = { };
