@@ -58,7 +58,7 @@
     ];
 
     networking.firewall.interfaces.tailscale0.allowedTCPPorts = [
-      6433 # kubernetes api server (for admin access)
+      6443 # kubernetes api server (for admin access)
     ];
 
     ramona.updates = {
