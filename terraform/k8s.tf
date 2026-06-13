@@ -53,9 +53,9 @@ resource "helm_release" "tailscale" {
   namespace  = "tailscale"
 
   set_sensitive = [
-    { name = "clientId"
+    { name = "oauth.clientId"
     value = tailscale_oauth_client.kubernetes.id },
-    { name = "clientSecret"
+    { name = "oauth.clientSecret"
     value = tailscale_oauth_client.kubernetes.key }
   ]
 }
