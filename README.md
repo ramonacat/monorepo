@@ -118,6 +118,11 @@ export KUBECONFIG=/etc/kubernetes/admin.conf
 kubectl annotate node darkmore-control-plane-1 flannel.alpha.coreos.com/node-public-ip=10.70.0.11
 
 # after all nodes are joined
+## allow scheduling workloads on the control plane
 kubectl taint nodes --all node-role.kubernetes.io/control-plane-
 kubectl label nodes --all node.kubernetes.io/exclude-from-external-load-balancers-
+## restart coredns, so it spreads across nodes (it will initially run only on 0, which is bad from HA perspective)
+kubectl rollout -n kube-system restart deployment coredns
 ```
+
+After the cluster is set up, update the secret in `secrets/darkmore-kubeconfig.age` with the contents of `/etc/kubernetes/admin.conf` from one of the nodes, with the `server` key updated to match the tailscale address of one of them (and port `6443`).
