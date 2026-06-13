@@ -25,9 +25,11 @@
         };
         yamlls = {
           enable = true;
-          schemas = {
-            # path for fluxcd
-            "kubernetes" = "/clusters/**";
+          settings = {
+            schemas = {
+              # path for fluxcd
+              "kubernetes" = "/clusters/**";
+            };
           };
         };
       };
