@@ -53,9 +53,27 @@ resource "helm_release" "tailscale" {
   namespace  = "tailscale"
 
   set_sensitive = [
-    { name = "oauth.clientId"
-    value = tailscale_oauth_client.kubernetes.id },
-    { name = "oauth.clientSecret"
-    value = tailscale_oauth_client.kubernetes.key }
+    {
+      name  = "oauth.clientId"
+      value = tailscale_oauth_client.kubernetes.id
+    },
+    {
+      name  = "oauth.clientSecret"
+      value = tailscale_oauth_client.kubernetes.key
+    }
+  ]
+}
+
+resource "helm_release" "kured" {
+  name       = "kured"
+  chart      = "kured"
+  repository = "https://kubereboot.github.io/charts"
+  namespace  = "kured"
+
+  set = [
+    {
+      name  = "configuration.rebootCommand",
+      value = "/run/current-system/sw/bin/systemctl reboot",
+    }
   ]
 }
