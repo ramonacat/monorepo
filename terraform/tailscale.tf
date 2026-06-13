@@ -95,7 +95,7 @@ resource "tailscale_acl" "default" {
           ]
         },
         {
-          src = ["tag:builds-host"],
+          src = ["tag:service-builds-host"],
           dst = ["tag:kubernetes-darkmore-control-plane"],
           ip = [
             "tcp:6443" // kubernetes apiserver (needed for deplyoments)
