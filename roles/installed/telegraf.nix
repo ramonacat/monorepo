@@ -57,7 +57,7 @@
               enable_extensions = [ "auto-on" ];
             };
             exec = {
-              commands = [ "readlink -f /nix/var/nix/profiles/system" ];
+              commands = [ "readlink -f /run/current-system" ];
               name_override = "current_closure_version";
               data_format = "value";
               data_type = "string";
