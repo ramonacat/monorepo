@@ -85,3 +85,35 @@ resource "helm_release" "kured" {
     }
   ]
 }
+
+resource "helm_release" "argo-cd" {
+  name             = "argo-cd"
+  chart            = "argo-cd"
+  repository       = "https://argoproj.github.io/argo-helm"
+  namespace        = "argo-cd"
+  create_namespace = true
+  version          = "9.5.21"
+
+  set = [
+    {
+      name  = "redis-ha.enabled",
+      value = true
+    },
+    {
+      name  = "controller.replicas",
+      value = 1
+    },
+    {
+      name  = "server.replicas",
+      value = 2,
+    },
+    {
+      name  = "repoServer.replicas",
+      value = 2,
+    },
+    {
+      name  = "applicationSet.replicas",
+      value = 2,
+    }
+  ]
+}
