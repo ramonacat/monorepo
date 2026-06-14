@@ -53,15 +53,6 @@ module "fastmail-dns--ramona-fun" {
   zone_name = dnsimple_zone.ramona-fun.name
 }
 
-resource "dnsimple_zone_record" "A--ras2-services-ramona-fun" {
-  zone_name = dnsimple_zone.ramona-fun.name
-  name      = "ras2.services"
-  type      = "A"
-  value     = var.hallewell_tailscale_ip_address
-  ttl       = 60
-}
-
-
 resource "dnsimple_zone_record" "A--ramona-fun" {
   zone_name = dnsimple_zone.ramona-fun.name
   name      = ""

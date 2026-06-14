@@ -51,5 +51,5 @@ in
   '';
 }
 // (pkgs.lib.mergeAttrsList (
-  pkgs.lib.mapAttrsToList (_: value: value.checks) (local-packages.libraries // local-packages.apps)
+  pkgs.lib.mapAttrsToList (_: value: value.checks) (local-packages.apps)
 ))
