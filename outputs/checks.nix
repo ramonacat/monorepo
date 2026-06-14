@@ -50,6 +50,4 @@ in
     touch $out
   '';
 }
-// (pkgs.lib.mergeAttrsList (
-  pkgs.lib.mapAttrsToList (_: value: value.checks) (local-packages.libraries // local-packages.apps)
-))
+// (pkgs.lib.mergeAttrsList (pkgs.lib.mapAttrsToList (_: value: value.checks) local-packages.apps))

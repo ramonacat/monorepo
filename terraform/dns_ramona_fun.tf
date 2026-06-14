@@ -8,11 +8,6 @@ resource "ovh_domain_name_servers" "ramona-fun" {
 }
 
 // TODO get this from tailscale provider instead of hardcoding
-variable "hallewell_tailscale_ip_address" {
-  type    = string
-  default = "100.109.240.138"
-}
-
 moved {
   from = dnsimple_zone_record.MX-1--ramona-fun
   to   = module.fastmail-dns--ramona-fun.dnsimple_zone_record.MX-1
@@ -52,15 +47,6 @@ module "fastmail-dns--ramona-fun" {
 
   zone_name = dnsimple_zone.ramona-fun.name
 }
-
-resource "dnsimple_zone_record" "A--ras2-services-ramona-fun" {
-  zone_name = dnsimple_zone.ramona-fun.name
-  name      = "ras2.services"
-  type      = "A"
-  value     = var.hallewell_tailscale_ip_address
-  ttl       = 60
-}
-
 
 resource "dnsimple_zone_record" "A--ramona-fun" {
   zone_name = dnsimple_zone.ramona-fun.name

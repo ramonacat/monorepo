@@ -4,16 +4,11 @@ _: {
     ../../roles/hetzner-cloud
     ../../roles/installed
     ../../roles/server-public
-    ../../roles/tailscale-nginx
-
-    ./nginx
 
     ./grafana.nix
     ./hardware.nix
     ./networking.nix
     ./postgresql.nix
-    ./ras2.nix
-    ./ras2.nix
     ./telegraf.nix
   ];
   config = {

@@ -7,7 +7,6 @@ All the instructions below assume running in `nix develop` shell from this flake
 ## Contents of the repository, by directory
 - `.github` - contains CI configurations (note: the secrets are manually set through github's webinterface)
 - `apps` - various applications
-  - the database for `ras2` can be started with `nu dev-db.nu start`, the application itself will run with `php -S 0.0.0.0:8086 public/index.php`
 - `data` 
   - `hosts.nix` - all the hostnames - the nixos ones are added automatically, windows machines must be added manually
   - `packages.nix` - versions of language runtimes used by the rest of the flake

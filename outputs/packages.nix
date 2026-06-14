@@ -7,9 +7,7 @@
 rec {
   coverage =
     let
-      paths = pkgs.lib.mapAttrsToList (_: value: value.coverage) (
-        local-packages.libraries // local-packages.apps
-      );
+      paths = pkgs.lib.mapAttrsToList (_: value: value.coverage) local-packages.apps;
     in
     pkgs.runCommand "coverage" { } (
       "mkdir $out\n"

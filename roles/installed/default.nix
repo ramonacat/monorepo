@@ -14,7 +14,6 @@
     ../../modules/updates
 
     ./nix.nix
-    ./rad.nix
     ./restic-home.nix
     ./ssh.nix
     ./tailscale.nix

@@ -84,8 +84,6 @@ in
   "rad-environment.age".publicKeys = users ++ allMachines;
   "rad-ras-token.age".publicKeys = users ++ allMachines;
   "radarr-api-key.age".publicKeys = users ++ [ hallewell ];
-  "ras2-db-config.age".publicKeys = users ++ [ thornton ];
-  "ras2-telegraf-db-config.age".publicKeys = users ++ [ thornton ];
   "shadowsoul-ssh-host-key-ed25519.age".publicKeys = users ++ ci ++ [ shadowsoul ];
   "shadowsoul-ssh-host-key-rsa.age".publicKeys = users ++ ci ++ [ shadowsoul ];
   "shadowsoul-syncthing-cert.age".publicKeys = users ++ [ shadowsoul ];

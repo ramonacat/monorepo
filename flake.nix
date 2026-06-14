@@ -58,10 +58,6 @@
     };
 
     nixos-hardware.url = "github:NixOS/nixos-hardware/master";
-    bun2nix = {
-      url = "github:nix-community/bun2nix";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
   };
 
   outputs =

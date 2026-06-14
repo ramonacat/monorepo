@@ -93,15 +93,12 @@ pkgs.mkShell {
     age
     backblaze-b2
     inputs.agenix.packages."${pkgs.stdenv.hostPlatform.system}".default
-    nushell
     postgresql_16
     shellcheck
     shfmt
     tflint
 
     package-versions.nodejs
-    package-versions.php-dev
-    package-versions.php-packages.composer
     package-versions.rust-version
   ];
   RAMONA_FLAKE_ROOT = ./..;
