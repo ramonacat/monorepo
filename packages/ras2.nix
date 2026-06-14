@@ -1,23 +1,15 @@
 { pkgs, ... }@inputs:
 let
   inherit (package-versions) php;
-  package-versions = import ../../data/package-versions.nix { inherit pkgs; };
-  packageAttributes = {
-    inherit php;
-
-    pname = "ras2";
-    version = "1.0.0";
-
-    src = ../../apps/ras2;
-
+  package-versions = import ../data/package-versions.nix { inherit pkgs; };
+  package-attributes = inputs.package-attributes // {
     vendorHash = "sha256-3OnapP85YrEdLjVqKuEDfQiTHKfoAAXPT+GIn4xfxfE=";
-    composerNoPlugins = false;
   };
   devPhp = package-versions.php-dev;
-  devPackage = import ./dev-package.nix (inputs // { inherit packageAttributes; });
+  devPackage = pkgs.ramona.ras2-dev;
 in
 rec {
-  package = php.buildComposerProject (_: packageAttributes);
+  package = php.buildComposerProject (_: package-attributes);
   coverage =
     let
       rawCoverage = pkgs.runCommand "${package.name}--coverage" {

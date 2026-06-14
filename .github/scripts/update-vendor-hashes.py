@@ -1,3 +1,5 @@
+#!/usr/bin/env python
+
 from io import SEEK_SET
 import os
 import subprocess
@@ -18,10 +20,16 @@ def find_hash_in_output(lines: list[str]) -> str|None:
     if new_hash is None:
         return None
 
-    return new_hash.group(1)
+    new_hash = new_hash.group(1)
+
+    print(f'|||{new_hash}|||')
+
+    if new_hash.startswith('sha256-...'):
+        return None
+    
+    return new_hash
 
 def find_hash_in_file(lines: list[str]) -> str|None:
-    # r'^(?P<before>.*vendorHash\s*=\s*").*?(?P<after>".*)$'
     new_hash_list = [x for x in lines if x.find("vendorHash") != -1];
     if len(new_hash_list) == 0:
         return None
@@ -42,11 +50,14 @@ def replace_in_file(path: str, replacement: Callable[[str], str]):
         _ = file.write(new_contents)
         _ = file.truncate()
 
+print("getting changed files...")
+
 changed_files: CompletedProcess[bytes] = subprocess.run(['git', 'diff', '--name-only', f"origin/{os.getenv("GITHUB_BASE_REF")}"], capture_output=True)
+print(f"changed files: {changed_files}")
 changed_apps = [app.decode('utf-8').split('/')[1] for app in changed_files.stdout.splitlines() if app.startswith(b'apps/')]
 
-for app in changed_apps:
-    nix_files_to_check = [f'packages/{app}.nix'] if os.path.isfile(f'packages/{app}.nix') else glob(f'packages/{app}/**.nix', recursive=True);
+for app in set(changed_apps):
+    nix_files_to_check = [f'packages/{app}.nix'] + glob(f'packages/{app}-*.nix', recursive=True);
     print(f"checking {app}: {nix_files_to_check}")
 
     for path in nix_files_to_check:
@@ -72,3 +83,8 @@ for app in changed_apps:
             new_hash = current_hash
 
         replace_in_file(path, lambda x: re.sub(r'^(?P<before>.*vendorHash\s*=\s*").*?(?P<after>".*)$', f'\\g<before>{new_hash}\\g<after>', x, flags=re.MULTILINE))
+
+_ = subprocess.run(['git', 'config', '--global', 'user.email', 'update@ramona.fun']);
+_ = subprocess.run(['git', 'config', '--global', 'user.name', 'automatic update']);
+_ = subprocess.run(['git', 'commit', '-am', 'update vendorHash'])
+_ = subprocess.run(['git', 'push'])
