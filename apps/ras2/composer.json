@@ -29,7 +29,7 @@
         "ext-intl": "*",
 
         "thecodingmachine/safe": "^3.3",
-        "doctrine/collections": "^2.2",
+        "doctrine/collections": "^3.0",
         "ramsey/uuid": "^4.7",
         "league/route": "^5.1",
         "laminas/laminas-diactoros": "^3.3",
