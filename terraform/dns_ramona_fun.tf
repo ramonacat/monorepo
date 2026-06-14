@@ -8,11 +8,6 @@ resource "ovh_domain_name_servers" "ramona-fun" {
 }
 
 // TODO get this from tailscale provider instead of hardcoding
-variable "hallewell_tailscale_ip_address" {
-  type    = string
-  default = "100.109.240.138"
-}
-
 moved {
   from = dnsimple_zone_record.MX-1--ramona-fun
   to   = module.fastmail-dns--ramona-fun.dnsimple_zone_record.MX-1
