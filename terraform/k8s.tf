@@ -52,6 +52,7 @@ resource "helm_release" "tailscale" {
   repository       = "https://pkgs.tailscale.com/helmcharts"
   namespace        = "tailscale"
   create_namespace = true
+  version          = "1.98.4"
 
   lifecycle {
     ignore_changes = [create_namespace]
@@ -75,6 +76,7 @@ resource "helm_release" "kured" {
   repository       = "https://kubereboot.github.io/charts"
   namespace        = "kured"
   create_namespace = true
+  version          = "6.0.0"
 
   set = [
     {

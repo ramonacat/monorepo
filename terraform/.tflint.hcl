@@ -64,3 +64,9 @@ plugin "style-guide" {
     -----END PGP PUBLIC KEY BLOCK-----
   KEY
 }
+
+plugin "opa" {
+  enabled = true
+  version = "0.10.0"
+  source  = "github.com/terraform-linters/tflint-ruleset-opa"
+}
