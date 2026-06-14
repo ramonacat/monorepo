@@ -18,7 +18,6 @@ data "tailscale_devices" "all" {
 }
 
 resource "tailscale_tailnet_key" "default" {
-  expiry              = 86400
   preauthorized       = true
   ephemeral           = true
   recreate_if_invalid = "always"
