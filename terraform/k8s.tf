@@ -155,7 +155,7 @@ resource "argocd_application_set" "monorepo--apps" {
 
     template {
       metadata {
-        name = "monorepo - {{path.basename}}"
+        name = "monorepo-darkmore-{{path.basename}}"
       }
 
       spec {
