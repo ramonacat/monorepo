@@ -94,38 +94,82 @@ resource "helm_release" "argo-cd" {
   create_namespace = true
   version          = "9.5.21"
 
-  set = [
-    {
-      name  = "configs.cm.accounts.terraform",
-      value = "apiKey"
+  values = [yamlencode({
+    "global"  = { domain = "argo-cd.ibis-draconis.ts.net" },
+    "configs" = { "cm" = { "accounts.terraform" = "apiKey" } },
+    "redis-ha" = {
+      enabled          = true,
+      hardAntiAffinity = false,
+      replicas         = 2,
+      haproxy          = { hardAntiAffinity = false },
     },
-    {
-      name  = "redis-ha.enabled",
-      value = true
-    },
-    {
-      name  = "redis-ha.hardAntiAffinity",
-      value = false
-    },
-    {
-      name  = "redis-ha.haproxy.hardAntiAffinity",
-      value = false
-    },
-    {
-      name  = "controller.replicas",
-      value = 1
-    },
-    {
-      name  = "server.replicas",
-      value = 2,
-    },
-    {
-      name  = "repoServer.replicas",
-      value = 2,
-    },
-    {
-      name  = "applicationSet.replicas",
-      value = 2,
+    controller     = { replicas = 1 },
+    server         = { replicas = 2 },
+    repoServer     = { replicas = 2 },
+    applicationSet = { replicas = 2 },
+    ingress = {
+      enabled          = true,
+      hostname         = "argo-cd",
+      ingressClassName = "tailscale",
+      tls              = true,
+      annotations = {
+        "tailscale.com/proxy-group" = "tailscale-proxygroup"
+      }
     }
-  ]
+  })]
+}
+
+resource "tls_private_key" "deploy--ramonacat-monorepo--argocd" {
+  algorithm = "ED25519"
+}
+
+resource "github_repository_deploy_key" "ramonacat-monorepo--argocd" {
+  title      = "ArgoCD"
+  repository = github_repository.ramonacat-monorepo.name
+  key        = tls_private_key.deploy--ramonacat-monorepo--argocd.public_key_openssh
+  read_only  = true
+}
+
+resource "argocd_repository" "monorepo" {
+  repo            = "git@github.com:ramonacat/monorepo.git"
+  username        = "git"
+  ssh_private_key = tls_private_key.deploy--ramonacat-monorepo--argocd.private_key_openssh
+}
+
+resource "argocd_application_set" "monorepo--apps" {
+  metadata {
+    name = "monorepo--apps"
+  }
+
+  spec {
+    generator {
+      git {
+        repo_url = argocd_repository.monorepo.repo
+        revision = "HEAD"
+
+        directory {
+          path = "kubernetes/darkmore/*"
+        }
+      }
+    }
+
+    template {
+      metadata {
+        name = "monorepo - {{path.basename}}"
+      }
+
+      spec {
+        source {
+          repo_url        = argocd_repository.monorepo.repo
+          target_revision = "HEAD"
+          path            = "{{path}}"
+        }
+
+        destination {
+          server    = "https://kubernetes.default.svc"
+          namespace = "{{path.basename}}"
+        }
+      }
+    }
+  }
 }

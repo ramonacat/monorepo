@@ -27,8 +27,7 @@
           enable = true;
           settings = {
             schemas = {
-              # path for fluxcd
-              "kubernetes" = "/clusters/**";
+              "kubernetes" = "/kubernetes/**";
             };
           };
         };
