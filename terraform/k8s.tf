@@ -106,7 +106,10 @@ resource "helm_release" "argo-cd" {
       enabled          = true,
       hardAntiAffinity = false,
       replicas         = 2,
-      haproxy          = { hardAntiAffinity = false },
+      haproxy = {
+        replicas         = 2,
+        hardAntiAffinity = false
+      },
     },
     controller = { replicas = 1 },
     server = {
