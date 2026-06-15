@@ -121,6 +121,7 @@ resource "helm_release" "argo-cd" {
         tls              = true,
         annotations = {
           "tailscale.com/proxy-group" = "service-ingress"
+          "tailscale.com/tags"        = "tag:k8s,tag:k8s-service"
         }
       }
     },
