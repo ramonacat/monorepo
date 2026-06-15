@@ -96,7 +96,7 @@ resource "helm_release" "argo-cd" {
 
   set = [
     {
-      name  = "cm.accounts.terraform",
+      name  = "configs.cm.accounts.terraform",
       value = "apiKey"
     },
     {
