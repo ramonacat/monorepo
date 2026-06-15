@@ -1,5 +1,6 @@
 terraform {
   required_version = ">= 1.15.5"
+
   backend "s3" {
     bucket = "ramona-fun-tfstate"
     key    = "tfstate"
@@ -52,6 +53,14 @@ terraform {
       source  = "hashicorp/helm"
       version = ">= 3.2.0"
     }
+    argocd = {
+      source  = "argoproj-labs/argocd",
+      version = ">= 7.15.3"
+    }
+    tls = {
+      source  = "hashicorp/tls"
+      version = ">= 4.3.0"
+    }
   }
 }
 
@@ -79,4 +88,8 @@ provider "kubernetes" {
 }
 
 provider "helm" {
+}
+
+provider "argocd" {
+  port_forward_with_namespace = "argo-cd"
 }
