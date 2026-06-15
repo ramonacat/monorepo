@@ -174,6 +174,15 @@ resource "argocd_application_set" "monorepo--apps" {
           server    = "https://kubernetes.default.svc"
           namespace = "{{path.basename}}"
         }
+
+        sync_policy {
+          automated {
+            prune     = true
+            self_heal = true
+          }
+
+          sync_options = ["CreateNamespace=true"]
+        }
       }
     }
   }
