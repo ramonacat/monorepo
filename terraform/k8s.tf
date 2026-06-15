@@ -120,7 +120,7 @@ resource "helm_release" "argo-cd" {
         ingressClassName = "tailscale",
         tls              = true,
         annotations = {
-          "tailscale.com/proxy-group" = "tailscale-proxygroup"
+          "tailscale.com/proxy-group" = "service-ingress"
         }
       }
     },
