@@ -104,6 +104,10 @@ resource "helm_release" "argo-cd" {
       value = true
     },
     {
+      name  = "redis-ha.hardAntiAffinity",
+      value = false
+    },
+    {
       name  = "controller.replicas",
       value = 1
     },
