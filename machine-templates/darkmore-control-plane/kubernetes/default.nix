@@ -5,6 +5,7 @@
 }:
 {
   imports = [
+    ./ceph-storage.nix
     ./containerd.nix
     ./control-plane-load-balancer.nix
     ./kubelet.nix

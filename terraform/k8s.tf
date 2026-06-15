@@ -13,9 +13,13 @@ module "k8s--darkmore" {
   dns_zone_name = dnsimple_zone.ramona-fun.name
   ssh_keys      = [hcloud_ssh_key.ramona.id, hcloud_ssh_key.ci.id]
   firewall_ids  = [hcloud_firewall.fw.id]
-  control_plane_nodes = { for node in jsondecode(file("./k8s-nodes.json"))["darkmore"] : node.hostname => {
-    tailscale_tags = split(" ", data.external.tailscale_tags.result[node.hostname]), private_ipv4 : node.ip
-  } }
+  control_plane_nodes = {
+    for node in jsondecode(file("./k8s-nodes.json"))["darkmore"] : node.hostname =>
+    {
+      tailscale_tags = split(" ", data.external.tailscale_tags.result[node.hostname]),
+      private_ipv4 : node.ip
+    }
+  }
 }
 
 resource "tailscale_oauth_client" "kubernetes" {
@@ -132,66 +136,15 @@ resource "helm_release" "argo-cd" {
   })]
 }
 
-resource "tls_private_key" "deploy--ramonacat-monorepo--argocd" {
-  algorithm = "ED25519"
-}
 
-resource "github_repository_deploy_key" "ramonacat-monorepo--argocd" {
-  title      = "ArgoCD"
-  repository = github_repository.ramonacat-monorepo.name
-  key        = tls_private_key.deploy--ramonacat-monorepo--argocd.public_key_openssh
-  read_only  = true
-}
+resource "helm_release" "rook-ceph" {
+  name             = "rook-ceph"
+  chart            = "rook-ceph"
+  repository       = "https://charts.rook.io/release"
+  namespace        = "rook-ceph"
+  create_namespace = true
+  version          = "v1.20.0"
 
-resource "argocd_repository" "monorepo" {
-  repo            = "git@github.com:ramonacat/monorepo.git"
-  username        = "git"
-  ssh_private_key = tls_private_key.deploy--ramonacat-monorepo--argocd.private_key_openssh
-}
-
-resource "argocd_application_set" "monorepo--apps" {
-  metadata {
-    name = "monorepo--apps"
-  }
-
-  spec {
-    generator {
-      git {
-        repo_url = argocd_repository.monorepo.repo
-        revision = "HEAD"
-
-        directory {
-          path = "kubernetes/darkmore/*"
-        }
-      }
-    }
-
-    template {
-      metadata {
-        name = "monorepo-darkmore-{{path.basename}}"
-      }
-
-      spec {
-        source {
-          repo_url        = argocd_repository.monorepo.repo
-          target_revision = "HEAD"
-          path            = "{{path}}"
-        }
-
-        destination {
-          server    = "https://kubernetes.default.svc"
-          namespace = "{{path.basename}}"
-        }
-
-        sync_policy {
-          automated {
-            prune     = true
-            self_heal = true
-          }
-
-          sync_options = ["CreateNamespace=true"]
-        }
-      }
-    }
-  }
+  values = [yamlencode({
+  })]
 }
