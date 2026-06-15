@@ -7,4 +7,5 @@ spec:
   replicas: 2
   tags: 
     - "tag:k8s-service"
+    - "tag:k8s"
   hostnamePrefix: 'darkmore-proxy-'
