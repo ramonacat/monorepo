@@ -91,5 +91,5 @@ provider "helm" {
 }
 
 provider "argocd" {
-  port_forward_with_namespace = "argo-cd"
+  server_addr = "argo-cd.ibis-draconis.ts.net"
 }

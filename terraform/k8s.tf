@@ -98,6 +98,9 @@ resource "helm_release" "argo-cd" {
     global = { domain = "argo-cd.ibis-draconis.ts.net" },
     configs = {
       cm = { "accounts.terraform" = "apiKey" },
+      params = {
+        "server.insecure" = true
+      },
       rbac = {
         "policy.csv" = "g, terraform, role:admin"
       },
@@ -116,7 +119,6 @@ resource "helm_release" "argo-cd" {
       replicas = 2
       ingress = {
         enabled          = true,
-        hostname         = "argo-cd",
         ingressClassName = "tailscale",
         tls              = true,
         annotations = {
