@@ -5,4 +5,6 @@ metadata:
 spec:
   type: ingress
   replicas: 2
+  tags: 
+    - "tag:k8s-service"
   hostnamePrefix: 'darkmore-proxy-'

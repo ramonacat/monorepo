@@ -102,6 +102,11 @@ resource "tailscale_acl" "default" {
           ]
         }
       ],
+      autoApprovers = {
+        "services" : {
+          "tag:k8s-service" = ["tag:k8s"]
+        }
+      },
       tagOwners = {
         "tag:server" = [],
 
@@ -122,7 +127,8 @@ resource "tailscale_acl" "default" {
         "tag:kubernetes-darkmore-control-plane" = [],
 
         "tag:k8s-operator" : [],
-        "tag:k8s" : ["tag:k8s-operator"]
+        "tag:k8s" : ["tag:k8s-operator"],
+        "tag:k8s-service" : ["tag:k8s-operator"]
       },
       tests = [
         {
