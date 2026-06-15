@@ -100,7 +100,15 @@ resource "tailscale_acl" "default" {
           ip = [
             "tcp:6443" // kubernetes apiserver (needed for deplyoments)
           ]
-        }
+        },
+        {
+          src = ["tag:service-builds-host"],
+          dst = ["svc:argo-cd"],
+          ip = [
+            "tcp:443",
+            "tcp:80"
+          ]
+        },
       ],
       autoApprovers = {
         "services" : {
