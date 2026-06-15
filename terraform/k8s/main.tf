@@ -121,6 +121,7 @@ resource "helm_release" "rook-ceph-cluster" {
         volumeClaimTemplate = {
           spec = {
             storageClassName = kubernetes_storage_class_v1.local.metadata[0].name
+            volumeMode       = "Filesystem",
             resources = {
               requests = {
                 storage = "10Gi"
@@ -147,31 +148,141 @@ resource "helm_release" "rook-ceph-cluster" {
                     requests = {
                       storage = "10Gi"
                     },
-                    storageClassName = kubernetes_storage_class_v1.local.metadata[0].name,
-                    volumeMode       = "Block",
-                    accessModes      = ["ReadWriteOnce"]
                   }
+                  storageClassName = kubernetes_storage_class_v1.local.metadata[0].name,
+                  volumeMode       = "Block",
+                  accessModes      = ["ReadWriteOnce"]
                 }
               }
             ]
           }
         ]
       }
+      resources = {
+        mgr = {
+          requests = {
+            cpu    = "50m"
+            memory = "256Mi"
+          }
+        }
+        mon = {
+          requests = {
+            cpu    = "50m"
+            memory = "256Mi"
+          }
+        }
+        osd = {
+          requests = {
+            cpu    = "50m"
+            memory = "256Mi"
+          }
+        }
+        prepareosd = {
+          requests = {
+            cpu = "50m"
+          }
+        }
+        mgr-sidecar = {
+          requests = {
+            cpu = "50m"
+          }
+        }
+        crashcollector = {
+          requests = {
+            cpu = "50m"
+          }
+        }
+        logcollector = {
+          requests = {
+            cpu = "50m"
+          }
+        }
+        cleanup = {
+          requests = {
+            cpu    = "50m"
+            memory = "256Mi"
+          }
+        }
+        exporter = {
+          requests = {
+            cpu = "50m"
+          }
+        }
+        cmd-reporter = {
+          requests = {
+            cpu = "50m"
+          }
+        }
+      }
       dashboard = {
         ssl = false
       }
-      ingress = {
-        dashboard = {
-          annotations = {
-            "tailscale.com/proxy-group" = "service-ingress"
-            "tailscale.com/tags"        = "tag:k8s,tag:k8s-service"
-          },
-          host = {
-            name = "ceph-${var.name}.ibis-draconis.ts.net"
-          },
-          tls              = { hosts = ["ceph-${var.name}.ibis-draconis.ts.net"] },
-          ingressClassName = "tailscale"
+    }
+    cephFileSystems = [
+      {
+        name = "ceph-filesystem",
+        spec = {
+          metadataPool = {
+            replicated = {
+              size = 3
+            }
+          }
+          dataPools = [
+            {
+              failureDomain = "host",
+              replicated = {
+                size = 3
+              },
+              name = "data0"
+            }
+          ]
+          metadataServer = {
+            activeCount = 1
+            resources = {
+              requests = {
+                cpu    = "50m",
+                memory = "512Mi"
+              }
+            }
+          }
         }
+        storageClass = {
+          enabled = true
+          name    = "ceph-filesystem"
+        }
+      }
+    ]
+    cephObjectStores = [
+      {
+        name = "ceph-objectstore",
+        spec = {
+          gateway = {
+            port = 80
+            resources = {
+              requests = {
+                cpu    = "50m",
+                memory = "512Mi"
+              }
+            }
+          }
+        }
+        storageClass = {
+          enabled = true
+          name    = "ceph-bucket"
+        }
+      }
+    ]
+    ingress = {
+      dashboard = {
+        annotations = {
+          "tailscale.com/proxy-group" = "service-ingress"
+          "tailscale.com/tags"        = "tag:k8s,tag:k8s-service"
+        },
+        host = {
+          name = "ceph-${var.name}.ibis-draconis.ts.net"
+        },
+        tls              = [{ hosts = ["ceph-${var.name}.ibis-draconis.ts.net"] }],
+        ingressClassName = "tailscale"
       }
     }
   })]
