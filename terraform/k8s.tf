@@ -108,19 +108,21 @@ resource "helm_release" "argo-cd" {
       replicas         = 2,
       haproxy          = { hardAntiAffinity = false },
     },
-    controller     = { replicas = 1 },
-    server         = { replicas = 2 },
+    controller = { replicas = 1 },
+    server = {
+      replicas = 2
+      ingress = {
+        enabled          = true,
+        hostname         = "argo-cd",
+        ingressClassName = "tailscale",
+        tls              = true,
+        annotations = {
+          "tailscale.com/proxy-group" = "tailscale-proxygroup"
+        }
+      }
+    },
     repoServer     = { replicas = 2 },
     applicationSet = { replicas = 2 },
-    ingress = {
-      enabled          = true,
-      hostname         = "argo-cd",
-      ingressClassName = "tailscale",
-      tls              = true,
-      annotations = {
-        "tailscale.com/proxy-group" = "tailscale-proxygroup"
-      }
-    }
   })]
 }
 
