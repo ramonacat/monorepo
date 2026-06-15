@@ -95,9 +95,14 @@ resource "helm_release" "argo-cd" {
   version          = "9.5.21"
 
   values = [yamlencode({
-    "global"  = { domain = "argo-cd.ibis-draconis.ts.net" },
-    "configs" = { "cm" = { "accounts.terraform" = "apiKey" } },
-    "redis-ha" = {
+    global = { domain = "argo-cd.ibis-draconis.ts.net" },
+    configs = {
+      cm = { "accounts.terraform" = "apiKey" },
+      rbac = {
+        "policy.csv" = "g, terraform, role:admin"
+      },
+    },
+    redis-ha = {
       enabled          = true,
       hardAntiAffinity = false,
       replicas         = 2,
