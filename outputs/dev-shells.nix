@@ -5,101 +5,111 @@
   ...
 }:
 pkgs.mkShell {
-  packages = with pkgs; [
-    (stdenvNoCC.mkDerivation {
-      name = "generate-syncthing-keys";
-      src = ../scripts;
-      nativeBuildInputs = [ makeWrapper ];
-      installPhase = ''
-        mkdir -p $out/bin/;
+  packages =
+    with pkgs;
+    let
+      prepare-kube-config = ''
+        export KUBECONFIG=$(mktemp)
+        chown $(id -u):$(id -g) $KUBECONFIG
+        cleanup() { rm $KUBECONFIG; }
+        trap cleanup EXIT
 
-        cp generate-syncthing-keys.bash $out/bin/generate-syncthing-keys
+        pushd "$RAMONA_FLAKE_ROOT/secrets/" >/dev/null
+        agenix -d darkmore-kubeconfig.age >$KUBECONFIG
+        popd >/dev/null
 
-        wrapProgram $out/bin/generate-syncthing-keys \
-            --prefix PATH : "${
-              lib.makeBinPath [
-                jq
-                syncthing
-                xidel
-                inputs.agenix.packages."${pkgs.stdenv.hostPlatform.system}".default
-              ]
-            }"
+        export KUBE_CONFIG_PATH="$KUBECONFIG"
       '';
-    })
+    in
+    [
+      (stdenvNoCC.mkDerivation {
+        name = "generate-syncthing-keys";
+        src = ../scripts;
+        nativeBuildInputs = [ makeWrapper ];
+        installPhase = ''
+          mkdir -p $out/bin/;
 
-    (stdenvNoCC.mkDerivation {
-      name = "make-preinstall-bundle";
-      src = ../scripts;
-      nativeBuildInputs = [ makeWrapper ];
-      installPhase = ''
-        mkdir -p $out/bin/;
+          cp generate-syncthing-keys.bash $out/bin/generate-syncthing-keys
 
-        cp make-preinstall-bundle.bash $out/bin/make-preinstall-bundle
+          wrapProgram $out/bin/generate-syncthing-keys \
+              --prefix PATH : "${
+                lib.makeBinPath [
+                  jq
+                  syncthing
+                  xidel
+                  inputs.agenix.packages."${pkgs.stdenv.hostPlatform.system}".default
+                ]
+              }"
+        '';
+      })
 
-        wrapProgram $out/bin/make-preinstall-bundle \
-            --prefix PATH : "${lib.makeBinPath [ jq ]}"
-      '';
-    })
+      (stdenvNoCC.mkDerivation {
+        name = "make-preinstall-bundle";
+        src = ../scripts;
+        nativeBuildInputs = [ makeWrapper ];
+        installPhase = ''
+          mkdir -p $out/bin/;
 
-    (stdenvNoCC.mkDerivation {
-      name = "generate-host-keys";
-      src = ../scripts;
-      nativeBuildInputs = [ makeWrapper ];
-      installPhase = ''
-        mkdir -p $out/bin/;
+          cp make-preinstall-bundle.bash $out/bin/make-preinstall-bundle
 
-        cp generate-host-keys.bash $out/bin/generate-host-keys
+          wrapProgram $out/bin/make-preinstall-bundle \
+              --prefix PATH : "${lib.makeBinPath [ jq ]}"
+        '';
+      })
 
-        wrapProgram $out/bin/generate-host-keys \
-            --prefix PATH : "${lib.makeBinPath [ ]}"
-      '';
-    })
+      (stdenvNoCC.mkDerivation {
+        name = "generate-host-keys";
+        src = ../scripts;
+        nativeBuildInputs = [ makeWrapper ];
+        installPhase = ''
+          mkdir -p $out/bin/;
 
-    (pkgs.writeShellScriptBin "terraform" ''
-      set -e
+          cp generate-host-keys.bash $out/bin/generate-host-keys
 
-      export KUBECONFIG=$(mktemp)
-      chown $(id -u):$(id -g) $KUBECONFIG
-      cleanup() { rm $KUBECONFIG; }
-      trap cleanup EXIT
+          wrapProgram $out/bin/generate-host-keys \
+              --prefix PATH : "${lib.makeBinPath [ ]}"
+        '';
+      })
 
-      pushd "$RAMONA_FLAKE_ROOT/secrets/" >/dev/null
-      set -a
-      eval "$(agenix -d terraform-tokens.age)" >/dev/null
-      set +a
-      agenix -d darkmore-kubeconfig.age >$KUBECONFIG
-      popd >/dev/null
+      (pkgs.writeShellScriptBin "terraform" ''
+        set -e
 
-      export KUBE_CONFIG_PATH="$KUBECONFIG"
+        pushd "$RAMONA_FLAKE_ROOT/secrets/" >/dev/null
+        set -a
+        eval "$(agenix -d terraform-tokens.age)" >/dev/null
+        set +a
+        popd >/dev/null
 
-      exec ${pkgs.terraform}/bin/terraform "$@"
-    '')
+        ${prepare-kube-config}
 
-    (pkgs.writeShellScriptBin "kubectl" ''
-      set -e
+        ${pkgs.terraform}/bin/terraform "$@"
+      '')
 
-      export KUBECONFIG=$(mktemp)
-      chown $(id -u):$(id -g) $KUBECONFIG
-      cleanup() { rm $KUBECONFIG; }
-      trap cleanup EXIT
+      (pkgs.writeShellScriptBin "kubectl" ''
+        set -e
 
-      pushd "$RAMONA_FLAKE_ROOT/secrets/" >/dev/null
-      agenix -d darkmore-kubeconfig.age >$KUBECONFIG
-      popd >/dev/null
+        ${prepare-kube-config}
+        ${pkgs.kubernetes}/bin/kubectl "$@"
+      '')
 
-      ${pkgs.kubernetes}/bin/kubectl "$@"
-    '')
+      (pkgs.writeShellScriptBin "argocd" ''
+        set -e
 
-    age
-    backblaze-b2
-    inputs.agenix.packages."${pkgs.stdenv.hostPlatform.system}".default
-    postgresql_16
-    shellcheck
-    shfmt
-    tflint
+        ${prepare-kube-config}
+        ${pkgs.argocd}/bin/argocd "$@"
+      '')
 
-    package-versions.nodejs
-    package-versions.rust-version
-  ];
+      age
+      backblaze-b2
+      inputs.agenix.packages."${pkgs.stdenv.hostPlatform.system}".default
+      postgresql_16
+      shellcheck
+      shfmt
+      tflint
+      argocd
+
+      package-versions.nodejs
+      package-versions.rust-version
+    ];
   RAMONA_FLAKE_ROOT = ./..;
 }
