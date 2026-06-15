@@ -96,6 +96,10 @@ resource "helm_release" "argo-cd" {
 
   set = [
     {
+      name  = "cm.accounts.terraform",
+      value = "apiKey"
+    },
+    {
       name  = "redis-ha.enabled",
       value = true
     },
