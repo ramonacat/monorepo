@@ -32,6 +32,9 @@ module "k8s--control-plane-nodes" {
   dns_zone_name      = var.dns_zone_name
   tailscale_tags     = var.control_plane_nodes[each.value].tailscale_tags
   firewall_ids       = var.firewall_ids
+  server_type        = "cx33"
+  before_node_update = { command = "kubectl", arguments = ["drain", "--delete-emptydir-data", "--ignore-daemonsets", each.value] }
+  after_node_update  = { command = "kubectl", arguments = ["uncordon", each.value] }
 }
 
 resource "kubernetes_persistent_volume_v1" "local-mon" {
@@ -258,6 +261,16 @@ resource "helm_release" "rook-ceph-cluster" {
         storageClass = {
           enabled = true
           name    = "ceph-filesystem"
+          parameters = {
+            "csi.storage.k8s.io/provisioner-secret-name"             = "rook-csi-cephfs-provisioner"
+            "csi.storage.k8s.io/provisioner-secret-namespace"        = "rook-ceph-cluster"
+            "csi.storage.k8s.io/controller-expand-secret-name"       = "rook-csi-cephfs-provisioner"
+            "csi.storage.k8s.io/controller-expand-secret-namespace"  = "rook-ceph-cluster"
+            "csi.storage.k8s.io/controller-publish-secret-name"      = "rook-csi-cephfs-provisioner"
+            "csi.storage.k8s.io/controller-publish-secret-namespace" = "rook-ceph-cluster"
+            "csi.storage.k8s.io/node-stage-secret-name"              = "rook-csi-cephfs-node"
+            "csi.storage.k8s.io/node-stage-secret-namespace"         = "rook-ceph-cluster"
+          }
         }
       }
     ]
@@ -335,11 +348,13 @@ resource "helm_release" "grafana" {
         "tailscale.com/tags"        = "tag:k8s,tag:k8s-service"
       }
       hosts = ["grafana.ibis-draconis.ts.net"]
-      tls   = ["grafana.ibis-draconis.ts.net"]
+      tls   = [{ hosts = ["grafana.ibis-draconis.ts.net"] }]
     }
     persistence = {
-      enabled = true
-      size    = "256Mi"
+      enabled          = true
+      storageClassName = "ceph-filesystem"
+      size             = "256Mi"
+      accessModes      = ["ReadWriteMany"]
     }
     datasources = {
       prometheus = {
