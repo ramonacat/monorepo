@@ -237,7 +237,8 @@ resource "helm_release" "rook-ceph-cluster" {
             }
           ]
           metadataServer = {
-            activeCount = 1
+            activeCount   = 1
+            activeStandby = true
             resources = {
               requests = {
                 cpu    = "50m",
