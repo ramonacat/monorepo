@@ -149,3 +149,28 @@ resource "helm_release" "rook-ceph" {
   })]
 }
 
+resource "helm_release" "ceph-csi-drivers" {
+  name             = "ceph-csi-drivers"
+  chart            = "ceph-csi-drivers"
+  repository       = "https://ceph.github.io/ceph-csi-operator"
+  namespace        = "rook-ceph"
+  create_namespace = true
+  version          = "v1.0.1"
+
+  values = [yamlencode({
+    operatorConfig = {
+      namespace = "rook-ceph"
+      driverSpecDefaults = {
+        imageSet         = { name = "rook-csi-operator-image-set-configmap" }
+        nodePlugin       = { priorityClassName = "system-node-critical" }
+        controllerPlugin = { priorityClassName = "system-cluster-critical" }
+      }
+    }
+    drivers = {
+      rbd    = { enabled = true, name = "rook-ceph.rbd.csi.ceph.com" },
+      cephfs = { enabled = true, name = "rook-ceph.cephfs.csi.ceph.com" },
+      nfs    = { enabled = true, name = "rook-ceph.nfs.csi.ceph.com" },
+      nvmeof = { enabled = true, name = "rook-ceph.nvmeof.csi.ceph.com" },
+    }
+  })]
+}

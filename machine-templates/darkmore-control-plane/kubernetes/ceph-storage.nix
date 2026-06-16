@@ -3,6 +3,9 @@ _: {
     systemd.tmpfiles.rules = [
       "d '/var/ceph/mon' - - - - -"
     ];
-    boot.kernelModules = [ "rbd" ];
+    boot.kernelModules = [
+      "rbd"
+      "nvme_tcp"
+    ];
   };
 }
