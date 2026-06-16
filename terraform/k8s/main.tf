@@ -106,6 +106,14 @@ resource "kubernetes_persistent_volume_v1" "local-osd" {
   }
 }
 
+resource "hcloud_volume" "node" {
+  for_each = toset(keys(var.control_plane_nodes))
+
+  name      = each.value
+  size      = 10
+  server_id = module.k8s--control-plane-nodes[each.key].server_id
+}
+
 resource "helm_release" "rook-ceph-cluster" {
   name             = "rook-ceph-cluster"
   chart            = "rook-ceph-cluster"
@@ -289,12 +297,59 @@ resource "helm_release" "rook-ceph-cluster" {
   })]
 }
 
-resource "hcloud_volume" "node" {
-  for_each = toset(keys(var.control_plane_nodes))
+resource "helm_release" "prometheus" {
+  name             = "prometheus"
+  chart            = "prometheus"
+  repository       = "https://prometheus-community.github.io/helm-charts"
+  namespace        = "prometheus"
+  create_namespace = true
+  version          = "29.12.0"
 
-  name      = each.value
-  size      = 10
-  server_id = module.k8s--control-plane-nodes[each.key].server_id
+  values = [yamlencode({
+    server = {
+      persistentVolume = {
+        size = "1Gi"
+      }
+      replicaCount = 2
+      statefulSet = {
+        enabled = true
+      }
+    }
+  })]
+}
+
+resource "helm_release" "grafana" {
+  name             = "grafana"
+  chart            = "grafana"
+  repository       = "https://grafana-community.github.io/helm-charts"
+  namespace        = "grafana"
+  create_namespace = true
+  version          = "12.4.5"
+
+  values = [yamlencode({
+    replicas = 2
+    ingress = {
+      enabled = true
+      annotations = {
+        "tailscale.com/proxy-group" = "service-ingress"
+        "tailscale.com/tags"        = "tag:k8s,tag:k8s-service"
+      }
+      hosts = ["grafana.ibis-draconis.ts.net"]
+      tls   = ["grafana.ibis-draconis.ts.net"]
+    }
+    persistence = {
+      enabled = true
+      size    = "256Mi"
+    }
+    datasources = {
+      prometheus = {
+        name   = "prometheus"
+        type   = "prometheus"
+        url    = "http://prometheus-prometheus-server"
+        access = "proxy"
+      }
+    }
+  })]
 }
 
 resource "hcloud_server_network" "node" {
