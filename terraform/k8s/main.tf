@@ -120,7 +120,7 @@ resource "helm_release" "rook-ceph-cluster" {
   repository       = "https://charts.rook.io/release"
   namespace        = "rook-ceph-cluster"
   create_namespace = true
-  version          = "v1.20.0"
+  version          = "v1.20.1"
 
   values = [yamlencode({
     cephClusterSpec = {
