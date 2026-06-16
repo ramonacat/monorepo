@@ -35,10 +35,24 @@ resource "tailscale_device_tags" "node" {
   tags      = var.tailscale_tags
 }
 
+action "local_command" "before_node_update" {
+  config {
+    command   = var.before_node_update.command
+    arguments = var.before_node_update.arguments
+  }
+}
+
+action "local_command" "after_node_update" {
+  config {
+    command   = var.after_node_update.command
+    arguments = var.after_node_update.arguments
+  }
+}
+
 resource "hcloud_server" "node" {
   name               = var.name
   image              = var.image
-  server_type        = "cx23"
+  server_type        = var.server_type
   location           = var.location
   placement_group_id = var.placement_group_id
   firewall_ids       = var.firewall_ids
@@ -48,6 +62,18 @@ resource "hcloud_server" "node" {
   public_net {
     ipv4_enabled = true
     ipv6_enabled = true
+  }
+
+  lifecycle {
+    action_trigger {
+      events  = [before_update]
+      actions = [action.local_command.before_node_update]
+    }
+
+    action_trigger {
+      events  = [after_update]
+      actions = [action.local_command.after_node_update]
+    }
   }
 }
 

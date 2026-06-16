@@ -43,3 +43,17 @@ variable "skip_instance_id" {
   default = false
 }
 
+variable "server_type" {
+  type    = string
+  default = "cx23"
+}
+
+variable "before_node_update" {
+  type    = object({ command : string, arguments : list(string) })
+  default = { command = "true", arguments = [] }
+}
+
+variable "after_node_update" {
+  type    = object({ command : string, arguments : list(string) })
+  default = { command = "true", arguments = [] }
+}
