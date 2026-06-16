@@ -143,7 +143,7 @@ resource "helm_release" "rook-ceph" {
   repository       = "https://charts.rook.io/release"
   namespace        = "rook-ceph"
   create_namespace = true
-  version          = "v1.20.0"
+  version          = "v1.20.1"
 
   values = [yamlencode({
   })]
