@@ -8,6 +8,10 @@ terraform {
       source  = "tailscale/tailscale"
       version = ">= 0.29.2"
     }
+    b2 = {
+      source  = "Backblaze/b2"
+      version = ">= 0.12.1"
+    }
   }
 }
 
