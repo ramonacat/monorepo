@@ -99,6 +99,13 @@ pkgs.mkShell {
         ${pkgs.argocd}/bin/argocd "$@"
       '')
 
+      (pkgs.writeShellScriptBin "velero" ''
+        set -e
+
+        ${prepare-kube-config}
+        ${pkgs.velero}/bin/velero "$@"
+      '')
+
       age
       backblaze-b2
       inputs.agenix.packages."${pkgs.stdenv.hostPlatform.system}".default
