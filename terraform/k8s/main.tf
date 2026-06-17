@@ -128,12 +128,12 @@ resource "helm_release" "kured" {
   create_namespace = true
   version          = "6.0.0"
 
-  set = [
-    {
-      name  = "configuration.rebootCommand",
-      value = "/run/current-system/sw/bin/systemctl reboot",
+  values = [yamlencode({
+    configuration = {
+      rebootCommand = "/run/current-system/sw/bin/systemctl reboot"
+      period        = "1m0s"
     }
-  ]
+  })]
 }
 
 resource "hcloud_server_network" "node" {
