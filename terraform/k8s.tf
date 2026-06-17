@@ -1,3 +1,43 @@
+moved {
+  from = tailscale_oauth_client.kubernetes
+  to   = module.k8s--darkmore.tailscale_oauth_client.kubernetes
+}
+
+moved {
+  from = kubernetes_namespace_v1.kube-flannel
+  to   = module.k8s--darkmore.kubernetes_namespace_v1.kube-flannel
+}
+
+moved {
+  from = helm_release.tailscale
+  to   = module.k8s--darkmore.helm_release.tailscale
+}
+
+moved {
+  from = helm_release.rook-ceph
+  to   = module.k8s--darkmore.helm_release.rook-ceph
+}
+
+moved {
+  from = helm_release.kured
+  to   = module.k8s--darkmore.helm_release.kured
+}
+
+moved {
+  from = helm_release.flannel
+  to   = module.k8s--darkmore.helm_release.flannel
+}
+
+moved {
+  from = helm_release.ceph-csi-drivers
+  to   = module.k8s--darkmore.helm_release.ceph-csi-drivers
+}
+
+moved {
+  from = module.k8s--darkmore.helm_release.grafana
+  to   = helm_release.grafana
+}
+
 resource "hcloud_network_subnet" "k8s" {
   network_id   = hcloud_network.net.id
   type         = "cloud"
@@ -22,74 +62,6 @@ module "k8s--darkmore" {
   }
 }
 
-resource "tailscale_oauth_client" "kubernetes" {
-  scopes = ["services", "devices:core", "auth_keys"]
-  tags   = ["tag:k8s-operator"]
-}
-
-resource "kubernetes_namespace_v1" "kube-flannel" {
-  metadata {
-    name = "kube-flannel"
-
-    labels = {
-      "pod-security.kubernetes.io/enforce" = "privileged"
-    }
-  }
-}
-
-resource "helm_release" "flannel" {
-  name       = "flannel"
-  chart      = "flannel"
-  repository = "https://flannel-io.github.io/flannel/"
-  version    = "v0.28.5"
-  namespace  = kubernetes_namespace_v1.kube-flannel.metadata[0].name
-
-  set = [{
-    name  = "podCidr",
-    value = "10.72.0.0/16"
-  }]
-}
-
-resource "helm_release" "tailscale" {
-  name             = "tailscale"
-  chart            = "tailscale-operator"
-  repository       = "https://pkgs.tailscale.com/helmcharts"
-  namespace        = "tailscale"
-  create_namespace = true
-  version          = "1.98.4"
-
-  lifecycle {
-    ignore_changes = [create_namespace]
-  }
-
-  set_sensitive = [
-    {
-      name  = "oauth.clientId"
-      value = tailscale_oauth_client.kubernetes.id
-    },
-    {
-      name  = "oauth.clientSecret"
-      value = tailscale_oauth_client.kubernetes.key
-    }
-  ]
-}
-
-resource "helm_release" "kured" {
-  name             = "kured"
-  chart            = "kured"
-  repository       = "https://kubereboot.github.io/charts"
-  namespace        = "kured"
-  create_namespace = true
-  version          = "6.0.0"
-
-  set = [
-    {
-      name  = "configuration.rebootCommand",
-      value = "/run/current-system/sw/bin/systemctl reboot",
-    }
-  ]
-}
-
 resource "helm_release" "argo-cd" {
   name             = "argo-cd"
   chart            = "argo-cd"
@@ -99,7 +71,10 @@ resource "helm_release" "argo-cd" {
   version          = "9.5.21"
 
   values = [yamlencode({
-    global = { domain = "argo-cd.ibis-draconis.ts.net" },
+    global = {
+      domain                   = "argo-cd.ibis-draconis.ts.net"
+      addPrometheusAnnotations = true
+    },
     configs = {
       cm = { "accounts.terraform" = "apiKey" },
       params = {
@@ -118,7 +93,12 @@ resource "helm_release" "argo-cd" {
         hardAntiAffinity = false
       },
     },
-    controller = { replicas = 1 },
+    controller = {
+      replicas = 1,
+      metrics = {
+        enabled = true
+      }
+    },
     server = {
       replicas = 2
       ingress = {
@@ -130,47 +110,63 @@ resource "helm_release" "argo-cd" {
           "tailscale.com/tags"        = "tag:k8s,tag:k8s-service"
         }
       }
-    },
-    repoServer     = { replicas = 2 },
-    applicationSet = { replicas = 2 },
-  })]
-}
-
-
-resource "helm_release" "rook-ceph" {
-  name             = "rook-ceph"
-  chart            = "rook-ceph"
-  repository       = "https://charts.rook.io/release"
-  namespace        = "rook-ceph"
-  create_namespace = true
-  version          = "v1.20.1"
-
-  values = [yamlencode({
-  })]
-}
-
-resource "helm_release" "ceph-csi-drivers" {
-  name             = "ceph-csi-drivers"
-  chart            = "ceph-csi-drivers"
-  repository       = "https://ceph.github.io/ceph-csi-operator"
-  namespace        = "rook-ceph"
-  create_namespace = true
-  version          = "v1.0.1"
-
-  values = [yamlencode({
-    operatorConfig = {
-      namespace = "rook-ceph"
-      driverSpecDefaults = {
-        imageSet         = { name = "rook-csi-operator-image-set-configmap" }
-        nodePlugin       = { priorityClassName = "system-node-critical" }
-        controllerPlugin = { priorityClassName = "system-cluster-critical" }
+      metrics = {
+        enabled = true
       }
+    },
+    repoServer = {
+      replicas = 2
+      metrics = {
+        enabled = true
+      }
+    },
+    applicationSet = {
+      replicas = 2
+      metrics = {
+        enabled = true
+      }
+    },
+  })]
+}
+
+resource "helm_release" "grafana" {
+  name             = "grafana"
+  chart            = "grafana"
+  repository       = "https://grafana-community.github.io/helm-charts"
+  namespace        = "grafana"
+  create_namespace = true
+  version          = "12.4.6"
+
+  values = [yamlencode({
+    replicas = 2
+    ingress = {
+      enabled          = true
+      ingressClassName = "tailscale"
+      annotations = {
+        "tailscale.com/proxy-group" = "service-ingress"
+        "tailscale.com/tags"        = "tag:k8s,tag:k8s-service"
+      }
+      hosts = ["grafana.ibis-draconis.ts.net"]
+      tls   = [{ hosts = ["grafana.ibis-draconis.ts.net"] }]
     }
-    drivers = {
-      rbd    = { enabled = true, name = "rook-ceph.rbd.csi.ceph.com" },
-      cephfs = { enabled = true, name = "rook-ceph.cephfs.csi.ceph.com" },
-      nfs    = { enabled = true, name = "rook-ceph.nfs.csi.ceph.com" },
-      nvmeof = { enabled = true, name = "rook-ceph.nvmeof.csi.ceph.com" },
+    persistence = {
+      enabled          = true
+      storageClassName = "ceph-filesystem"
+      size             = "256Mi"
+      accessModes      = ["ReadWriteMany"]
+    }
+    datasources = {
+      "datasources.yaml" = {
+        apiVersion = 1,
+        datasources = [
+          {
+            name   = "prometheus"
+            type   = "prometheus"
+            url    = "http://prometheus-server.prometheus"
+            access = "proxy"
+          }
+        ]
+      }
     }
   })]
 }

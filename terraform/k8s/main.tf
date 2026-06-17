@@ -4,17 +4,11 @@ terraform {
       source  = "hetznercloud/hcloud"
       version = ">= 1.65.0"
     }
+    tailscale = {
+      source  = "tailscale/tailscale"
+      version = ">= 0.29.2"
+    }
   }
-}
-
-// TODO move the helm charts into this module?
-resource "kubernetes_storage_class_v1" "local" {
-  metadata {
-    name = "local-storage"
-  }
-
-  storage_provisioner = "kubernetes.io/no-provisioner"
-  volume_binding_mode = "WaitForFirstConsumer"
 }
 
 resource "hcloud_placement_group" "nodes" {
@@ -37,277 +31,56 @@ module "k8s--control-plane-nodes" {
   after_node_update  = { command = "kubectl", arguments = ["uncordon", each.value] }
 }
 
-resource "kubernetes_persistent_volume_v1" "local-mon" {
-  for_each = toset(keys(var.control_plane_nodes))
+resource "tailscale_oauth_client" "kubernetes" {
+  scopes = ["services", "devices:core", "auth_keys"]
+  tags   = ["tag:k8s-operator"]
+}
 
+resource "kubernetes_namespace_v1" "kube-flannel" {
   metadata {
-    name = "local-${each.value}-mon"
-  }
+    name = "kube-flannel"
 
-  spec {
-    storage_class_name = kubernetes_storage_class_v1.local.metadata[0].name
-    capacity = {
-      "storage" : "10Gi"
-    }
-    access_modes                     = ["ReadWriteOnce"]
-    persistent_volume_reclaim_policy = "Retain"
-    volume_mode                      = "Filesystem"
-
-    node_affinity {
-      required {
-        node_selector_term {
-          match_expressions {
-            key      = "kubernetes.io/hostname"
-            operator = "In"
-            values   = [each.value]
-          }
-        }
-      }
-    }
-
-    persistent_volume_source {
-      local {
-        path = "/var/ceph/mon/"
-      }
+    labels = {
+      "pod-security.kubernetes.io/enforce" = "privileged"
     }
   }
 }
 
-resource "kubernetes_persistent_volume_v1" "local-osd" {
-  for_each = toset(keys(var.control_plane_nodes))
+resource "helm_release" "flannel" {
+  name       = "flannel"
+  chart      = "flannel"
+  repository = "https://flannel-io.github.io/flannel/"
+  version    = "v0.28.5"
+  namespace  = kubernetes_namespace_v1.kube-flannel.metadata[0].name
 
-  metadata {
-    name = "local-${each.value}-osd"
-  }
-
-  spec {
-    storage_class_name = kubernetes_storage_class_v1.local.metadata[0].name
-    capacity = {
-      "storage" : "${hcloud_volume.node[each.value].size}Gi"
-    }
-    access_modes                     = ["ReadWriteOnce"]
-    persistent_volume_reclaim_policy = "Retain"
-    volume_mode                      = "Block"
-
-    node_affinity {
-      required {
-        node_selector_term {
-          match_expressions {
-            key      = "kubernetes.io/hostname"
-            operator = "In"
-            values   = [each.value]
-          }
-        }
-      }
-    }
-
-    persistent_volume_source {
-      local {
-        path = hcloud_volume.node[each.value].linux_device
-      }
-    }
-  }
+  set = [{
+    name  = "podCidr",
+    value = "10.72.0.0/16"
+  }]
 }
 
-resource "hcloud_volume" "node" {
-  for_each = toset(keys(var.control_plane_nodes))
-
-  name      = each.value
-  size      = 10
-  server_id = module.k8s--control-plane-nodes[each.key].server_id
-}
-
-resource "helm_release" "rook-ceph-cluster" {
-  name             = "rook-ceph-cluster"
-  chart            = "rook-ceph-cluster"
-  repository       = "https://charts.rook.io/release"
-  namespace        = "rook-ceph-cluster"
+resource "helm_release" "tailscale" {
+  name             = "tailscale"
+  chart            = "tailscale-operator"
+  repository       = "https://pkgs.tailscale.com/helmcharts"
+  namespace        = "tailscale"
   create_namespace = true
-  version          = "v1.20.1"
+  version          = "1.98.4"
 
-  values = [yamlencode({
-    cephClusterSpec = {
-      mon = {
-        count = 3
-        volumeClaimTemplate = {
-          spec = {
-            storageClassName = kubernetes_storage_class_v1.local.metadata[0].name
-            volumeMode       = "Filesystem",
-            resources = {
-              requests = {
-                storage = "10Gi"
-              }
-            }
-          }
-        }
-      }
-      storage = {
-        useAllNodes   = false
-        useAllDevices = false
+  lifecycle {
+    ignore_changes = [create_namespace]
+  }
 
-        storageClassDeviceSets = [
-          {
-            name      = "set1",
-            count     = 3,
-            portable  = false,
-            encrypted = false,
-            volumeClaimTemplates = [
-              {
-                metadata = { name = "data" }
-                spec = {
-                  resources = {
-                    requests = {
-                      storage = "10Gi"
-                    },
-                  }
-                  storageClassName = kubernetes_storage_class_v1.local.metadata[0].name,
-                  volumeMode       = "Block",
-                  accessModes      = ["ReadWriteOnce"]
-                }
-              }
-            ]
-          }
-        ]
-      }
-      resources = {
-        mgr = {
-          requests = {
-            cpu    = "50m"
-            memory = "256Mi"
-          }
-        }
-        mon = {
-          requests = {
-            cpu    = "50m"
-            memory = "256Mi"
-          }
-        }
-        osd = {
-          requests = {
-            cpu    = "50m"
-            memory = "256Mi"
-          }
-        }
-        prepareosd = {
-          requests = {
-            cpu = "50m"
-          }
-        }
-        mgr-sidecar = {
-          requests = {
-            cpu = "50m"
-          }
-        }
-        crashcollector = {
-          requests = {
-            cpu = "50m"
-          }
-        }
-        logcollector = {
-          requests = {
-            cpu = "50m"
-          }
-        }
-        cleanup = {
-          requests = {
-            cpu    = "50m"
-            memory = "256Mi"
-          }
-        }
-        exporter = {
-          requests = {
-            cpu = "50m"
-          }
-        }
-        cmd-reporter = {
-          requests = {
-            cpu = "50m"
-          }
-        }
-      }
-      dashboard = {
-        ssl = false
-      }
+  set_sensitive = [
+    {
+      name  = "oauth.clientId"
+      value = tailscale_oauth_client.kubernetes.id
+    },
+    {
+      name  = "oauth.clientSecret"
+      value = tailscale_oauth_client.kubernetes.key
     }
-    cephFileSystems = [
-      {
-        name = "ceph-filesystem",
-        spec = {
-          metadataPool = {
-            replicated = {
-              size = 3
-            }
-          }
-          dataPools = [
-            {
-              failureDomain = "host",
-              replicated = {
-                size = 3
-              },
-              name = "data0"
-            }
-          ]
-          metadataServer = {
-            activeCount   = 1
-            activeStandby = true
-            resources = {
-              requests = {
-                cpu    = "50m",
-                memory = "512Mi"
-              }
-            }
-          }
-        }
-        storageClass = {
-          enabled = true
-          name    = "ceph-filesystem"
-          parameters = {
-            "csi.storage.k8s.io/provisioner-secret-name"             = "rook-csi-cephfs-provisioner"
-            "csi.storage.k8s.io/provisioner-secret-namespace"        = "rook-ceph-cluster"
-            "csi.storage.k8s.io/controller-expand-secret-name"       = "rook-csi-cephfs-provisioner"
-            "csi.storage.k8s.io/controller-expand-secret-namespace"  = "rook-ceph-cluster"
-            "csi.storage.k8s.io/controller-publish-secret-name"      = "rook-csi-cephfs-provisioner"
-            "csi.storage.k8s.io/controller-publish-secret-namespace" = "rook-ceph-cluster"
-            "csi.storage.k8s.io/node-stage-secret-name"              = "rook-csi-cephfs-node"
-            "csi.storage.k8s.io/node-stage-secret-namespace"         = "rook-ceph-cluster"
-          }
-        }
-      }
-    ]
-    cephObjectStores = [
-      {
-        name = "ceph-objectstore",
-        spec = {
-          gateway = {
-            port = 80
-            resources = {
-              requests = {
-                cpu    = "50m",
-                memory = "512Mi"
-              }
-            }
-          }
-        }
-        storageClass = {
-          enabled = true
-          name    = "ceph-bucket"
-        }
-      }
-    ]
-    ingress = {
-      dashboard = {
-        annotations = {
-          "tailscale.com/proxy-group" = "service-ingress"
-          "tailscale.com/tags"        = "tag:k8s,tag:k8s-service"
-        },
-        host = {
-          name = "ceph-${var.name}.ibis-draconis.ts.net"
-        },
-        tls              = [{ hosts = ["ceph-${var.name}.ibis-draconis.ts.net"] }],
-        ingressClassName = "tailscale"
-      }
-    }
-  })]
+  ]
 }
 
 resource "helm_release" "prometheus" {
@@ -328,43 +101,35 @@ resource "helm_release" "prometheus" {
         enabled = true
       }
     }
+    alertmanager = {
+      replicaCount = 2
+      service = {
+        annotations = {
+          "prometheus.io/scrape" = "true"
+          "prometheus.io/port"   = "9093"
+        }
+      }
+      persistence = {
+        size = "128Mi"
+      }
+    }
   })]
 }
 
-resource "helm_release" "grafana" {
-  name             = "grafana"
-  chart            = "grafana"
-  repository       = "https://grafana-community.github.io/helm-charts"
-  namespace        = "grafana"
+resource "helm_release" "kured" {
+  name             = "kured"
+  chart            = "kured"
+  repository       = "https://kubereboot.github.io/charts"
+  namespace        = "kured"
   create_namespace = true
-  version          = "12.4.6"
+  version          = "6.0.0"
 
-  values = [yamlencode({
-    replicas = 2
-    ingress = {
-      enabled = true
-      annotations = {
-        "tailscale.com/proxy-group" = "service-ingress"
-        "tailscale.com/tags"        = "tag:k8s,tag:k8s-service"
-      }
-      hosts = ["grafana.ibis-draconis.ts.net"]
-      tls   = [{ hosts = ["grafana.ibis-draconis.ts.net"] }]
+  set = [
+    {
+      name  = "configuration.rebootCommand",
+      value = "/run/current-system/sw/bin/systemctl reboot",
     }
-    persistence = {
-      enabled          = true
-      storageClassName = "ceph-filesystem"
-      size             = "256Mi"
-      accessModes      = ["ReadWriteMany"]
-    }
-    datasources = {
-      prometheus = {
-        name   = "prometheus"
-        type   = "prometheus"
-        url    = "http://prometheus-prometheus-server"
-        access = "proxy"
-      }
-    }
-  })]
+  ]
 }
 
 resource "hcloud_server_network" "node" {
