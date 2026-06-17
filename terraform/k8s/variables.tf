@@ -26,3 +26,8 @@ variable "subnet_id" {
 variable "firewall_ids" {
   type = list(string)
 }
+
+variable "ceph_cluster_namespace" {
+  type    = string
+  default = "rook-ceph-cluster"
+}
