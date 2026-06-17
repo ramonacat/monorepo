@@ -31,3 +31,13 @@ variable "ceph_cluster_namespace" {
   type    = string
   default = "rook-ceph-cluster"
 }
+
+variable "pod_cidr" {
+  type    = string
+  default = "10.72.0.0/16"
+}
+
+variable "hcloud_token" {
+  type      = string
+  sensitive = true
+}

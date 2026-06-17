@@ -118,10 +118,10 @@ resource "helm_release" "ceph-csi-drivers" {
       }
     }
     drivers = {
-      rbd    = { enabled = true, name = "${helm_release.rook-ceph.namespace}.rbd.csi.ceph.com" },
-      cephfs = { enabled = true, name = "${helm_release.rook-ceph.namespace}.cephfs.csi.ceph.com" },
-      nfs    = { enabled = true, name = "${helm_release.rook-ceph.namespace}.nfs.csi.ceph.com" },
-      nvmeof = { enabled = true, name = "${helm_release.rook-ceph.namespace}.nvmeof.csi.ceph.com" },
+      rbd    = { enabled = true, name = "${helm_release.rook-ceph.namespace}.rbd.csi.ceph.com", deployCsiAddons = true, snapshotPolicy = "volumeSnapshot" },
+      cephfs = { enabled = true, name = "${helm_release.rook-ceph.namespace}.cephfs.csi.ceph.com", deployCsiAddons = true },
+      nfs    = { enabled = true, name = "${helm_release.rook-ceph.namespace}.nfs.csi.ceph.com", deployCsiAddons = true },
+      nvmeof = { enabled = false, name = "${helm_release.rook-ceph.namespace}.nvmeof.csi.ceph.com", deployCsiAddons = true },
     }
   })]
 }

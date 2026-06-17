@@ -49,11 +49,13 @@ resource "helm_release" "velero" {
         name     = "default"
         provider = "csi"
       }]
-      features = "EnableCSI"
+      features                = "EnableCSI"
+      defaultSnapshotMoveData = true
     }
     schedules = {
       default = {
-        schedule = "0 */3 * * *"
+        schedule         = "0 */3 * * *"
+        snapshotMoveData = true
         template = {
           includedNamespaces = ["*"]
           excludedNamespaces = [helm_release.rook-ceph.namespace, helm_release.rook-ceph-cluster.namespace]

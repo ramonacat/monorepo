@@ -59,7 +59,7 @@ resource "helm_release" "flannel" {
 
   set = [{
     name  = "podCidr",
-    value = "10.72.0.0/16"
+    value = var.pod_cidr
   }]
 }
 
