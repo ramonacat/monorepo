@@ -111,6 +111,7 @@ resource "helm_release" "ceph-csi-drivers" {
     operatorConfig = {
       namespace = "rook-ceph"
       driverSpecDefaults = {
+        deployCsiAddons  = true
         imageSet         = { name = "rook-csi-operator-image-set-configmap" }
         nodePlugin       = { priorityClassName = "system-node-critical" }
         controllerPlugin = { priorityClassName = "system-cluster-critical" }
@@ -303,6 +304,12 @@ resource "helm_release" "rook-ceph-cluster" {
         }
       }
     ]
+    cephFileSystemVolumeSnapshotClass = {
+      enabled = true
+    }
+    cephBlockPoolsVolumeSnapshotClass = {
+      enabled = true
+    }
     ingress = {
       dashboard = {
         annotations = {
