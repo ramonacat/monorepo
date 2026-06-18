@@ -87,39 +87,6 @@ resource "helm_release" "tailscale" {
   ]
 }
 
-resource "helm_release" "prometheus" {
-  name             = "prometheus"
-  chart            = "prometheus"
-  repository       = "https://prometheus-community.github.io/helm-charts"
-  namespace        = "prometheus"
-  create_namespace = true
-  version          = "29.12.0"
-
-  values = [yamlencode({
-    server = {
-      persistentVolume = {
-        size = "1Gi"
-      }
-      replicaCount = 2
-      statefulSet = {
-        enabled = true
-      }
-    }
-    alertmanager = {
-      replicaCount = 2
-      service = {
-        annotations = {
-          "prometheus.io/scrape" = "true"
-          "prometheus.io/port"   = "9093"
-        }
-      }
-      persistence = {
-        size = "128Mi"
-      }
-    }
-  })]
-}
-
 resource "helm_release" "kured" {
   name             = "kured"
   chart            = "kured"
@@ -132,6 +99,49 @@ resource "helm_release" "kured" {
     configuration = {
       rebootCommand = "/run/current-system/sw/bin/systemctl reboot"
       period        = "1m0s"
+    }
+  })]
+}
+
+resource "helm_release" "kube-prometheus-stack" {
+  name             = "kube-prometheus-stack"
+  chart            = "oci://ghcr.io/prometheus-community/charts/kube-prometheus-stack"
+  namespace        = "kube-prometheus-stack"
+  create_namespace = true
+  version          = "86.2.3"
+
+  values = [yamlencode({
+    alertmanager = {
+      alertmanagerSpec = {
+        replicas = 2
+      }
+    }
+    grafana = {
+      enabled = false
+
+      // TODO these should come from variables, as grafana isn't an inherent dependency of the cluster
+      namespaceOverride      = "grafana"
+      forceDeployDatasources = true
+      forceDeployDashboards  = true
+
+      admin = {
+        existingSecret = "grafana"
+      }
+    }
+    prometheus = {
+      prometheusSpec = {
+        replicas      = 2
+        retentionSize = "4900MiB"
+        storageSpec = {
+          volumeClaimTemplate = {
+            spec = {
+              storageClassName = "ceph-block"
+              accessModes      = ["ReadWriteOnce"]
+              resources        = { requests = { storage = "5Gi" } }
+            }
+          }
+        }
+      }
     }
   })]
 }
