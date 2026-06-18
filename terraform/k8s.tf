@@ -60,7 +60,8 @@ module "k8s--darkmore" {
       private_ipv4 : node.ip
     }
   }
-  hcloud_token = var.kubernetes_darkmore_hcloud_token
+  hcloud_token   = var.kubernetes_darkmore_hcloud_token
+  dnsimple_token = var.kubernetes_darkmore_dnsimple_token
 }
 
 resource "helm_release" "argo-cd" {
