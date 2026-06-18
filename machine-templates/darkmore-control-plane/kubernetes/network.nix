@@ -22,6 +22,14 @@
               }
           }
         '';
+        "${config-path}/20-portmap.conf".text = ''
+          {
+              "cniVersion": "0.2.0",
+              "name": "partmap",
+              "type": "portmap",
+              "capabilities": {"portMappings": true}
+          }
+        '';
         "${config-path}/99-loopback.conf".text = ''
           {
               "cniVersion": "0.2.0",

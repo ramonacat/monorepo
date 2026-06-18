@@ -107,7 +107,7 @@ kubeadm reset
 kubeadm join 127.0.0.1:6444 --token ... \
   --discovery-token-ca-cert-hash sha256:... \
   --control-plane --certificate-key ... \
-  --apiserver-advertise-address 10.70.0.11
+  --apiserver-advertise-address 10.0.0.11
 
 export KUBECONFIG=/etc/kubernetes/admin.conf
 
