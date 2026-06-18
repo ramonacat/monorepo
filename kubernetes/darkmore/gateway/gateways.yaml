@@ -33,6 +33,8 @@ kind: Gateway
 metadata:
   name: gateway-public
   namespace: kgateway-system
+  annotations: 
+    cert-manager.io/issuer: letsencrypt-http
 spec: 
   gatewayClassName: 'kgateway'
   infrastructure:
@@ -82,6 +84,8 @@ kind: Gateway
 metadata:
   name: gateway-tailscale
   namespace: kgateway-system
+  annotations: 
+    cert-manager.io/issuer: letsencrypt-http
 spec: 
   gatewayClassName: 'kgateway'
   infrastructure:
