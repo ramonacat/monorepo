@@ -1,6 +1,6 @@
 resource "hcloud_network" "net" {
   name     = "net"
-  ip_range = "10.70.0.0/16"
+  ip_range = "10.0.0.0/9"
 }
 
 resource "hcloud_firewall" "fw" {

@@ -59,7 +59,8 @@
                     --fail-swap-on=false \
                     --node-ip=${config.ramona.darkmore-control-plane.ip} \
                     --bootstrap-kubeconfig=/etc/kubernetes/bootstrap-kubelet.conf \
-                    --kubeconfig=${kubelet-kubeconfig}
+                    --kubeconfig=${kubelet-kubeconfig} \
+                    --cloud-provider=external
               '';
             in
             "${kubelet-script}/bin/kubelet-wrapper";

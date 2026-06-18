@@ -23,6 +23,10 @@ variable "subnet_id" {
   type = string
 }
 
+variable "network_id" {
+  type = string
+}
+
 variable "firewall_ids" {
   type = list(string)
 }
