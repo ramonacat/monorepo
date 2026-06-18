@@ -18,6 +18,8 @@ metadata:
   namespace: kgateway-system
 spec:
   kube:
+    deployment:
+      replicas: 2
     service:
       type: LoadBalancer
       extraAnnotations:
@@ -42,13 +44,16 @@ spec:
   listeners:
     - name: http
       port: 80
-      protocol: http
+      protocol: HTTP
       allowedRoutes:
         namespaces:
           from: All
     - name: https
       port: 443
-      protocol: https
+      protocol: HTTPS
+      allowedRoutes:
+        namespaces:
+          from: All
       tls:
         mode: Terminate
         certificateRefs:
@@ -62,6 +67,8 @@ metadata:
   namespace: kgateway-system
 spec:
   kube:
+    deployment:
+      replicas: 2
     service:
       type: LoadBalancer
       loadBalancerClass: 'tailscale'
@@ -86,13 +93,16 @@ spec:
   listeners:
     - name: http
       port: 80
-      protocol: http
+      protocol: HTTP
       allowedRoutes:
         namespaces:
           from: All
     - name: https
       port: 443
-      protocol: https
+      protocol: HTTPS
+      allowedRoutes:
+        namespaces:
+          from: All
       tls:
         mode: Terminate
         certificateRefs:

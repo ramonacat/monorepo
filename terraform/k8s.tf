@@ -120,6 +120,13 @@ resource "helm_release" "argo-cd" {
           "tailscale.com/tags"        = "tag:k8s,tag:k8s-service"
         }
       }
+      httproute = {
+        enabled   = true
+        hostnames = ["argo-cd.infrastructure.ramona.fun"]
+        parentRefs = [
+          { group = "gateway.networking.k8s.io", kind = "Gateway", name = "gateway-tailscale" }
+        ]
+      }
       metrics = {
         enabled = true
       }
