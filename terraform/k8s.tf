@@ -42,14 +42,14 @@ resource "hcloud_network_subnet" "k8s" {
   network_id   = hcloud_network.net.id
   type         = "cloud"
   network_zone = "eu-central"
-  ip_range     = "10.70.0.0/24"
+  ip_range     = "10.0.0.0/24"
 }
 
 resource "hcloud_network_subnet" "k8s-lb" {
   network_id   = hcloud_network.net.id
   type         = "cloud"
   network_zone = "eu-central"
-  ip_range     = "10.71.0.0/24"
+  ip_range     = "10.1.0.0/24"
 }
 
 module "k8s--darkmore" {

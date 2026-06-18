@@ -96,30 +96,26 @@ Generally the flake should build anywhere, so the machines can be rebuilt by che
 # On any of the nodes, afterwards kubeadm will give you a `kubeadm init` command. Modify it to ensure that `--apiserver-advertise-address` is correct (see below)
 # Ensure the 10.70.0.0/16 IP matches the one the machine uses, as well as the hostname
 kubeadm reset 
-rm /etc/cni/net.d/*
-kubeadm init --control-plane-endpoint "127.0.0.1:6444" --apiserver-advertise-address=10.70.0.10  --pod-network-cidr=10.72.0.0/16 --upload-certs
+kubeadm init --control-plane-endpoint "127.0.0.1:6444" --apiserver-advertise-address=10.0.0.10  --pod-network-cidr=10.2.0.0/16 --service-cidr=10.16.0.0/12 --upload-certs
 export KUBECONFIG=/etc/kubernetes/admin.conf
-kubectl annotate node darkmore-control-plane-0 flannel.alpha.coreos.com/node-public-ip=10.70.0.10
-kubectl create ns kube-flannel
-kubectl label --overwrite ns kube-flannel pod-security.kubernetes.io/enforce=privileged
-helm repo add flannel https://flannel-io.github.io/flannel/
-helm install flannel --set podCidr="10.72.0.0/16" --namespace kube-flannel flannel/flannel
+kubectl -n kube-system create secret generic hcloud --from-literal=token=...
+helm repo add hcloud https://charts.hetzner.cloud
+helm install hccm hcloud/hcloud-cloud-controller-manager -n kube-system --set networking.enabled=true --set networking.clusterCIDR=10.2.0.0/16
 
 # joining the cluster
 kubeadm reset 
-rm /etc/cni/net.d/*
 kubeadm join 127.0.0.1:6444 --token ... \
   --discovery-token-ca-cert-hash sha256:... \
   --control-plane --certificate-key ... \
   --apiserver-advertise-address 10.70.0.11
 
 export KUBECONFIG=/etc/kubernetes/admin.conf
-kubectl annotate node darkmore-control-plane-1 flannel.alpha.coreos.com/node-public-ip=10.70.0.11
 
 # after all nodes are joined
 ## allow scheduling workloads on the control plane
 kubectl taint nodes --all node-role.kubernetes.io/control-plane-
 kubectl label nodes --all node.kubernetes.io/exclude-from-external-load-balancers-
+
 ## restart coredns, so it spreads across nodes (it will initially run only on 0, which is bad from HA perspective)
 kubectl rollout -n kube-system restart deployment coredns
 ```
