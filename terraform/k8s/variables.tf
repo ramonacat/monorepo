@@ -41,3 +41,8 @@ variable "hcloud_token" {
   type      = string
   sensitive = true
 }
+
+variable "dnsimple_token" {
+  type      = string
+  sensitive = true
+}

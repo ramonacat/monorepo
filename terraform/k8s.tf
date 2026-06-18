@@ -60,7 +60,8 @@ module "k8s--darkmore" {
       private_ipv4 : node.ip
     }
   }
-  hcloud_token = var.kubernetes_darkmore_hcloud_token
+  hcloud_token   = var.kubernetes_darkmore_hcloud_token
+  dnsimple_token = var.kubernetes_darkmore_dnsimple_token
 }
 
 resource "helm_release" "argo-cd" {
@@ -156,17 +157,17 @@ resource "helm_release" "grafana" {
       size             = "256Mi"
       accessModes      = ["ReadWriteMany"]
     }
+    sidecar = {
+      alerts      = { enabled = true }
+      dashboards  = { enabled = true }
+      datasources = { enabled = true }
+      plugins     = { enabled = true }
+      notifiers   = { enabled = true }
+    }
     datasources = {
       "datasources.yaml" = {
-        apiVersion = 1,
-        datasources = [
-          {
-            name   = "prometheus"
-            type   = "prometheus"
-            url    = "http://prometheus-server.prometheus"
-            access = "proxy"
-          }
-        ]
+        apiVersion        = 1
+        deleteDatasources = [{ name = "prometheus" }]
       }
     }
   })]

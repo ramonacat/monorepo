@@ -59,6 +59,6 @@ resource "dnsimple_zone_record" "TXT--_dmarc" {
   zone_name = var.zone_name
   name      = "_dmarc"
   type      = "TXT"
-  value     = "\"v=DMARC1; p=none; rua=mailto:dmarc@${var.zone_name}; ruf=mailto:dmarc@${var.zone_name}; fo=1\""
+  value     = "\"v=DMARC1; p=none;\""
   ttl       = 60
 }

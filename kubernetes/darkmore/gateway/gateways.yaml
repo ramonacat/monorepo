@@ -1,0 +1,99 @@
+apiVersion: gateway.kgateway.dev/v1alpha1
+kind: ListenerPolicy
+metadata:
+  name: proxy-protocol
+  namespace: kgateway-system
+spec:
+  targetRefs:
+  - group: gateway.networking.k8s.io
+    kind: Gateway
+    name: http
+  default: 
+    proxyProtocol: {}
+---
+apiVersion: gateway.kgateway.dev/v1alpha1
+kind: GatewayParameters
+metadata:
+  name: gateway-public
+  namespace: kgateway-system
+spec:
+  kube:
+    service:
+      type: LoadBalancer
+      extraAnnotations:
+        "load-balancer.hetzner.cloud/name": "gateway-public"
+        "load-balancer.hetzner.cloud/location": "nbg1"
+        "load-balancer.hetzner.cloud/uses-proxyprotocol": "true"
+---
+apiVersion: gateway.networking.k8s.io/v1
+kind: Gateway
+metadata:
+  name: gateway-public
+  namespace: kgateway-system
+spec: 
+  gatewayClassName: 'kgateway'
+  infrastructure:
+    parametersRef:
+      group: gateway.kgateway.dev
+      kind: GatewayParameters
+      name: gateway-public
+
+  listeners:
+    - name: http
+      port: 80
+      protocol: http
+      allowedRoutes:
+        namespaces:
+          from: All
+    - name: https
+      port: 443
+      protocol: https
+      tls:
+        mode: Terminate
+        certificateRefs:
+          - kind: Secret
+            name: letsencrypt-http-issuer-account-key
+---
+apiVersion: gateway.kgateway.dev/v1alpha1
+kind: GatewayParameters
+metadata:
+  name: gateway-tailscale
+  namespace: kgateway-system
+spec:
+  kube:
+    service:
+      type: LoadBalancer
+      loadBalancerClass: 'tailscale'
+      extraAnnotations:
+        "tailscale.com/proxy-group": "service-ingress"
+        "tailscale.com/tags": "tag:k8s,tag:k8s-service"
+        "tailscale.com/hostname": "gateway"
+---
+apiVersion: gateway.networking.k8s.io/v1
+kind: Gateway
+metadata:
+  name: gateway-tailscale
+  namespace: kgateway-system
+spec: 
+  gatewayClassName: 'kgateway'
+  infrastructure:
+    parametersRef:
+      group: gateway.kgateway.dev
+      kind: GatewayParameters
+      name: gateway-tailscale
+
+  listeners:
+    - name: http
+      port: 80
+      protocol: http
+      allowedRoutes:
+        namespaces:
+          from: All
+    - name: https
+      port: 443
+      protocol: https
+      tls:
+        mode: Terminate
+        certificateRefs:
+          - kind: Secret
+            name: letsencrypt-http-issuer-account-key
