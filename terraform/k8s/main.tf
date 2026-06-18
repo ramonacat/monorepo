@@ -40,29 +40,6 @@ resource "tailscale_oauth_client" "kubernetes" {
   tags   = ["tag:k8s-operator"]
 }
 
-resource "kubernetes_namespace_v1" "kube-flannel" {
-  metadata {
-    name = "kube-flannel"
-
-    labels = {
-      "pod-security.kubernetes.io/enforce" = "privileged"
-    }
-  }
-}
-
-resource "helm_release" "flannel" {
-  name       = "flannel"
-  chart      = "flannel"
-  repository = "https://flannel-io.github.io/flannel/"
-  version    = "v0.28.5"
-  namespace  = kubernetes_namespace_v1.kube-flannel.metadata[0].name
-
-  set = [{
-    name  = "podCidr",
-    value = var.pod_cidr
-  }]
-}
-
 resource "helm_release" "tailscale" {
   name             = "tailscale"
   chart            = "tailscale-operator"

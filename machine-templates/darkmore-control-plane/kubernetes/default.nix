@@ -9,6 +9,7 @@
     ./containerd.nix
     ./control-plane-load-balancer.nix
     ./kubelet.nix
+    ./network.nix
   ];
   options = {
     ramona.kubernetes = lib.mkOption {
@@ -16,6 +17,9 @@
         with lib.types;
         submodule {
           options = {
+            podCidr = lib.mkOption {
+              type = str;
+            };
             cni = lib.mkOption {
               type = submodule {
                 options = {
@@ -49,17 +53,6 @@
       # needed by flannel
       "br_netfilter"
       "overlay"
-    ];
-
-    networking.firewall.trustedInterfaces = [
-      "enp7s0"
-      "cni0"
-      "flannel.0"
-      "flannel.1"
-    ];
-
-    networking.firewall.interfaces.tailscale0.allowedTCPPorts = [
-      6443 # kubernetes api server (for admin access)
     ];
 
     ramona.updates = {

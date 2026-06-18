@@ -22,7 +22,7 @@ pkgs.lib.genAttrs machines (
 )
 // pkgs.lib.mergeAttrsList (
   let
-    all-nodes = (builtins.fromJSON (builtins.readFile ../terraform/k8s-nodes.json)).darkmore;
+    k8s-config = (builtins.fromJSON (builtins.readFile ../terraform/k8s-nodes.json)).darkmore;
   in
   map (
     node:
@@ -40,14 +40,16 @@ pkgs.lib.genAttrs machines (
           (../machine-templates + "/${set-name}")
           {
             config = {
+              ramona.kubernetes.podCidr = k8s-config.podCidr;
               ramona.darkmore-control-plane = {
                 inherit (node) ip hostname;
-                inherit all-nodes;
+
+                all-nodes = k8s-config.nodes;
               };
             };
           }
         ];
       };
     }
-  ) all-nodes
+  ) k8s-config.nodes
 )
