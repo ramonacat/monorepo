@@ -48,22 +48,6 @@ module "fastmail-dns--ramona-fun" {
   zone_name = dnsimple_zone.ramona-fun.name
 }
 
-resource "dnsimple_zone_record" "A--ramona-fun" {
-  zone_name = dnsimple_zone.ramona-fun.name
-  name      = ""
-  type      = "A"
-  value     = module.node--crimson.ipv4
-  ttl       = 60
-}
-
-resource "dnsimple_zone_record" "AAAA--ramona-fun" {
-  zone_name = dnsimple_zone.ramona-fun.name
-  name      = ""
-  type      = "AAAA"
-  value     = module.node--crimson.ipv6
-  ttl       = 60
-}
-
 moved {
   from = dnsimple_zone_record.A--crimson-devices-ramona-fun
   to   = module.node--crimson.dnsimple_zone_record.A--node
