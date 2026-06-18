@@ -1,7 +1,7 @@
 { config, ... }: {
   config = {
     environment.etc = {
-      "${config.ramona.kubernetes.cni.config}/10-bridge.conf".text = ''
+      "${config.ramona.kubernetes.cni.config}10-bridge.conf".text = ''
         {
             "cniVersion": "0.2.0",
             "name": "mynet",
@@ -18,7 +18,7 @@
             }
         }
       '';
-      "${config.ramona.kubernetes.cni.config}/99-loopback.conf".text = ''
+      "${config.ramona.kubernetes.cni.config}99-loopback.conf".text = ''
         {
             "cniVersion": "0.2.0",
             "name": "lo",

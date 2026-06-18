@@ -1,18 +1,18 @@
 { 
     "darkmore": {
-        "podCidr": "10.72.0.0/16",
+        "podCidr": "10.2.0.0/16",
         "nodes": [
             {
                 "hostname": "darkmore-control-plane-0",
-                "ip": "10.70.0.10"
+                "ip": "10.0.0.10"
             },
             {
                 "hostname": "darkmore-control-plane-1",
-                "ip": "10.70.0.11"
+                "ip": "10.0.0.11"
             },
             {
                 "hostname": "darkmore-control-plane-2",
-                "ip": "10.70.0.12"
+                "ip": "10.0.0.12"
             }
         ]
     }
