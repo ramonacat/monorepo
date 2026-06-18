@@ -24,6 +24,7 @@ spec:
         "load-balancer.hetzner.cloud/name": "gateway-public"
         "load-balancer.hetzner.cloud/location": "nbg1"
         "load-balancer.hetzner.cloud/uses-proxyprotocol": "true"
+        "load-balancer.hetzner.cloud/private-subnet-ip-range": "10.1.0.0/24"
 ---
 apiVersion: gateway.networking.k8s.io/v1
 kind: Gateway
