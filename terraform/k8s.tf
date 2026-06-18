@@ -124,7 +124,7 @@ resource "helm_release" "argo-cd" {
         enabled   = true
         hostnames = ["argo-cd.infrastructure.ramona.fun"]
         parentRefs = [
-          { group = "gateway.networking.k8s.io", kind = "Gateway", name = "gateway-tailscale" }
+          { name = "gateway-tailscale", namespace = "kgateway-system" }
         ]
       }
       metrics = {
