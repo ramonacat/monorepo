@@ -20,6 +20,9 @@
             podCidr = lib.mkOption {
               type = str;
             };
+            hostPodCidr = lib.mkOption {
+              type = str;
+            };
             cni = lib.mkOption {
               type = submodule {
                 options = {

@@ -15,7 +15,7 @@
               "ipMasq": true,
               "ipam": {
                   "type": "host-local",
-                  "subnet": "${config.ramona.kubernetes.podCidr}",
+                  "subnet": "${config.ramona.kubernetes.hostPodCidr}",
                   "routes": [
                       { "dst": "0.0.0.0/0" }
                   ]

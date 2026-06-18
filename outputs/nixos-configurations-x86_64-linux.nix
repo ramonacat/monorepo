@@ -40,11 +40,14 @@ pkgs.lib.genAttrs machines (
           (../machine-templates + "/${set-name}")
           {
             config = {
-              ramona.kubernetes.podCidr = k8s-config.podCidr;
-              ramona.darkmore-control-plane = {
-                inherit (node) ip hostname;
+              ramona = {
+                kubernetes.podCidr = k8s-config.podCidr;
+                kubernetes.hostPodCidr = node.podCidr;
+                darkmore-control-plane = {
+                  inherit (node) ip hostname;
 
-                all-nodes = k8s-config.nodes;
+                  all-nodes = map (node: { inherit (node) ip hostname; }) k8s-config.nodes;
+                };
               };
             };
           }
