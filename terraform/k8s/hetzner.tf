@@ -11,7 +11,8 @@ resource "kubernetes_secret_v1" "hcloud" {
   }
 
   data = {
-    token = var.hcloud_token
+    token   = var.hcloud_token
+    network = var.network_id
   }
 }
 
@@ -24,6 +25,9 @@ resource "helm_release" "hcloud-cloud-controller-manager" {
 
   values = [yamlencode({
     replicaCount = 2
-    networking   = { clusterCIDR = var.pod_cidr }
+    networking = {
+      enabled     = true
+      clusterCIDR = var.pod_cidr
+    }
   })]
 }

@@ -49,6 +49,7 @@ module "k8s--darkmore" {
   source = "./k8s"
 
   name          = "darkmore"
+  network_id    = hcloud_network.net.id
   subnet_id     = hcloud_network_subnet.k8s.id
   dns_zone_name = dnsimple_zone.ramona-fun.name
   ssh_keys      = [hcloud_ssh_key.ramona.id, hcloud_ssh_key.ci.id]
