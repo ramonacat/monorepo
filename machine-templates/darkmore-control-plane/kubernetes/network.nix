@@ -1,7 +1,7 @@
 { config, ... }: {
   config = {
     environment.etc = {
-      "${config.ramona.kubernetes.cni.config}10-bridge.conf".text = ''
+      "${builtins.replaceStrings ["/etc"] [""] config.ramona.kubernetes.cni.config}10-bridge.conf".text = ''
         {
             "cniVersion": "0.2.0",
             "name": "mynet",
