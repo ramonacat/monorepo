@@ -11,7 +11,7 @@ resource "kubernetes_secret_v1" "hcloud" {
 }
 
 resource "helm_release" "hcloud-cloud-controller-manager" {
-  name       = "hcloud-cloud-controller-manager"
+  name       = "hccm"
   chart      = "hcloud-cloud-controller-manager"
   repository = "https://charts.hetzner.cloud"
   namespace  = "kube-system"
