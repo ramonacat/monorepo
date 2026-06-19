@@ -83,9 +83,6 @@ kind: GatewayParameters
 metadata:
   name: gateway-tailscale
   namespace: kgateway-system
-  annotations: 
-    # TODO https://github.com/kubernetes-sigs/external-dns/issues/6507
-    "external-dns.kubernetes.io/target": "100.119.189.53"
 spec:
   kube:
     deployment:
@@ -104,6 +101,8 @@ metadata:
   name: gateway-tailscale
   namespace: kgateway-system
   annotations: 
+    # TODO https://github.com/kubernetes-sigs/external-dns/issues/6507
+    "external-dns.kubernetes.io/target": "100.119.189.53"
     cert-manager.io/issuer: letsencrypt-tailscale
 spec: 
   gatewayClassName: 'kgateway'
