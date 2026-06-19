@@ -55,7 +55,7 @@ spec:
     - name: https
       port: 443
       protocol: HTTPS
-      hostname: ramona.fun
+      hostname: '*.ramona.fun'
       allowedRoutes:
         namespaces:
           from: All
@@ -120,7 +120,7 @@ spec:
     - name: https
       port: 443
       protocol: HTTPS
-      hostname: infrastructure.ramona.fun
+      hostname: '*.infrastructure.ramona.fun'
       allowedRoutes:
         namespaces:
           from: All
