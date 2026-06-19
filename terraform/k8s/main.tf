@@ -52,6 +52,10 @@ resource "helm_release" "tailscale" {
     ignore_changes = [create_namespace]
   }
 
+  values = [yamlencode({
+    operatorConfig = { logging = "debug" }
+  })]
+
   set_sensitive = [
     {
       name  = "oauth.clientId"
