@@ -89,7 +89,6 @@ spec:
       replicas: 2
     service:
       type: ClusterIP
-      loadBalancerClass: 'tailscale'
       extraAnnotations:
         "tailscale.com/expose": "true"
         "tailscale.com/proxy-group": "service-ingress"
