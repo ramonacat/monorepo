@@ -169,7 +169,7 @@ resource "helm_release" "grafana" {
     route = {
       main = {
         enabled    = true
-        hostnames  = [ "grafana.infrastructure.ramona.fun" ]
+        hostnames  = ["grafana.infrastructure.ramona.fun"]
         parentRefs = [{ name = "gateway-tailscale", namespace = "kgateway-system" }]
       }
     }
