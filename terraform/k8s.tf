@@ -111,15 +111,6 @@ resource "helm_release" "argo-cd" {
     },
     server = {
       replicas = 2
-      ingress = {
-        enabled          = true,
-        ingressClassName = "tailscale",
-        tls              = true,
-        annotations = {
-          "tailscale.com/proxy-group" = "service-ingress"
-          "tailscale.com/tags"        = "tag:k8s,tag:k8s-service"
-        }
-      }
       httproute = {
         enabled   = true
         hostnames = ["argo-cd.infrastructure.ramona.fun"]
@@ -156,16 +147,6 @@ resource "helm_release" "grafana" {
 
   values = [yamlencode({
     replicas = 2
-    ingress = {
-      enabled          = true
-      ingressClassName = "tailscale"
-      annotations = {
-        "tailscale.com/proxy-group" = "service-ingress"
-        "tailscale.com/tags"        = "tag:k8s,tag:k8s-service"
-      }
-      hosts = ["grafana.ibis-draconis.ts.net"]
-      tls   = [{ hosts = ["grafana.ibis-draconis.ts.net"] }]
-    }
     route = {
       main = {
         enabled    = true

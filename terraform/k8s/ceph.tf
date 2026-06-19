@@ -136,6 +136,10 @@ resource "helm_release" "rook-ceph-cluster" {
   version          = "v1.20.1"
 
   values = [yamlencode({
+    monitoring = {
+      enabled               = true
+      createPrometheusRules = true
+    }
     cephClusterSpec = {
       mon = {
         count = 3
@@ -310,17 +314,14 @@ resource "helm_release" "rook-ceph-cluster" {
     cephBlockPoolsVolumeSnapshotClass = {
       enabled = true
     }
-    ingress = {
+    route = {
       dashboard = {
-        annotations = {
-          "tailscale.com/proxy-group" = "service-ingress"
-          "tailscale.com/tags"        = "tag:k8s,tag:k8s-service"
-        },
         host = {
-          name = "ceph-${var.name}.ibis-draconis.ts.net"
-        },
-        tls              = [{ hosts = ["ceph-${var.name}.ibis-draconis.ts.net"] }],
-        ingressClassName = "tailscale"
+          name     = "ceph-darkmore.infrastructure.ramona.fun"
+          path     = "/"
+          pathType = "PathPrefix"
+        }
+        parentRefs = [{ name = "gateway-tailscale", namespace = "kgateway-system" }]
       }
     }
   })]
