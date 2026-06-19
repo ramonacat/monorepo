@@ -1,7 +1,7 @@
 apiVersion: gateway.kgateway.dev/v1alpha1
 kind: ListenerPolicy
 metadata:
-  name: proxy-protocol
+  name: gateway-public
   namespace: kgateway-system
 spec:
   targetRefs:
@@ -68,7 +68,7 @@ spec:
 apiVersion: gateway.kgateway.dev/v1alpha1
 kind: ListenerPolicy
 metadata:
-  name: proxy-protocol
+  name: gateway-tailscale
   namespace: kgateway-system
 spec:
   targetRefs:
