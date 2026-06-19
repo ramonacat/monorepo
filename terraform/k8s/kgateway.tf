@@ -15,7 +15,8 @@ resource "helm_release" "kgateway" {
 
   values = [yamlencode({
     controller = {
-      replicaCount = 2
+      replicaCount   = 2
+      serviceMonitor = { enabled = true }
     }
   })]
 }
