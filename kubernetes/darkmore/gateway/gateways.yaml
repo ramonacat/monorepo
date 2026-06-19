@@ -66,25 +66,6 @@ spec:
             name: wildcard-ramona-fun
 ---
 apiVersion: gateway.kgateway.dev/v1alpha1
-kind: ListenerPolicy
-metadata:
-  name: gateway-tailscale
-  namespace: kgateway-system
-spec:
-  targetRefs:
-  - group: gateway.networking.k8s.io
-    kind: Gateway
-    name: gateway-tailscale
-  default: 
-    httpSettings:
-      accessLog:
-        - fileSink:
-            path: /dev/stdout
-            stringFormat: >
-              [%START_TIME%] "%REQ(:METHOD)% %REQ(X-ENVOY-ORIGINAL-PATH?:PATH)%"
-              "%PROTOCOL%" "%RESPONSE_CODE%" "%RESPONSE_FLAGS%"
----
-apiVersion: gateway.kgateway.dev/v1alpha1
 kind: GatewayParameters
 metadata:
   name: gateway-tailscale

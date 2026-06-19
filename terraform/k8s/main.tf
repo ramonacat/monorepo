@@ -53,7 +53,6 @@ resource "helm_release" "tailscale" {
   }
 
   values = [yamlencode({
-    operatorConfig = { logging = "debug" }
   })]
 
   set_sensitive = [
