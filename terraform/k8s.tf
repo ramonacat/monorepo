@@ -166,6 +166,13 @@ resource "helm_release" "grafana" {
       hosts = ["grafana.ibis-draconis.ts.net"]
       tls   = [{ hosts = ["grafana.ibis-draconis.ts.net"] }]
     }
+    route = {
+      main = {
+        enabled    = true
+        hostnames  = [ "grafana.infrastructure.ramona.fun" ]
+        parentRefs = [{ name = "gateway-tailscale", namespace = "kgateway-system" }]
+      }
+    }
     persistence = {
       enabled          = true
       storageClassName = "ceph-filesystem"

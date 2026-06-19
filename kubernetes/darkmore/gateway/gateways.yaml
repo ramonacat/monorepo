@@ -103,7 +103,7 @@ metadata:
   annotations: 
     # TODO https://github.com/kubernetes-sigs/external-dns/issues/6507
     "external-dns.alpha.kubernetes.io/target": "100.119.189.53"
-    cert-manager.io/issuer: letsencrypt-tailscale
+    cert-manager.io/issuer: letsencrypt-public
 spec: 
   gatewayClassName: 'kgateway'
   infrastructure:
