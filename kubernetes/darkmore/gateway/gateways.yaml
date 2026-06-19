@@ -77,6 +77,13 @@ spec:
     name: gateway-tailscale
   default: 
     proxyProtocol: {}
+    httpSettings:
+      accessLog:
+        - fileSink:
+            path: /dev/stdout
+            stringFormat: >
+              [%START_TIME%] "%REQ(:METHOD)% %REQ(X-ENVOY-ORIGINAL-PATH?:PATH)%"
+              "%PROTOCOL%" "%RESPONSE_CODE%" "%RESPONSE_FLAGS%"
 ---
 apiVersion: gateway.kgateway.dev/v1alpha1
 kind: GatewayParameters
