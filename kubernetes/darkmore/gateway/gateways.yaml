@@ -63,7 +63,7 @@ spec:
         mode: Terminate
         certificateRefs:
           - kind: Secret
-            name: letsencrypt-http-issuer-account-key
+            name: wildcard-ramona-fun
 ---
 apiVersion: gateway.kgateway.dev/v1alpha1
 kind: ListenerPolicy
@@ -130,4 +130,4 @@ spec:
         mode: Terminate
         certificateRefs:
           - kind: Secret
-            name: letsencrypt-http-issuer-account-key
+            name: wildcard-infrastructure-ramona-fun
