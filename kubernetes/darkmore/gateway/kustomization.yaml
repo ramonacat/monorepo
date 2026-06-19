@@ -1,4 +1,3 @@
 resources:
-  - ./cert-issuer.yaml
   - ./gateways.yaml
 
