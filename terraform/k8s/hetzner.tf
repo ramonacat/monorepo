@@ -25,3 +25,21 @@ resource "helm_release" "hcloud-cloud-controller-manager" {
     }
   })]
 }
+
+resource "helm_release" "hcloud-csi" {
+  name       = "hcloud-csi"
+  chart      = "hcloud-csi"
+  repository = "https://charts.hetzner.cloud"
+  namespace  = "kube-system"
+  version    = "2.21.2"
+
+  values = [yamlencode({
+    storageClasses = [
+      {
+        name                = "hcloud-volumes"
+        defaultStorageClass = false
+        reclaimPolicy       = "Delete"
+      }
+    ]
+  })]
+}

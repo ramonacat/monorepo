@@ -30,6 +30,7 @@ resource "helm_release" "envoy-proxy-crowdsec-bouncer" {
 
   values = [yamlencode({
     config = {
+      replicaCount = 2
       bouncer = {
         lapiURL = "http://crowdsec-service.crowdsec:8080"
         apiKeySecretRef = {

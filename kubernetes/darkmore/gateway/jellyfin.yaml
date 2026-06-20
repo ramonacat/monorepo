@@ -1,0 +1,28 @@
+apiVersion: gateway.kgateway.dev/v1alpha1
+kind: Backend
+metadata:
+  name: jellyfin
+  namespace: kgateway-system
+spec:
+  type: Static
+  static:
+    hosts:
+      - host: hallewell
+        port: 8096
+---
+apiVersion: gateway.networking.k8s.io/v1
+kind: HTTPRoute
+metadata:
+  name: jellyfin
+  namespace: kgateway-system
+spec:
+  parentRefs:
+  - name: gateway-public
+    namespace: kgateway-system
+  hostnames:
+    - jellyfin-test.ramona.fun
+  rules:
+    - backendRefs:
+      - name: jellyfin
+        kind: Backend
+        group: gateway.kgateway.dev
