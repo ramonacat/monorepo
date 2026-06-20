@@ -43,11 +43,15 @@ resource "kubernetes_persistent_volume_v1" "local-mon" {
   }
 }
 
+locals {
+  volume_size_gib = 20
+}
+
 resource "hcloud_volume" "node" {
   for_each = toset(keys(var.control_plane_nodes))
 
   name      = each.value
-  size      = 10
+  size      = local.volume_size_gib
   server_id = module.k8s--control-plane-nodes[each.key].server_id
 }
 
@@ -177,7 +181,7 @@ resource "helm_release" "rook-ceph-cluster" {
                 spec = {
                   resources = {
                     requests = {
-                      storage = "10Gi"
+                      storage = "${local.volume_size_gib}Gi"
                     },
                   }
                   storageClassName = kubernetes_storage_class_v1.local.metadata[0].name,
