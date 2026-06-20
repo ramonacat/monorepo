@@ -110,8 +110,13 @@ resource "helm_release" "kube-prometheus-stack" {
     }
     prometheus = {
       prometheusSpec = {
-        replicas      = 2
-        retentionSize = "4900MiB"
+        replicas                                = 2
+        retentionSize                           = "4900MiB"
+        podMonitorSelectorNilUsesHelmValues     = false
+        probeSelectorNilUsesHelmValues          = false
+        ruleSelectorNilUsesHelmValues           = false
+        scrapeConfigSelectorNilUsesHelmValues   = false
+        serviceMonitorSelectorNilUsesHelmValues = false
         storageSpec = {
           volumeClaimTemplate = {
             spec = {

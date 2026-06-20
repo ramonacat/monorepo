@@ -154,6 +154,7 @@ resource "helm_release" "grafana" {
         parentRefs = [{ name = "gateway-tailscale", namespace = "kgateway-system" }]
       }
     }
+    serviceMonitor = { enabled = true }
     persistence = {
       enabled          = true
       storageClassName = "ceph-filesystem"

@@ -96,6 +96,7 @@ resource "helm_release" "rook-ceph" {
   version          = "v1.20.1"
 
   values = [yamlencode({
+    monitoring = { enabled = true }
   })]
 }
 
@@ -141,6 +142,11 @@ resource "helm_release" "rook-ceph-cluster" {
       createPrometheusRules = true
     }
     cephClusterSpec = {
+      mgr = {
+        modules = [
+          { name = "rook", enabled = true },
+        ]
+      }
       mon = {
         count = 3
         volumeClaimTemplate = {
@@ -240,7 +246,8 @@ resource "helm_release" "rook-ceph-cluster" {
         }
       }
       dashboard = {
-        ssl = false
+        ssl                = false
+        prometheusEndpoint = "http://kube-prometheus-stack-prometheus.kube-prometheus-stack:9090"
       }
     }
     cephFileSystems = [
@@ -292,6 +299,14 @@ resource "helm_release" "rook-ceph-cluster" {
       {
         name = "ceph-objectstore",
         spec = {
+          metadataPool = {
+            failureDomain = "host"
+            replicated    = { size = 3 }
+          }
+          dataPool = {
+            failureDomain = "host"
+            erasureCoded  = { dataChunks = 2, codingChunks = 1 }
+          }
           gateway = {
             port = 80
             resources = {

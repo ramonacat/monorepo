@@ -91,5 +91,5 @@ provider "helm" {
 }
 
 provider "argocd" {
-  server_addr = "argo-cd.ibis-draconis.ts.net"
+  server_addr = "argo-cd.infrastructure.ramona.fun"
 }

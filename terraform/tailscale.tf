@@ -103,7 +103,7 @@ resource "tailscale_acl" "default" {
         },
         {
           src = ["tag:service-builds-host"],
-          dst = ["svc:argo-cd"],
+          dst = ["svc:gateway"],
           ip = [
             "tcp:443",
             "tcp:80"

@@ -51,6 +51,7 @@ resource "helm_release" "velero" {
       }]
       features                = "EnableCSI"
       defaultSnapshotMoveData = true
+
     }
     schedules = {
       default = {
@@ -61,6 +62,11 @@ resource "helm_release" "velero" {
           excludedNamespaces = [helm_release.rook-ceph.namespace, helm_release.rook-ceph-cluster.namespace]
         }
       }
+    }
+    metrics = {
+      serviceMonitor      = { enabled = true }
+      nodeAgentPodMonitor = { enabled = true }
+      prometheusRule      = { enabled = true }
     }
   })]
 
