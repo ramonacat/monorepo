@@ -105,7 +105,7 @@ resource "helm_release" "kube-prometheus-stack" {
     prometheus = {
       prometheusSpec = {
         replicas                                = 2
-        retentionSize                           = "4900MiB"
+        retentionSize                           = "9900MiB"
         podMonitorSelectorNilUsesHelmValues     = false
         probeSelectorNilUsesHelmValues          = false
         ruleSelectorNilUsesHelmValues           = false
@@ -114,9 +114,9 @@ resource "helm_release" "kube-prometheus-stack" {
         storageSpec = {
           volumeClaimTemplate = {
             spec = {
-              storageClassName = "ceph-block"
+              storageClassName = "hcloud-volumes"
               accessModes      = ["ReadWriteOnce"]
-              resources        = { requests = { storage = "5Gi" } }
+              resources        = { requests = { storage = "10Gi" } }
             }
           }
         }
