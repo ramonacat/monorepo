@@ -1,0 +1,28 @@
+---
+apiVersion: bitnami.com/v1alpha1
+kind: SealedSecret
+metadata:
+  name: crowdsec-api-key
+  namespace: kgateway-system
+spec:
+  encryptedData:
+    ENVOY_BOUNCER_BOUNCER_APIKEY: AgA6iwr1IMO7Qw02gUsA55YflQRgVARXJuYSgmj17FHJ7tJrbO59dqbsWlbpMjlxv521vlr/XBaI9zrWd93y7F2nY8DIwsg4HCtVRoac3TEhGLhaAVXDWXCeyZ9qWBdopK27yEHz9jT3y1lWSyxV6CLNH3oxUJj/m+Ml0IS4QFNjmyg6Avjwi/tFUZx6WgBUwLADpxaVtPVLmMlkgU7w+2Z6fZ8CZAU2y6tTHzRAVadnvYTH97mtMyyLFELEnxVqKu6aTPeXZ7ECwaKK3CxhKSjbJOMtY1SOllX2t7EnssfGRd7p1erOyIdaozFOPGjLb1frU5hepbg2Sl+Kv1xP4/HCS5BcEukEDryNquOmuL36M6OtsO+YZ0EY0lr0FPkHuz+o/fdQtCkpN+b1mdpa6i/D3U58vjksePMNfbxkBZeNXyVRIVWcaoWevAiGyBq9cNb7jJ52RTdxCgl8FoOVaT3dlv69afUhTlNQj2vTz5QZ+Qx+ryRHuSrI7zcWeUSQuSIQAffF8JuM5fus+Uih5A4ss6jw9zvWVvT2Vdfrpqxr9mjaZCKSI3AwNYNYBzrRiXhu1DXuihDcKj8ascFim1NvW2EUMGb5riQq8qr/UhPHOkZG/JG3zryozijnOnxgD1N/eEIJRA0Ry45qKoZwmhsdGqWjulHyHPoeqfFw/6V3dwXzyQ/nZW2i4Ugakxkwxsq5DYSK/nPEm/XvQ1UuzcB3vAM6ysxH07V1Idz9Yz68AImgXKH/PqXmGuhO/hfRhx2LFw==
+  template:
+    metadata:
+      name: crowdsec-api-key
+      namespace: kgateway-system
+    type: Opaque
+---
+apiVersion: bitnami.com/v1alpha1
+kind: SealedSecret
+metadata:
+  name: crowdsec-api-key
+  namespace: crowdsec
+spec:
+  encryptedData:
+    REGISTRATION_KEY: AgCu0btelLuaQqCF/o56oBfUHoqzrkf8895Jy07Z5VBtptjVG7u+vD3nY4XRq8cOQC6mvNNm+tGRIOgt9EC0qEhJMTs7NPLUgkyG+ujNQy9QmJbpDUlJAaEUsGOTx6df3Q+5mWnkUzb0FEGtMUWJtxmFk8Q46zK6dpyVfxvRzT26nos1lRNHtIQNsJy9bR1xAAv0wKt1kWXiq8Cko/VORyRPDNXpDVd6K41tK08dyAAHr3N2IrjmxmV5C9nrde1YqNDWVz9W5UC9KrY6WuMIE7RDwRAamLr3+tI6SjL6+lD4kXFcoBtf6faS895vRpLO27VEnLEzZUQVcurofHw9rBJZVyhMzvgP8O+whb6TSMm/YJHP3+irL0QUOAnBngdydK4syo7a1WpEqHrWzrYDA0Iv0IhJCsiPOl4qtrtFDKUMS39K+4zLpfJ92G1PhxXjRaoIPQWntsvFfqQyWB2qvunKS2Ab+xru6YskblGV+ucRXRQkKmE0ShgqdcPCKwM+WRKp/wmc9vPnmAC9qjD+jkvppjbLAIiO5sijvuxcuVZy4u5xJlQ1jtWHkGtWQVeT0ZwgCNLW1OJ3lFs27Yz21XEWKcOhAiK8mfica70JOvMe8zus49vjrYT8f84yW+3GBBM7n7iABTbSgnR6zODSfOfYNIqK7KM3h+WXUmVVEQVb3xCC08MCnJX8EkuW2mmNUhkB7KI9920QbvDcuHAQdCh7bOG+deblYOJuyclLI4zt3Hjqb4DMtuZZdct9Y6p2hPAG7A==
+  template:
+    metadata:
+      name: crowdsec-api-key
+      namespace: crowdsec
+    type: Opaque
