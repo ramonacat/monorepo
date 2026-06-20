@@ -20,3 +20,25 @@ resource "helm_release" "kgateway" {
     }
   })]
 }
+
+resource "helm_release" "envoy-proxy-crowdsec-bouncer" {
+  name             = "envoy-proxy-crowdsec-bouncer"
+  chart            = "oci://ghcr.io/kdwils/charts/envoy-proxy-bouncer"
+  namespace        = "kgateway-system"
+  create_namespace = true
+  version          = "0.6.1"
+
+  values = [yamlencode({
+    config = {
+      bouncer = {
+        lapiURL = "http://crowdsec-service.crowdsec:8080"
+        apiKeySecretRef = {
+          name = "crowdsec-api-key"
+          key  = "ENVOY_BOUNCER_BOUNCER_APIKEY"
+        }
+        prometheus = { enabled = true, serviceMonitor = { enabled = true } }
+        grafana    = { dashboard = { enabled = var.create_grafana_dashboards } }
+      }
+    }
+  })]
+}

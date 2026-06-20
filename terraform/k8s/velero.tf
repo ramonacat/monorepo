@@ -59,7 +59,7 @@ resource "helm_release" "velero" {
         snapshotMoveData = true
         template = {
           includedNamespaces = ["*"]
-          excludedNamespaces = [helm_release.rook-ceph.namespace, helm_release.rook-ceph-cluster.namespace]
+          excludedNamespaces = [helm_release.rook-ceph.namespace, helm_release.rook-ceph-cluster.namespace, helm_release.kube-prometheus-stack.namespace]
         }
       }
     }
