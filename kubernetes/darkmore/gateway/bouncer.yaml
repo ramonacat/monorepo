@@ -13,6 +13,9 @@ spec:
 ---
 apiVersion: gateway.kgateway.dev/v1alpha1
 kind: TrafficPolicy
+metadata:
+  name: ext-auth-crowdsec
+  namespace: kgateway-system
 spec:
   targetRefs:
     - group: gateway.monitoring.k8s.io
