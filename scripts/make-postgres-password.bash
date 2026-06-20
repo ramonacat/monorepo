@@ -2,7 +2,7 @@
 set -euo pipefail
 
 usage() {
-	echo "usage: $0 [name] [username] [target-namespace] [password-key?]" >&2
+	echo "usage: $0 [name] [username] [target-namespace] [password-key?] [username-key?]" >&2
 	exit 1
 }
 
@@ -11,6 +11,7 @@ main() {
 	local -r username="$2"
 	local -r target_namespace="$3"
 	local -r password_key="${4:-password}"
+	local -r username_key="${5:-username}"
 	local -r password=$(tr -dc 'A-Za-z0-9!?%=' </dev/urandom | head -c 10)
 
 	kubeseal -oyaml <<EOF
@@ -29,7 +30,7 @@ EOF
 	kubeseal -oyaml <<EOF
         apiVersion: v1
         data:
-          username: $(echo -n "$username" | base64)
+          ${username_key}: $(echo -n "$username" | base64)
           ${password_key}: $(echo -n "$password" | base64)
         kind: Secret
         metadata:
@@ -37,11 +38,10 @@ EOF
           namespace: $target_namespace
           labels:
             cnpg.io/reload: "true"
-        type: kubernetes.io/basic-auth
 EOF
 }
 
-if [[ $# != 3 ]]; then
+if [[ $# -lt 3 && $# -gt 5 ]]; then
 	usage
 fi
 

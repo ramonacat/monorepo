@@ -33,15 +33,17 @@ resource "helm_release" "cloudnative-pg-database" {
       }
       roles = [
         {
-          name   = "crowdsec"
-          ensure = "present"
-          login  = true
+          name           = "crowdsec"
+          ensure         = "present"
+          login          = true
+          passwordSecret = { name = "crowdsec" }
         }
       ]
     }
     databases = [
       {
         name   = "crowdsec"
+        owner  = "crowdsec"
         ensure = "present"
       }
     ]

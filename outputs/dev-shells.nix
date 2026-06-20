@@ -113,6 +113,13 @@ pkgs.mkShell {
         ${pkgs.kubeseal}/bin/kubeseal --controller-name sealed-secrets --controller-namespace sealed-secrets "$@"
       '')
 
+      (pkgs.writeShellScriptBin "helm" ''
+        set -e
+
+        ${prepare-kube-config}
+        ${pkgs.kubernetes-helm}/bin/helm "$@"
+      '')
+
       age
       backblaze-b2
       inputs.agenix.packages."${pkgs.stdenv.hostPlatform.system}".default
