@@ -1,0 +1,23 @@
+apiVersion: gateway.kgateway.dev/v1alpha1
+kind: GatewayExtensions
+metadata:
+  name: ext-auth-crowdsec
+  namespace: kgateway-system
+spec:
+  type: ExtAuth
+  extAuth:
+    grpcService:
+      backendRef:
+        name: envoy-proxy-crowdsec-bouncer-envoy-proxy-bouncer
+        port: 8080
+---
+apiVersion: gateway.kgateway.dev/v1alpha1
+kind: TrafficPolicy
+spec:
+  targetRefs:
+    - group: gateway.monitoring.k8s.io
+      kind: Gateway
+      name: gateway-public
+  extAuth:
+    extensionRef:
+      name: ext-auth-crowdsec

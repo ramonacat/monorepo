@@ -1,3 +1,4 @@
 resources:
+  - ./bouncer.yaml
   - ./gateways.yaml
 
