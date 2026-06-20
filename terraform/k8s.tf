@@ -162,11 +162,11 @@ resource "helm_release" "grafana" {
       accessModes      = ["ReadWriteMany"]
     }
     sidecar = {
-      alerts      = { enabled = true }
-      dashboards  = { enabled = true }
-      datasources = { enabled = true }
-      plugins     = { enabled = true }
-      notifiers   = { enabled = true }
+      alerts      = { enabled = true, searchNamespace = "ALL" }
+      dashboards  = { enabled = true, searchNamespace = "ALL" }
+      datasources = { enabled = true, searchNamespace = "ALL" }
+      plugins     = { enabled = true, searchNamespace = "ALL" }
+      notifiers   = { enabled = true, searchNamespace = "ALL" }
     }
     datasources = {
       "datasources.yaml" = {
