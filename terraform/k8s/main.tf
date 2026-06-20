@@ -99,14 +99,8 @@ resource "helm_release" "kube-prometheus-stack" {
     grafana = {
       enabled = false
 
-      // TODO these should come from variables, as grafana isn't an inherent dependency of the cluster
-      namespaceOverride      = "grafana"
       forceDeployDatasources = true
       forceDeployDashboards  = true
-
-      admin = {
-        existingSecret = "grafana"
-      }
     }
     prometheus = {
       prometheusSpec = {
