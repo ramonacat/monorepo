@@ -106,6 +106,13 @@ pkgs.mkShell {
         ${pkgs.velero}/bin/velero "$@"
       '')
 
+      (pkgs.writeShellScriptBin "kubeseal" ''
+        set -e
+
+        ${prepare-kube-config}
+        ${pkgs.kubeseal}/bin/kubeseal --controller-name sealed-secrets --controller-namespace sealed-secrets "$@"
+      '')
+
       age
       backblaze-b2
       inputs.agenix.packages."${pkgs.stdenv.hostPlatform.system}".default

@@ -10,8 +10,7 @@ resource "helm_release" "cloudnative-pg" {
     monitoring = {
       podMonitorEnabled = true
       grafanaDashboard = {
-        // TODO this should come from a var
-        create = true
+        create = var.create_grafana_dashboards
       }
     }
   })]
@@ -32,7 +31,20 @@ resource "helm_release" "cloudnative-pg-database" {
       monitoring = {
         enabled = true
       }
+      roles = [
+        {
+          name   = "crowdsec"
+          ensure = "present"
+          login  = true
+        }
+      ]
     }
+    databases = [
+      {
+        name   = "crowdsec"
+        ensure = "present"
+      }
+    ]
     poolers = [
       {
         name       = "rw"

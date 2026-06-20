@@ -99,8 +99,8 @@ resource "helm_release" "kube-prometheus-stack" {
     grafana = {
       enabled = false
 
-      forceDeployDatasources = true
-      forceDeployDashboards  = true
+      forceDeployDatasources = var.create_grafana_dashboards
+      forceDeployDashboards  = var.create_grafana_dashboards
     }
     prometheus = {
       prometheusSpec = {

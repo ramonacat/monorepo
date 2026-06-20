@@ -50,3 +50,8 @@ variable "dnsimple_token" {
   type      = string
   sensitive = true
 }
+
+variable "create_grafana_dashboards" {
+  type    = bool
+  default = true
+}
