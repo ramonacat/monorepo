@@ -3,7 +3,7 @@ apiVersion: bitnami.com/v1alpha1
 kind: SealedSecret
 metadata:
   name: crowdesc
-  namespace: cloudnative-pg-cluster
+  namespace: cloudnative-pg-database
 spec:
   encryptedData:
     password: AgBtJ/+WJLQjldq1hL0FfxEzJhvPIRg3hNB8iCCA4qDuq/fjfXNmNYtbHSxanAaVrx00GKKKeMGnz0fQtefu9lWDTp1tEFR2jXAzRwgDz+GbzfzBAei7cK/fKRBFADByHbRhAmLwY1orHSduN97tbsBBWhOTjz5Oj6pD/jYgFzFn6HAuw04CW0AyJummOLaggKcgIedL9L58m5c/pl/ryuMmtdsIJtlEo/7Cr/X4ZxbRrhE4NKzK3ArS+2Uj9StOa0OJzZMf9rkloFMZY5GY9TFsHYvyXI/BRELGbeDyCVLh5eKohvorpddo0b+9CH6v0mxqdrgnik8J8P3nuIz90Q/AVJ5bQh94LGYGRQEWV1SQyEsS79GwslOyKK73qGbyJ2A1QP+DDkIgAHypPvqkPJnPwyQGwELUCAYbIf1a65aUDnPk0Lf85joDGFa0Vm5rwwPLJcHDlkoXBitRPpR2QsoXqKX1zhMQuak0AdHYjSK2XpxAfpudjmqtkgKDRlIXGD6HGQFv8pv4y1+cqddnGqyiuUXeH65qcbX8Ho72hPBI5XFu8mz/IkU0ayS86kz+VI9BD2JUirbmjHTulSHYR4Hhbwx53laaFm3STtc1K1zN9yFkKSfKAZZfo7oxiEGdiBncAU9+PWwQphQrbmw+3qfUNKB+NxdLxcZjuqhmOedqZ6WBJ0MbTb9dD504xtdPH5ceOIOknPB2EqNs
@@ -13,7 +13,7 @@ spec:
       labels:
         cnpg.io/reload: "true"
       name: crowdesc
-      namespace: cloudnative-pg-cluster
+      namespace: cloudnative-pg-database
     type: kubernetes.io/basic-auth
 ---
 apiVersion: bitnami.com/v1alpha1

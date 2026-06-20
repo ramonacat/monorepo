@@ -21,7 +21,7 @@ main() {
         kind: Secret
         metadata:
           name: $name
-          namespace: cloudnative-pg-cluster
+          namespace: cloudnative-pg-database
           labels:
             cnpg.io/reload: "true"
         type: kubernetes.io/basic-auth
