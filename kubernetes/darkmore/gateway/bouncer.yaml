@@ -1,5 +1,5 @@
 apiVersion: gateway.kgateway.dev/v1alpha1
-kind: GatewayExtensions
+kind: GatewayExtension
 metadata:
   name: ext-auth-crowdsec
   namespace: kgateway-system
