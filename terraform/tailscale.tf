@@ -110,7 +110,7 @@ resource "tailscale_acl" "default" {
           ]
         },
         {
-          src = ["tag:kubernetes-darkmore"],
+          src = ["tag:k8s"],
           dst = ["tag:service-jellyfin"],
           ip = [
             "tcp:8096",
