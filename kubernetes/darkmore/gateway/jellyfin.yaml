@@ -7,7 +7,7 @@ spec:
   type: Static
   static:
     hosts:
-      - host: hallewell
+      - host: jellyfin
         port: 8096
 ---
 apiVersion: gateway.networking.k8s.io/v1
