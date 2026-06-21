@@ -26,8 +26,10 @@ resource "helm_release" "external-dns" {
     serviceMonitor = {
       enabled = true
     }
-    sources        = ["service", "ingress", "gateway-httproute"]
+    sources        = ["gateway-httproute"]
     excludeDomains = ["ts.net"]
+    // TODO: AAAA is disabled because of https://github.com/kubernetes-sigs/external-dns/issues/6511
+    managedRecordTypes = ["A", "CNAME"]
     provider = {
       name = "dnsimple"
     }

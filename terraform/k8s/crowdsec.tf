@@ -44,7 +44,7 @@ resource "helm_release" "crowdsec" {
         { secretRef = { name = "crowdsec-api-key" } },
       ]
       persistentVolume = {
-        data   = { size = "128Mi", accessModes = ["ReadWriteMany"], storageClassName = "ceph-filesystem" }
+        data   = { size = "128Mi", accessModes = ["ReadWriteMany"], storageClassName = "longhorn" }
         config = { enabled = false }
       }
       storeCAPICredentialsInSecret      = true
