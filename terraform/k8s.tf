@@ -158,7 +158,7 @@ resource "helm_release" "grafana" {
     persistence = {
       enabled          = true
       storageClassName = "longhorn"
-      size             = "256Mi"
+      size             = "192Mi"
       accessModes      = ["ReadWriteMany"]
     }
     sidecar = {

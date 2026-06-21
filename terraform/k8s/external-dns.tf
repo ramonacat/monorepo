@@ -26,7 +26,7 @@ resource "helm_release" "external-dns" {
     serviceMonitor = {
       enabled = true
     }
-    sources        = ["service", "ingress", "gateway-httproute"]
+    sources        = ["gateway-httproute"]
     excludeDomains = ["ts.net"]
     provider = {
       name = "dnsimple"
