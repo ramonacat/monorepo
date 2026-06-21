@@ -94,6 +94,19 @@ resource "helm_release" "kube-prometheus-stack" {
     alertmanager = {
       alertmanagerSpec = {
         replicas = 2
+        secrets  = ["discord-webhook"]
+      }
+      route = {
+        main = {
+          enabled    = true
+          hostnames  = ["alertmanager.infrastructure.ramona.fun"]
+          parentRefs = [{ name = "gateway-tailscale", namespace = "kgateway-system" }]
+        }
+      }
+      config = {
+        receivers = [
+          { name = "discord", webhook_path = "/etc/alertmanager/secrets/discord-webhook/webhook" }
+        ]
       }
     }
     grafana = {
