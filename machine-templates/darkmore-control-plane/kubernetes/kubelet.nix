@@ -24,6 +24,9 @@
           iptables
           socat
           nftables
+
+          # for longhorn
+          openiscsi
         ];
         preStart =
           let
