@@ -28,6 +28,8 @@ resource "helm_release" "external-dns" {
     }
     sources        = ["gateway-httproute"]
     excludeDomains = ["ts.net"]
+    // TODO: AAAA is disabled because of https://github.com/kubernetes-sigs/external-dns/issues/6511
+    managedRecordTypes = ["A", "CNAME"]
     provider = {
       name = "dnsimple"
     }
