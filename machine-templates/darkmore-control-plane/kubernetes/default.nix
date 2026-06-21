@@ -9,6 +9,7 @@
     ./containerd.nix
     ./control-plane-load-balancer.nix
     ./kubelet.nix
+    ./longhorn-storage.nix
     ./network.nix
   ];
   options = {
