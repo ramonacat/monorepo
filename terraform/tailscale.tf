@@ -109,6 +109,13 @@ resource "tailscale_acl" "default" {
             "tcp:80"
           ]
         },
+        {
+          src = ["tag:kubernetes-darkmore"],
+          dst = ["tag:service-jellyfin"],
+          ip = [
+            "tcp:8096",
+          ]
+        },
       ],
       autoApprovers = {
         "services" : {
