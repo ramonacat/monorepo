@@ -120,6 +120,13 @@ pkgs.mkShell {
         ${pkgs.kubernetes-helm}/bin/helm "$@"
       '')
 
+      (pkgs.writeShellScriptBin "kubetail" ''
+        set -e
+
+        ${prepare-kube-config}
+        ${pkgs.kubetail}/bin/kubetail "$@"
+      '')
+
       age
       backblaze-b2
       inputs.agenix.packages."${pkgs.stdenv.hostPlatform.system}".default
