@@ -17,27 +17,3 @@ resource "helm_release" "longhorn" {
     }
   })]
 }
-
-/*
-resource "hcloud_volume" "longhorn" {
-  for_each = toset(keys(var.control_plane_nodes))
-
-  name      = each.value
-  size      = 10
-  server_id = module.k8s--control-plane-nodes[each.key].server_id
-}
-
-resource "kubernetes_annotations" "longhorn" {
-  for_each = toset(keys(var.control_plane_nodes))
-
-  kind        = "Node"
-  metadata {
-    name = each.key
-  }
-
-  annotations = {
-    "node.longhorn.io/default-disks-config" = jsonencode([
-
-    ])
-  }
-}*/

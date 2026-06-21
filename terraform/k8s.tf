@@ -157,7 +157,7 @@ resource "helm_release" "grafana" {
     serviceMonitor = { enabled = true }
     persistence = {
       enabled          = true
-      storageClassName = "ceph-filesystem"
+      storageClassName = "longhorn"
       size             = "256Mi"
       accessModes      = ["ReadWriteMany"]
     }
