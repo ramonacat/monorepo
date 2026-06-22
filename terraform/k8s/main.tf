@@ -79,6 +79,7 @@ resource "helm_release" "kured" {
     configuration = {
       rebootCommand = "/run/current-system/sw/bin/systemctl reboot"
       period        = "1m0s"
+      logFormat     = "json"
     }
   })]
 }
@@ -93,7 +94,8 @@ resource "helm_release" "kube-prometheus-stack" {
   values = [yamlencode({
     alertmanager = {
       alertmanagerSpec = {
-        replicas = 2
+        replicas  = 2
+        logFormat = "json"
       }
       route = {
         main = {
@@ -111,7 +113,7 @@ resource "helm_release" "kube-prometheus-stack" {
           group_by = ["..."]
           matchers = []
           routes = [
-            { receiver = "null", matchers = [{ alertname = "Watchdog" }] }
+            { receiver = "null", matchers = ["alertname = Watchdog"] }
           ]
         }
         receivers = [
@@ -125,6 +127,9 @@ resource "helm_release" "kube-prometheus-stack" {
 
       forceDeployDatasources = var.create_grafana_dashboards
       forceDeployDashboards  = var.create_grafana_dashboards
+    }
+    prometheusOperator = {
+      logFormat = "json"
     }
     prometheus = {
       route = {
@@ -142,6 +147,7 @@ resource "helm_release" "kube-prometheus-stack" {
         ruleSelectorNilUsesHelmValues           = false
         scrapeConfigSelectorNilUsesHelmValues   = false
         serviceMonitorSelectorNilUsesHelmValues = false
+        logFormat                               = "json"
         storageSpec = {
           volumeClaimTemplate = {
             spec = {
