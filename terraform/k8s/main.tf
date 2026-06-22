@@ -116,6 +116,13 @@ resource "helm_release" "kube-prometheus-stack" {
       forceDeployDashboards  = var.create_grafana_dashboards
     }
     prometheus = {
+      route = {
+        main = {
+          enabled    = true
+          hostnames  = ["prometheus.infrastructure.ramona.fun"]
+          parentRefs = [{ name = "gateway-tailscale", namespace = "kgateway-system" }]
+        }
+      }
       prometheusSpec = {
         replicas                                = 2
         retentionSize                           = "9900MiB"

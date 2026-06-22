@@ -11,6 +11,7 @@ resource "helm_release" "crowdsec" {
     config = {
       "config.yaml.local" = yamlencode({
         api = {
+          client = { unregister_on_exit = true }
           server = {
             auto_registration = {
               enabled = true
@@ -29,6 +30,15 @@ resource "helm_release" "crowdsec" {
           port     = 5432
           db_name  = "crowdsec"
           host     = "cloudnative-pg-database-cluster-pooler-rw.cloudnative-pg-database"
+          flush = {
+            agents_autodelete = {
+              login_password = "60m"
+              cert           = "60m"
+            }
+            bouncers_autodelete = {
+              api_key = "60m"
+            }
+          }
         }
         prometheus = {
           enabled = true
@@ -57,6 +67,9 @@ resource "helm_release" "crowdsec" {
       ]
       envFrom = [
         { secretRef = { name = "crowdsec-api-key" } },
+      ]
+      env = [
+        { name = "COLLECTIONS", value = "crowdsecurity/base-http-scenarios LePresidente/jellyfin yanis-kouidri/envoy" }
       ]
     }
   })]
