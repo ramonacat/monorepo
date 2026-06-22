@@ -94,7 +94,6 @@ resource "helm_release" "kube-prometheus-stack" {
     alertmanager = {
       alertmanagerSpec = {
         replicas = 2
-        secrets  = ["discord-webhook"]
       }
       route = {
         main = {

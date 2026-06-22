@@ -37,6 +37,19 @@ resource "helm_release" "cloudnative-pg-database" {
           ensure         = "present"
           login          = true
           passwordSecret = { name = "crowdsec" }
+        },
+        {
+          name           = "fluentbit"
+          ensure         = "present"
+          login          = true
+          passwordSecret = { name = "fluentbit" }
+        },
+        {
+          name           = "grafana"
+          ensure         = "present"
+          login          = true
+          passwordSecret = { name = "grafana" }
+          inRoles        = ["fluentbit"]
         }
       ]
     }
@@ -44,6 +57,11 @@ resource "helm_release" "cloudnative-pg-database" {
       {
         name   = "crowdsec"
         owner  = "crowdsec"
+        ensure = "present"
+      },
+      {
+        name   = "fluentbit"
+        owner  = "fluentbit"
         ensure = "present"
       }
     ]
