@@ -110,10 +110,13 @@ resource "helm_release" "kube-prometheus-stack" {
           receiver = "discord"
           group_by = ["..."]
           matchers = []
-          routes   = []
+          routes = [
+            { receiver = "null", matchers = [{ alertname = "Watchdog" }] }
+          ]
         }
         receivers = [
-          { name = "discord", discord_configs = [{}] }
+          { name = "discord", discord_configs = [{}] },
+          { name = "null" }
         ]
       }
     }
