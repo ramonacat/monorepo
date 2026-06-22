@@ -1,0 +1,16 @@
+apiVersion: fluentbit.fluent.io/v1alpha2
+kind: ClusterOutput
+metadata:
+  namespace: fluent-operator
+  name: postgres-output
+spec:
+  customPlugin:
+    config: |-
+      Name pgsql
+      Match *
+      Host cloudnative-pg-database-cluster-pooler-rw.cloudnative-pg-database
+      Port 5432
+      User $${POSTGRES_USERNAME}
+      Password $${POSTGRES_PASSWORD}
+      Database fluentbit
+      Table logs

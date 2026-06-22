@@ -1,0 +1,2 @@
+resources:
+  - postgres-output.yaml
