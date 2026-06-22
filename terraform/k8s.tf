@@ -68,8 +68,9 @@ module "k8s--darkmore" {
       private_ipv4 : node.ip
     }
   }
-  hcloud_token   = var.kubernetes_darkmore_hcloud_token
-  dnsimple_token = var.kubernetes_darkmore_dnsimple_token
+  hcloud_token    = var.kubernetes_darkmore_hcloud_token
+  dnsimple_token  = var.kubernetes_darkmore_dnsimple_token
+  discord_webhook = var.kubernetes_darkmore_discord_webhook
 }
 
 resource "helm_release" "argo-cd" {
@@ -106,7 +107,8 @@ resource "helm_release" "argo-cd" {
     controller = {
       replicas = 1,
       metrics = {
-        enabled = true
+        enabled        = true
+        serviceMonitor = { enabled = true }
       }
     },
     server = {
@@ -119,19 +121,22 @@ resource "helm_release" "argo-cd" {
         ]
       }
       metrics = {
-        enabled = true
+        enabled        = true
+        serviceMonitor = { enabled = true }
       }
     },
     repoServer = {
       replicas = 2
       metrics = {
-        enabled = true
+        enabled        = true
+        serviceMonitor = { enabled = true }
       }
     },
     applicationSet = {
       replicas = 2
       metrics = {
-        enabled = true
+        enabled        = true
+        serviceMonitor = { enabled = true }
       }
     },
   })]

@@ -50,3 +50,8 @@ variable "create_grafana_dashboards" {
   type    = bool
   default = true
 }
+
+variable "discord_webhook" {
+  type      = string
+  sensitive = true
+}
