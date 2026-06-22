@@ -3,6 +3,9 @@ kind: ClusterOutput
 metadata:
   namespace: fluent-operator
   name: postgres-output
+  labels:
+    fluentbit.fluent.io/enabled: "true"
+    fluentbit.fluent.io/mode: "fluentbit-only"
 spec:
   customPlugin:
     config: |-
