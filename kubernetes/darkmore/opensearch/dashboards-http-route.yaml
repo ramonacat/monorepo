@@ -9,7 +9,6 @@ spec:
   parentRefs:
     - name: gateway-tailscale 
       namespace: kgateway-system
-      sectionName: http
   rules:
     - backendRefs:
         - kind: Service
