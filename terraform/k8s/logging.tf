@@ -1,28 +1,39 @@
-resource "helm_release" "opensearch-cluster" {
-  name             = "opensearch-cluster"
-  chart            = "opensearch"
-  repository       = "https://opensearch-project.github.io/helm-charts/"
-  namespace        = "opensearch-cluster"
+resource "helm_release" "fluent-operator" {
+  name             = "fluent-operator"
+  chart            = "oci://ghcr.io/fluent/helm-charts/fluent-operator"
+  namespace        = "fluent-operator"
   create_namespace = true
-  version          = "3.7.0"
+  version          = "4.2.0"
 
   values = [yamlencode({
-    envFrom        = [{ secretRef = { name = "initial-admin" } }]
-    securityConfig = { enabled = false }
-    serviceMonitor = { enabled = true }
-  })]
-}
-
-resource "helm_release" "opensearch-dashboards" {
-  name             = "opensearch-dashboards"
-  chart            = "opensearch-dashboards"
-  repository       = "https://opensearch-project.github.io/helm-charts/"
-  namespace        = "opensearch-dashboards"
-  create_namespace = true
-  version          = "3.7.0"
-
-  values = [yamlencode({
-    replicaCount   = 2
-    serviceMonitor = { enabled = true }
+    operator = {
+      serviceMonitor = { enable = true }
+      resources = {
+        limits = {
+          memory = "512Mi"
+        }
+        requests = {
+          memory = "128Mi"
+        }
+      }
+    }
+    fluentbit = {
+      envVars = [
+        {
+          name = "POSTGRES_USERNAME"
+          valueFrom = {
+            secretKeyRef = { key = "POSTGRES_USERNAME", name = "fluentbit" }
+          }
+        },
+        {
+          name = "POSTGRES_PASSWORD"
+          valueFrom = {
+            secretKeyRef = { key = "POSTGRES_PASSWORD", name = "fluentbit" }
+          }
+        },
+      ]
+      serviceMonitor = { enable = true }
+      // the output is defined in a customization because chart does no support customPlugin
+    }
   })]
 }
