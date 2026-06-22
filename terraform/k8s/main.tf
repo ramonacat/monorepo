@@ -111,7 +111,7 @@ resource "helm_release" "kube-prometheus-stack" {
           group_by = ["..."]
           matchers = []
           routes = [
-            { receiver = "null", matchers = [{ alertname = "Watchdog" }] }
+            { receiver = "null", matchers = ["alertname = Watchdog"] }
           ]
         }
         receivers = [
