@@ -13,7 +13,7 @@ spec:
       Match *
       Host cloudnative-pg-database-cluster-pooler-rw.cloudnative-pg-database
       Port 5432
-      User $${POSTGRES_USERNAME}
-      Password $${POSTGRES_PASSWORD}
+      User ${POSTGRES_USERNAME}
+      Password ${POSTGRES_PASSWORD}
       Database fluentbit
       Table logs
