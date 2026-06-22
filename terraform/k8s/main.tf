@@ -103,9 +103,18 @@ resource "helm_release" "kube-prometheus-stack" {
           parentRefs = [{ name = "gateway-tailscale", namespace = "kgateway-system" }]
         }
       }
+
+      # TODO this would be much easier with webhook_url_file, but it doesn't work with the operator
+      # see: https://github.com/prometheus-operator/prometheus-operator/issues/7159
       config = {
+        route = {
+          receiver = "discord"
+          group_by = ["..."]
+          matchers = []
+          routes   = []
+        }
         receivers = [
-          { name = "discord", webhook_path = "/etc/alertmanager/secrets/discord-webhook/webhook" }
+          { name = "discord", discord_configs = [{}] }
         ]
       }
     }
@@ -143,6 +152,11 @@ resource "helm_release" "kube-prometheus-stack" {
       }
     }
   })]
+
+  set_sensitive = [{
+    name  = "alertmanager.config.receivers[0].discord_configs[0].webhook_url"
+    value = var.discord_webhook
+  }]
 }
 
 resource "hcloud_server_network" "node" {
