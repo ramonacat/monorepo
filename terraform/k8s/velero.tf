@@ -49,6 +49,7 @@ resource "helm_release" "velero" {
         name     = "default"
         provider = "csi"
       }]
+      logFormat               = "json"
       features                = "EnableCSI"
       defaultSnapshotMoveData = true
 

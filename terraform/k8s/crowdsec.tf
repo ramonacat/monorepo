@@ -10,6 +10,9 @@ resource "helm_release" "crowdsec" {
     container_runtime = "containerd"
     config = {
       "config.yaml.local" = yamlencode({
+        common = {
+          log_format = "json"
+        }
         api = {
           client = { unregister_on_exit = true }
           server = {

@@ -30,6 +30,7 @@ resource "helm_release" "external-dns" {
     excludeDomains = ["ts.net"]
     // TODO: AAAA is disabled because of https://github.com/kubernetes-sigs/external-dns/issues/6511
     managedRecordTypes = ["A", "CNAME"]
+    logFormat          = "json"
     provider = {
       name = "dnsimple"
     }

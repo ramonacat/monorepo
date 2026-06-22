@@ -14,6 +14,8 @@ resource "helm_release" "longhorn" {
       metrics = {
         serviceMonitor = { enabled = true }
       }
+      longhornManager = { log = { format = "json" } }
+      longhornDriver  = { log = { format = "json" } }
     }
   })]
 }

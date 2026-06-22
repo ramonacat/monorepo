@@ -85,6 +85,7 @@ resource "helm_release" "argo-cd" {
     global = {
       domain                   = "argo-cd.ibis-draconis.ts.net"
       addPrometheusAnnotations = true
+      logging                  = { format = "json" }
     },
     configs = {
       cm = { "accounts.terraform" = "apiKey" },

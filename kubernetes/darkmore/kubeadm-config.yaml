@@ -1,7 +1,9 @@
 apiVersion: kubeadm.k8s.io/v1beta4
 kind: ClusterConfiguration
 spec:
-  apiServer: {}
+  apiServer: 
+    extraArgs:
+      - { name: "logging-format", value: "json" }
   apiVersion: kubeadm.k8s.io/v1beta4
   caCertificateValidityPeriod: 87600h0m0s
   certificateValidityPeriod: 8760h0m0s
@@ -11,6 +13,7 @@ spec:
   controllerManager:
     extraArgs:
       - { name: "bind-address", value: "0.0.0.0" }
+      - { name: "logging-format", value: "json" }
   dns: {}
   encryptionAlgorithm: RSA-2048
   imageRepository: registry.k8s.io
@@ -24,6 +27,7 @@ spec:
   scheduler:
     extraArgs:
       - { name: "bind-address", value: "0.0.0.0" }
+      - { name: "logging-format", value: "json" }
   etcd:
     local:
       dataDir: /var/lib/etcd
@@ -34,3 +38,12 @@ apiVersion: kubeproxy.config.k8s.io/v1alpha1
 kind: KubeProxyConfiguration
 spec:
   metricsBindAddress: 0.0.0.0:10249
+  logging:
+    format: "json"
+---
+apiVersion: kubelet.config.k8s.io/v1alpha1
+kind: KubeletConfiguration
+spec:
+  metricsBindAddress: 0.0.0.0:10249
+  logging:
+    format: "json"

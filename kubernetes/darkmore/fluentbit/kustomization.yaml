@@ -1,2 +1,3 @@
 resources:
   - postgres-output.yaml
+  - parsers.yaml
