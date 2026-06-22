@@ -1,3 +1,4 @@
 resources:
   - https://github.com/kubernetes-csi/external-snapshotter//client/config/crd?ref=v8.6.0
   - https://github.com/kubernetes-csi/external-snapshotter//deploy/kubernetes/snapshot-controller?ref=v8.6.0
+  - longhorn.yaml
