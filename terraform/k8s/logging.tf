@@ -8,6 +8,7 @@ resource "helm_release" "opensearch-cluster" {
 
   values = [yamlencode({
     envFrom        = [{ secretRef = { name = "initial-admin" } }]
+    securityConfig = { enabled = false }
     serviceMonitor = { enabled = true }
   })]
 }
