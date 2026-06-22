@@ -72,5 +72,20 @@ resource "helm_release" "crowdsec" {
         { name = "COLLECTIONS", value = "crowdsecurity/base-http-scenarios LePresidente/jellyfin yanis-kouidri/envoy" }
       ]
     }
+    appsec = {
+      enabled  = true
+      replicas = 2
+      acquisitions = [
+        {
+          source        = "appsec"
+          listen_addr   = "0.0.0.0:7422"
+          appsec_config = "crowdsecurity/virtual-patching"
+          labels        = { type = "appsec" }
+        }
+      ]
+      env = [
+        { name = "COLLECTIONS", value = "crowdsecurity/base-http-scenarios LePresidente/jellyfin yanis-kouidri/envoy crowdsecurity/appsec-virtual-patching" }
+      ]
+    }
   })]
 }
