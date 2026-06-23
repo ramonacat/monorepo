@@ -7,7 +7,6 @@ resource "helm_release" "fluent-operator" {
 
   values = [yamlencode({
     operator = {
-      serviceMonitor = { enable = true }
       resources = {
         limits = {
           memory = "512Mi"
