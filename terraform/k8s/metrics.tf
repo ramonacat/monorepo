@@ -90,3 +90,19 @@ resource "helm_release" "kube-prometheus-stack" {
   }]
 }
 
+resource "helm_release" "metrics-api" {
+  name             = "metrics-api"
+  chart            = "metrics-server"
+  repository       = "https://kubernetes-sigs.github.io/metrics-server/"
+  namespace        = "kube-system"
+  create_namespace = true
+  version          = "3.13.1"
+
+  values = [yamlencode({
+    replicas = 2
+    args     = ["--kubelet-insecure-tls"]
+
+    metrics        = { enabled = true }
+    serviceMonitor = { enabled = true }
+  })]
+}
