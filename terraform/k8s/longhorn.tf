@@ -11,11 +11,11 @@ resource "helm_release" "longhorn" {
       enabled    = true
       hostnames  = ["longhorn.infrastructure.ramona.fun"]
       parentRefs = [{ name = "gateway-tailscale", namespace = "kgateway-system" }]
-      metrics = {
-        serviceMonitor = { enabled = true }
-      }
-      longhornManager = { log = { format = "json" } }
-      longhornDriver  = { log = { format = "json" } }
     }
+    metrics = {
+      serviceMonitor = { enabled = true }
+    }
+    longhornManager = { log = { format = "json" } }
+    longhornDriver  = { log = { format = "json" } }
   })]
 }
