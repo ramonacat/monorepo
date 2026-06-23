@@ -24,9 +24,11 @@ resource "helm_release" "authentik" {
       replicas = 2
       metrics  = { enabled = true, serviceMonitor = { enabled = true } }
       route = {
-        enabled    = true
-        hostnames  = ["account.ramona.fun"]
-        parentRefs = [{ name = "gateway-public", namespace = "kgateway-system" }]
+        main = {
+          enabled    = true
+          hostnames  = ["account.ramona.fun"]
+          parentRefs = [{ name = "gateway-public", namespace = "kgateway-system" }]
+        }
       }
     }
     worker = {
