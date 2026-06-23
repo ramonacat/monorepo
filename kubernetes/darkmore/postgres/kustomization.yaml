@@ -1,4 +1,5 @@
 resources:
+  - authentik.yaml
   - crowdsec.yaml
   - fluentbit.yaml
   - grafana.yaml
