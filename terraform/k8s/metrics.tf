@@ -55,8 +55,10 @@ resource "helm_release" "kube-prometheus-stack" {
         }
       }
       prometheusSpec = {
-        replicas                                = 2
-        retentionSize                           = "9900MiB"
+        // one replica is fine, the container will just get rescheduled when it needs to, and the storage is replicated anyway
+        replicas                                = 1
+        cleanPrometheusOperatorObjectNames      = true
+        retentionSize                           = "1GiB"
         podMonitorSelectorNilUsesHelmValues     = false
         probeSelectorNilUsesHelmValues          = false
         ruleSelectorNilUsesHelmValues           = false
@@ -69,6 +71,7 @@ resource "helm_release" "kube-prometheus-stack" {
           }
           limits = {
             memory = "1536Mi"
+            cpu    = "1000m"
           }
         }
         storageSpec = {
@@ -76,7 +79,7 @@ resource "helm_release" "kube-prometheus-stack" {
             spec = {
               storageClassName = "longhorn"
               accessModes      = ["ReadWriteOnce"]
-              resources        = { requests = { storage = "10Gi" } }
+              resources        = { requests = { storage = "1Gi" } }
             }
           }
         }
