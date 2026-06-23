@@ -10,7 +10,11 @@ resource "helm_release" "sealed-secrets" {
     metrics = {
       prometheusRule = { enabled = true }
       serviceMonitor = { enabled = true }
-      dashboards     = { create = var.create_grafana_dashboards, labels = { grafana_dashboard = "1" } }
+      dashboards = {
+        create    = var.create_grafana_dashboards
+        labels    = { grafana_dashboard = "1" }
+        namespace = "grafana"
+      }
     }
   })]
 }

@@ -10,7 +10,8 @@ resource "helm_release" "cloudnative-pg" {
     monitoring = {
       podMonitorEnabled = true
       grafanaDashboard = {
-        create = var.create_grafana_dashboards
+        create    = var.create_grafana_dashboards
+        namespace = "grafana"
       }
     }
   })]

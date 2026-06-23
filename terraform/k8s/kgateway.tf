@@ -33,13 +33,13 @@ resource "helm_release" "envoy-proxy-crowdsec-bouncer" {
     config = {
       bouncer = {
         lapiURL = "http://crowdsec-service.crowdsec:8080"
+        metrics = true
         apiKeySecretRef = {
           name = "crowdsec-api-key"
           key  = "ENVOY_BOUNCER_BOUNCER_APIKEY"
         }
-        prometheus = { enabled = true, serviceMonitor = { enabled = true } }
-        grafana    = { dashboard = { enabled = var.create_grafana_dashboards } }
       }
+      prometheus = { enabled = true, serviceMonitor = { enabled = true } }
     }
   })]
 }
