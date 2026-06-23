@@ -8,6 +8,12 @@ resource "helm_release" "authentik" {
 
   values = [yamlencode({
     global = {
+      env = [
+        { name = "AUTHENTIK_POSTGRESQL__READ_REPLICAS__0__HOST", value = "cloudnative-pg-database-cluster-pooler-ro.cloudnative-pg-database" },
+        { name = "AUTHENTIK_POSTGRESQL__READ_REPLICAS__0__NAME", value = "authentik" },
+        { name = "AUTHENTIK_POSTGRESQL__READ_REPLICAS__0__PORT", value = "5432" },
+        { name = "AUTHENTIK_POSTGRESQL__READ_REPLICAS__0__CONN_MAX_AGE", value = "60" },
+      ]
       envFrom = [
         { secretRef = { name = "authentik-env-secrets" } }
       ]
@@ -20,24 +26,14 @@ resource "helm_release" "authentik" {
         name         = "authentik"
         port         = 5432
         conn_max_age = 60
-
-        read_replicas = [
-          {
-            host         = "cloudnative-pg-database-cluster-pooler-ro.cloudnative-pg-database"
-            name         = "authentik"
-            port         = 5432
-            conn_max_age = 60
-          }
-        ]
       }
 
       email = {
-        host         = "smtp.fastmail.com"
-        port         = 465
-        conn_max_age = 60
-        username     = "ramona@luczkiewi.cz"
-        use_ssl      = true
-        from         = "roboramona <roboramona@luczkiewi.cz>"
+        host     = "smtp.fastmail.com"
+        port     = 465
+        username = "ramona@luczkiewi.cz"
+        use_ssl  = true
+        from     = "roboramona <roboramona@luczkiewi.cz>"
       }
     }
     server = {
