@@ -14,10 +14,30 @@ resource "helm_release" "authentik" {
     }
     authentik = {
       error_reporting = { enabled = true }
+
       postgresql = {
-        host = "cloudnative-pg-database-cluster-pooler-rw.cloudnative-pg-database"
-        name = "authentik"
-        port = 5432
+        host         = "cloudnative-pg-database-cluster-pooler-rw.cloudnative-pg-database"
+        name         = "authentik"
+        port         = 5432
+        conn_max_age = 60
+
+        read_replicas = [
+          {
+            host         = "cloudnative-pg-database-cluster-pooler-ro.cloudnative-pg-database"
+            name         = "authentik"
+            port         = 5432
+            conn_max_age = 60
+          }
+        ]
+      }
+
+      email = {
+        host         = "smtp.fastmail.com"
+        port         = 465
+        conn_max_age = 60
+        username     = "ramona@luczkiewi.cz"
+        use_ssl      = true
+        from         = "roboramona <roboramona@luczkiewi.cz>"
       }
     }
     server = {
