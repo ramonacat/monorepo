@@ -45,13 +45,20 @@ resource "helm_release" "cloudnative-pg-database" {
           login          = true
           passwordSecret = { name = "fluentbit" }
         },
+        // TODO the following roles should be coming from an argument probably
         {
           name           = "grafana"
           ensure         = "present"
           login          = true
           passwordSecret = { name = "grafana" }
           inRoles        = ["fluentbit"]
-        }
+        },
+        {
+          name           = "authentik"
+          ensure         = "present"
+          login          = true
+          passwordSecret = { name = "authentik" }
+        },
       ]
     }
     databases = [
@@ -64,7 +71,13 @@ resource "helm_release" "cloudnative-pg-database" {
         name   = "fluentbit"
         owner  = "fluentbit"
         ensure = "present"
-      }
+      },
+      // TODO the following databases should be coming from an argument probably
+      {
+        name   = "authentik"
+        owner  = "authentik"
+        ensure = "present"
+      },
     ]
     poolers = [
       {
