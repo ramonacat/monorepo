@@ -13,6 +13,7 @@
               "bridge": "cni0",
               "isGateway": true,
               "ipMasq": true,
+              "hairpinMode": true,
               "ipam": {
                   "type": "host-local",
                   "subnet": "${config.ramona.kubernetes.hostPodCidr}",
