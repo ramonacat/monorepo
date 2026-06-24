@@ -6,9 +6,7 @@
     installPhase = ''
       mkdir -p $out/bin
       cp fup $out/bin
-    '';
 
-    postInstall = ''
       wrapProgram $out/bin/fup \
           --prefix PATH : ${pkgs.lib.makeBinPath (with pkgs; [ backblaze-b2 ])}
     '';
