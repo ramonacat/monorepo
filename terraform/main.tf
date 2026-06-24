@@ -61,6 +61,10 @@ terraform {
       source  = "hashicorp/tls"
       version = ">= 4.3.0"
     }
+    authentik = {
+      source  = "goauthentik/authentik"
+      version = ">= 2026.5.0"
+    }
   }
 }
 
@@ -92,4 +96,8 @@ provider "helm" {
 
 provider "argocd" {
   server_addr = "argo-cd.infrastructure.ramona.fun"
+}
+
+provider "authentik" {
+  url = "https://account.ramona.fun"
 }
