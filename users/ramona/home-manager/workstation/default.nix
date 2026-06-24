@@ -1,4 +1,4 @@
-{ inputs, ... }: {
+{ inputs, pkgs, ... }: {
   imports = [
     inputs.nixvim.homeModules.nixvim
 
@@ -7,4 +7,7 @@
     ./atuin.nix
     ./npm.nix
   ];
+  config = {
+    home.packages = with pkgs; [ ramona.fup ];
+  };
 }
