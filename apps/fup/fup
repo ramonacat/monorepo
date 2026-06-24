@@ -1,0 +1,23 @@
+#!/usr/bin/env bash
+
+set -euo pipefail
+
+usage() {
+	echo "usage: $0 [filename] [upload-filename?]" >&2
+	exit 1
+}
+
+main() {
+	local -r filename="$1"
+	local -r uploaded_filename="$2"
+
+	local -r upload_output=$(backblaze-b2 file upload ramona-uploads "$filename" "$uploaded_filename")
+
+	echo "$upload_output" | head -n1 | sed --expression='s/URL by file name: //' -
+}
+
+if [[ $# -lt 1 || $# -gt 2 ]]; then
+	usage
+fi
+
+main "$1" "${2:-$(basename "$1")}"
