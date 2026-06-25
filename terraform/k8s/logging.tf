@@ -17,6 +17,7 @@ resource "helm_release" "fluent-operator" {
       }
     }
     fluentbit = {
+      ports = [6514]
       envVars = [
         {
           name = "POSTGRES_USERNAME"

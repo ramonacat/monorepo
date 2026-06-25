@@ -66,6 +66,10 @@ spec:
       kind: GatewayParameters
       name: gateway-public
 
+  allowedListeners:
+    namespaces:
+      from: All
+
   listeners:
     - name: http
       port: 80
@@ -120,6 +124,10 @@ spec:
       group: gateway.kgateway.dev
       kind: GatewayParameters
       name: gateway-tailscale
+
+  allowedListeners:
+    namespaces:
+      from: All
 
   listeners:
     - name: http

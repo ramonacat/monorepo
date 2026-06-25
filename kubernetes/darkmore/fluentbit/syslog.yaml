@@ -1,0 +1,48 @@
+apiVersion: fluentbit.fluent.io/v1alpha2
+kind: ClusterInput
+metadata:
+  namespace: fluent-operator
+  name: parsers
+  labels:
+    fluentbit.fluent.io/enabled: "true"
+    fluentbit.fluent.io/mode: "fluentbit-only"
+spec:
+  syslog:
+    mode: tcp
+    port: 6514
+---
+apiVersion: gateway.networking.k8s.io/v1
+kind: ListenerSet
+metadata:
+  name: syslog
+spec:
+  parentRef:
+    kind: Gateway
+    namespace: kgateway-system
+    name: gateway-tailscale
+  listeners:
+    - name: syslog
+      port: 6514
+      hostname: syslog.infrastructure.ramona.fun
+      protocol: TCP
+      allowedRoutes:
+        kinds:
+          - kind: TCPRoute
+        namespaces:
+          from: All
+---
+apiVersion: gateway.networking.k8s.io/v1alpha2
+kind: TCPRoute
+metadata:
+  name: fluentbit-syslog
+spec:
+  parentRefs:
+    - group: gateway.networking.k8s.io
+      kind: Gateway
+      name: gateway-tailscale
+  rules:
+    - backendRefs:
+        - kind: Service
+          name: fluent-bit
+          namespace: fluent-operator
+          port: 6514

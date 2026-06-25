@@ -82,7 +82,7 @@
           $ActionQueueSaveOnShutdown on # save in-memory data if rsyslog shuts down
 
           # forward over tcp with octet framing according to RFC 5425
-          *.* @@(o)127.0.0.1:6514;RSYSLOG_SyslogProtocol23Format
+          *.* @@(o)syslog.infrastructure.ramona.fun:6514;RSYSLOG_SyslogProtocol23Format
         '';
       };
     };
