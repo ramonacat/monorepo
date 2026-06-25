@@ -21,7 +21,7 @@ resource "helm_release" "velero" {
   name             = "velero"
   chart            = "velero"
   repository       = "https://vmware-tanzu.github.io/helm-charts"
-  version          = "v12.0.3"
+  version          = "12.1.0"
   namespace        = "velero"
   create_namespace = true
 
