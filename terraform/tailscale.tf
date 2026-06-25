@@ -116,6 +116,14 @@ resource "tailscale_acl" "default" {
             "tcp:8096",
           ]
         },
+        {
+          src = ["tag:k8s"]
+          dst = ["tag:server"]
+          ip = [
+            "tcp:9100", // prometheus node exporter 
+            "tcp:9633", // prometheus smart exporter
+          ]
+        }
       ],
       autoApprovers = {
         "services" : {
