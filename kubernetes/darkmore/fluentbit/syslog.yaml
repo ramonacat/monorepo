@@ -2,7 +2,7 @@ apiVersion: fluentbit.fluent.io/v1alpha2
 kind: ClusterInput
 metadata:
   namespace: fluent-operator
-  name: parsers
+  name: syslog
   labels:
     fluentbit.fluent.io/enabled: "true"
     fluentbit.fluent.io/mode: "fluentbit-only"
