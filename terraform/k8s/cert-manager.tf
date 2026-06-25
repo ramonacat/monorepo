@@ -3,7 +3,7 @@ resource "helm_release" "cert-manager" {
   chart            = "oci://quay.io/jetstack/charts/cert-manager"
   namespace        = "cert-manager"
   create_namespace = true
-  version          = "v1.20.2"
+  version          = "v1.20.3"
 
   values = [yamlencode({
     crds                      = { enabled = true }
