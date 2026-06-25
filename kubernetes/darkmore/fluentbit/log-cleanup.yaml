@@ -12,7 +12,7 @@ spec:
           containers:
             - name: cleanup-logs
               image: postgres:18.4
-              imagePullPolicy: IfNotPresene
+              imagePullPolicy: IfNotPresent
               command: ["psql", "-c", "DELETE FROM logs WHERE time < date_add(current_timestamp, '-1 day'::interval)"]
               env:
                 - name: PGPASS
