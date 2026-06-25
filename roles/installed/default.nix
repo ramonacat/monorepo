@@ -18,6 +18,7 @@
     ./ssh.nix
     ./tailscale.nix
     ./telegraf.nix
+    ./prometheus-exporter.nix
   ];
   config = {
     services.fwupd.enable = lib.mkDefault true;

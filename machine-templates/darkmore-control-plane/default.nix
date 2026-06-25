@@ -33,5 +33,8 @@
       "tag:kubernetes-darkmore"
       "tag:kubernetes-darkmore-control-plane"
     ];
+
+    services.prometheus.exporters.node.enable = lib.mkForce false;
+    services.prometheus.exporters.smartctl.enable = lib.mkForce false;
   };
 }

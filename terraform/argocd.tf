@@ -44,6 +44,11 @@ resource "argocd_application_set" "monorepo--apps" {
           path            = "{{path}}"
         }
 
+        ignore_difference {
+          kind                = "Service"
+          jq_path_expressions = ["select(.metadata.annotations | has(\"tailscale.com/proxy-group\")).spec.externalName"]
+        }
+
         destination {
           server    = "https://kubernetes.default.svc"
           namespace = "{{path.basename}}"
