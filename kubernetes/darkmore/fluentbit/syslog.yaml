@@ -54,7 +54,7 @@ apiVersion: gateway.networking.k8s.io/v1beta1
 kind: ReferenceGrant
 metadata:
   name: allow-tcp-route-to-syslog
-  namespace: default
+  namespace: fluent-operator
 spec:
   from:
     - group: gateway.networking.k8s.io
