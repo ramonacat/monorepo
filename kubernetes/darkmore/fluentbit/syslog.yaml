@@ -49,3 +49,17 @@ spec:
           name: fluent-bit
           namespace: fluent-operator
           port: 6514
+--- 
+apiVersion: gateway.networking.k8s.io/v1beta1
+kind: ReferenceGrant
+metadata:
+  name: allow-tcp-route-to-syslog
+  namespace: default
+spec:
+  from:
+    - group: gateway.networking.k8s.io
+      kind: TCPRoute
+      namespace: fluentbit
+  to:
+    - group: ""
+      kind: Service
