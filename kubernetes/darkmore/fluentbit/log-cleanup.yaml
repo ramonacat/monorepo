@@ -14,7 +14,7 @@ spec:
             - name: cleanup-logs
               image: postgres:18.4
               imagePullPolicy: IfNotPresent
-              command: ["psql", "-c", "DELETE FROM logs WHERE time < date_add(current_timestamp, '-1 day'::interval)", "--host=cloudnative-pg-database-cluster-pooler-rw.cloudnative-pg-database"]
+              command: ["psql", "-c", "DELETE FROM logs WHERE time < date_add(current_timestamp, '-1 day'::interval)", "--host=cloudnative-pg-database-cluster-pooler-rw.cloudnative-pg-database", "--user=fluentbit"]
               env:
                 - name: PGPASSFILE
                   value: '/etc/secrets/pgpass'
