@@ -1,0 +1,26 @@
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: log-cleanup
+  namespace: fluent-operator
+spec:
+  schedule: ''
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          containers:
+            - name: cleanup-logs
+              image: postgres:18.4
+              imagePullPolicy: IfNotPresene
+              command: ["psql", "-c", "DELETE FROM logs WHERE time < date_add(current_timestamp, '-1 day'::interval)"]
+              env:
+                - name: PGPASS
+                  value: '/run/secrets/pgpass'
+              volumeMounts:
+                - mountPath: /run/secrets/
+                  name: pgpass
+          volumes:
+            - name: pgpass
+              secret:
+                secretName: fluentbit-pgpass
