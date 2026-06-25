@@ -9,6 +9,7 @@ spec:
     spec:
       template:
         spec:
+          restartPolicy: OnFailure
           containers:
             - name: cleanup-logs
               image: postgres:18.4
