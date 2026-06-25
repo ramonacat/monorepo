@@ -128,13 +128,14 @@ pkgs.mkShell {
       '')
 
       age
+      argocd
       backblaze-b2
       inputs.agenix.packages."${pkgs.stdenv.hostPlatform.system}".default
+      kubeconform
       postgresql_16
       shellcheck
       shfmt
       tflint
-      argocd
 
       package-versions.nodejs
       package-versions.rust-version

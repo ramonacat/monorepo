@@ -1,0 +1,18 @@
+#/usr/bin/env bash
+set -euo pipefail
+
+pushd terraform
+
+tflint --init
+terraform init -input=false
+
+tflint
+terraform validate
+
+popd
+
+# TODO unskip GatewayParameters once this is merged: github.com/datreeio/CRDs-catalog/pull/906
+kubeconform -schema-location default -schema-location 'https://raw.githubusercontent.com/datreeio/CRDs-catalog/main/{{.Group}}/{{.ResourceKind}}_{{.ResourceAPIVersion}}.json' \
+    -skip 'ClusterConfiguration,KubeletConfiguration,KubeProxyConfiguration,Kustomization,GatewayParameters' \
+    kubernetes/
+nix flake check
