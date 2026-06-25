@@ -1,0 +1,28 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: shadowsoul-prometheus-exporters
+  annotations:
+    tailscale.com/tailnet-fqdn: "shadowsoul.ibis-draconis.ts.net"
+    tailscale.com/proxy-group: "egress-proxies"
+spec:
+  type: ExternalName
+  externalName: placeholder
+  ports:
+    - port: 9100
+      protocol: TCP
+      name: node
+
+    - port: 9633
+      protocol: TCP
+      name: smart
+---
+apiVersion: monitoring.coreos.com/v1alpha1
+kind: ScrapeConfig
+metadata:
+  name: shadowsoul
+spec:
+  staticConfigs:
+    - targets:
+      - shadowsoul-prometheus-exporters:9100
+      - shadowsoul-prometheus-exporters:9633

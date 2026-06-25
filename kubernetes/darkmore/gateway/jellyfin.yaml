@@ -26,3 +26,19 @@ spec:
       - name: jellyfin
         kind: Backend
         group: gateway.kgateway.dev
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: jellyfin
+  namespace: kgateway-system
+  annotations:
+    tailscale.com/tailnet-fqdn: "hallewell.ibis-draconis.ts.net"
+    tailscale.com/proxy-group: "egress-proxies"
+spec:
+  type: ExternalName
+  externalName: placeholder
+  ports:
+    - port: 8096
+      protocol: TCP
+      name: http
