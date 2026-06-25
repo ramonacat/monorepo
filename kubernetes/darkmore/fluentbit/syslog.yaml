@@ -40,8 +40,8 @@ metadata:
 spec:
   parentRefs:
     - group: gateway.networking.k8s.io
-      kind: Gateway
-      name: gateway-tailscale
+      kind: ListenerSet
+      name: syslog
   rules:
     - backendRefs:
         - kind: Service
