@@ -60,7 +60,7 @@ resource "argocd_application_set" "monorepo--apps" {
             self_heal = true
           }
 
-          sync_options = ["CreateNamespace=true"]
+          sync_options = ["CreateNamespace=true", "ServerSideApply=true"]
         }
       }
     }
