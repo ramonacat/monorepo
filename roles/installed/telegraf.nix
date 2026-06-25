@@ -81,8 +81,7 @@
           $ActionResumeRetryCount -1 # infinite retries on insert failure
           $ActionQueueSaveOnShutdown on # save in-memory data if rsyslog shuts down
 
-          # forward over tcp with octet framing according to RFC 5425
-          *.* @@(o)syslog.infrastructure.ramona.fun:6514;RSYSLOG_SyslogProtocol23Format
+          action(type="omfwd" Target="syslog.infrastructure.ramona.fun" Port="6514" Protocol="tcp")
         '';
       };
     };

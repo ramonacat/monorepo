@@ -123,6 +123,13 @@ resource "tailscale_acl" "default" {
             "tcp:9100", // prometheus node exporter 
             "tcp:9633", // prometheus smart exporter
           ]
+        },
+        {
+          src = ["tag:server"],
+          dst = ["tag:k8s"],
+          ip = [
+            "tcp:6514"
+          ]
         }
       ],
       autoApprovers = {
