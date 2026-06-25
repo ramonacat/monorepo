@@ -1,3 +1,4 @@
 resources:
   - postgres-output.yaml
   - parsers.yaml
+  - log-cleanup.yaml
