@@ -77,9 +77,10 @@ resource "helm_release" "kured" {
 
   values = [yamlencode({
     configuration = {
-      rebootCommand = "/run/current-system/sw/bin/systemctl reboot"
-      period        = "1m0s"
-      logFormat     = "json"
+      rebootCommand    = "/run/current-system/sw/bin/systemctl reboot"
+      period           = "1m0s"
+      logFormat        = "json"
+      lockReleaseDelay = "10m0s"
     }
   })]
 }
