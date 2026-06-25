@@ -17,7 +17,7 @@ resource "helm_release" "fluent-operator" {
       }
     }
     fluentbit = {
-      ports = [{containerPort = 6514, name = "syslog-tcp", protocol = "TCP"}]
+      ports = [{ containerPort = 6514, name = "syslog-tcp", protocol = "TCP" }]
       envVars = [
         {
           name = "POSTGRES_USERNAME"

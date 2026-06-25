@@ -10,7 +10,7 @@ spec:
   syslog:
     mode: tcp
     port: 6514
-    parser: syslog-rfc5424
+    parser: syslog-rfc3164
     tag: syslog
 ---
 apiVersion: gateway.networking.k8s.io/v1
