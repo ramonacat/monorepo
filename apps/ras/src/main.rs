@@ -5,8 +5,9 @@ use axum::{
     routing::{get, post},
 };
 use chrono::{DateTime, Utc};
-use diesel::{ExpressionMethods, insert_into, upsert::excluded};
+use diesel::{Connection, ExpressionMethods, PgConnection, insert_into, upsert::excluded};
 use diesel_async::{AsyncConnection as _, AsyncPgConnection, RunQueryDsl};
+use diesel_migrations::{EmbeddedMigrations, MigrationHarness, embed_migrations};
 use dotenvy::dotenv;
 use serde::{Deserialize, Serialize};
 use tracing::instrument;
@@ -16,12 +17,19 @@ use crate::models::ClosureState;
 mod models;
 mod schema;
 
+pub const MIGRATIONS: EmbeddedMigrations = embed_migrations!("migrations/");
+
 #[tokio::main]
 async fn main() {
     tracing_subscriber::fmt().init();
     dotenv().ok();
 
     let database_url = env::var("DATABASE_URL").expect("DATABASE_URL must be set");
+    PgConnection::establish(&database_url)
+        .expect("failed to connect to the database")
+        .run_pending_migrations(MIGRATIONS)
+        .unwrap();
+    let app_state = AppState { database_url };
 
     let app = Router::new()
         .route("/", get(get_current_state))
@@ -33,7 +41,7 @@ async fn main() {
             "/hosts/{hostname}/latest_closure",
             post(post_latest_closure),
         )
-        .with_state(AppState { database_url });
+        .with_state(app_state);
 
     // run our app with hyper, listening globally on port 3000
     let listener = tokio::net::TcpListener::bind("0.0.0.0:3000").await.unwrap();
