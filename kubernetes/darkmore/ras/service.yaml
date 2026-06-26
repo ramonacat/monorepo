@@ -1,0 +1,13 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: ras
+spec:
+  selector:
+    app: ras
+  type: ClusterIP
+  ports:
+  - name: ras
+    protocol: TCP
+    port: 80
+    targetPort: 3000

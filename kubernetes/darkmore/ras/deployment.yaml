@@ -1,0 +1,59 @@
+# https://kubernetes.io/docs/concepts/workloads/controllers/deployment/
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ras
+  labels:
+    app: ras
+spec:
+  selector:
+    matchLabels:
+      app: ras
+  replicas: 2
+  strategy:
+    rollingUpdate:
+      maxSurge: 50%
+      maxUnavailable: 50%
+    type: RollingUpdate
+  template:
+    metadata:
+      annotations:
+        kubectl.kubernetes.io/default-container: ras
+      labels:
+        app: ras
+    spec:
+      containers:
+      - name: ras
+        image: ghcr.io/ramonacat/ras:1782494958
+        imagePullPolicy: IfNotPresent
+        resources:
+          requests:
+            cpu: 25m
+            memory: 15Mi
+          limits:
+            cpu: 100m
+            memory: 100Mi
+        livenessProbe:
+          tcpSocket:
+            port: 3000
+          initialDelaySeconds: 5
+          timeoutSeconds: 5
+          successThreshold: 1
+          failureThreshold: 3
+          periodSeconds: 10
+        readinessProbe:
+          httpGet:
+            path: /
+            port: 3000
+          initialDelaySeconds: 5
+          timeoutSeconds: 2
+          successThreshold: 1
+          failureThreshold: 3
+          periodSeconds: 10
+        envFrom:
+            - secretRef:
+                name: ras
+        ports:
+        - containerPort: 3000
+          name: ras
+      restartPolicy: Always
