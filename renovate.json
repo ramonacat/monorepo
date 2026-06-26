@@ -6,5 +6,6 @@
   "automerge": true,
   "kubernetes": {
     "managerFilePatterns": ["/kubernetes/.+\\.ya?ml$/"]
-  }
+  },
+  "maxMajorIncrement": 0
 }
