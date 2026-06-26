@@ -26,6 +26,7 @@ resource "helm_release" "cloudnative-pg-database" {
   version          = "0.7.0"
 
   values = [yamlencode({
+    version = { postgresql = "18" }
     cluster = {
       instances = 3
       storage   = { size = "20Gi", storageClass = "hcloud-volumes" }
