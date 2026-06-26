@@ -4,4 +4,7 @@
     "config:recommended"
   ],
   "automerge": true,
+  "kubernetes": {
+    "managerFilePatterns": ["/kubernetes/.+\\.ya?ml$/"]
+  }
 }
