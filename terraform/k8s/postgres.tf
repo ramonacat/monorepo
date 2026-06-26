@@ -80,6 +80,12 @@ resource "helm_release" "cloudnative-pg-database" {
           login          = true
           passwordSecret = { name = "authentik" }
         },
+        {
+          name           = "ras"
+          ensure         = "present"
+          login          = true
+          passwordSecret = { name = "ras" }
+        }
       ]
     }
     databases = [
@@ -99,6 +105,11 @@ resource "helm_release" "cloudnative-pg-database" {
         owner  = "authentik"
         ensure = "present"
       },
+      {
+        name   = "ras"
+        owner  = "ras"
+        ensure = "present"
+      }
     ]
     poolers = [
       {
