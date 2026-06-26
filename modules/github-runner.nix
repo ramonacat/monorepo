@@ -41,6 +41,7 @@
               openssh
               jq
               proot
+              curl
             ];
             replace = true;
             nodeRuntimes = [ "node24" ];
