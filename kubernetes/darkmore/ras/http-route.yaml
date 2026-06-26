@@ -4,7 +4,7 @@ metadata:
   name: ras
 spec:
   parentRefs:
-  - name: gateway-public
+  - name: gateway-tailscale
     namespace: kgateway-system
   hostnames:
     - ras.infrastructure.ramona.fun
