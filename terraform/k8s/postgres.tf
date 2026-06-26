@@ -28,7 +28,7 @@ resource "helm_release" "cloudnative-pg-database" {
   values = [yamlencode({
     cluster = {
       instances = 3
-      storage   = { size = "8Gi", storageClass = "longhorn" }
+      storage   = { size = "20Gi", storageClass = "hcloud-volumes" }
       monitoring = {
         enabled = true
       }
