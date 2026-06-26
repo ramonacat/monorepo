@@ -18,3 +18,5 @@ test-results/
 coverage/
 *.tar
 *.tfplan
+*.log
+.postgres_data/

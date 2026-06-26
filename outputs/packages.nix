@@ -30,6 +30,12 @@ rec {
       + (pkgs.lib.concatStringsSep "\n" (
         pkgs.lib.mapAttrsToList (k: v: "ln -s ${v} $out/homes/${k}") all-homes
       ))
+      + "\nmkdir -p $out/containers\n"
+      + (pkgs.lib.concatStringsSep "\n" (
+        pkgs.lib.mapAttrsToList (k: v: "ln -s ${v.container} $out/containers/${k}") (
+          pkgs.lib.filterAttrs (_: v: v ? container) local-packages.apps
+        )
+      ))
       + "\nln -s ${flake.nixosConfigurations.iso.config.system.build.isoImage} $out/iso\n"
     );
   default = coverage;
