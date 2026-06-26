@@ -5,6 +5,13 @@ let
     inherit crane-lib;
 
     src-path = ../apps/ras;
+    source-filter =
+      path: type:
+      (crane-lib.filterCargoSources path type || (builtins.match ".*/migrations/.*" path != null));
+    additional-package-arguments = {
+      nativeBuildInputs = [ pkgs.libpq.dev ];
+      buildInputs = [ pkgs.libpq ];
+    };
   };
 in
 {
