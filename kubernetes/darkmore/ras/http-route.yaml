@@ -12,5 +12,4 @@ spec:
     - backendRefs:
       - name: ras
         kind: Service
-        group: gateway.kgateway.dev
         port: 3000
