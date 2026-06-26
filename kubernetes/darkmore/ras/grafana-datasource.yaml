@@ -6,4 +6,11 @@ metadata:
   labels:
     grafana_datasource: "1"
 data:
-  datasource.yaml: YXBpVmVyc2lvbjogMQoKZGF0YXNvdXJjZXM6CiAgLSBuYW1lOiBJbmZpbml0eQogICAgdHlwZTogeWVzb3JleWVyYW0taW5maW5pdHktZGF0YXNvdXJjZQo=
+  infinity.yaml: |-
+    apiVersion: 1
+
+    datasources:
+      - name: Infinity
+        type: yesoreyeram-infinity-datasource
+
+
