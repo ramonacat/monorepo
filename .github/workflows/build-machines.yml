@@ -40,6 +40,11 @@ jobs:
           body-includes: Build results
           token: "${{ secrets.PAT }}"
 
+      - uses: actions/upload-artifact@v7
+        with:
+          name: container-images
+          path: result/containers/
+
       - name: Create or update comment
         if: github.ref != 'refs/heads/main' && github.actor != 'dependabot[bot]'
         uses: peter-evans/create-or-update-comment@v5
@@ -49,3 +54,30 @@ jobs:
           body: ${{ steps.build-all.outputs.READABLE_OUTPUT }}
           edit-mode: replace
           token: "${{ secrets.PAT }}"
+    
+  upload-containers:
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main'
+    permissions:
+      contents: read
+      packages: write
+      attestations: write
+      id-token: write
+    needs: ["build"]
+    steps:
+      - name: Checkout the repo
+        uses: actions/checkout@v7
+        with:
+          fetch-depth: 1
+
+      - name: download the container images
+        uses: actions/download-artifact@v8
+        with:
+          name: container-images
+          path: containers
+
+      - name: Log in to registry
+        run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
+
+      - name: upload to the container registry
+        run: ./.github/scripts/upload-containers.bash

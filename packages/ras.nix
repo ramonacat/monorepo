@@ -10,7 +10,10 @@ in
 {
   inherit (package) coverage checks package;
 
-  container = pkgs.ociTools.buildContainer {
-    args = "${package.package}/bin/ras";
+  container = pkgs.dockerTools.buildLayeredImage {
+    name = "ras";
+    tag = "latest";
+    contents = [ package.package ];
+    config.Cmd = [ "/bin/ras" ];
   };
 }
