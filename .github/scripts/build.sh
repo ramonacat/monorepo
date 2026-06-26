@@ -117,6 +117,15 @@ main() {
 			done
 		done
 
+		for filename in *-closure; do
+			local -r new_closure=$(cat "$filename")
+			local -r hostname=${filename//-closure/}
+			local -r closure_update=$(jq --null-input --arg latest_closure "$new_closure" '{"latest_closure": $latest_closure}')
+
+			curl --fail --request POST --header 'Content-Type: application/json' --data "$closure_update" \
+				"https://ras.infrastructure.ramona.fun/hosts/$hostname/latest_closure"
+		done
+
 		publish -- result/iso/iso/*.iso root@crimson:/var/www/ramona.fun/public/nixos-latest.iso
 		publish -- result/iso/iso/*.iso root@hallewell:/var/www/hallewell.ibis-draconis.ts.net/builds/nixos-latest.iso
 	fi
