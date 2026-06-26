@@ -118,9 +118,12 @@ main() {
 		done
 
 		for filename in *-closure; do
-			local -r new_closure=$(cat "$filename")
-			local -r hostname=${filename//-closure/}
-			local -r closure_update=$(jq --null-input --arg latest_closure "$new_closure" '{"latest_closure": $latest_closure}')
+			local hostname=${filename//-closure/}
+			local new_closure
+			local closure_update
+
+			closure_update=$(jq --null-input --arg latest_closure "$new_closure" '{"latest_closure": $latest_closure}')
+			new_closure=$(cat "$filename")
 
 			curl --fail --request POST --header 'Content-Type: application/json' --data "$closure_update" \
 				"https://ras.infrastructure.ramona.fun/hosts/$hostname/latest_closure"
