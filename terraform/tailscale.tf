@@ -128,7 +128,8 @@ resource "tailscale_acl" "default" {
           src = ["tag:server"],
           dst = ["tag:k8s"],
           ip = [
-            "tcp:6514"
+            "tcp:6514", // syslog
+            "tcp:443",
           ]
         }
       ],
