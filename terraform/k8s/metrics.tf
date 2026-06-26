@@ -70,7 +70,7 @@ resource "helm_release" "kube-prometheus-stack" {
             memory = "1024Mi"
           }
           limits = {
-            memory = "1536Mi"
+            memory = "2048Mi"
             cpu    = "1000m"
           }
         }
