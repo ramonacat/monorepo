@@ -51,7 +51,7 @@ impl AppState {
     async fn db_connect(&self) -> AsyncPgConnection {
         AsyncPgConnection::establish(&self.database_url)
             .await
-            .unwrap_or_else(|_| panic!("Error connecting to {}", &self.database_url))
+            .expect("database connection did not succeed")
     }
 }
 
