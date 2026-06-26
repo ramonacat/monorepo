@@ -63,6 +63,11 @@ make-rows-hosts() {
 		new_closure=$(readlink "$f")
 		closure_diff=$(diff-closures "$host_basename-closure" "$new_closure")
 
+		local -r closure_update=$(jq --null-input --arg latest_closure "$new_closure" '{"latest_closure": $latest_closure}')
+
+		curl --request POST --header 'Content-Type: application/json' --data "$closure_update" \
+			"https://ras.infrastructure.ramona.fun/hosts/$host_basename/latest_closure"
+
 		echo "$new_closure" >"$host_basename-closure"
 
 		make-row "$host_basename" "$new_closure" "$closure_diff"
