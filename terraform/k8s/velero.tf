@@ -60,7 +60,11 @@ resource "helm_release" "velero" {
         snapshotMoveData = true
         template = {
           includedNamespaces = ["*"]
-          excludedNamespaces = [helm_release.longhorn.namespace, helm_release.kube-prometheus-stack.namespace]
+          excludedNamespaces = [
+            helm_release.longhorn.namespace,
+            helm_release.kube-prometheus-stack.namespace,
+            helm_release.cloudnative-pg-database.namespace
+          ]
         }
       }
     }

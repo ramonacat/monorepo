@@ -1,0 +1,31 @@
+---
+apiVersion: bitnami.com/v1alpha1
+kind: SealedSecret
+metadata:
+  name: $name
+  namespace: cloudnative-pg-database
+spec:
+  encryptedData:
+    password: AgA6uIOd5Hy5E2Kxa3+ElatRrx+1bmb4ZzBWjeqrNYknth8dw9MLpnaOEDbe1XoFQ1iL3nt2E5BYTXG8NQ30j1BpmpNl+ZtD7gnGfHvcTaW5mUiOh9dfTfzx2SdqgQOfDUT59MmPm7C/acOFhuk1leruR6R6jTjyqjIJm2oHWr3w1KGXB/vD1OhyL0fZdRCYcPlVIqOSDObo7yitth2EeDuatkCyronpE97f8lve1fwUKSSDFan8HDyZ0omHsEdKzgnkJJY+sgPk4asHop2lGJ8fO4gJHGOXUzsIqeQ91w6q7IDHVAkM9ES9Ij/KrTJ9YPs3NHLWyRVNU1dl++2+Ud3m+3AaOZd7wu9pETXWOU05Q593CTDNiTfEsf7kYAA372j2umxyuYOv3KPC5bFM+i10xF9c1u4sFYnyJjxgoyemoM7+xMzCcguk2CXFImGeK/p3GpBoWq+J8azRx4cYSz66jvyFoR4Pea8iVaatuEeHZiiCBGTqta+jtOow9pjAlAeMweMpVgCaYj9mRDqos3hGIMFCDsXjyOWlvUNayhpTz5zF6s8ZCF+1eRChFZg+dPshkb7Lqh9gPs16NYA7NkFed8xltDllwKX3sHdiu/EOf+331Uk3YCdheiBldH9aoS4GnPhgOJFw08RyDM+l9WHDSlGT7vy7a+2bIZlx3ydf57H+S62Z6Q4mQOcDxvIZtru4XY0gDgpI3ZuTsnemR69Q
+    username: AgCG7Hxxr9cRUtXXPCE8vD8SkIooCZsQdn2a/FW351lk+X87l7bZRu8eocPNa46hrH88PePUbqMECYoLleq1K8XRg4UtI4zbTc9LxMyrQMcnOVUOdgzAUlva/gsHhqef3sEaA7QXpkjGMoHFRJvNZGAIHR4vMH/SuQWAxmvcbTy0Vp4Q+qYvX6jXFmQkH2U04H+G9zuEpmY2uTa1oicm4RyNQg4m16hvGSOPc6/8UIGqqfW6lMtk5M2IbjUJsaar2FiiYxQsKgwInXiVkApKB4Vbf+xVU7PMT0w1Mo2Y0Ff+9Og1ocaAMNCJyhnKzvNP7qs/ma/ON3fPYezG7EvqnvrtbBya4Rl8qHZ5pIVR8AkFsFtzGjSrHW0A+V6l2HYip4IRwUaIEObk0RwpkrpbZHrEGMgZYqxnW8ZmOr/JBj78Yyw7+a2rTezA7OTTCBf0mlUI2WSMU2HP0WelY/yn35ROjWHEQ3DVse4uzxNQz8LH/8F4q6YBghS4XYhqUZZVUPkcqvCJzD76ohQM7jc/XpdQziA9ZaaH4H2u3ojTMnh4qpc5zJ9MX+BHHTxmGIutczvupAJTGHP7FtUexIlA3GIgHUxZ1taws10AzDZD3zLI4mEpHSxUwZGq9C7wQnT2dQVg2dZQoWXA2vOffvRu5TSsYbSDptw9aBIeb+kclqo7KfUYZ4ecVPNmUzPUv28nGmMD2+A4
+  template:
+    metadata:
+      labels:
+        cnpg.io/reload: "true"
+      name: $name
+      namespace: cloudnative-pg-database
+    type: kubernetes.io/basic-auth
+---
+apiVersion: bitnami.com/v1alpha1
+kind: SealedSecret
+metadata:
+  name: ras
+  namespace: ras
+spec:
+  encryptedData:
+    DATABASE_URL: AgCKNRP2QLQjXTdQCWpf6LR0WIpjHyetBTlJ4zIPHlDHpLEum2gWVsL/Lc7m98hH3aXLSx/h/LUKiKIG5xbOCRgQwt3ezMPVU+IWOGacDdfvnfO2p/nS966MVZ3z3BrKvJEJ+w7tugmYYsc5Wbi4sM8GSx3Q41JzEGvuYe5y0WRxoxxpHrYOlgQwrSdgN5Rel1wZugj+X3/olcSeI+uR0xmpoJmf1zRZ84VeBSWhtNSV+gRM67nU7VZxCro5zUAp2uZVfIfdAoEkry4fNXyDm3VgcTv/ZiczS4RkHsa5HBIIsumwmC6omlORB0aC7IsniE0C4wn8eSYY02gQRUce/m/SMzrp+wfBSGe231tw97eSEXxtYALmCuBkzpqV07TYiPx0DJonmOu4sagGL6YPudApiQUnAqFo9ZrRRNWIn8iV9Yc9OvobzbCutlA1e0ekQlH2C6WYhQ/9X00erqHjcIW4ieHrO1jhbOp/iAP9SjD+N/w8hS8OG4/mQCJvaSxAC2hVKhfdMolZKCBBcXwN9ZbD1nKqcTOo553OB1Aq095jLhp3n1xyuY6tWPU1DJ1PjvnMg49jXbRbsU76BoXNDFcXTsqGds1DHegKIihrHy4t2fUDDwnOI/gUbagnUdqUAR67G8VDjTE+jm2FAgvNoH12bis+uX6HelC/kDrknna2UMr3ccCj5icTJJlsTLwK0PNse0+hSYBBSCJ+bK0MvWMdazPLalWHwEqmrbCU12V+P07kD1ihdcQFBLFmY4uBqELiDltG7IJ5WGoXAjljgGC7Q9TDovsad6cBOMtXoP827mwWzIRpERQvJIqIURwOFm+FGw9g9xM=
+  template:
+    metadata:
+      name: ras
+      namespace: ras
+    type: Opaque

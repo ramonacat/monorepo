@@ -41,7 +41,7 @@ EOF
 EOF
 }
 
-if [[ $# -lt 3 && $# -gt 5 ]]; then
+if [[ $# -lt 3 || $# -gt 5 ]]; then
 	usage
 fi
 
