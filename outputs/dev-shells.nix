@@ -132,10 +132,11 @@ pkgs.mkShell {
       backblaze-b2
       inputs.agenix.packages."${pkgs.stdenv.hostPlatform.system}".default
       kubeconform
-      postgresql_16
+      postgresql_18
       shellcheck
       shfmt
       tflint
+      diesel-cli
 
       package-versions.nodejs
       package-versions.rust-version

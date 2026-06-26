@@ -16,6 +16,7 @@ resource "helm_release" "grafana" {
       }
     }
     serviceMonitor = { enabled = true }
+    plugins        = ["yesoreyeram-infinity-datasource"]
     persistence = {
       enabled          = true
       storageClassName = "longhorn"
