@@ -11,6 +11,7 @@ let
   darkmore-control-plane-0 = ssh-keys.machines.darkmore-control-plane-0.rsa;
   darkmore-control-plane-1 = ssh-keys.machines.darkmore-control-plane-1.rsa;
   darkmore-control-plane-2 = ssh-keys.machines.darkmore-control-plane-2.rsa;
+  darkmore-worker-0 = ssh-keys.machines.darkmore-worker-0.rsa;
 
   workstations = [ ];
 
@@ -52,6 +53,13 @@ in
     ];
   "darkmore-control-plane-2-ssh-host-key-rsa.age".publicKeys =
     users ++ ci ++ [ darkmore-control-plane-2 ];
+  "darkmore-worker-0-ssh-host-key-ed25519.age".publicKeys =
+    users
+    ++ ci
+    ++ [
+      darkmore-worker-0
+    ];
+  "darkmore-worker-0-ssh-host-key-rsa.age".publicKeys = users ++ ci ++ [ darkmore-worker-0 ];
   "darkmore-kubeconfig.age".publicKeys = users ++ ci;
   "backups-common-env.age".publicKeys = users ++ privateMachines;
   "backups-common-password.age".publicKeys = users ++ privateMachines;

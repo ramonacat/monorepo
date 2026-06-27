@@ -2,9 +2,9 @@
   config = {
     services.nginx =
       let
-        control-plane-endpoints = map (
-          host: "${host.ip}:6443"
-        ) config.ramona.darkmore-control-plane.all-nodes;
+        control-plane-endpoints = map (host: "${host.ip}:6443") (
+          builtins.filter (x: x.is-control-plane) config.ramona.kubernetes.all-nodes
+        );
       in
       {
         enable = true;

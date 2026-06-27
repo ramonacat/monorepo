@@ -1,4 +1,4 @@
-{ config, ... }: {
+{ config, lib, ... }: {
   config = {
     environment.etc =
       let
@@ -16,7 +16,7 @@
               "hairpinMode": true,
               "ipam": {
                   "type": "host-local",
-                  "subnet": "${config.ramona.kubernetes.hostPodCidr}",
+                  "subnet": "${config.ramona.kubernetes.host-pod-cidr}",
                   "routes": [
                       { "dst": "0.0.0.0/0" }
                   ]
@@ -45,8 +45,10 @@
       "cni0"
     ];
 
-    networking.firewall.interfaces.tailscale0.allowedTCPPorts = [
-      6443 # kubernetes api server (for admin access)
-    ];
+    networking.firewall.interfaces.tailscale0.allowedTCPPorts =
+      lib.mkIf config.ramona.kubernetes.is-control-plane
+        [
+          6443 # kubernetes api server (for admin access)
+        ];
   };
 }
