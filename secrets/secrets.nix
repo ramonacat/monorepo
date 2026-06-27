@@ -7,7 +7,6 @@ let
 
   shadowsoul = ssh-keys.machines.shadowsoul.rsa;
   hallewell = ssh-keys.machines.hallewell.rsa;
-  crimson = ssh-keys.machines.crimson.rsa;
 
   darkmore-control-plane-0 = ssh-keys.machines.darkmore-control-plane-0.rsa;
   darkmore-control-plane-1 = ssh-keys.machines.darkmore-control-plane-1.rsa;
@@ -21,8 +20,6 @@ let
   ];
 
   publicServers = [
-    crimson
-
     darkmore-control-plane-0
     darkmore-control-plane-1
     darkmore-control-plane-2
@@ -62,8 +59,6 @@ in
   "backups-public-env.age".publicKeys = users ++ publicServers;
   "backups-public-password.age".publicKeys = users ++ publicServers;
   "backups-public-rclone.age".publicKeys = users ++ publicServers;
-  "crimson-ssh-host-key-ed25519.age".publicKeys = users ++ ci ++ [ crimson ];
-  "crimson-ssh-host-key-rsa.age".publicKeys = users ++ ci ++ [ crimson ];
   "github-pat-runner-registration.age".publicKeys = users ++ [ hallewell ];
   "hallewell-ssh-host-key-ed25519.age".publicKeys = users ++ ci ++ [ hallewell ];
   "hallewell-ssh-host-key-rsa.age".publicKeys = users ++ ci ++ [ hallewell ];
