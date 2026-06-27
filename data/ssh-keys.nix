@@ -11,10 +11,6 @@
 
   # TODO this shouuuuld be possible to generate automagically, probably? or we should store a json with all machine data, so scripts can fill it in without manual intervention
   machines = {
-    angelsin-linux = {
-      rsa = "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAACAQDIeWsWOHafjpwIot0SlsjbLGRWIOqzaDc67tunG+WfV5FGSC5GTDHc2YlUmLx7/vNkyrq7wtOnrV5Lr5pkOM03EThSqGLpfPersf/IZtOmF4MqDBnP6Mi1DznGwhnaPV+48xAM0fv3zUw4VppPuNlF1+dfkRVUrdtH0kVDz+5E/YfLtRSylaYLf7BXWyum0Kvx8ZErqzH8ylhMXhziaxtTgc6t+KBbLz0g6G6Yz3STgU5QIGczr1bI1zGDTFWBFlLjz7hrCyOtCc2qNxZ7RAdKdZAeE5YeazmXpQDw+59CtrB+d1M6A+Wgr3EXcU9J+xgpmtjpY3UPk7Q6D25hPch48mKs7ZblljlR3+FNVUnfmvnIIp1YlABy/WTSWdGC8qu+cEXjOVgnSdpXSnaY/Ofk7IIVY73BzlN3R1jarWejWj+5YFYDwvP0OY9OVc2ZYR4oF4N0YKI4KbBYacRnYOJ9MYggwvQKeRz2fgiGNYdt/bVU6RR1elRfMAXGHDCJcxkZ4lhnIX8P/G/g+GYKAtIUgunrXRg/SsFUOSH/4n9ik2EcKkyqy6XwJIL/Mt1ocwU1j4CEUa+SBJkQG/ZwzurrfB0WmPso/tBIyYq2mCDSYZUmM/5En/HDBXi/xGCd30r4gFLDA6/OZurcuT1YPmHRUU8mYPwFFXv+OtgLF6IH+w==";
-      ed25519 = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIODQ/mRZ7u2GIOdKihtFE/aQy3aRzg9OU+KmmugPQSTa";
-    };
     shadowsoul = {
       rsa = "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQCskURPeN0/gJSkJXTMMuU8SXcZ1gOUhVzdF1undjFitwIaiKLz/zS8n/ywvXX55ulCNWyAyRyZAw7wfDj+p3Jd9vAtqhdHmOhXAHW4Gmfh/4PWHWckiPFF0s5tGeEqB+vW33Q0WoiYpu9+/egLYCmAoKbCe1G3i45Z+2w5xneyP65FTBOn51XYMA8PyDeBMtwqESWJVV86v9z3aGkTu562fWW4tnrQrMuH7RspSKZ1dZcN+MiQYvvhQbxtFK6bMtQLCFpPnaoKvoETUI4/F/5GGVVpPnQmWo1mKdDO1tYTNIt0r/2ZXiVmc+QvC6XDnY9V3nkutHePqoSDigwRK8Iz+UEHBKohhPiFGYqEfznVr+f1EKA5hquJsqtWClcJ3sK3+Rwp/2nnJL5zAhNAQjF3S2vCENjKUltfd64dJM0t5Qq4f6wyve5oF8BlUqgLIF8jz4hXh0MpkZgJdSZ5Ouk+pK3v+sgvoEM2Olr1fbgWdmytW881hnFoWFQznOo6FFk=";
       ed25519 = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIPWouxSNIOm0PGyghP9hSL74T/cPw7GatIzYUJdZwIFb";
@@ -26,10 +22,6 @@
     crimson = {
       rsa = "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAACAQChA2pOXe9iSNm3aMLUSYjGvxExJN6mhjNmRy86iD/lgAjn1/PKqjAFamUSzs8oFniYyo5gAyzcQsAecrGKYch++Aboy2ftA+aqqiukrknz9ttdqsXKcb1208CrwQBEzbknbB/DNpXM6F61naDx/myNWDHJe/270Fo0lNcFy8hW8+6pEX0xl4IYWApHKnqrGhkNjE2genlN/hiy1ZQDAt1EFkB/lxpngDF1lNw2P+8OHeydirCUt5iAh4LqOdAPhfRJl9+RKvX07rGzgoIGVeVMzmO5zoGms2DdiyYEZHgCfgBhuKOOpptMNozSSObNdDxDKTG1fg2qJ3D+bZ06BIKnTLB4EA79JUTWSXjsC9XhWTVc7XD3kill+ga9x2/u5myPsl6CfKksVYWDMIMqQAWOmXgrFJpf1/q+M3GuZsKA+RjvuR6HEy52QnmfWWOKLiMeNAiBaRAL/NBj/MYxWcmcO+eiOrH5ix3SRPSC3jnJszVoNaIDafJ+5MuyhHn1I/hsI2f+ccBsSfbedrsmvNs36TDz3JOg8Fbyrbul60AtAkx+/xhG4yvWusdsLTXisqt0Uf2PLqelnNtlNNqz6J5vQQylszcqm+/KOlyRlgB37aiUeOnHJsl0TmPuir3peLWZ/gy7nimgVxfFQy6cDYDoWG92KfCTH65tAgK0YA22GQ==";
       ed25519 = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIHsypVyiQ8IZYTFhraRq/26lLe7YZgNds9IRen34Nn6J";
-    };
-    thornton = {
-      rsa = "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAACAQDDFkxCjavHKDsGeAZYO7ZLHNBu8zPvOuDX9sztOdfVkAXJ6u+HJSP5hc5p3kb6afRFCQqrG5LAxgfAcGPJkftm+hUdX/uby0/0fHRYSUbECbx5COxx1sRps5eu+WyrsWHojBAM68nXnPmmwzB7X4bX1Wg8heEJ4NuYWsmma1rKbsbPywMn/AW82z90p05bzDtc1H4GVxynGdWQZI+FiF0dwTit8/ERnj6GF5NQpBIJYZtu1Jw3xfvmh6Vx06gGhS7iv8Hl2vE4rYNz8gximw7D5p9RLfkmmto6J19fxSpNIRt9/yW2Xlusnotfe9q4QTCJvNK7RHcRoQq9bPC/sZDJmXFSLIN/LWQ3ZI+p8xsmIP2oB1TLHQDwi00gh0OA8dRQAbE0UEOa8XXYo70q1Q3OEZGL+COMwUrBgFoBZmNIbubpoieZsc4lIeuU1VYc99oIRwC4bANuufc/at0BwflDhr2jBthcTeck8ziPdlCrtitI1k6wLxn5+BCuFnv07BjV61ZFXWNPe7QJxbFtZOlKOAl3uRsCOBVzveT5EatmPa+ZdwAYoNrrmm3PhZ3fX5KpQ9jUZVEOAIHxdBYK6EArfmyLh40qYxENTxQQJyHpPbd6ktSpvPDw7mw0OvHuLShMuRNbudjoKFXRnmlTfOSqIYmrexysM6rMVfPwaZug9Q==";
-      ed25519 = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIC141UhozZwpvGyx7P8n0+AyScSoIJNCHkmWH2N5Lo8B";
     };
     darkmore-control-plane-0 = {
       rsa = "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQDLAu+ZMFYy+syqoR7mK+n4rT8UMJA5KnMfpcl0fpumOyMjffVIo7rjUJbw0XKvpBy/2ndJpLyJuMpScQSU6n5lke7sNbIkDsKspoAS3Ft9JMVxdAIgX6gC4Bw8VROpVbHj09XIecvAPOKCB2Fjl+Hd56RxXq1PIWhQydJh0SZVDsMc57or/XWuGPcj2Jfj8//EFS03qHpYLaD+jR6Ozkkgc1Rd4PpbnMifuRebv/ZS7CGFz9uBm0KYaVDodXmsVsbZcM/XBLUZ9p2b4LC3XMEXNVfvQQji8aszPOL1lYo+bLeTWzlX6+BbixqFFZcSiNA9CvBZdRPJQLyVaEnS28WHseG5ydwktSTm4Bg2otNtPIjd9U+4rZ+iCXNQBYvgWi2BtUCV1vGWrfjebdzPUovoe6AQ1z8Lb9B/sYjpuHFcUZGN0a3PnNakmOPVDFGroxhh67v7ncoWxQIYyBjXrhfT3SzBNh3Wiehxa0m6q/vRn2h+Nz528Oz4KqNwXOFAc+8= ramona@MOONFALL";

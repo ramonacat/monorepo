@@ -24,7 +24,6 @@ _: {
     ./photoprism.nix
     ./postgresql.nix
     ./servarr.nix
-    ./telegraf.nix
     ./znc.nix
   ];
   config = {
