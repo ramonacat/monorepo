@@ -6,6 +6,7 @@ resource "helm_release" "kube-prometheus-stack" {
   version          = "87.2.1"
 
   values = [yamlencode({
+    // TODO alertmanager should be a separate deployment, outside of the module
     alertmanager = {
       alertmanagerSpec = {
         replicas  = 2
@@ -27,7 +28,21 @@ resource "helm_release" "kube-prometheus-stack" {
           group_by = ["..."]
           matchers = []
           routes = [
-            { receiver = "null", matchers = ["alertname = Watchdog"] }
+            {
+              receiver = "null",
+              matchers = [
+                "alertname=Watchdog",
+                "severity=none",
+                "severity=info",
+              ]
+            },
+            {
+              receiver   = "discord",
+              group_wait = "15m",
+              matchers = [
+                "severity=warning"
+              ]
+            }
           ]
         }
         receivers = [
