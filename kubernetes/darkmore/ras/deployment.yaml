@@ -24,7 +24,7 @@ spec:
     spec:
       containers:
       - name: ras
-        image: ghcr.io/ramonacat/ras:1782575549
+        image: ghcr.io/ramonacat/ras:1782578213
         imagePullPolicy: IfNotPresent
         resources:
           requests:
