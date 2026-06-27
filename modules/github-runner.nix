@@ -38,10 +38,12 @@
             tokenFile = config.age.secrets.github-pat-runner-registration.path;
             extraLabels = [ "nixos" ];
             extraPackages = with pkgs; [
+              # TODO these should probably be managed by the pipelines instead with devshells or something
               openssh
               jq
               proot
               curl
+              ramona.fup
             ];
             replace = true;
             nodeRuntimes = [ "node24" ];
