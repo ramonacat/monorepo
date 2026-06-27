@@ -1,6 +1,7 @@
 {
   pkgs,
   lib,
+  config,
   ...
 }:
 {
@@ -17,12 +18,26 @@
         with lib.types;
         submodule {
           options = {
-            podCidr = lib.mkOption {
+            ip = lib.mkOption { type = str; };
+            hostname = lib.mkOption { type = str; };
+            is-control-plane = lib.mkOption { type = bool; };
+
+            all-nodes = lib.mkOption {
+              type = listOf (submodule {
+                options = {
+                  ip = lib.mkOption { type = str; };
+                  hostname = lib.mkOption { type = str; };
+                  is-control-plane = lib.mkOption { type = bool; };
+                };
+              });
+            };
+            pod-cidr = lib.mkOption {
               type = str;
             };
-            hostPodCidr = lib.mkOption {
+            host-pod-cidr = lib.mkOption {
               type = str;
             };
+
             cni = lib.mkOption {
               type = submodule {
                 options = {
@@ -46,6 +61,8 @@
     };
   };
   config = {
+    networking.hostName = config.ramona.kubernetes.hostname;
+
     environment.systemPackages = [
       pkgs.kubernetes
       pkgs.kubectl

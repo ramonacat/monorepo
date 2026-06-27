@@ -57,7 +57,7 @@
                 exec ${pkgs.kubernetes}/bin/kubelet "''${arguments[@]}" \
                     --hostname-override=${config.networking.hostName} \
                     --fail-swap-on=false \
-                    --node-ip=${config.ramona.darkmore-control-plane.ip} \
+                    --node-ip=${config.ramona.kubernetes.ip} \
                     --bootstrap-kubeconfig=/etc/kubernetes/bootstrap-kubelet.conf \
                     --kubeconfig=${kubelet-kubeconfig} \
                     --cloud-provider=external \

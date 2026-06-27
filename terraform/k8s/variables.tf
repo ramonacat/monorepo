@@ -15,7 +15,7 @@ variable "location" {
   default = "nbg1"
 }
 
-variable "control_plane_nodes" {
+variable "nodes" {
   type = map(object({ tailscale_tags : set(string), private_ipv4 : string }))
 }
 

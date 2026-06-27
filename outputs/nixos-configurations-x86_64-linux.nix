@@ -27,7 +27,7 @@ pkgs.lib.genAttrs machines (
   map (
     node:
     let
-      set-name = "darkmore-control-plane";
+      set-name = "darkmore";
     in
     {
       "${node.hostname}" = inputs.nixpkgs.lib.nixosSystem {
@@ -41,12 +41,16 @@ pkgs.lib.genAttrs machines (
           {
             config = {
               ramona = {
-                kubernetes.podCidr = k8s-config.podCidr;
-                kubernetes.hostPodCidr = node.podCidr;
-                darkmore-control-plane = {
+                kubernetes = {
                   inherit (node) ip hostname;
 
-                  all-nodes = map (node: { inherit (node) ip hostname; }) k8s-config.nodes;
+                  is-control-plane = node.isControlPlane;
+                  pod-cidr = k8s-config.podCidr;
+                  host-pod-cidr = node.podCidr;
+                  all-nodes = map (node: {
+                    inherit (node) ip hostname;
+                    is-control-plane = node.isControlPlane;
+                  }) k8s-config.nodes;
                 };
               };
             };

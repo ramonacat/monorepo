@@ -61,7 +61,7 @@ module "k8s--darkmore" {
   dns_zone_name = dnsimple_zone.ramona-fun.name
   ssh_keys      = [hcloud_ssh_key.ramona.id, hcloud_ssh_key.ci.id]
   firewall_ids  = [hcloud_firewall.fw.id]
-  control_plane_nodes = {
+  nodes = {
     for node in jsondecode(file("./k8s-nodes.json"))["darkmore"]["nodes"] : node.hostname =>
     {
       tailscale_tags = split(" ", data.external.tailscale_tags.result[node.hostname]),
