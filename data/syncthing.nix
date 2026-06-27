@@ -1,7 +1,6 @@
 rec {
   devices = {
     angelsin = "YI4CWVN-XMQR6B7-EZE5SP5-OBLNFOF-Q7HJ46X-XXGSYSB-DMJ64RB-UGGBCQP";
-    angelsin-linux = "4XIQFIS-GOASMNU-ER2477E-3APVOHX-JMQPXKE-FPBAFOP-3H4HEK3-SY3KLAG";
     evillian = "TWYTK4N-3MWWULX-I5CG3BL-ICAOT4E-T34YDFW-F2QTLDV-YLYJR6N-VLC4KAD";
     church = "USHALMM-M5ZKYMC-H37UVCP-5VPXI76-PX3NO6U-H7NKUGO-6ETE5B7-6B7NEAP";
     hallewell = "WUOOFWA-FG7VWPF-HSCI7OP-ZBQSWCC-6OTD7FA-7CBP463-F7RI4KU-U57ZDAT";
@@ -54,7 +53,6 @@ rec {
         evillian
         hallewell
         moonfall
-        angelsin-linux
         ;
     };
   };

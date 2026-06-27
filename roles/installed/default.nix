@@ -17,7 +17,7 @@
     ./restic-home.nix
     ./ssh.nix
     ./tailscale.nix
-    ./telegraf.nix
+    ./syslog.nix
     ./prometheus-exporter.nix
   ];
   config = {

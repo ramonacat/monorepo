@@ -80,14 +80,6 @@ resource "tailscale_acl" "default" {
           ip  = ["tcp:22"],
         },
         {
-          src = ["tag:server"],
-          dst = ["tag:service-monitoring"],
-          ip = [
-            "tcp:8094", // telegraf
-            "tcp:443",  // ras
-          ]
-        },
-        {
           src = ["tag:service-servarr"],
           dst = ["tag:service-transmission"],
           ip = [
@@ -148,7 +140,6 @@ resource "tailscale_acl" "default" {
         "tag:server-private-home" = [],
         "tag:server-private-pl1"  = [],
 
-        "tag:service-monitoring"   = [],
         "tag:service-builds-host"  = [],
         "tag:service-servarr"      = [],
         "tag:service-transmission" = [],
@@ -166,7 +157,6 @@ resource "tailscale_acl" "default" {
           src   = "ramonacat@github",
           proto = "tcp",
           accept = [
-            "tag:service-monitoring:22",
             "tag:server-private:22",
             "tag:server-public:445"
           ]
@@ -177,24 +167,12 @@ resource "tailscale_acl" "default" {
           deny = [
             "tag:server-private:22",
             "tag:server-public:22",
-            "tag:service-monitoring:139",
-            "tag:service-monitoring:445",
             "tag:server-private:139",
             "tag:server-public:445",
-            "tag:service-monitoring:5432",
-            "tag:service-monitoring:9000",
           ],
           accept = [
             "tag:service-builds-host:22",
             "tag:service-builds-host:443",
-          ]
-        },
-        {
-          src   = "tag:server",
-          proto = "tcp",
-          accept = [
-            "tag:service-monitoring:8094",
-            "tag:service-monitoring:443",
           ]
         },
       ]

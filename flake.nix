@@ -143,12 +143,6 @@
                           "tag:server-private-${v.config.ramona.machine.location}"
                         ]
                     )
-                    ++ (
-                      if builtins.hasAttr "socket_listener" v.config.services.telegraf.extraConfig.inputs then
-                        [ "tag:service-monitoring" ]
-                      else
-                        [ ]
-                    )
                     ++ (if v.config.services.sonarr.enable then [ "tag:service-servarr" ] else [ ])
                     ++ (if v.config.services.transmission.enable then [ "tag:service-transmission" ] else [ ])
                     ++ (
