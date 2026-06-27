@@ -1,9 +1,6 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-# shellcheck source=../../../../scripts/lib/updates.bash disable=SC1091
-source "$UPDATES_LIB"
-
 main() {
 	if [[ -f "/var/.stop_updates" ]]; then
 		echo "Updates are stopped. Remove /var/.stop_updates to reenable"
@@ -18,11 +15,7 @@ main() {
 	curl --fail --request POST --header 'Content-Type: application/json' --data "$closure_update" \
 		"https://ras.infrastructure.ramona.fun/hosts/$hostname/current_closure"
 
-	local closure
-	if ! closure=$(read-closure "builds/$hostname-closure"); then
-		echo "Failed to receive the new closure" >&2
-		exit 1
-	fi
+	local -r closure=$(curl --fail "https://ras.infrastructure.ramona.fun/hosts/$hostname/latest_closure")
 
 	if [[ "$closure" == "$current_closure" ]]; then
 		echo "System already running the latest closure, not rebuilding"

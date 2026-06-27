@@ -1,9 +1,6 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-# shellcheck source=../../../../../../scripts/lib/updates.bash disable=SC1091
-source "$UPDATES_LIB"
-
 main() {
 	if [[ -f "$HOME/.stop_updates" ]]; then
 		echo "Updates are stopped. Remove $HOME/.stop_updates to reenable"
@@ -11,12 +8,11 @@ main() {
 	fi
 
 	local -r current_closure=$(readlink -f "$HOME/.local/state/nix/profiles/home-manager")
-	local closure
+	local -r closure=$(curl --fail "https://ras.infrastructure.ramona.fun/homes/$USER-wsl/latest_closure")
 
-	if ! closure=$(read-closure "builds/$USER-wsl-home"); then
-		echo "Failed to receive the new closure" >&2
-		exit 1
-	fi
+	local -r closure_update=$(jq --null-input --arg current_closure "$current_closure" '{"current_closure": $current_closure}')
+	curl --fail --request POST --header 'Content-Type: application/json' --data "$closure_update" \
+		"https://ras.infrastructure.ramona.fun/homes/$USER-wsl/current_closure/$(hostname)"
 
 	if [[ "$closure" == "$current_closure" ]]; then
 		echo "System already running the latest closure, not rebuilding"

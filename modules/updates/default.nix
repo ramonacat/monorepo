@@ -49,7 +49,6 @@
                 cp updates.bash $out/bin/
 
                 wrapProgram $out/bin/updates.bash \
-                    --set UPDATES_LIB '${../../scripts/lib/updates.bash}' \
                     --set UPDATES_MODE '${config.ramona.updates.mode}' \
                     --set UPDATES_POST '${post-update}/bin/post-update' \
                     --set BUILDERS '${builtins.toJSON flake.hosts.builds-hosts}' \
