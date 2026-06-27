@@ -7,7 +7,7 @@ use diesel_async::RunQueryDsl as _;
 use serde::{Deserialize, Serialize};
 use tracing::instrument;
 
-use crate::{AppState, models::ClosureState};
+use crate::{AppState, models::HostClosureState};
 
 #[derive(Debug, Serialize, Deserialize)]
 pub struct HostState {
@@ -31,7 +31,7 @@ pub async fn get_current_state(
     use crate::schema::host_closure_state::dsl::*;
 
     let mut connection = app_state.db_connect().await;
-    let states: Vec<ClosureState> = host_closure_state.load(&mut connection).await.unwrap();
+    let states: Vec<HostClosureState> = host_closure_state.load(&mut connection).await.unwrap();
 
     let hosts = states
         .into_iter()
@@ -127,7 +127,7 @@ pub async fn get_latest_closure(
 
     let latest = host_closure_state
         .filter(hostname.eq(hostname_value))
-        .first::<ClosureState>(&mut connection)
+        .first::<HostClosureState>(&mut connection)
         .await;
 
     match latest {

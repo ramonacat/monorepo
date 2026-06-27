@@ -27,9 +27,21 @@ make-row() {
 diff-closures() {
 	local -r current_filename="$1"
 	local -r new_closure="$2"
+	local current_closure
+
+	case $current_filename in
+	*-closure)
+		local -r hostname=${current_filename//-closure/}
+		current_closure=$(curl --fail "https://ras.infrastructure.ramona.fun/hosts/$hostname/current_closure")
+		;;
+	*-home)
+		local -r name=${current_filename//-home/}
+		current_closure=$(curl --fail "https://ras.infrastructure.ramona.fun/homes/$name/latest_closure")
+		;;
+	esac
 
 	if current_closure=$(
-		nix shell 'nixpkgs#curl' -c curl "https://hallewell.ibis-draconis.ts.net/builds/${current_filename}" 2>/dev/null | tr -d '[:space:]'
+		curl --fail "https://hallewell.ibis-draconis.ts.net/builds/${current_filename}" 2>/dev/null | tr -d '[:space:]'
 	); then
 		nix store diff-closures "$current_closure" "$new_closure" | sed 's#^\(.*\): \(.*\)$#<strong>\1</strong>: \2<br/>#'
 	else
@@ -127,6 +139,18 @@ main() {
 
 			curl --fail --request POST --header 'Content-Type: application/json' --data "$closure_update" \
 				"https://ras.infrastructure.ramona.fun/hosts/$hostname/latest_closure"
+		done
+
+		for filename in *-home; do
+			local name=${filename//-home/}
+			local new_closure
+			local closure_update
+
+			new_closure=$(cat "$filename")
+			closure_update=$(jq --null-input --arg latest_closure "$new_closure" '{"latest_closure": $latest_closure}')
+
+			curl --fail --request POST --header 'Content-Type: application/json' --data "$closure_update" \
+				"https://ras.infrastructure.ramona.fun/homes/$name/latest_closure"
 		done
 
 		fup result/iso/iso/nixos-*.iso builds/nixos.iso

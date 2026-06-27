@@ -1,14 +1,16 @@
 use std::env;
 
 use axum::{
-    Router,
+    Router, extract,
     routing::{delete, get, post},
 };
 use diesel::{Connection, PgConnection};
 use diesel_async::{AsyncConnection as _, AsyncPgConnection};
 use diesel_migrations::{EmbeddedMigrations, MigrationHarness, embed_migrations};
 use dotenvy::dotenv;
+use tracing::instrument;
 
+mod homes;
 mod hosts;
 mod models;
 mod schema;
@@ -28,6 +30,8 @@ async fn main() {
     let app_state = AppState { database_url };
 
     let app = Router::new()
+        .route("/", get(async || "ok"))
+        .route("/health", get(get_health))
         .route("/hosts", get(hosts::get_current_state))
         .route("/hosts/{hostname}", delete(hosts::delete))
         .route(
@@ -41,6 +45,19 @@ async fn main() {
         .route(
             "/hosts/{hostname}/latest_closure",
             get(hosts::get_latest_closure),
+        )
+        .route("/homes", get(homes::get_current_state))
+        .route(
+            "/homes/{name}/latest_closure",
+            post(homes::post_latest_closure),
+        )
+        .route(
+            "/homes/{name}/latest_closure",
+            get(homes::get_latest_closure),
+        )
+        .route(
+            "/homes/{name}/current_closure/{hostname}",
+            post(homes::post_current_closure),
         )
         .with_state(app_state);
 
@@ -62,4 +79,10 @@ impl AppState {
             .await
             .expect("database connection did not succeed")
     }
+}
+
+#[instrument]
+#[axum::debug_handler]
+async fn get_health(extract::State(app_state): extract::State<AppState>) {
+    app_state.db_connect().await;
 }

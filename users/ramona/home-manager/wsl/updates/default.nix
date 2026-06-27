@@ -25,7 +25,6 @@
               cp updates.bash $out/bin/
 
               wrapProgram $out/bin/updates.bash \
-                  --set UPDATES_LIB '${../../../../../scripts/lib/updates.bash}' \
                   --set BUILDERS '${builtins.toJSON flake.hosts.builds-hosts}' \
                   --prefix PATH : ${
                     lib.makeBinPath (
