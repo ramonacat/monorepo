@@ -28,6 +28,7 @@ struct HomeHost {
     current_closure_updated_at: DateTime<Utc>,
     latest_closure: String,
     latest_closure_updated_at: DateTime<Utc>,
+    outdated: bool,
 }
 
 #[derive(Debug, Serialize, Deserialize)]
@@ -65,6 +66,7 @@ pub async fn get_current_state(extract::State(app_state): extract::State<AppStat
             states
                 .into_iter()
                 .map(|state| HomeHost {
+                    outdated: state.current_closure != closure.current_closure,
                     hostname: state.hostname,
                     closure_name: state.closure_name,
                     current_closure: state.current_closure,
