@@ -28,6 +28,9 @@ jobs:
       - name: build all machines
         id: build-all
         run: ./.github/scripts/build.sh "${{ steps.extract_branch.outputs.branch }}"
+        env:
+          B2_APPLICATION_KEY_ID: "${{ secrets.B2_APPLICATION_KEY_ID }}"
+          B2_APPLICATION_KEY: "${{ secrets.B2_APPLICATION_KEY }}"
 
       - name: Find Comment
         # dependabot is excluded, because dependabot PRs don't have acceess to secrets

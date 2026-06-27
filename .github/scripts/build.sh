@@ -129,8 +129,7 @@ main() {
 				"https://ras.infrastructure.ramona.fun/hosts/$hostname/latest_closure"
 		done
 
-		publish -- result/iso/iso/*.iso root@crimson:/var/www/ramona.fun/public/nixos-latest.iso
-		publish -- result/iso/iso/*.iso root@hallewell:/var/www/hallewell.ibis-draconis.ts.net/builds/nixos-latest.iso
+		fup result/iso/iso/nixos-latest.iso builds/nixos.iso
 	fi
 }
 
