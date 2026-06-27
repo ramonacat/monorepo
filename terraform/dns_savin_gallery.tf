@@ -11,19 +11,3 @@ resource "dnsimple_zone" "savin-gallery" {
   active = true
 }
 
-resource "dnsimple_zone_record" "A--savin-gallery" {
-  zone_name = dnsimple_zone.savin-gallery.name
-  name      = ""
-  type      = "A"
-  value     = module.node--crimson.ipv4
-  ttl       = 60
-}
-
-resource "dnsimple_zone_record" "AAAA--savin-gallery" {
-  zone_name = dnsimple_zone.savin-gallery.name
-  name      = ""
-  type      = "AAAA"
-  value     = module.node--crimson.ipv6
-  ttl       = 60
-}
-
