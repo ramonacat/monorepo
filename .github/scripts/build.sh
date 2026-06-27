@@ -107,14 +107,6 @@ main() {
 	mapfile -t builds_hosts < <(nix eval --json '.#hosts.builds-hosts' | jq --raw-output --compact-output '.[]')
 
 	if [[ "$branch_name" == "main" ]]; then
-		for builds_host in "${builds_hosts[@]}"; do
-			publish -- *-closure "root@$builds_host:/var/www/$builds_host.ibis-draconis.ts.net/builds/"
-			publish -- *-home "root@$builds_host:/var/www/$builds_host.ibis-draconis.ts.net/builds/"
-
-			ssh "${ssh_options[@]}" "root@$builds_host" -- "chmod a+r /var/www/$builds_host.ibis-draconis.ts.net/builds/*"
-
-		done
-
 		local closure
 		local gcroot
 
