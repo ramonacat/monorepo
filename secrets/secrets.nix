@@ -24,6 +24,8 @@ let
     darkmore-control-plane-0
     darkmore-control-plane-1
     darkmore-control-plane-2
+
+    darkmore-worker-0
   ];
 
   allMachines = privateMachines ++ publicServers;
