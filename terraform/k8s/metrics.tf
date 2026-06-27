@@ -3,7 +3,7 @@ resource "helm_release" "kube-prometheus-stack" {
   chart            = "oci://ghcr.io/prometheus-community/charts/kube-prometheus-stack"
   namespace        = "kube-prometheus-stack"
   create_namespace = true
-  version          = "87.2.1"
+  version          = "87.3.0"
 
   values = [yamlencode({
     alertmanager = {
