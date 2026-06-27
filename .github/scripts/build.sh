@@ -129,7 +129,7 @@ main() {
 				"https://ras.infrastructure.ramona.fun/hosts/$hostname/latest_closure"
 		done
 
-		fup result/iso/iso/nixos-latest.iso builds/nixos.iso
+		fup result/iso/iso/nixos-*.iso builds/nixos.iso
 	fi
 }
 

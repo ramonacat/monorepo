@@ -121,3 +121,13 @@ kubectl rollout -n kube-system restart deployment coredns
 ```
 
 After the cluster is set up, update the secret in `secrets/darkmore-kubeconfig.age` with the contents of `/etc/kubernetes/admin.conf` from one of the nodes, with the `server` key updated to match the tailscale address of one of them (and port `6443`).
+
+## Adding a worker node
+```
+# on one of the existing nodes
+kubeadm token create --print-join-command
+# on the worker (note: apiserver-advertise-address must be added to the generated command)
+kubeadm join 127.0.0.1:6444 --token ...\
+    --discovery-token-ca-cert-hash sha256:e93912a05008f4967b005319b5ae013b2fcd314b5d57f299c611e464583866b9 \
+    --apiserver-advertise-address=10.0.0.13
+```
