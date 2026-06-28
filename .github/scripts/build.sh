@@ -40,13 +40,7 @@ diff-closures() {
 		;;
 	esac
 
-	if current_closure=$(
-		curl --fail "https://hallewell.ibis-draconis.ts.net/builds/${current_filename}" 2>/dev/null | tr -d '[:space:]'
-	); then
-		nix store diff-closures "$current_closure" "$new_closure" | sed 's#^\(.*\): \(.*\)$#<strong>\1</strong>: \2<br/>#'
-	else
-		echo "failed to receive current closure"
-	fi
+	nix store diff-closures "$current_closure" "$new_closure" | sed 's#^\(.*\): \(.*\)$#<strong>\1</strong>: \2<br/>#'
 }
 
 make-rows-homes() {
