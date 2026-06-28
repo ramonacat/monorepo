@@ -1,5 +1,5 @@
-{ pkgs, config, ... }: {
-  systemd.services.kube-scheduler = {
+{ pkgs, config, lib, ... }: {
+  systemd.services.kube-scheduler = lib.mkIf config.ramona.kubernetes.is-control-plane {
     description = "kubernetes scheduler";
     wantedBy = [ "kubernetes.target" ];
     unitConfig = {

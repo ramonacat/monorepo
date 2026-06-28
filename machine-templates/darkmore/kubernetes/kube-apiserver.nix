@@ -1,5 +1,5 @@
-{ pkgs, config, ... }: {
-  systemd.services.kube-apiserver = {
+{ pkgs, config, lib, ... }: {
+  systemd.services.kube-apiserver = lib.mkIf config.ramona.kubernetes.is-control-plane {
     description = "kubernetes apiserver service";
     wantedBy = [ "kubernetes.target" ];
     unitConfig = {
