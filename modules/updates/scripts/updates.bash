@@ -22,6 +22,8 @@ main() {
 		exit
 	fi
 
+	nix-store --realise "$closure"
+
 	"$closure"/bin/switch-to-configuration "$UPDATES_MODE"
 
 	if [[ "$UPDATES_MODE" == "switch" ]]; then
