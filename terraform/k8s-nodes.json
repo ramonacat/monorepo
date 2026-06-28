@@ -1,6 +1,7 @@
 { 
     "darkmore": {
         "podCidr": "10.2.0.0/16",
+        "serviceCidr": "10.16.0.0/12",
         "nodes": [
             {
                 "hostname": "darkmore-control-plane-0",

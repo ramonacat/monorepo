@@ -9,6 +9,7 @@
     ./containerd.nix
     ./control-plane-load-balancer.nix
     ./etcd.nix
+    ./kube-apiserver.nix
     ./kubelet.nix
     ./longhorn-storage.nix
     ./network.nix
@@ -36,6 +37,9 @@
               type = str;
             };
             host-pod-cidr = lib.mkOption {
+              type = str;
+            };
+            service-cidr = lib.mkOption {
               type = str;
             };
 
@@ -80,5 +84,16 @@
       mode = "boot";
       post-update = "touch /var/run/reboot-required";
     };
+
+    systemd.targets.kubernetes = {
+      description = "kubernetes";
+      wantedBy = [ "multi-user.target" ];
+    };
+
+    users.users.kubernetes = {
+      isSystemUser = true;
+      group = "kubernetes";
+    };
+    users.groups.kubernetes = { };
   };
 }

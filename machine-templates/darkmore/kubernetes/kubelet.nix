@@ -7,7 +7,7 @@
     {
       services.kubelet = {
         description = "kubernetes kubelet service";
-        wantedBy = [ "default.target" ];
+        wantedBy = [ "kubernetes.target" ];
         after = [
           "containerd.service"
           "network.target"
