@@ -10,6 +10,7 @@
     ./control-plane-load-balancer.nix
     ./etcd.nix
     ./kube-apiserver.nix
+    ./kube-controller-manager.nix
     ./kubelet.nix
     ./longhorn-storage.nix
     ./network.nix
