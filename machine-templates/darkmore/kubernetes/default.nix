@@ -11,6 +11,7 @@
     ./etcd.nix
     ./kube-apiserver.nix
     ./kube-controller-manager.nix
+    ./kube-scheduler.nix
     ./kubelet.nix
     ./longhorn-storage.nix
     ./network.nix
