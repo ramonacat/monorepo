@@ -25,6 +25,7 @@
             ip = lib.mkOption { type = str; };
             hostname = lib.mkOption { type = str; };
             is-control-plane = lib.mkOption { type = bool; };
+            cluster-dns-ip = lib.mkOption { type = str; };
 
             all-nodes = lib.mkOption {
               type = listOf (submodule {

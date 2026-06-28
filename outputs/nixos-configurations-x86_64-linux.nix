@@ -47,7 +47,9 @@ pkgs.lib.genAttrs machines (
                   is-control-plane = node.isControlPlane;
                   pod-cidr = k8s-config.podCidr;
                   service-cidr = k8s-config.serviceCidr;
+                  cluster-dns-ip = k8s-config.clusterDnsIp;
                   host-pod-cidr = node.podCidr;
+
                   all-nodes = map (node: {
                     inherit (node) ip hostname;
                     is-control-plane = node.isControlPlane;
