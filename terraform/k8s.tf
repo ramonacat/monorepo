@@ -64,8 +64,9 @@ module "k8s--darkmore" {
   nodes = {
     for node in jsondecode(file("./k8s-nodes.json"))["darkmore"]["nodes"] : node.hostname =>
     {
-      tailscale_tags = split(" ", data.external.tailscale_tags.result[node.hostname]),
-      private_ipv4 : node.ip
+      tailscale_tags   = split(" ", data.external.tailscale_tags.result[node.hostname]),
+      private_ipv4     = node.ip,
+      is_control_plane = node.isControlPlane
     }
   }
   hcloud_token    = var.kubernetes_darkmore_hcloud_token

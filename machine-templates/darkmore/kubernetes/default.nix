@@ -8,6 +8,10 @@
   imports = [
     ./containerd.nix
     ./control-plane-load-balancer.nix
+    ./etcd.nix
+    ./kube-apiserver.nix
+    ./kube-controller-manager.nix
+    ./kube-scheduler.nix
     ./kubelet.nix
     ./longhorn-storage.nix
     ./network.nix
@@ -21,6 +25,7 @@
             ip = lib.mkOption { type = str; };
             hostname = lib.mkOption { type = str; };
             is-control-plane = lib.mkOption { type = bool; };
+            cluster-dns-ip = lib.mkOption { type = str; };
 
             all-nodes = lib.mkOption {
               type = listOf (submodule {
@@ -35,6 +40,9 @@
               type = str;
             };
             host-pod-cidr = lib.mkOption {
+              type = str;
+            };
+            service-cidr = lib.mkOption {
               type = str;
             };
 
@@ -79,5 +87,16 @@
       mode = "boot";
       post-update = "touch /var/run/reboot-required";
     };
+
+    systemd.targets.kubernetes = {
+      description = "kubernetes";
+      wantedBy = [ "multi-user.target" ];
+    };
+
+    users.users.kubernetes = {
+      isSystemUser = true;
+      group = "kubernetes";
+    };
+    users.groups.kubernetes = { };
   };
 }
