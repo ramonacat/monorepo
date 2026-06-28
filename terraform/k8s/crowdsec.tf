@@ -9,12 +9,16 @@ resource "helm_release" "crowdsec" {
   values = [yamlencode({
     container_runtime = "containerd"
     config = {
+      "agent_config.yaml.local" = yamlencode({
+        api = {
+          client = { unregister_on_exit = true }
+        }
+      })
       "config.yaml.local" = yamlencode({
         common = {
           log_format = "json"
         }
         api = {
-          client = { unregister_on_exit = true }
           server = {
             auto_registration = {
               enabled = true
@@ -35,8 +39,8 @@ resource "helm_release" "crowdsec" {
           host     = "cloudnative-pg-database-cluster-pooler-rw.cloudnative-pg-database"
           flush = {
             agents_autodelete = {
-              login_password = "60m"
-              cert           = "60m"
+              login_password = "1m"
+              cert           = "1m"
             }
             bouncers_autodelete = {
               api_key = "60m"
