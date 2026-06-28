@@ -98,6 +98,9 @@ resource "helm_release" "kube-prometheus-stack" {
         }
       }
     }
+    kubeEtcd = {
+      endpoints = [for node in var.nodes : node.private_ipv4 if node.is_control_plane]
+    }
   })]
 
   set_sensitive = [{

@@ -16,7 +16,7 @@ variable "location" {
 }
 
 variable "nodes" {
-  type = map(object({ tailscale_tags : set(string), private_ipv4 : string }))
+  type = map(object({ tailscale_tags : set(string), private_ipv4 : string, is_control_plane : bool }))
 }
 
 variable "subnet_id" {
