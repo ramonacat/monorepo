@@ -32,8 +32,7 @@ resource "helm_release" "kube-prometheus-stack" {
               receiver = "null",
               matchers = [
                 "alertname=Watchdog",
-                "severity=none",
-                "severity=info",
+                "severity=~\"none|info\"",
               ]
             },
             {
