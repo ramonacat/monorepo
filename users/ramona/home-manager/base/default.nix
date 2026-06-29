@@ -27,7 +27,6 @@
         iftop
         irssi
         jq
-        ramona.r
         ripgrep
         rustup
         strace

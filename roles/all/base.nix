@@ -10,6 +10,8 @@
       neovim
       perf
       sysstat
+
+      ramona.r
     ];
 
     system.stateVersion = "22.11";
