@@ -1,3 +1,10 @@
+*.tar
+*.tfplan
+*.log
+*.css.json
+*.crt
+*.key
+
 .direnv/
 .idea/
 .phpunit.cache/
@@ -10,13 +17,9 @@ terraform/.terraform/
 vendor/
 public/assets/
 node_modules/
-*.css.json
 src-generated/
 infection.log
 .env
 test-results/
 coverage/
-*.tar
-*.tfplan
-*.log
 .postgres_data/

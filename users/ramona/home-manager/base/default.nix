@@ -19,17 +19,19 @@
       enableNixpkgsReleaseCheck = false;
       packages = with pkgs; [
         inputs.agenix.packages."${pkgs.stdenv.hostPlatform.system}".default
-        atop
-        jq
-        ripgrep
-        unzip
+
         _1password-cli
-        rustup
-        irssi
+        atop
         github-cli
         htop
         iftop
+        irssi
+        jq
+        ramona.r
+        ripgrep
+        rustup
         strace
+        unzip
       ];
     };
 
