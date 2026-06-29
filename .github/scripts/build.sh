@@ -32,7 +32,7 @@ diff-closures() {
 	case $current_filename in
 	*-closure)
 		local -r hostname=${current_filename//-closure/}
-		current_closure=$(curl --fail "https://ras.infrastructure.ramona.fun/hosts/$hostname/current_closure")
+		current_closure=$(curl --fail "https://ras.infrastructure.ramona.fun/hosts/$hostname/latest_closure")
 		;;
 	*-home)
 		local -r name=${current_filename//-home/}
