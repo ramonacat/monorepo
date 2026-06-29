@@ -21,5 +21,7 @@
       };
       wantedBy = [ "multi-user.target" ];
     };
+
+    boot.kernelModules = [ "dm_crypt" ];
   };
 }
