@@ -4,7 +4,7 @@ resource "helm_release" "cloudnative-pg" {
   repository       = "https://cloudnative-pg.github.io/charts"
   namespace        = "cloudnative-pg"
   create_namespace = true
-  version          = "0.28.3"
+  version          = "0.29.0"
 
   values = [yamlencode({
     monitoring = {
