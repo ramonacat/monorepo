@@ -100,11 +100,16 @@ resource "helm_release" "argo-cd" {
     redis-ha = {
       enabled          = true,
       hardAntiAffinity = false,
-      replicas         = 2,
+      replicas         = 3,
       haproxy = {
         replicas         = 2,
         hardAntiAffinity = false
+        metrics          = { enabled = true, serviceMonitor = { enabled = true } }
       },
+      exporter = {
+        enabled        = true,
+        serviceMonitor = { enabled = true }
+      }
     },
     controller = {
       replicas = 1,
