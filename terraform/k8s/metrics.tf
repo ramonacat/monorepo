@@ -107,6 +107,9 @@ resource "helm_release" "kube-prometheus-stack" {
     kubeControllerManager = {
       endpoints = [for node in var.nodes : node.private_ipv4 if node.is_control_plane]
     }
+    kubeProxy = {
+      endpoints = [for node in var.nodes : node.private_ipv4]
+    }
   })]
 
   set_sensitive = [{
