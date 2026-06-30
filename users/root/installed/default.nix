@@ -18,7 +18,7 @@
         };
 
     users.users.root = {
-      passwordFile =
+      hashedPasswordFile =
         if config.ramona.machine.hasPublicIP then
           config.age.secrets.user-password-public-root.path
         else
