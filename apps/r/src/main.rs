@@ -1,3 +1,4 @@
+mod kubernetes;
 mod pki;
 
 use std::io;
@@ -10,6 +11,10 @@ enum Commands {
     Pki {
         #[command(subcommand)]
         action: pki::Action,
+    },
+    Kubernetes {
+        #[command(subcommand)]
+        action: kubernetes::Action,
     },
     Completions {
         shell: Shell,
@@ -27,6 +32,7 @@ fn main() {
 
     match args.command {
         Commands::Pki { action } => pki::cli(action),
+        Commands::Kubernetes { action } => kubernetes::cli(action),
         Commands::Completions { shell } => {
             let mut command = Args::command();
             let command_name = command.get_name().to_owned();
