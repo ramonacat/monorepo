@@ -1,4 +1,10 @@
-{ config, lib, ... }: {
+{
+  config,
+  lib,
+  pkgs,
+  ...
+}:
+{
   config = {
     services.etcd = lib.mkIf config.ramona.kubernetes.is-control-plane {
       enable = true;
@@ -27,5 +33,28 @@
         WATCH_PROGRESS_NOTIFY_INTERVAL = "5s";
       };
     };
+
+    services.restic.backups.etcd =
+      let
+        backupPath = "/var/ramona/etcd-backup/";
+      in
+      lib.mkIf config.ramona.kubernetes.is-control-plane (
+        import ../../../libs/nix/mk-restic-config.nix { inherit config pkgs; } {
+          timerConfig = {
+            OnCalendar = "*-*-* *:00:00";
+            RandomizedDelaySec = "30min";
+          };
+          backupPrepareCommand = ''
+            mkdir -p "${backupPath}"
+            ${pkgs.etcd}/bin/etcdctl --cacert=/etc/kubernetes/pki/etcd/ca.crt --cert=/etc/kubernetes/pki/etcd/peer.crt --key=/etc/kubernetes/pki/etcd/peer.key snapshot save ${backupPath}/snapshot.db
+          '';
+          backupCleanupCommand = ''
+            rm -r ${backupPath} || true
+          '';
+          paths = [
+            backupPath
+          ];
+        }
+      );
   };
 }
