@@ -92,42 +92,11 @@ Automatic updates can be stopped:
 Generally the flake should build anywhere, so the machines can be rebuilt by checking out the repo and doing `nixos-rebuild --flake .#<HOSTNAME>`. Terraform will work with the normal `terraform validate`/`terraform plan`/`terraform apply` worflow as long as you have the SSH key and are in the `nix develop` shell (there's a wrapper defined in `outputs/dev-shells.nix` that decrypts `secrets/terraform-tokens.age` and exports the secrets as environment variables).
 
 # Kubernetes setup
-```
-# On any of the nodes, afterwards kubeadm will give you a `kubeadm init` command. Modify it to ensure that `--apiserver-advertise-address` is correct (see below)
-# Ensure the 10.70.0.0/16 IP matches the one the machine uses, as well as the hostname
-kubeadm reset 
-kubeadm init --control-plane-endpoint "127.0.0.1:6444" --apiserver-advertise-address=10.0.0.10  --pod-network-cidr=10.2.0.0/16 --service-cidr=10.16.0.0/12 --upload-certs
-export KUBECONFIG=/etc/kubernetes/admin.conf
-kubectl -n kube-system create secret generic hcloud --from-literal=token=...
-helm repo add hcloud https://charts.hetzner.cloud
-helm install hccm hcloud/hcloud-cloud-controller-manager -n kube-system --set networking.enabled=true --set networking.clusterCIDR=10.2.0.0/16
+Almost everything is managed declaratively, by a combination of terraform, argo-cd and nix.
+The core componenets (kube-apiserver, kubelet, kube-controller-manager, kube-proxy) are ran as systemd services.
+The only thing that needs to be managed manually is the certificates and kubeconfig files, which can be done with the `r` app (see `apps/r`). The CA certificate and key con be found on the control plane nodes in `/etc/kubernetes/pki`.
+This is a useful reference about which certificates are needed where: https://github.com/kelseyhightower/kubernetes-the-hard-way/blob/master/docs/04-certificate-authority.md
 
-# joining the cluster
-kubeadm reset 
-kubeadm join 127.0.0.1:6444 --token ... \
-  --discovery-token-ca-cert-hash sha256:... \
-  --control-plane --certificate-key ... \
-  --apiserver-advertise-address 10.0.0.11
-
-export KUBECONFIG=/etc/kubernetes/admin.conf
-
-# after all nodes are joined
-## allow scheduling workloads on the control plane
-kubectl taint nodes --all node-role.kubernetes.io/control-plane-
-kubectl label nodes --all node.kubernetes.io/exclude-from-external-load-balancers-
-
-## restart coredns, so it spreads across nodes (it will initially run only on 0, which is bad from HA perspective)
-kubectl rollout -n kube-system restart deployment coredns
-```
+In a disaster recovery scenario, careful use of `terraform apply --target=...` might be required, some things that are normally managed by argo-cd might need to be deployed manually (e.g. the roles for kube-proxy).
 
 After the cluster is set up, update the secret in `secrets/darkmore-kubeconfig.age` with the contents of `/etc/kubernetes/admin.conf` from one of the nodes, with the `server` key updated to match the tailscale address of one of them (and port `6443`).
-
-## Adding a worker node
-```
-# on one of the existing nodes
-kubeadm token create --print-join-command
-# on the worker (note: apiserver-advertise-address must be added to the generated command)
-kubeadm join 127.0.0.1:6444 --token ...\
-    --discovery-token-ca-cert-hash sha256:e93912a05008f4967b005319b5ae013b2fcd314b5d57f299c611e464583866b9 \
-    --apiserver-advertise-address=10.0.0.13
-```
