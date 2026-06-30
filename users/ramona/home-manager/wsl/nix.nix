@@ -17,7 +17,7 @@
           let
             hosts = flake.hosts.builds-hosts;
           in
-          (builtins.map (x: "ssh://nix-ssh@${x}") hosts) ++ [ "https://cache.nixos.org/" ];
+          (map (x: "ssh://nix-ssh@${x}") hosts) ++ [ "https://cache.nixos.org/" ];
       };
     };
   };
