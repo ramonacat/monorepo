@@ -73,7 +73,7 @@ resource "helm_release" "kured" {
   repository       = "https://kubereboot.github.io/charts"
   namespace        = "kured"
   create_namespace = true
-  version          = "6.0.0"
+  version          = "6.1.0"
 
   values = [yamlencode({
     configuration = {
