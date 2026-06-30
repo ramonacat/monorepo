@@ -10,6 +10,11 @@
     unitConfig = {
       StartLimitIntervalSec = 5;
     };
+    path = with pkgs; [
+      iptables
+      nftables
+      conntrack-tools
+    ];
     serviceConfig =
       let
         kube-proxy-config = pkgs.writeText "kube-proxy.conf" ''
@@ -28,8 +33,6 @@
       {
         RestartSec = "10s";
         Restart = "on-failure";
-        User = "kubernetes";
-        Group = "kubernetes";
         ExecStart = ''
           ${pkgs.kubernetes}/bin/kube-proxy \
               --config=${kube-proxy-config} \
