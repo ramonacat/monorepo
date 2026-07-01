@@ -4,8 +4,8 @@ resource "github_repository" "ramonacat-monorepo" {
   description = "This is a monorepo that contains most of my apps and computer configurations."
 
   allow_merge_commit = true
-  allow_rebase_merge = true
-  allow_squash_merge = true
+  allow_rebase_merge = false
+  allow_squash_merge = false
 
   allow_auto_merge = true
 
