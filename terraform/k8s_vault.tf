@@ -96,28 +96,33 @@ resource "helm_release" "vault" {
         raft = {
           enabled = true
           config  = <<-EOT
-              ui = true
+            ui = true
 
-              listener "tcp" {
-                tls_disable = 1
-                address = "[::]:8200"
-                cluster_address = "[::]:8201"
-                # Enable unauthenticated metrics access (necessary for Prometheus Operator)
-                telemetry {
-                  unauthenticated_metrics_access = "true"
-                }
+            listener "tcp" {
+              tls_disable = 1
+              address = "[::]:8200"
+              cluster_address = "[::]:8201"
+              # Enable unauthenticated metrics access (necessary for Prometheus Operator)
+              telemetry {
+                unauthenticated_metrics_access = "true"
               }
+            }
 
-              storage "raft" {
-                path = "/vault/data"
-              }
+            storage "raft" {
+              path = "/vault/data"
+            }
 
-              service_registration "kubernetes" {}
+            service_registration "kubernetes" {}
 
-              seal "awskms" {
-                region = "eu-central-1"
-                kms_key_id = "${aws_kms_key.vault.key_id}"
-              }
+            seal "awskms" {
+              region = "eu-central-1"
+              kms_key_id = "${aws_kms_key.vault.key_id}"
+            }
+
+            telemetry {
+              prometheus_retention_time = "30s"
+              disable_hostname = true
+            }
             EOT
         }
       }
