@@ -19,6 +19,7 @@ resource "helm_release" "crowdsec" {
           log_format = "json"
         }
         api = {
+          client = { unregister_on_exit = true }
           server = {
             auto_registration = {
               enabled = true
@@ -39,8 +40,8 @@ resource "helm_release" "crowdsec" {
           host     = "cloudnative-pg-database-cluster-pooler-rw.cloudnative-pg-database"
           flush = {
             agents_autodelete = {
-              login_password = "1m"
-              cert           = "1m"
+              login_password = "2m"
+              cert           = "2m"
             }
             bouncers_autodelete = {
               api_key = "60m"
