@@ -3,7 +3,7 @@ resource "helm_release" "kube-prometheus-stack" {
   chart            = "oci://ghcr.io/prometheus-community/charts/kube-prometheus-stack"
   namespace        = "kube-prometheus-stack"
   create_namespace = true
-  version          = "87.4.0"
+  version          = "87.5.0"
 
   values = [yamlencode({
     // TODO alertmanager should be a separate deployment, outside of the module
