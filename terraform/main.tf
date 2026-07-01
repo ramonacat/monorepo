@@ -65,6 +65,10 @@ terraform {
       source  = "goauthentik/authentik"
       version = ">= 2026.5.0"
     }
+    aws = {
+      source  = "hashicorp/aws"
+      version = ">= 6.52.0"
+    }
   }
 }
 
@@ -100,4 +104,10 @@ provider "argocd" {
 
 provider "authentik" {
   url = "https://account.ramona.fun"
+}
+
+provider "aws" {
+  access_key = var.aws_access_key_id
+  secret_key = var.aws_access_key
+  region     = "eu-central-1"
 }
