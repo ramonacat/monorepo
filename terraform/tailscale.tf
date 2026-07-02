@@ -114,6 +114,7 @@ resource "tailscale_acl" "default" {
           ip = [
             "tcp:9100", // prometheus node exporter 
             "tcp:9633", // prometheus smart exporter
+            "tcp:9558", // prometheus systemd exporter
           ]
         },
         {

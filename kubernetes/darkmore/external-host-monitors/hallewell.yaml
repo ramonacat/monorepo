@@ -12,10 +12,12 @@ spec:
     - port: 9100
       protocol: TCP
       name: node
-
     - port: 9633
       protocol: TCP
       name: smart
+    - port: 9558
+      protocol: TCP
+      name: systemd
 ---
 apiVersion: monitoring.coreos.com/v1alpha1
 kind: ScrapeConfig
@@ -26,3 +28,4 @@ spec:
     - targets:
       - hallewell-prometheus-exporters.external-host-monitors:9100
       - hallewell-prometheus-exporters.external-host-monitors:9633
+      - hallewell-prometheus-exporters.external-host-monitors:9558
