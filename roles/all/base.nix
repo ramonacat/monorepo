@@ -2,6 +2,7 @@
   config = {
     security.sudo.wheelNeedsPassword = true;
     users.mutableUsers = false;
+    boot.initrd.systemd.emergencyAccess = true;
 
     environment.systemPackages = with pkgs; [
       atop
