@@ -15,6 +15,9 @@ resource "helm_release" "grafana" {
         parentRefs = [{ name = "gateway-tailscale", namespace = "kgateway-system" }]
       }
     }
+    podDisruptionBudget = {
+      minAvailable = 1
+    }
     serviceMonitor = { enabled = true }
     plugins        = ["yesoreyeram-infinity-datasource"]
     persistence = {
