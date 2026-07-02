@@ -134,3 +134,18 @@ resource "helm_release" "metrics-api" {
     serviceMonitor = { enabled = true }
   })]
 }
+
+resource "helm_release" "prometheus-systemd-exporter" {
+  name             = "prometheus-systemd-exporter"
+  chart            = "oci://ghcr.io/prometheus-community/charts/prometheus-systemd-exporter"
+  namespace        = "prometheus-systemd-exporter"
+  create_namespace = true
+  version          = "0.5.2"
+
+  values = [yamlencode({
+    prometheus = {
+      monitor = { enabled = true }
+      rules   = { enabled = true }
+    }
+  })]
+}

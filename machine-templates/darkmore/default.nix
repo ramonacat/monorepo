@@ -18,7 +18,10 @@
         [ ]
     );
 
-    services.prometheus.exporters.node.enable = lib.mkForce false;
-    services.prometheus.exporters.smartctl.enable = lib.mkForce false;
+    services.prometheus.exporters = {
+      node.enable = lib.mkForce false;
+      smartctl.enable = lib.mkForce false;
+      systemd.enable = lib.mkForce false;
+    };
   };
 }
