@@ -62,7 +62,7 @@ resource "helm_release" "vault" {
   chart      = "vault"
   repository = "https://helm.releases.hashicorp.com"
   namespace  = kubernetes_namespace_v1.vault.metadata[0].name
-  version    = "0.33.0"
+  version    = "0.34.0"
 
   values = [yamlencode({
     global = {
