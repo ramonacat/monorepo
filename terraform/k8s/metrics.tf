@@ -147,5 +147,12 @@ resource "helm_release" "prometheus-systemd-exporter" {
       monitor = { enabled = true }
       rules   = { enabled = true }
     }
+    config = {
+      systemd = {
+        collector = {
+          unitInclude = [".+"]
+        }
+      }
+    }
   })]
 }
