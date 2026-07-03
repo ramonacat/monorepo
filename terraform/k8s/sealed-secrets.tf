@@ -4,7 +4,7 @@ resource "helm_release" "sealed-secrets" {
   repository       = "https://bitnami.github.io/sealed-secrets"
   namespace        = "sealed-secrets"
   create_namespace = true
-  version          = "2.19.0"
+  version          = "2.19.1"
 
   values = [yamlencode({
     metrics = {
