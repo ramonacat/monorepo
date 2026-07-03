@@ -140,6 +140,7 @@ pkgs.mkShell {
       shellcheck
       shfmt
       tflint
+      vault
 
       package-versions.nodejs
       package-versions.rust-version

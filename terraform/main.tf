@@ -69,6 +69,10 @@ terraform {
       source  = "hashicorp/aws"
       version = ">= 6.52.0"
     }
+    vault = {
+      source  = "hashicorp/vault"
+      version = ">= 5.10.1"
+    }
   }
 }
 
@@ -110,4 +114,8 @@ provider "aws" {
   access_key = var.aws_access_key_id
   secret_key = var.aws_access_key
   region     = "eu-central-1"
+}
+
+provider "vault" {
+  address = "https://vault.infrastructure.ramona.fun"
 }
