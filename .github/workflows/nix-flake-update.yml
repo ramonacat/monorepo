@@ -36,4 +36,4 @@ jobs:
           nix flake update --commit-lock-file
           git push origin $BRANCH_NAME
           pr_url="$(gh pr create --title 'Update flake.lock' --body 'Update flake.lock')"
-          gh pr merge --auto -r "$pr_url"
+          gh pr merge --auto --merge "$pr_url"
