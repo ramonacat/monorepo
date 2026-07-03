@@ -25,3 +25,26 @@ resource "authentik_flow" "default" {
   compatibility_mode = false
   background         = local.flow_background
 }
+
+resource "authentik_flow" "default-provider-authorization-implicit-consent" {
+  name               = "authorize application"
+  slug               = "default-provider-authorization-implicit-consent"
+  title              = "Redirecting to %(app)s"
+  designation        = "authorization"
+  compatibility_mode = false
+  background         = local.flow_background
+}
+
+resource "authentik_flow" "default-provider-invalidation" {
+  name               = "logged out of an application"
+  slug               = "default-provider-invalidation-flow"
+  title              = "You've logged out of %(app)s."
+  designation        = "invalidation"
+  compatibility_mode = false
+  background         = local.flow_background
+}
+
+resource "authentik_group" "global-admins" {
+  name         = "global admins"
+  is_superuser = true
+}
