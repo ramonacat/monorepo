@@ -24,7 +24,7 @@ resource "tailscale_device_tags" "node" {
 resource "vault_pki_secret_backend_cert" "node" {
   backend               = var.vault_pki
   name                  = var.vault_role
-  common_name           = var.hostname
+  common_name           = "${var.hostname}.devices.ramona.fun"
   ttl                   = 86400
   min_seconds_remaining = 43200
   auto_renew            = true

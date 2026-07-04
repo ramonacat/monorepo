@@ -27,6 +27,11 @@ resource "vault_pki_secret_backend_root_cert" "a" {
   ttl         = 315360000 // 10 years(ish)
 }
 
+resource "local_file" "cert-root-a" {
+  filename = "../ca.crt"
+  content  = vault_pki_secret_backend_root_cert.a.certificate
+}
+
 resource "vault_mount" "pki-hosts" {
   path                      = "pki-hosts"
   type                      = "pki"
@@ -80,3 +85,10 @@ resource "vault_pki_secret_backend_role" "hosts" {
   client_flag      = true
   server_flag      = true
 }
+
+resource "vault_pki_secret_backend_issuer" "hosts" {
+  backend     = vault_mount.pki-hosts.path
+  issuer_ref  = vault_pki_secret_backend_intermediate_set_signed.hosts.imported_issuers[0]
+  issuer_name = "hosts"
+}
+

@@ -12,5 +12,5 @@ echo -n "$TAILNET_KEY" >var/ramona/tailscale/key
 
 mkdir -p var/ramona/identity/
 
-echo -n "$CERTIFICATE" > var/ramona/identity/certificate.crt
-echo -n "$CERTIFICATE_KEY" > var/ramona/identity/certificate.key
+echo -n "$CERTIFICATE" >var/ramona/identity/certificate.crt
+echo -n "$CERTIFICATE_KEY" >var/ramona/identity/certificate.key
