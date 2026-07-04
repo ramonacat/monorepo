@@ -9,6 +9,6 @@ spec:
       kubernetes:
         role: cert-manager
         serviceAccountRef:
-          name: vault
+          name: vault-issuer
     path: pki-internal/sign/internal
     server: http://vault.vault:8200/
