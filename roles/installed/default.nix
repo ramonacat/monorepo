@@ -14,11 +14,12 @@
     ../../modules/updates
 
     ./nix.nix
+    ./prometheus-exporter.nix
     ./restic-home.nix
     ./ssh.nix
-    ./tailscale.nix
     ./syslog.nix
-    ./prometheus-exporter.nix
+    ./tailscale.nix
+    ./vault-agent.nix
   ];
   config = {
     services.fwupd.enable = lib.mkDefault true;

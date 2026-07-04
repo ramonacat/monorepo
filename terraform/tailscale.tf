@@ -7,14 +7,6 @@ data "tailscale_device" "pikvm" {
   hostname = "pikvm"
 }
 
-data "tailscale_device" "hallewell" {
-  hostname = "hallewell"
-}
-
-data "tailscale_device" "shadowsoul" {
-  hostname = "shadowsoul"
-}
-
 moved {
   from = tailscale_device_tags.tags
   to   = tailscale_device_tags.devices
@@ -38,15 +30,14 @@ removed {
   }
 }
 
-// TODO create a module for physical machines that sets up dns, tailscale tags, etc.
-resource "tailscale_device_tags" "hallewell" {
-  device_id = data.tailscale_device.hallewell.node_id
-  tags      = split(" ", data.external.tailscale_tags.result["hallewell"])
+moved {
+  from = tailscale_device_tags.hallewell
+  to   = module.external-node-hallewell.tailscale_device_tags.node[0]
 }
 
-resource "tailscale_device_tags" "shadowsoul" {
-  device_id = data.tailscale_device.shadowsoul.node_id
-  tags      = split(" ", data.external.tailscale_tags.result["shadowsoul"])
+moved {
+  from = tailscale_device_tags.shadowsoul
+  to   = module.external-node-shadowsoul.tailscale_device_tags.node[0]
 }
 
 resource "tailscale_dns_configuration" "default" {
