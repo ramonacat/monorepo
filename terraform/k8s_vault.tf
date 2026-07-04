@@ -67,6 +67,7 @@ resource "helm_release" "vault" {
   values = [yamlencode({
     global = {
       serverTelemetry = { prometheusOperator = true }
+      tlsDisable      = false
     }
     injector = {
       replicas = 2
@@ -81,6 +82,11 @@ resource "helm_release" "vault" {
         { envName = "AWS_ACCESS_KEY_ID", secretName = kubernetes_secret_v1.vault.metadata[0].name, secretKey = "AWS_ACCESS_KEY_ID" },
         { envName = "AWS_SECRET_ACCESS_KEY", secretName = kubernetes_secret_v1.vault.metadata[0].name, secretKey = "AWS_SECRET_ACCESS_KEY" },
       ]
+      extraVolumes = [{
+        type = "secret"
+        name = "vault-server"
+        path = "/vault/secrets"
+      }]
       logFormat = "json"
       httproute = {
         enabled    = true
@@ -98,9 +104,13 @@ resource "helm_release" "vault" {
             ui = true
 
             listener "tcp" {
-              tls_disable = 1
               address = "[::]:8200"
               cluster_address = "[::]:8201"
+
+              tls_cert_file = "/vault/secrets/vault-server/tls.crt"
+              tls_key_file = "/vault/secrets/vault-server/tls.key"
+              tls_client_ca_file = "/vault/secrets/vault-server/ca.crt"
+          
               # Enable unauthenticated metrics access (necessary for Prometheus Operator)
               telemetry {
                 unauthenticated_metrics_access = "true"
@@ -109,6 +119,14 @@ resource "helm_release" "vault" {
 
             storage "raft" {
               path = "/vault/data"
+
+              retry_join {
+                leader_api_addr = "https://vault-active:8200"
+
+                leader_client_cert_file = "/vault/secrets/vault-server/tls.crt"
+                leader_client_key_file = "/vault/secrets/vault-server/tls.key"
+                leader_ca_cert_file = "/vault/secrets/vault-server/ca.crt"
+              }
             }
 
             service_registration "kubernetes" {}

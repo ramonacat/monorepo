@@ -36,12 +36,12 @@ resource "authentik_provider_oauth2" "vault" {
   allowed_redirect_uris = [
     {
       matching_mode     = "strict",
-      url               = "https://vault.infrastructure.ramona.fun/ui/vault/auth/oidc/oidc/callback"
+      url               = "https://vault.internal.ramona.fun/ui/vault/auth/oidc/oidc/callback"
       redirect_uri_type = "authorization"
     },
     {
       matching_mode     = "strict",
-      url               = "https://vault.infrastructure.ramona.fun/v1/auth/oidc/oidc/callback"
+      url               = "https://vault.internal.ramona.fun/v1/auth/oidc/oidc/callback"
       redirect_uri_type = "authorization"
     },
     {
@@ -88,8 +88,8 @@ resource "vault_jwt_auth_backend_role" "admin" {
   token_policies = [vault_policy.admin.name]
   user_claim     = "sub"
   allowed_redirect_uris = [
-    "https://vault.infrastructure.ramona.fun/ui/vault/auth/oidc/oidc/callback",
-    "https://vault.infrastructure.ramona.fun/v1/auth/oidc/oidc/callback",
+    "https://vault.internal.ramona.fun/ui/vault/auth/oidc/oidc/callback",
+    "https://vault.internal.ramona.fun/v1/auth/oidc/oidc/callback",
     "http://localhost:8250/oidc/callback",
   ]
 }
