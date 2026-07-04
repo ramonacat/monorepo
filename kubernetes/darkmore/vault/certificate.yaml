@@ -8,3 +8,5 @@ spec:
     name: vault-self-issuer
   secretName: vault-server
   commonName: vault.internal.ramona.fun
+  dnsNames:
+    - vault.internal.ramona.fun

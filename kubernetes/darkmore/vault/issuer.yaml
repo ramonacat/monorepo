@@ -11,4 +11,4 @@ spec:
         serviceAccountRef:
           name: vault-issuer
     path: pki-internal/sign/internal
-    server: http://vault.vault:8200/
+    server: https://vault.vault:8200/
