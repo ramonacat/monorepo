@@ -14,7 +14,7 @@
         settings = {
           vault = [
             {
-              address = "https://vault.infrastructure.ramona.fun";
+              address = "https://vault.internal.ramona.fun";
 
               client_cert = client-cert;
               client_key = client-key;

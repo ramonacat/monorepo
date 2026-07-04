@@ -13,10 +13,10 @@ moved {
 resource "vault_pki_secret_backend_config_urls" "root-a" {
   backend = vault_mount.pki.path
   issuing_certificates = [
-    "https://vault.infrastructure.ramona.fun/v1/pki/ca"
+    "https://vault.internal.ramona.fun/v1/pki/ca"
   ]
   crl_distribution_points = [
-    "https://vault.infrastructure.ramona.fun/v1/pki/crl"
+    "https://vault.internal.ramona.fun/v1/pki/crl"
   ]
 }
 
@@ -45,12 +45,12 @@ moved {
 }
 
 resource "vault_pki_secret_backend_config_urls" "hosts" {
-  backend = vault_mount.pki.path
+  backend = vault_mount.pki-hosts.path
   issuing_certificates = [
-    "https://vault.infrastructure.ramona.fun/v1/pki-hosts/ca"
+    "https://vault.internal.ramona.fun/v1/pki/ca"
   ]
   crl_distribution_points = [
-    "https://vault.infrastructure.ramona.fun/v1/pki-hosts/crl"
+    "https://vault.internal.ramona.fun/v1/pki/crl"
   ]
 }
 
