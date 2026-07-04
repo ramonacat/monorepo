@@ -11,7 +11,9 @@ resource "helm_release" "cert-manager" {
     enableCertificateOwnerRef = true
     prometheus                = { servicemonitor = { enabled = true } }
     webhook                   = { replicaCount = 2 }
-    config                    = { enableGatewayAPI = true }
+    config = {
+      enableGatewayAPI = true
+    }
   })]
 }
 
