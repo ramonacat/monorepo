@@ -5,3 +5,4 @@ resources:
   - certificate.yaml
   - rbac.yaml
   - service-account.yaml
+  - tls-route.yaml
