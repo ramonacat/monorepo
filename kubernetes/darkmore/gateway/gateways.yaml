@@ -184,7 +184,7 @@ spec:
     parametersRef:
       group: gateway.kgateway.dev
       kind: GatewayParameters
-      name: gateway-tailscale
+      name: gateway-tailscale-internal
 
   allowedListeners:
     namespaces:
