@@ -2,3 +2,4 @@ resources:
   - issuer.yaml
   - certificate.yaml
   - rbac.yaml
+  - service-account.yaml
