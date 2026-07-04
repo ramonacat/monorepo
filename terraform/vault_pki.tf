@@ -92,3 +92,41 @@ resource "vault_pki_secret_backend_issuer" "hosts" {
   issuer_name = "hosts"
 }
 
+resource "vault_mount" "pki-internal" {
+  path                      = "pki-internal"
+  type                      = "pki"
+  default_lease_ttl_seconds = 86400
+  max_lease_ttl_seconds     = 157680000 // 5 years(ish)
+}
+
+resource "vault_pki_secret_backend_intermediate_cert_request" "internal" {
+  backend     = vault_mount.pki-internal.path
+  common_name = "ramona internal services"
+  type        = "internal"
+}
+
+resource "vault_pki_secret_backend_root_sign_intermediate" "internal" {
+  backend              = vault_mount.pki.path
+  csr                  = vault_pki_secret_backend_intermediate_cert_request.internal.csr
+  common_name          = "ramona internal services"
+  exclude_cn_from_sans = true
+  ttl                  = 157680000 // 5 years(ish)
+}
+
+resource "vault_pki_secret_backend_intermediate_set_signed" "internal" {
+  backend     = vault_mount.pki-internal.path
+  certificate = vault_pki_secret_backend_root_sign_intermediate.internal.certificate
+}
+
+resource "vault_pki_secret_backend_role" "internal" {
+  backend    = vault_mount.pki-internal.path
+  name       = "internal"
+  issuer_ref = vault_pki_secret_backend_intermediate_set_signed.internal.imported_issuers[0]
+  // localhost is disabled and added explicitly so that `vault pki health-check is happy`
+  allowed_domains  = ["internal.ramona.fun", "localhost"]
+  allow_localhost  = false
+  allow_subdomains = true
+  allow_ip_sans    = true
+  client_flag      = false
+  server_flag      = true
+}

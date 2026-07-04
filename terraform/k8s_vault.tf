@@ -82,7 +82,6 @@ resource "helm_release" "vault" {
         { envName = "AWS_SECRET_ACCESS_KEY", secretName = kubernetes_secret_v1.vault.metadata[0].name, secretKey = "AWS_SECRET_ACCESS_KEY" },
       ]
       logFormat = "json"
-      # TODO this isn't actually supported in 0.33.0, but should appear in the next version (https://github.com/hashicorp/vault-helm/pull/1142)
       httproute = {
         enabled    = true
         hostnames  = ["vault.infrastructure.ramona.fun"]
