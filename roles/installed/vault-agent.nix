@@ -22,18 +22,20 @@
           ];
           auto_auth = [
             {
-              method = {
-                type = "certificate";
+              method = [
+                {
+                  type = "cert";
 
-                config = [
-                  {
-                    name = "hosts";
-                    client_cert = client-cert;
-                    client_key = client-key;
-                    reload = true;
-                  }
-                ];
-              };
+                  config = [
+                    {
+                      name = "hosts";
+                      client_cert = client-cert;
+                      client_key = client-key;
+                      reload = true;
+                    }
+                  ];
+                }
+              ];
             }
           ];
           template = [
