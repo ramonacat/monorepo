@@ -23,6 +23,14 @@ variable "firewall_ids" {
   type = list(string)
 }
 
+variable "vault_pki" {
+  type = string
+}
+
+variable "vault_role" {
+  type = string
+}
+
 variable "dns_suffix" {
   type    = string
   default = ".devices"

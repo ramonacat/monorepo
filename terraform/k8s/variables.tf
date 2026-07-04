@@ -55,3 +55,12 @@ variable "discord_webhook" {
   type      = string
   sensitive = true
 }
+
+variable "vault_pki" {
+  type = string
+}
+
+variable "vault_role" {
+  type = string
+}
+

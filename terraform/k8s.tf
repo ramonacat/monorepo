@@ -72,6 +72,8 @@ module "k8s--darkmore" {
   hcloud_token    = var.kubernetes_darkmore_hcloud_token
   dnsimple_token  = var.kubernetes_darkmore_dnsimple_token
   discord_webhook = var.kubernetes_darkmore_discord_webhook
+  vault_pki       = vault_mount.pki-hosts.path
+  vault_role      = vault_pki_secret_backend_role.hosts.name
 }
 
 resource "helm_release" "argo-cd" {

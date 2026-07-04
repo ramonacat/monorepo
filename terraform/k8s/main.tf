@@ -33,6 +33,8 @@ module "k8s--control-plane-nodes" {
   server_type        = "cx33"
   before_node_update = { command = "kubectl", arguments = ["drain", "--delete-emptydir-data", "--ignore-daemonsets", each.value] }
   after_node_update  = { command = "kubectl", arguments = ["uncordon", each.value] }
+  vault_pki          = var.vault_pki
+  vault_role         = var.vault_role
 }
 
 resource "tailscale_oauth_client" "kubernetes" {

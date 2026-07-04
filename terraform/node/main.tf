@@ -89,6 +89,17 @@ resource "hcloud_rdns" "node-ipv6" {
   server_id  = hcloud_server.node.id
 }
 
+resource "vault_pki_secret_backend_cert" "node" {
+  backend     = var.vault_pki
+  name        = var.vault_role
+  common_name = dnsimple_zone_record.A--node.qualified_name
+  // TODO also put the private IP here
+  ip_sans               = [hcloud_server.node.ipv4_address, hcloud_server.node.ipv6_address]
+  ttl                   = 86400
+  min_seconds_remaining = 43200
+  auto_renew            = true
+}
+
 module "system-build" {
   source = "github.com/nix-community/nixos-anywhere/terraform/nix-build?ref=1.13.0"
 
@@ -112,6 +123,9 @@ module "install" {
     RAMONA_FLAKE_ROOT = abspath("../"),
     HOSTNAME          = var.name
     TAILNET_KEY       = tailscale_tailnet_key.default.key
+
+    CERTIFICATE     = vault_pki_secret_backend_cert.node.certificate
+    CERTIFICATE_KEY = vault_pki_secret_backend_cert.node.private_key
   }
   extra_files_script = abspath("scripts/extra-files-script.bash")
 }
