@@ -1,3 +1,4 @@
 resources:
   - issuer.yaml
   - certificate.yaml
+  - rbac.yaml
