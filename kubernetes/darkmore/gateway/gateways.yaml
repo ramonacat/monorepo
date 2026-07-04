@@ -170,6 +170,23 @@ spec:
             scheme: https
             statusCode: 301
 ---
+apiVersion: gateway.kgateway.dev/v1alpha1
+kind: GatewayParameters
+metadata:
+  name: gateway-tailscale-internal
+  namespace: kgateway-system
+spec:
+  kube:
+    deployment:
+      replicas: 2
+    service:
+      type: LoadBalancer
+      loadBalancerClass: 'tailscale'
+      extraAnnotations:
+        "tailscale.com/proxy-group": "service-ingress"
+        "tailscale.com/tags": "tag:k8s,tag:k8s-service"
+        "tailscale.com/hostname": "gateway-internal"
+---
 apiVersion: gateway.networking.k8s.io/v1
 kind: Gateway
 metadata:
