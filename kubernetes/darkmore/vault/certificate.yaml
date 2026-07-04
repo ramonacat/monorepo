@@ -1,0 +1,11 @@
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  namespace: vault
+  name: vault-server
+spec:
+  issuerRef:
+    name: vault-self-issuer
+  secretName: vault-server
+  dnsNames:
+    - vault.internal.ramona.fun

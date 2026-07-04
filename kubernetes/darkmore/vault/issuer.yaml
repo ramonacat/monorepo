@@ -1,0 +1,14 @@
+apiVersion: cert-manager.io/v1
+kind: Issuer
+metadata:
+  name: vault-self-issuer
+  namespace: vault
+spec:
+  vault:
+    auth:
+      kubernetes:
+        role: cert-manager
+        serviceAccountRef:
+          name: vault
+    path: pki-internal/sign/internal
+    server: http://vault.vault:8200/
