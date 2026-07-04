@@ -169,3 +169,42 @@ spec:
           requestRedirect:
             scheme: https
             statusCode: 301
+---
+apiVersion: gateway.networking.k8s.io/v1
+kind: Gateway
+metadata:
+  name: gateway-tailscale-internal
+  namespace: kgateway-system
+  annotations: 
+    # TODO https://github.com/kubernetes-sigs/external-dns/issues/6507
+    "external-dns.alpha.kubernetes.io/target": "100.119.189.53"
+    cert-manager.io/cluster-issuer: cert-manager-webhook-dnsimple-production
+spec: 
+  gatewayClassName: 'kgateway'
+  infrastructure:
+    parametersRef:
+      group: gateway.kgateway.dev
+      kind: GatewayParameters
+      name: gateway-tailscale
+
+  allowedListeners:
+    namespaces:
+      from: All
+
+  listeners:
+    - name: http
+      port: 80
+      protocol: HTTP
+      allowedRoutes:
+        namespaces:
+          # there's only one route allowed for HTTP, and it is the HTTPS redirect
+          from: All
+    - name: https
+      port: 443
+      protocol: HTTPS
+      hostname: '*.internal.ramona.fun'
+      allowedRoutes:
+        namespaces:
+          from: All
+      tls:
+        mode: Passthrough
