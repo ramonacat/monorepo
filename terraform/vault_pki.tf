@@ -28,7 +28,7 @@ resource "vault_pki_secret_backend_root_cert" "a" {
 }
 
 resource "local_file" "cert-root-a" {
-  filename = "../ca.crt"
+  filename = "../certificates/ca.crt"
   content  = vault_pki_secret_backend_root_cert.a.certificate
 }
 
@@ -71,6 +71,11 @@ resource "vault_pki_secret_backend_root_sign_intermediate" "hosts" {
 resource "vault_pki_secret_backend_intermediate_set_signed" "hosts" {
   backend     = vault_mount.pki-hosts.path
   certificate = vault_pki_secret_backend_root_sign_intermediate.hosts.certificate
+}
+
+resource "local_file" "cert-ca-hosts" {
+  filename = "../certificates/ca-hosts.crt"
+  content  = vault_pki_secret_backend_intermediate_set_signed.hosts.certificate
 }
 
 resource "vault_pki_secret_backend_role" "hosts" {
@@ -116,6 +121,11 @@ resource "vault_pki_secret_backend_root_sign_intermediate" "internal" {
 resource "vault_pki_secret_backend_intermediate_set_signed" "internal" {
   backend     = vault_mount.pki-internal.path
   certificate = vault_pki_secret_backend_root_sign_intermediate.internal.certificate
+}
+
+resource "local_file" "cert-ca-internal" {
+  filename = "../certificates/ca-internal.crt"
+  content  = vault_pki_secret_backend_intermediate_set_signed.internal.certificate
 }
 
 resource "vault_pki_secret_backend_role" "internal" {

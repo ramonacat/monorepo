@@ -112,11 +112,7 @@ resource "vault_policy" "cert-self-issue" {
   name   = "cert-self-issue"
   policy = <<-EOT
     path "/pki-hosts/issue/hosts" {
-      capabilities = ["create", "patch", "read"]
-      allowed_parameters = {
-        "common_name" = ["{{identity.entity.aliases.${vault_auth_backend.cert.accessor}.metadata.common_name}}"]
-        "ttl" = []
-      }
+      capabilities = ["create", "patch", "read", "update"]
     }
   EOT
 }
@@ -125,8 +121,8 @@ resource "vault_cert_auth_backend_role" "hosts" {
   name           = "hosts"
   certificate    = vault_pki_secret_backend_intermediate_set_signed.hosts.certificate
   backend        = vault_auth_backend.cert.path
-  ocsp_enabled   = true
-  token_policies = []
+  ocsp_enabled   = false
+  token_policies = ["default", vault_policy.cert-self-issue.name]
 }
 
 resource "vault_auth_backend" "kubernetes" {

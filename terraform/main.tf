@@ -121,6 +121,6 @@ provider "aws" {
 }
 
 provider "vault" {
-  address      = "https://vault.internal.ramona.fun"
-  ca_cert_file = "../ca.crt"
+  address     = "https://vault.internal.ramona.fun"
+  ca_cert_dir = "../certificates/"
 }
