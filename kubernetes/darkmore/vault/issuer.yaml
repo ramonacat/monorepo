@@ -11,5 +11,5 @@ spec:
         serviceAccountRef:
           name: vault-issuer
     path: pki-internal/sign/internal
-    server: https://vault.vault:8200/
+    server: http://vault.vault:8200/
     serverName: vault.internal.ramona.fun
