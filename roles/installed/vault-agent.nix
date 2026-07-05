@@ -50,7 +50,7 @@
               contents = ''
                 {{- with pkiCert "pki-hosts/issue/hosts" "common_name=${config.networking.hostName}.devices.ramona.fun" "ttl=24h" -}}
                     {{ .Key }}
-                    {{ .Cert | writeToFile "${client-cert}" "root" "root" "0644" "append" }}
+                    {{ .Cert | writeToFile "${client-cert}" "root" "root" "0644" }}
                 {{- end -}}
               '';
               destination = client-key;
