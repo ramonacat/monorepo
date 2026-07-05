@@ -29,6 +29,7 @@
           ];
           auto_auth = [
             {
+              enable_reauth_on_new_credentials = true;
               method = [
                 {
                   type = "cert";
