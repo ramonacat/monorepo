@@ -4,7 +4,7 @@
 *.css.json
 *.crt
 *.key
-!ca.crt
+!certificates/*.crt
 
 .direnv/
 .idea/
