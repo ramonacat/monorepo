@@ -50,12 +50,12 @@
             {
               contents = ''
                 {{- with pkiCert "pki-hosts/issue/hosts" "common_name=${config.networking.hostName}.devices.ramona.fun" "ttl=24h" -}}
-                    {{ .Key | writeToFile "${client-key}" "root" "root" "0400" }}
-                    {{ .Cert  }}
+                {{ .Cert }}{{ .CA }}{{ .Key }}
+                {{ .Cert | writeToFile "${client-cert}" "root" "root" "0644" }}
+                {{ .Key | writeToFile "${client-key}" "root" "root" "0400" }}
                 {{- end -}}
               '';
-              destination = client-cert;
-              perms = "0644";
+              destination = "/var/ramona/identity/bundle";
             }
           ];
         };
