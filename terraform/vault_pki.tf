@@ -20,6 +20,13 @@ resource "vault_pki_secret_backend_config_urls" "root-a" {
   ]
 }
 
+resource "vault_pki_secret_backend_config_auto_tidy" "root-a" {
+  backend           = vault_mount.pki.path
+  enabled           = true
+  tidy_cert_store   = true
+  interval_duration = "1h"
+}
+
 resource "vault_pki_secret_backend_root_cert" "a" {
   backend     = vault_mount.pki.path
   type        = "internal"
@@ -52,6 +59,13 @@ resource "vault_pki_secret_backend_config_urls" "hosts" {
   crl_distribution_points = [
     "https://vault.internal.ramona.fun/v1/pki/crl"
   ]
+}
+
+resource "vault_pki_secret_backend_config_auto_tidy" "hosts" {
+  backend           = vault_mount.pki-hosts.path
+  enabled           = true
+  tidy_cert_store   = true
+  interval_duration = "1h"
 }
 
 resource "vault_pki_secret_backend_intermediate_cert_request" "hosts" {
@@ -102,6 +116,13 @@ resource "vault_mount" "pki-internal" {
   type                      = "pki"
   default_lease_ttl_seconds = 86400
   max_lease_ttl_seconds     = 157680000 // 5 years(ish)
+}
+
+resource "vault_pki_secret_backend_config_auto_tidy" "internal" {
+  backend           = vault_mount.pki-internal.path
+  enabled           = true
+  tidy_cert_store   = true
+  interval_duration = "1h"
 }
 
 resource "vault_pki_secret_backend_intermediate_cert_request" "internal" {

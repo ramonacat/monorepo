@@ -110,6 +110,12 @@ resource "helm_release" "kube-prometheus-stack" {
     kubeProxy = {
       endpoints = [for node in var.nodes : node.private_ipv4]
     }
+    defaultRules = {
+      disabled = {
+        // this rule is way too eager and starts complaining at the slightest touch of swap
+        NodeMemoryMajorPagesFaults = true
+      }
+    }
   })]
 
   set_sensitive = [{
