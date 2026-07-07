@@ -36,6 +36,27 @@ resource "helm_release" "grafana" {
         deleteDatasources = [{ name = "prometheus" }]
       }
     }
+    "grafana.ini" = {
+      paths = {
+        data         = "/var/lib/grafana/"
+        logs         = "/var/log/grafana"
+        plugins      = "/var/lib/grafana/plugins"
+        provisioning = "/etc/grafana/provisioning"
+      }
+      analytics = {
+        check_for_updates = true
+      }
+      log = {
+        mode = "console"
+      }
+      server = {
+        domain   = "{{ if (and .Values.ingress.enabled .Values.ingress.hosts) }}{{ tpl (.Values.ingress.hosts | first) . }}{{ else if (and .Values.route.main.enabled .Values.route.main.hostnames) }}{{ tpl (.Values.route.main.hostnames | first) . }}{{ else }}''{{ end }}"
+        root_url = "https://grafana.infrastructure.ramona.fun/"
+      }
+      unified_storage = {
+        index_path = "/var/lib/grafana-search/bleve"
+      }
+    }
   })]
 }
 

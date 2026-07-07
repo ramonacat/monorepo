@@ -77,6 +77,10 @@ terraform {
       source  = "hashicorp/local"
       version = ">= 2.9.0"
     }
+    grafana = {
+      source  = "grafana/grafana"
+      version = ">= 4.40.0"
+    }
   }
 }
 
@@ -123,4 +127,8 @@ provider "aws" {
 provider "vault" {
   address     = "https://vault.internal.ramona.fun"
   ca_cert_dir = "../certificates/"
+}
+
+provider "grafana" {
+  url = "https://grafana.infrastructure.ramona.fun"
 }
