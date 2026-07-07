@@ -58,12 +58,6 @@ resource "authentik_application" "grafana" {
   protocol_provider = authentik_provider_oauth2.grafana.id
 }
 
-resource "authentik_policy_binding" "grafana" {
-  target = authentik_application_entitlement.vault.id
-  group  = authentik_group.global-admins.id
-  order  = 0
-}
-
 resource "authentik_application_entitlement" "grafana_admins" {
   name        = "Grafana Admins"
   application = authentik_application.grafana.uuid
