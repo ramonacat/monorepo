@@ -22,3 +22,21 @@ resource "authentik_property_mapping_provider_scope" "email" {
   }
   EOT
 }
+
+resource "authentik_property_mapping_provider_scope" "profile" {
+  name        = "authentik default OAuth Mapping: OpenID 'profile'"
+  description = "General Profile Information"
+  scope_name  = "profile"
+  expression  = <<-EOT
+  return {
+      # Because authentik only saves the user's full name, and has no concept of first and last names,
+      # the full name is used as given name.
+      # You can override this behaviour in custom mappings, i.e. `request.user.name.split(" ")`
+      "name": request.user.name,
+      "given_name": request.user.name,
+      "preferred_username": request.user.username,
+      "nickname": request.user.username,
+      "groups": [group.name for group in request.user.groups.all()],
+  }
+  EOT
+}
