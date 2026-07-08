@@ -4,7 +4,7 @@ resource "helm_release" "authentik" {
   repository       = "https://charts.goauthentik.io"
   namespace        = "authentik"
   create_namespace = true
-  version          = "2026.5.3"
+  version          = "2026.5.4"
 
   values = [yamlencode({
     global = {
