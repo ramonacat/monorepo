@@ -19,9 +19,6 @@ spec:
     metadata:
       annotations:
         kubectl.kubernetes.io/default-container: ras
-        vault.hashicorp.com/agent-inject: 'true'
-        vault.hashicorp.com/role: kv-inject-kubernetes-darkmore
-        
       labels:
         app: ras
     spec:
