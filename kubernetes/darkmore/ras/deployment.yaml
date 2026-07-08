@@ -77,5 +77,5 @@ spec:
           kind: ClusterSecretStore
           name: vault
       extract:
-        key: ras
+        key: postgres/ras
       
