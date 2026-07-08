@@ -157,20 +157,30 @@ resource "vault_kubernetes_auth_backend_config" "main" {
   EOT
 }
 
-resource "vault_policy" "cert-self-issue-any-internal" {
-  name   = "cert-self-issue-internal"
+resource "vault_mount" "kv-kubernetes-darkmore" {
+  path    = "secrets/kubernetes/darkmore"
+  type    = "kv"
+  options = { version = "2" }
+}
+
+resource "vault_kv_secret_backend_v2" "kubernetes-darkmore" {
+  mount        = vault_mount.kv-kubernetes-darkmore.path
+  max_versions = 5
+}
+
+resource "vault_policy" "kv-kubernetes-darkmore" {
+  name   = "kv-kubernetes-darkmore"
   policy = <<-EOT
-    path "/pki-internal/sign/internal" {
-      capabilities = ["create", "patch", "read", "update"]
+    path "/${vault_mount.kv-kubernetes-darkmore.path}/*" {
+      capabilities = ["create", "update", "patch", "delete" "read", "list"]
     }
   EOT
 }
 
-resource "vault_kubernetes_auth_backend_role" "cert-manager" {
+resource "vault_kubernetes_auth_backend_role" "darkmore-kv" {
   backend                          = vault_auth_backend.kubernetes.path
-  role_name                        = "cert-manager"
-  bound_service_account_names      = ["vault-issuer"]
-  bound_service_account_namespaces = ["vault"]
-  token_policies                   = ["default", vault_policy.cert-self-issue-any-internal.name]
-  audience                         = "vault://vault/vault-self-issuer"
+  role_name                        = "kv-kubernetes-darkmore"
+  bound_service_account_names      = ["vault-client"]
+  bound_service_account_namespaces = ["external-secrets"]
+  token_policies                   = ["default", vault_policy.kv-kubernetes-darkmore.name]
 }

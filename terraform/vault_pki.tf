@@ -25,6 +25,7 @@ resource "vault_pki_secret_backend_config_auto_tidy" "root-a" {
   enabled           = true
   tidy_cert_store   = true
   interval_duration = "1h"
+  safety_buffer     = "12h"
 }
 
 resource "vault_pki_secret_backend_root_cert" "a" {
@@ -66,6 +67,7 @@ resource "vault_pki_secret_backend_config_auto_tidy" "hosts" {
   enabled           = true
   tidy_cert_store   = true
   interval_duration = "1h"
+  safety_buffer     = "12h"
 }
 
 resource "vault_pki_secret_backend_intermediate_cert_request" "hosts" {
@@ -123,6 +125,7 @@ resource "vault_pki_secret_backend_config_auto_tidy" "internal" {
   enabled           = true
   tidy_cert_store   = true
   interval_duration = "1h"
+  safety_buffer     = "12h"
 }
 
 resource "vault_pki_secret_backend_intermediate_cert_request" "internal" {
@@ -160,4 +163,22 @@ resource "vault_pki_secret_backend_role" "internal" {
   allow_ip_sans    = true
   client_flag      = false
   server_flag      = true
+}
+
+resource "vault_policy" "cert-self-issue-any-internal" {
+  name   = "cert-self-issue-internal"
+  policy = <<-EOT
+    path "/pki-internal/sign/internal" {
+      capabilities = ["create", "patch", "read", "update"]
+    }
+  EOT
+}
+
+resource "vault_kubernetes_auth_backend_role" "cert-manager" {
+  backend                          = vault_auth_backend.kubernetes.path
+  role_name                        = "cert-manager"
+  bound_service_account_names      = ["vault-issuer"]
+  bound_service_account_namespaces = ["vault"]
+  token_policies                   = ["default", vault_policy.cert-self-issue-any-internal.name]
+  audience                         = "vault://vault/vault-self-issuer"
 }
