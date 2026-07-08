@@ -25,6 +25,7 @@ resource "vault_pki_secret_backend_config_auto_tidy" "root-a" {
   enabled           = true
   tidy_cert_store   = true
   interval_duration = "1h"
+  safety_buffer     = "12h"
 }
 
 resource "vault_pki_secret_backend_root_cert" "a" {
@@ -66,6 +67,7 @@ resource "vault_pki_secret_backend_config_auto_tidy" "hosts" {
   enabled           = true
   tidy_cert_store   = true
   interval_duration = "1h"
+  safety_buffer     = "12h"
 }
 
 resource "vault_pki_secret_backend_intermediate_cert_request" "hosts" {
@@ -123,6 +125,7 @@ resource "vault_pki_secret_backend_config_auto_tidy" "internal" {
   enabled           = true
   tidy_cert_store   = true
   interval_duration = "1h"
+  safety_buffer     = "12h"
 }
 
 resource "vault_pki_secret_backend_intermediate_cert_request" "internal" {
