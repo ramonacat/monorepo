@@ -4,5 +4,6 @@ resources:
   - authentik.yaml
   - crowdsec.yaml
   - fluentbit.yaml
+  - generator.yaml
   - grafana.yaml
   - ras.yaml

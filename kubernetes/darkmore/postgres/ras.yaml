@@ -1,31 +1,40 @@
----
-apiVersion: bitnami.com/v1alpha1
-kind: SealedSecret
+apiVersion: external-secrets.io/v1
+kind: ExternalSecret
 metadata:
   name: ras
-  namespace: cloudnative-pg-database
 spec:
-  encryptedData:
-    password: AgBYA9NCRsgVMss47HPp+214XT5m0Dt8ygkbWlV5RFCpnFubcAqOv5umEU6CsI8xRCozcLhfFUao9hjwLO/v+HRvpw9aaK1zEjRgK4FppCYCg9Ovjxd/TsdgrA6QFgjtQ6ShBPw3yo94n5lkJ9hqwnRZCJE3g9+9kM4el/VJNw2305qQb0ZaImLC2+EgPCLRYCRtiLgq98jenYpU7sP0BoHzU8yp4JWLzIa0GJEKmtxnHisocpNUrsysj6TPhyq4WOuOmkrExg3Myu/dBgRLuAHG3bgoOj78sNeY8mnvPBwi/0ZYpBx/I1yRa1IaCrWDh+XPQo6UIB8TT0+3ct4ZzNUf2eH6w8oV6gSJtlt7Pu1BTvClyRr6FJo8iidlJBDcz5GVUv2aDP8W3HTWYeKOfZ9/zio+ZtsgZuWn6K8UVZZGnvImbK32ceuay8iOG2nOCiw3/GdfLmvm0v9HCXoy5lldH7U0gjqsCDbyDuiB6Y1eizr0P1N8uSMXPPF7ZQ4Kz8+9fUsUMAyBrABUMQvk4s5g/gjfQbOrcj/qirmC+X3mEVwg2CRxU3AYcvq1vWotUjcsrKm1Z1pXwXRQf2IE2Lbd1h31NZ/Ickz8MToNsIrXMvmgA/uqqOaPUIsAEs59LjO74cHfyEBNK9DHDo6nHVZ6DA0jsrnEhUDTGInq4oCzDEN5N/8bwkOGlbP42GLclelntRE2KiMSm6HXgnkCUKnU
-    username: AgBNX0qhyxviz/8fGBEsYqR7kqYgBBUTKzotpRS6xytXmhO8LhlNX1nexuZ+6Dpy7yKVozrmywj7l9Z14IAcKkwkwt2bCxN6yD6SuGnOmPbZZxJbBb3URCFPEwBJzaI9EnNTKesb1dznwwX7MT/bOu/rKHC/LmcQoNEFh8ANTsA7dip6RNa2NBLYfvEXWw9pWt1EqLO0LGcD10Z1XYTQfHauwepWnHhQfF6TQMqadao2ZggjhD61qu4rCe4D23irrakedfuZjYVdYv2SFivihlu33R0n2QCHNL5uv4PzvTR0wzo6MMueHQzJxq3NYV4lyxYK/ur74G8DRCqraUiM9Wrhrxxi2qZim/Me6MDj2Sw0u1JpwNvND1v2TwGyMNqYvukyrEcnbq1X/3xQqrUri7OF+l7f2zN257ep9yZmjTm0QgMOXTLZtHN4uJT8uza7Y9KXU7xbN4gShgIq47vx6g2xMr2Yj/aZdFxDcmx753ud2HpEyefMDAYNtmQ3kDw0hNtQ+4TnJG+pQab8g9hkvlB9v6EH4bpYqnyx75UpXcWFOwTpXqlbP9kJNzWGNxGd+Ksyk4EtetjX/4rkBPhL2DMLUZWA7cA0zlASCMlwvDIXGlMu++9U4r2jP8WlT50uQh5R2lDKEhhXHLTyGSS2uElglLOF/+v75AHBey/pOlZZGhmKZy4wgEQR/pHaypdsyN9r4eq/
-  template:
-    metadata:
-      labels:
-        cnpg.io/reload: "true"
-      name: ras
-      namespace: cloudnative-pg-database
-    type: kubernetes.io/basic-auth
+  refreshInterval: "24h"
+  target:
+    name: ras
+    creationPolicy: Merge
+    template:
+      metadata:
+        labels:
+          cnpg.io/reload: "true"
+      data:
+        username: "ras"
+        password: "{{ .password }}"
+  dataFrom:
+    - sourceRef:
+        generatorRef:
+          apiVersion: generators.external-secrets.io/v1alpha1
+          kind: Password
+          name: pg-password-generator
 ---
-apiVersion: bitnami.com/v1alpha1
-kind: SealedSecret
+apiVersion: external-secrets.io/v1alpha1
+kind: PushSecret
 metadata:
   name: ras
-  namespace: ras
 spec:
-  encryptedData:
-    DATABASE_URL: AgBmlFxcDXTTTwEh5ZzUE3NU+UaWP9v9L4M9saI1qvNiZcJAgP6VfKeC358vEa7xSfGCPsX7eNwpru35pAhLl6ip45JisqW+PdWawfQu3kBt5D0mRits87PbzZMJglqy88xCaZqwDjLAEdkuG/zlCxdrcGHYf5Zc3xdB45R2329sRbD+n7Q9kfcq1/TnPo4KIdYOUp0nVgiGiHMx8ho+zFyImxepmScSGZRzMrdYiw0MwdjPzCS2xqPxmZd1lpOw9ZzKHQf6tNo9MbleVM3If56qno4x49bNdCoJqd5WmTpnxUJKEMnF1iez92JVTXz3cpicFyTR47OsGDxK8NylbmFkfsJ0/lXENmNsMViewFo3tfJi66UWgqnpU+V6xFwwQZXqC9FJ//hBSinrzf4uYyrP/PBgJk+UBJtBqCTaaMZoq+L/FHqshA77dz+Prirnw52PQxzD9i39nbMBiiAz3QfHLRQSKYgW3w3E3ShmLfSktUMhhyXvVEP4C4bmUQykiayv8gEdcWEHuHBYdMizH3Cag0kOXkp1b7DlBv6hdYXR9sXKjhD5dqdZeC+aIUAWEOsuvlPGh2Mo3UWtbnVXVnQoGPF8z3jGDab+iXeUEQp/fbno+yYEdyG1kqLev0Rmw8vl4hdSKeYveTDWbit8Ci7c8jM3XJmT9/YWV9H5dhZ50KbJQQLR9kb+orpQWvqS9SRRnoZ5utSPnRNib9Qwq2FdPeLM3Pai65pxcb0Cy3nU8I7fROxDXZ6WZo9BOOYgGJVm0eS1FUhkPMS5dVJMYexnAl1cKiKal+SNN3lqK48VJBV71qcSkFEHMirnF1zfHIGpySvJug==
-  template:
-    metadata:
+  deletionPolicy: Delete
+  refreshInterval: 24h
+  secretStoreRefs:
+    - name: vault
+      kind: SecretStore
+  selector:
+    secret:
       name: ras
-      namespace: ras
-    type: Opaque
+  data:
+    - match:
+        remoteRef:
+          remoteKey: postgres/ras

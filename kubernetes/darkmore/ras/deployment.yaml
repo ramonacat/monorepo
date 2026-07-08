@@ -19,6 +19,9 @@ spec:
     metadata:
       annotations:
         kubectl.kubernetes.io/default-container: ras
+        vault.hashicorp.com/agent-inject: 'true'
+        vault.hashicorp.com/role: kv-inject-kubernetes-darkmore
+        
       labels:
         app: ras
     spec:
@@ -58,3 +61,23 @@ spec:
         - containerPort: 3000
           name: ras
       restartPolicy: Always
+---
+apiVersion: external-secrets.io/v1
+kind: ExternalSecret
+metadata:
+  name: ras
+spec:
+  refreshInterval: 1m
+  target:
+    name: ras
+    creationPolicy: Merge
+    template:
+      data:
+        DATABASE_URL: 'postgres://{{ .username }}:{{ .password }}@cloudnative-pg-database-cluster-pooler-rw.cloudnative-pg-database/ras'
+  dataFrom:
+    - sourceRef:
+        storeRef:
+          kind: ClusterSecretStore
+          name: vault
+    - extract:
+        key: ras
