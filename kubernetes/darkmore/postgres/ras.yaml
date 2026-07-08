@@ -7,7 +7,7 @@ spec:
   refreshInterval: "24h"
   target:
     name: ras
-    creationPolicy: Merge
+    creationPolicy: Owner
     template:
       metadata:
         labels:
