@@ -76,5 +76,6 @@ spec:
         storeRef:
           kind: ClusterSecretStore
           name: vault
-    - extract:
+      extract:
         key: ras
+      
