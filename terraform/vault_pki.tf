@@ -164,3 +164,21 @@ resource "vault_pki_secret_backend_role" "internal" {
   client_flag      = false
   server_flag      = true
 }
+
+resource "vault_policy" "cert-self-issue-any-internal" {
+  name   = "cert-self-issue-internal"
+  policy = <<-EOT
+    path "/pki-internal/sign/internal" {
+      capabilities = ["create", "patch", "read", "update"]
+    }
+  EOT
+}
+
+resource "vault_kubernetes_auth_backend_role" "cert-manager" {
+  backend                          = vault_auth_backend.kubernetes.path
+  role_name                        = "cert-manager"
+  bound_service_account_names      = ["vault-issuer"]
+  bound_service_account_namespaces = ["vault"]
+  token_policies                   = ["default", vault_policy.cert-self-issue-any-internal.name]
+  audience                         = "vault://vault/vault-self-issuer"
+}
