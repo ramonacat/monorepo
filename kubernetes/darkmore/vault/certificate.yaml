@@ -10,3 +10,4 @@ spec:
   commonName: vault.internal.ramona.fun
   dnsNames:
     - vault.internal.ramona.fun
+    - vault.vault.cluster.local

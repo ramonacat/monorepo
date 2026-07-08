@@ -157,7 +157,7 @@ resource "vault_pki_secret_backend_role" "internal" {
   name       = "internal"
   issuer_ref = vault_pki_secret_backend_intermediate_set_signed.internal.imported_issuers[0]
   // localhost is disabled and added explicitly so that `vault pki health-check is happy`
-  allowed_domains  = ["internal.ramona.fun", "localhost"]
+  allowed_domains  = ["internal.ramona.fun", "localhost", "cluster.local"]
   allow_localhost  = false
   allow_subdomains = true
   allow_ip_sans    = true
