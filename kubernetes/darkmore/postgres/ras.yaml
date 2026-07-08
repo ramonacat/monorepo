@@ -29,7 +29,7 @@ metadata:
   name: ras
 spec:
   deletionPolicy: Delete
-  refreshInterval: 24h
+  refreshInterval: 1m
   secretStoreRefs:
     - name: vault
       kind: SecretStore
