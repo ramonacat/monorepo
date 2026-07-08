@@ -172,7 +172,7 @@ resource "vault_policy" "kv-kubernetes-darkmore" {
   name   = "kv-kubernetes-darkmore"
   policy = <<-EOT
     path "/${vault_mount.kv-kubernetes-darkmore.path}/*" {
-      capabilities = ["create", "update", "patch", "delete" "read", "list"]
+      capabilities = ["create", "update", "patch", "delete", "read", "list"]
     }
   EOT
 }
