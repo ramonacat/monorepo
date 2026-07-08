@@ -1,6 +1,7 @@
 apiVersion: external-secrets.io/v1
 kind: ExternalSecret
 metadata:
+  namespace: cloudnative-pg-database
   name: ras
 spec:
   refreshInterval: "24h"
@@ -24,6 +25,7 @@ spec:
 apiVersion: external-secrets.io/v1alpha1
 kind: PushSecret
 metadata:
+  namespace: cloudnative-pg-database
   name: ras
 spec:
   deletionPolicy: Delete
