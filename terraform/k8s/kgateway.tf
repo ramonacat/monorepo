@@ -26,7 +26,7 @@ resource "helm_release" "envoy-proxy-crowdsec-bouncer" {
   chart            = "oci://ghcr.io/kdwils/charts/envoy-proxy-bouncer"
   namespace        = "kgateway-system"
   create_namespace = true
-  version          = "0.6.2"
+  version          = "0.6.3"
 
   values = [yamlencode({
     replicaCount = 2
