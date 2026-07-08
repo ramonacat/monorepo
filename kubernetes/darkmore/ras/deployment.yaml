@@ -67,7 +67,7 @@ spec:
   refreshInterval: 1m
   target:
     name: ras
-    creationPolicy: Merge
+    creationPolicy: Owner
     template:
       data:
         DATABASE_URL: 'postgres://{{ .username }}:{{ .password }}@cloudnative-pg-database-cluster-pooler-rw.cloudnative-pg-database/ras'
