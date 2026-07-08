@@ -32,7 +32,7 @@ spec:
   refreshInterval: 1m
   secretStoreRefs:
     - name: vault
-      kind: SecretStore
+      kind: ClusterSecretStore
   selector:
     secret:
       name: ras
