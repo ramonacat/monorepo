@@ -119,7 +119,7 @@ resource "vault_policy" "cert-self-issue" {
 
 resource "vault_cert_auth_backend_role" "hosts" {
   name           = "hosts"
-  certificate    = vault_pki_secret_backend_intermediate_set_signed.hosts.certificate
+  certificate    = module.pki-hosts.certificate
   backend        = vault_auth_backend.cert.path
   ocsp_enabled   = false
   token_policies = ["default", vault_policy.cert-self-issue.name]

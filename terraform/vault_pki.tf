@@ -5,11 +5,6 @@ resource "vault_mount" "pki" {
   max_lease_ttl_seconds     = 315360000 // 10 years(ish)
 }
 
-moved {
-  from = vault_pki_secret_backend_config_urls.pki
-  to   = vault_pki_secret_backend_config_urls.root-a
-}
-
 resource "vault_pki_secret_backend_config_urls" "root-a" {
   backend = vault_mount.pki.path
   issuing_certificates = [
@@ -40,64 +35,10 @@ resource "local_file" "cert-root-a" {
   content  = vault_pki_secret_backend_root_cert.a.certificate
 }
 
-resource "vault_mount" "pki-hosts" {
-  path                      = "pki-hosts"
-  type                      = "pki"
-  default_lease_ttl_seconds = 86400
-  max_lease_ttl_seconds     = 157680000 // 5 years(ish)
-}
-
-moved {
-  from = vault_pki_secret_backend_config_urls.pki-hosts
-  to   = vault_pki_secret_backend_config_urls.hosts
-}
-
-resource "vault_pki_secret_backend_config_urls" "hosts" {
-  backend = vault_mount.pki-hosts.path
-  issuing_certificates = [
-    "https://vault.internal.ramona.fun/v1/pki/ca"
-  ]
-  crl_distribution_points = [
-    "https://vault.internal.ramona.fun/v1/pki/crl"
-  ]
-}
-
-resource "vault_pki_secret_backend_config_auto_tidy" "hosts" {
-  backend           = vault_mount.pki-hosts.path
-  enabled           = true
-  tidy_cert_store   = true
-  interval_duration = "1h"
-  safety_buffer     = "12h"
-}
-
-resource "vault_pki_secret_backend_intermediate_cert_request" "hosts" {
-  backend     = vault_mount.pki-hosts.path
-  common_name = "ramona hosts"
-  type        = "internal"
-}
-
-resource "vault_pki_secret_backend_root_sign_intermediate" "hosts" {
-  backend              = vault_mount.pki.path
-  csr                  = vault_pki_secret_backend_intermediate_cert_request.hosts.csr
-  common_name          = "ramona hosts"
-  exclude_cn_from_sans = true
-  ttl                  = 157680000 // 5 years(ish)
-}
-
-resource "vault_pki_secret_backend_intermediate_set_signed" "hosts" {
-  backend     = vault_mount.pki-hosts.path
-  certificate = vault_pki_secret_backend_root_sign_intermediate.hosts.certificate
-}
-
-resource "local_file" "cert-ca-hosts" {
-  filename = "../certificates/ca-hosts.crt"
-  content  = vault_pki_secret_backend_intermediate_set_signed.hosts.certificate
-}
-
 resource "vault_pki_secret_backend_role" "hosts" {
-  backend    = vault_mount.pki-hosts.path
+  backend    = module.pki-hosts.mount_path
   name       = "hosts"
-  issuer_ref = vault_pki_secret_backend_intermediate_set_signed.hosts.imported_issuers[0]
+  issuer_ref = module.pki-hosts.issuer_ref
   // localhost is disabled and added explicitly so that `vault pki health-check is happy`
   allowed_domains  = ["devices.ramona.fun", "localhost"]
   allow_localhost  = false
@@ -108,54 +49,31 @@ resource "vault_pki_secret_backend_role" "hosts" {
 }
 
 resource "vault_pki_secret_backend_issuer" "hosts" {
-  backend     = vault_mount.pki-hosts.path
-  issuer_ref  = vault_pki_secret_backend_intermediate_set_signed.hosts.imported_issuers[0]
+  backend     = module.pki-hosts.mount_path
+  issuer_ref  = module.pki-hosts.issuer_ref
   issuer_name = "hosts"
 }
 
-resource "vault_mount" "pki-internal" {
-  path                      = "pki-internal"
-  type                      = "pki"
-  default_lease_ttl_seconds = 86400
-  max_lease_ttl_seconds     = 157680000 // 5 years(ish)
+module "pki-hosts" {
+  source = "./vault-pki"
+
+  name        = "hosts"
+  root_path   = vault_mount.pki.path
+  common_name = "ramona hosts"
 }
 
-resource "vault_pki_secret_backend_config_auto_tidy" "internal" {
-  backend           = vault_mount.pki-internal.path
-  enabled           = true
-  tidy_cert_store   = true
-  interval_duration = "1h"
-  safety_buffer     = "12h"
-}
+module "pki-internal" {
+  source = "./vault-pki"
 
-resource "vault_pki_secret_backend_intermediate_cert_request" "internal" {
-  backend     = vault_mount.pki-internal.path
+  name        = "internal"
+  root_path   = vault_mount.pki.path
   common_name = "ramona internal services"
-  type        = "internal"
-}
-
-resource "vault_pki_secret_backend_root_sign_intermediate" "internal" {
-  backend              = vault_mount.pki.path
-  csr                  = vault_pki_secret_backend_intermediate_cert_request.internal.csr
-  common_name          = "ramona internal services"
-  exclude_cn_from_sans = true
-  ttl                  = 157680000 // 5 years(ish)
-}
-
-resource "vault_pki_secret_backend_intermediate_set_signed" "internal" {
-  backend     = vault_mount.pki-internal.path
-  certificate = vault_pki_secret_backend_root_sign_intermediate.internal.certificate
-}
-
-resource "local_file" "cert-ca-internal" {
-  filename = "../certificates/ca-internal.crt"
-  content  = vault_pki_secret_backend_intermediate_set_signed.internal.certificate
 }
 
 resource "vault_pki_secret_backend_role" "internal" {
-  backend    = vault_mount.pki-internal.path
+  backend    = module.pki-internal.mount_path
   name       = "internal"
-  issuer_ref = vault_pki_secret_backend_intermediate_set_signed.internal.imported_issuers[0]
+  issuer_ref = module.pki-internal.issuer_ref
   // localhost is disabled and added explicitly so that `vault pki health-check is happy`
   allowed_domains  = ["internal.ramona.fun", "localhost", "cluster.local"]
   allow_localhost  = false
@@ -181,4 +99,79 @@ resource "vault_kubernetes_auth_backend_role" "cert-manager" {
   bound_service_account_namespaces = ["vault"]
   token_policies                   = ["default", vault_policy.cert-self-issue-any-internal.name]
   audience                         = "vault://vault/vault-self-issuer"
+}
+
+moved {
+  from = vault_mount.pki-hosts
+  to   = module.pki-hosts.vault_mount.pki
+}
+
+moved {
+  from = vault_pki_secret_backend_config_auto_tidy.hosts
+  to   = module.pki-hosts.vault_pki_secret_backend_config_auto_tidy.cert
+}
+
+moved {
+  from = vault_pki_secret_backend_intermediate_cert_request.hosts
+  to   = module.pki-hosts.vault_pki_secret_backend_intermediate_cert_request.cert
+}
+
+moved {
+  from = vault_pki_secret_backend_root_sign_intermediate.hosts
+  to   = module.pki-hosts.vault_pki_secret_backend_root_sign_intermediate.cert
+}
+
+moved {
+  from = vault_pki_secret_backend_intermediate_set_signed.hosts
+  to   = module.pki-hosts.vault_pki_secret_backend_intermediate_set_signed.cert
+}
+
+moved {
+  from = local_file.cert-ca-hosts
+  to   = module.pki-hosts.local_file.cert
+}
+
+moved {
+  from = vault_pki_secret_backend_config_urls.hosts
+  to   = module.pki-hosts.vault_pki_secret_backend_config_urls.cert
+}
+
+moved {
+  from = vault_pki_secret_backend_config_urls.pki
+  to   = vault_pki_secret_backend_config_urls.root-a
+}
+
+moved {
+  from = vault_pki_secret_backend_config_urls.pki-hosts
+  to   = vault_pki_secret_backend_config_urls.hosts
+}
+
+moved {
+  from = vault_mount.pki-internal
+  to   = module.pki-internal.vault_mount.pki
+}
+
+moved {
+  from = vault_pki_secret_backend_config_auto_tidy.internal
+  to   = module.pki-internal.vault_pki_secret_backend_config_auto_tidy.cert
+}
+
+moved {
+  from = vault_pki_secret_backend_intermediate_cert_request.internal
+  to   = module.pki-internal.vault_pki_secret_backend_intermediate_cert_request.cert
+}
+
+moved {
+  from = vault_pki_secret_backend_root_sign_intermediate.internal
+  to   = module.pki-internal.vault_pki_secret_backend_root_sign_intermediate.cert
+}
+
+moved {
+  from = vault_pki_secret_backend_intermediate_set_signed.internal
+  to   = module.pki-internal.vault_pki_secret_backend_intermediate_set_signed.cert
+}
+
+moved {
+  from = local_file.cert-ca-internal
+  to   = module.pki-internal.local_file.cert
 }
