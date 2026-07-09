@@ -92,6 +92,7 @@ resource "vault_policy" "cert-self-issue-any-internal" {
   EOT
 }
 
+# TODO rename -> cert-manager-vault
 resource "vault_kubernetes_auth_backend_role" "cert-manager" {
   backend                          = vault_auth_backend.kubernetes.path
   role_name                        = "cert-manager"
@@ -99,6 +100,14 @@ resource "vault_kubernetes_auth_backend_role" "cert-manager" {
   bound_service_account_namespaces = ["vault"]
   token_policies                   = ["default", vault_policy.cert-self-issue-any-internal.name]
   audience                         = "vault://vault/vault-self-issuer"
+}
+
+module "pki-kubernetes-darkmore" {
+  source = "./vault-pki"
+
+  name        = "kubernetes-darkmore"
+  root_path   = vault_mount.pki.path
+  common_name = "ramona kubernetes - darkmore"
 }
 
 moved {
