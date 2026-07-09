@@ -1,7 +1,7 @@
 resource "vault_policy" "cert-issue-kubernetes-darkmore" {
   name   = "cert-issue-kubernetes-darkmore"
   policy = <<-EOT
-    path "/pki-kubernetes-darkmore/sign/internal" {
+    path "/pki-kubernetes-darkmore/issue/hosts" {
       capabilities = ["create", "patch", "read", "update"]
     }
   EOT

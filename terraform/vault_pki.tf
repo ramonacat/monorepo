@@ -110,6 +110,27 @@ module "pki-kubernetes-darkmore" {
   common_name = "ramona kubernetes - darkmore"
 }
 
+resource "vault_pki_secret_backend_issuer" "kubernetes-darkmore-hosts" {
+  backend     = module.pki-kubernetes-darkmore.mount_path
+  issuer_ref  = module.pki-kubernetes-darkmore.issuer_ref
+  issuer_name = "hosts"
+}
+
+resource "vault_pki_secret_backend_role" "kubernetes-darkmore-hosts" {
+  backend    = module.pki-kubernetes-darkmore.mount_path
+  name       = "hosts"
+  issuer_ref = module.pki-kubernetes-darkmore.issuer_ref
+  // localhost is disabled and added explicitly so that `vault pki health-check is happy`
+  allowed_domains  = ["devices.ramona.fun", "localhost"]
+  cn_validations   = ["disabled"]
+  allow_any_name   = true
+  allow_localhost  = false
+  allow_subdomains = true
+  allow_ip_sans    = true
+  client_flag      = true
+  server_flag      = true
+}
+
 moved {
   from = vault_mount.pki-hosts
   to   = module.pki-hosts.vault_mount.pki
