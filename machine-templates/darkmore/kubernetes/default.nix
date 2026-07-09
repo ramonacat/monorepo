@@ -84,9 +84,14 @@
       "overlay"
     ];
 
-    ramona.updates = {
-      mode = "boot";
-      post-update = "touch /var/run/reboot-required";
+    ramona = {
+      updates = {
+        mode = "boot";
+        post-update = "touch /var/run/reboot-required";
+      };
+      vault-agent = {
+        role = "hosts-kubernetes-darkmore";
+      };
     };
 
     systemd.targets.kubernetes = {

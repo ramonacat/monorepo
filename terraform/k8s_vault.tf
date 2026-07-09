@@ -124,6 +124,7 @@ resource "helm_release" "vault" {
               retry_join {
                 leader_api_addr = "https://vault-active:8200"
 
+                leader_tls_servername = "vault.internal.ramona.fun"
                 leader_client_cert_file = "/vault/secrets/vault-server/tls.crt"
                 leader_client_key_file = "/vault/secrets/vault-server/tls.key"
                 leader_ca_cert_file = "/vault/secrets/vault-server/ca.crt"

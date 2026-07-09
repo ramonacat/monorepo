@@ -1,9 +1,27 @@
 {
   pkgs,
+  lib,
   config,
   ...
 }:
 {
+  options = {
+    ramona.vault-agent = lib.mkOption {
+      type =
+        with lib.types;
+        submodule {
+          options = {
+            role = lib.mkOption {
+              type = str;
+              default = "hosts";
+            };
+            templates = lib.mkOption {
+              type = listOf attrs;
+            };
+          };
+        };
+    };
+  };
   config =
     let
       client-cert = "/var/ramona/identity/certificate.crt";
@@ -36,7 +54,7 @@
 
                   config = [
                     {
-                      name = "hosts";
+                      name = config.ramona.vault-agent.role;
                       client_cert = client-cert;
                       client_key = client-key;
                       reload = true;
@@ -57,7 +75,8 @@
               '';
               destination = "/var/ramona/identity/bundle";
             }
-          ];
+          ]
+          ++ config.ramona.vault-agent.templates;
         };
       };
     };
