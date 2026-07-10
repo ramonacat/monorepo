@@ -123,47 +123,11 @@
             }) self.nixosConfigurations
           )
         );
-        tailscale-tags =
-          pkgs."${system}".lib.mapAttrs
-            (
-              _: v:
-              pkgs."${system}".lib.unique (
-                if (v.config.ramona.machine.type == "server") then
-                  (
-                    [ "tag:server" ]
-                    ++ (
-                      if v.config.ramona.machine.hasPublicIP then
-                        [
-                          "tag:server-public"
-                          "tag:server-public-${v.config.ramona.machine.location}"
-                        ]
-                      else
-                        [
-                          "tag:server-private"
-                          "tag:server-private-${v.config.ramona.machine.location}"
-                        ]
-                    )
-                    ++ (if v.config.services.sonarr.enable then [ "tag:service-servarr" ] else [ ])
-                    ++ (if v.config.services.transmission.enable then [ "tag:service-transmission" ] else [ ])
-                    ++ (
-                      if builtins.elem "builds-host" v.config.ramona.machine.roles then
-                        [ "tag:service-builds-host" ]
-                      else
-                        [ ]
-                    )
-                    ++ (if v.config.services.jellyfin.enable then [ "tag:service-jellyfin" ] else [ ])
-                    # TODO migrate to use this instead of a centralized config here
-                    ++ v.config.ramona.machine.tailscale-tags
-                  )
-                else
-                  [ ]
-              )
-            )
-            (
-              pkgs."${system}".lib.filterAttrs (
-                _: v: v.config.ramona.machine.type != "live"
-              ) self.nixosConfigurations
-            );
+        tailscale-tags = pkgs."${system}".lib.mapAttrs (_: v: v.config.ramona.machine.tailscale-tags) (
+          pkgs."${system}".lib.filterAttrs (
+            _: v: v.config.ramona.machine.type != "live"
+          ) self.nixosConfigurations
+        );
       };
     };
 }

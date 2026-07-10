@@ -24,5 +24,7 @@
         intel-compute-runtime-legacy1
       ];
     };
+
+    ramona.machine.tailscale-tags = [ "tag:service-jellyfin" ];
   };
 }

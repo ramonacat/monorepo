@@ -1,4 +1,4 @@
-_: {
+{ config, ... }: {
   imports = [
     ../../modules/machine-kind.nix
     ./restic-secrets.nix
@@ -7,8 +7,13 @@ _: {
     ramona.machine = {
       type = "server";
       hasPublicIP = true;
+      roles = [ "server-public" ];
+      tailscale-tags = [
+        "tag:server"
+        "tag:server-public"
+        "tag:server-public-${config.ramona.machine.location}"
+      ];
     };
-    ramona.machine.roles = [ "server-public" ];
 
     security.acme = {
       acceptTerms = true;

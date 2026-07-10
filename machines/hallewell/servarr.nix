@@ -420,7 +420,7 @@
 
       virtualisation.oci-containers.containers.flaresolverr = {
         image = "ghcr.io/flaresolverr/flaresolverr:latest";
-        ports = [ "0.0.0.0:${builtins.toString flaresolver-port}:${builtins.toString flaresolver-port}" ];
+        ports = [ "0.0.0.0:${toString flaresolver-port}:${toString flaresolver-port}" ];
         environment = {
           LOG_LEVEL = "debug";
         };
@@ -442,5 +442,7 @@
               "/var/lib/prowlarr"
             ];
           };
+
+      ramona.machine.tailscale-tags = [ "tag:service-servarr" ];
     };
 }
