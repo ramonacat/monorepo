@@ -38,5 +38,7 @@
     networking.firewall.interfaces.tailscale0.allowedTCPPorts = [
       config.services.transmission.settings.rpc-port
     ];
+
+    ramona.machine.tailscale-tags = [ "tag:service-transmission" ];
   };
 }

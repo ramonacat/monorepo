@@ -1,4 +1,3 @@
-# TODO convert to sops so we can avoid the long list that defines all the secrets here
 let
   ssh-keys = import ../data/ssh-keys.nix;
 

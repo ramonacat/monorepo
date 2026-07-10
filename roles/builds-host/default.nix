@@ -11,6 +11,7 @@
       file = ../../secrets/nix-serve-key.age;
     };
     ramona.machine.roles = [ "builds-host" ];
+    ramona.machine.tailscale-tags = [ "tag:service-builds-host" ];
 
     users.users.root.openssh.authorizedKeys.keys = [
       (import ../../data/ssh-keys.nix).root.ci

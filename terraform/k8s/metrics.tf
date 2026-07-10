@@ -6,7 +6,7 @@ resource "helm_release" "kube-prometheus-stack" {
   version          = "87.12.3"
 
   values = [yamlencode({
-    // TODO alertmanager should be a separate deployment, outside of the module
+    // TODO alertmanager should be a separate deployment, outside of the module, as there's really only one needed (not one on every cluster)
     alertmanager = {
       alertmanagerSpec = {
         replicas  = 2
@@ -20,8 +20,6 @@ resource "helm_release" "kube-prometheus-stack" {
         }
       }
 
-      # TODO this would be much easier with webhook_url_file, but it doesn't work with the operator
-      # see: https://github.com/prometheus-operator/prometheus-operator/issues/7159
       config = {
         route = {
           receiver = "discord"
@@ -118,6 +116,9 @@ resource "helm_release" "kube-prometheus-stack" {
     }
   })]
 
+  # TODO this would be much easier with webhook_url_file, but it doesn't work with the operator
+  # see: https://github.com/prometheus-operator/prometheus-operator/issues/7159
+  # perhaps just inject a secret from vault?
   set_sensitive = [{
     name  = "alertmanager.config.receivers[0].discord_configs[0].webhook_url"
     value = var.discord_webhook
