@@ -11,7 +11,7 @@ resource "helm_release" "kgateway" {
   chart            = "oci://cr.kgateway.dev/kgateway-dev/charts/kgateway"
   namespace        = helm_release.kgateway-crds.namespace
   create_namespace = true
-  version          = "2.3.5"
+  version          = "2.3.6"
 
   values = [yamlencode({
     controller = {
