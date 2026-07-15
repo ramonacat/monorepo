@@ -3,10 +3,6 @@ set -euo pipefail
 
 declare -ra ssh_options=('-o' 'StrictHostKeyChecking=no' '-o' 'UserKnownHostsFile=/dev/null' '-i' './id_ed25519')
 
-publish() {
-	scp "${ssh_options[@]}" "$@"
-}
-
 make-table() {
 	local -r headers="$1"
 	local -r body="$2"

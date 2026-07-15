@@ -9,6 +9,7 @@ in
     file.".npmrc".text = ''
       prefix = ${mutable-npm-path}
       @ramonacat:registry=https://npm.pkg.github.com
+      //npm.pkg.github.com/:_authToken=''${GITHUB_TOKEN}
     '';
     sessionPath = [ "${mutable-npm-path}/bin/" ];
     sessionVariablesExtra = ''
