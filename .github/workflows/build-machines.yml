@@ -48,6 +48,11 @@ jobs:
           name: container-images
           path: result/containers/
 
+      - uses: actions/upload-artifact@v7
+        with:
+          name: npm-packages
+          path: result/npm-packages/
+
       - name: Create or update comment
         if: github.ref != 'refs/heads/main' && github.actor != 'dependabot[bot]'
         uses: peter-evans/create-or-update-comment@v5
@@ -84,3 +89,27 @@ jobs:
 
       - name: upload to the container registry
         run: ./.github/scripts/upload-containers.bash
+
+  npm-publish:
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main'
+    permissions:
+      contents: read
+      packages: write
+      attestations: write
+      id-token: write
+    needs: ["build"]
+    steps:
+      - name: Checkout the repo
+        uses: actions/checkout@v7
+        with:
+          fetch-depth: 1
+
+      - name: download the container images
+        uses: actions/download-artifact@v8
+        with:
+          name: container-images
+          path: containers
+
+      - name: upload to the npm registry
+        run: ./.github/scripts/upload-npm-packages.bash
