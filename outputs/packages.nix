@@ -36,6 +36,10 @@ rec {
           pkgs.lib.filterAttrs (_: v: v ? container) local-packages.apps
         )
       ))
+      + "\nmkdir -p $out/npm-packages\n"
+      + (pkgs.lib.concatStringsSep "\n" (
+        pkgs.lib.mapAttrsToList (k: v: "ln -s ${v.package} $out/npm-packages/${k}") local-packages.libs.js
+      ))
       + "\nln -s ${flake.nixosConfigurations.iso.config.system.build.isoImage} $out/iso\n"
     );
   default = coverage;
