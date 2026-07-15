@@ -1,7 +1,13 @@
 {
   "name": "@ramonacat/react-components",
   "version": "0.0.1",
-  "repository": "https://github.com/ramonacat/monorepo.git",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ramonacat/monorepo.git"
+  },
+  "publishConfig": {
+    "registry": "https://npm.pkg.github.com"
+  },
   "exports": {
     "./icons": "./dist/icons.mjs",
     "./components/Button": "./dist/components/Button.mjs",
