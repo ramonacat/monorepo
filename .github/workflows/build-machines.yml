@@ -113,3 +113,5 @@ jobs:
 
       - name: upload to the npm registry
         run: ./.github/scripts/upload-npm-packages.bash
+        env:
+          GITHUB_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
