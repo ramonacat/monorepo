@@ -11,6 +11,7 @@ let
       npm run build
       mkdir $out/
       cp -r ./* $out/
+      cp -r ./.* $out/
     '';
 
     inherit (package-versions) nodejs;
