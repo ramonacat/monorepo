@@ -80,7 +80,7 @@ All the instructions below assume running in `nix develop` shell from this flake
     - look through currently existing files, rust is very abstracted for example
     - the coverage will be automagically picked up by the CI
 3. Import the file in `packages/default.nix`, with the package name as the key under `apps`
-4. The app will be available as `pkgs.ramona.your-key` throught the flake. Can be built standalone with `nix build .#your-key` as well.
+4. The app will be available as `pkgs.ramona.your-key` throughout the flake. Can be built standalone with `nix build .#your-key` as well.
 
 ## Disaster recovery
 
