@@ -1,6 +1,6 @@
 {
   "name": "@ramonacat/react-components",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/ramonacat/monorepo.git"
@@ -10,6 +10,7 @@
   },
   "exports": {
     "./icons": "./dist/icons.mjs",
+    "./hooks": "./dist/hooks.mjs",
     "./components/Button": "./dist/components/Button.mjs",
     "./components/charts/LiveLineChart": "./dist/components/charts/LiveLineChart.mjs",
     "./components/CodeEditor": "./dist/components/CodeEditor.mjs",
@@ -36,6 +37,7 @@
     "prettier": "^3.9.5",
     "typescript": "^6",
     "typescript-eslint": "^8.64.0",
+    "unplugin-dts": "^1.0.3",
     "vite": "^8.1.4"
   },
   "dependencies": {
