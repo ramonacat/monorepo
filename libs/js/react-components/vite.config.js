@@ -1,8 +1,17 @@
 import { resolve } from "node:path";
 import { defineConfig } from "vite";
+import dts from "unplugin-dts/vite";
 
 export default defineConfig({
+  plugins: [
+    dts({
+      beforeWriteFile: (path, _context) => {
+        console.log("boop", path);
+      },
+    }),
+  ],
   build: {
+    emptyOutDir: false,
     lib: {
       name: "react-components",
       entry: {
