@@ -8,6 +8,7 @@ export default defineConfig({
       beforeWriteFile: (path, _context) => {
         console.log("boop", path);
       },
+      bundleTypes: true,
     }),
   ],
   build: {
