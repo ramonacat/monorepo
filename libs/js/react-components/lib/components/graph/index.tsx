@@ -4,11 +4,13 @@ import {
   type CanvasHTMLAttributes,
   type RefObject,
 } from "react";
-import type { GraphData } from "./GraphData";
+import { GraphData } from "./GraphData";
 import { Circle, Vector2 } from "../../math";
 import { Renderer } from "./Renderer";
 import { useDpi } from "../../hooks/useDpi";
 import { useElementDimensions } from "../../hooks/useElementDimensions";
+
+export { GraphData };
 
 export function Graph({
   data,

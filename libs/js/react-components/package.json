@@ -1,6 +1,6 @@
 {
   "name": "@ramonacat/react-components",
-  "version": "0.1.4",
+  "version": "0.1.5",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/ramonacat/monorepo.git"
@@ -10,20 +10,11 @@
   },
   "exports": {
     "./icons": "./dist/icons.mjs",
-    "./hooks": "./dist/hooks.mjs",
-    "./components/Button": "./dist/components/Button.mjs",
-    "./components/charts/chart-data": "./dist/components/charts/chart-data.mjs",
-    "./components/charts/LiveLineChart": "./dist/components/charts/LiveLineChart.mjs",
-    "./components/CodeEditor": "./dist/components/CodeEditor.mjs",
-    "./components/Form": "./dist/components/Form.mjs",
-    "./components/graph/Graph": "./dist/components/graph/Graph.mjs",
-    "./components/graph/graph-data": "./dist/components/graph/graph-data.mjs",
-    "./components/Modal": "./dist/components/Modal.mjs",
-    "./components/Section": "./dist/components/Section.mjs",
-    "./components/Table": "./dist/components/Table.mjs",
+    "./hooks": "./dist/hooks",
+    "./components/*": "./dist/components/*",
     "./css": "./dist/css/index.mjs",
     "./css/theme-contract.css.ts": "./dist/css/theme-contract.css.mjs",
-    "./math": "./dist/math.mjs",
+    "./math": "./dist/math/index.mjs",
     "./react-components.css": "./dist/react-components.css"
   },
   "devDependencies": {
