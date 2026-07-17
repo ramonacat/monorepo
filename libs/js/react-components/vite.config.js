@@ -2,15 +2,14 @@ import { resolve } from "node:path";
 import { defineConfig } from "vite";
 import dts from "unplugin-dts/vite";
 import { vanillaExtractPlugin } from "@vanilla-extract/vite-plugin";
+import react from "@vitejs/plugin-react";
 
 export default defineConfig({
   plugins: [
     dts({
-      beforeWriteFile: (path, _context) => {
-        console.log("boop", path);
-      },
       bundleTypes: true,
     }),
+    react(),
     vanillaExtractPlugin(),
   ],
   build: {
