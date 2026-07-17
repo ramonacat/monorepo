@@ -1,6 +1,7 @@
 import { resolve } from "node:path";
 import { defineConfig } from "vite";
 import dts from "unplugin-dts/vite";
+import { vanillaExtractPlugin } from "@vanilla-extract/vite-plugin";
 
 export default defineConfig({
   plugins: [
@@ -10,6 +11,7 @@ export default defineConfig({
       },
       bundleTypes: true,
     }),
+    vanillaExtractPlugin(),
   ],
   build: {
     emptyOutDir: false,
