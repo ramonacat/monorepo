@@ -21,7 +21,6 @@ _: {
     ./minecraft.nix
     ./navidrome.nix
     ./networking.nix
-    ./photoprism.nix
     ./postgresql.nix
     ./servarr.nix
     ./znc.nix
