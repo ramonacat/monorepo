@@ -1,6 +1,6 @@
 {
   "name": "@ramonacat/react-components",
-  "version": "0.1.2",
+  "version": "0.1.3",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/ramonacat/monorepo.git"
@@ -23,7 +23,8 @@
     "./components/Table": "./dist/components/Table.mjs",
     "./css": "./dist/css/index.mjs",
     "./css/theme-contract.css": "./dist/css/theme-contract.css.mjs",
-    "./math": "./dist/math.mjs"
+    "./math": "./dist/math.mjs",
+    "./react-components.css": "./dist/react-components.css"
   },
   "devDependencies": {
     "@antebudimir/eslint-plugin-vanilla-extract": "^1.17.0",
@@ -33,6 +34,7 @@
     "@types/react-dom": "^19.2.3",
     "@vanilla-extract/css": "^1.21.1",
     "@vanilla-extract/vite-plugin": "^5.2.5",
+    "@vitejs/plugin-react": "^6.0.3",
     "eslint": "^9",
     "eslint-plugin-react": "^7.37.5",
     "globals": "^17.7.0",
