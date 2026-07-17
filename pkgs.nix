@@ -14,6 +14,7 @@ let
           "test_slow_write_incomplete"
         ];
       });
+      tflint = prev.callPackage ./overrides/tflint.nix { };
     })
   ];
   pkgsConfig = {

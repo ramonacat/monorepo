@@ -21,6 +21,10 @@ export default defineConfig({
           import.meta.dirname,
           "./lib/components/button/Button.tsx",
         ),
+        "components/charts/chart-data": resolve(
+          import.meta.dirname,
+          "./lib/components/charts/ChartData.ts",
+        ),
         "components/charts/LiveLineChart": resolve(
           import.meta.dirname,
           "./lib/components/charts/LiveLineChart.tsx",

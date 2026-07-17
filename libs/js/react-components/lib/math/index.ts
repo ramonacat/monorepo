@@ -1,3 +1,9 @@
+import { DataWindow } from "./DataWindow";
+import { InterpolatedValue } from "./InterpolatedValue";
+import { WindowedMaximum } from "./WindowedMaximum";
+
+export { DataWindow, InterpolatedValue, WindowedMaximum };
+
 export function lerp(start: number, end: number, t: number) {
   return start + (end - start) * t;
 }
