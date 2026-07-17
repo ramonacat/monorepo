@@ -1,6 +1,6 @@
 {
   "name": "@ramonacat/react-components",
-  "version": "0.0.4",
+  "version": "0.1.0",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/ramonacat/monorepo.git"
@@ -12,7 +12,7 @@
     "./icons": "./dist/icons.mjs",
     "./hooks": "./dist/hooks.mjs",
     "./components/Button": "./dist/components/Button.mjs",
-    "./components/charts/chart-data": "./dist/components/charts/ChartData.mjs",
+    "./components/charts/chart-data": "./dist/components/charts/chart-data.mjs",
     "./components/charts/LiveLineChart": "./dist/components/charts/LiveLineChart.mjs",
     "./components/CodeEditor": "./dist/components/CodeEditor.mjs",
     "./components/Form": "./dist/components/Form.mjs",
