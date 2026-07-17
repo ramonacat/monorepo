@@ -6,7 +6,7 @@ import {
 } from "react";
 import * as css from "./Section.css.ts";
 import icons from "../../icons";
-import { TextInput } from "../form/Form";
+import { TextInput } from "../form";
 
 type HeadingLevel = 1 | 2 | 3 | 4 | 5 | 6;
 

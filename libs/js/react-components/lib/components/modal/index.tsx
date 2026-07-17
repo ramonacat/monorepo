@@ -1,8 +1,8 @@
 import { useEffect, useRef, type ReactNode } from "react";
 import * as css from "./Modal.css.ts";
-import { Section, HeaderNavigation, SectionHeader } from "../section/Section";
+import { Section, HeaderNavigation, SectionHeader } from "../section";
 import icons from "../../icons";
-import { Button } from "../button/Button";
+import { Button } from "../button";
 
 export default function Modal({
   isOpen,

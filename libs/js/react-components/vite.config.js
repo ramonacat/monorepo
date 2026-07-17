@@ -11,52 +11,45 @@ export default defineConfig({
       name: "react-components",
       entry: {
         icons: resolve(import.meta.dirname, "./lib/icons.ts"),
-        "components/Button": resolve(
+        "components/button/index": resolve(
           import.meta.dirname,
-          "./lib/components/button/Button.tsx",
+          "./lib/components/button/index.tsx",
         ),
-        "components/charts/chart-data": resolve(
+        "components/charts/index": resolve(
           import.meta.dirname,
-          "./lib/components/charts/ChartData.ts",
+          "./lib/components/charts/index.tsx",
         ),
-        "components/charts/LiveLineChart": resolve(
+        "components/code-editor/index": resolve(
           import.meta.dirname,
-          "./lib/components/charts/LiveLineChart.tsx",
+          "./lib/components/code-editor/index.tsx",
         ),
-        "components/CodeEditor": resolve(
+        "components/form/index": resolve(
           import.meta.dirname,
-          "./lib/components/code-editor/CodeEditor.tsx",
+          "./lib/components/form/index.tsx",
         ),
-        "components/Form": resolve(
+        "components/graph/index": resolve(
           import.meta.dirname,
-          "./lib/components/form/Form.tsx",
+          "./lib/components/graph/index.tsx",
         ),
-        "components/graph/Graph": resolve(
+        "components/modal/index": resolve(
           import.meta.dirname,
-          "./lib/components/graph/Graph.tsx",
+          "./lib/components/modal/index.tsx",
         ),
-        "components/graph/graph-data": resolve(
+        "components/section/index": resolve(
           import.meta.dirname,
-          "./lib/components/graph/GraphData.ts",
+          "./lib/components/section/index.tsx",
         ),
-        "components/Modal": resolve(
+        "components/table/index": resolve(
           import.meta.dirname,
-          "./lib/components/modal/Modal.tsx",
-        ),
-        "components/Section": resolve(
-          import.meta.dirname,
-          "./lib/components/section/Section.tsx",
-        ),
-        "components/Table": resolve(
-          import.meta.dirname,
-          "./lib/components/table/Table.tsx",
+          "./lib/components/table/index.tsx",
         ),
         css: resolve(import.meta.dirname, "./lib/css/index.ts"),
         "css/theme-contract.css": resolve(
           import.meta.dirname,
           "./lib/css/theme-contract.css.ts",
         ),
-        math: resolve(import.meta.dirname, "./lib/math/index.ts"),
+        "math/index": resolve(import.meta.dirname, "./lib/math/index.ts"),
+        "hooks/index": resolve(import.meta.dirname, "./lib/hooks/index.ts"),
       },
       formats: ["es"],
     },
