@@ -90,7 +90,7 @@ resource "helm_release" "kube-prometheus-stack" {
             spec = {
               storageClassName = "longhorn"
               accessModes      = ["ReadWriteOnce"]
-              resources        = { requests = { storage = "2Gi" } }
+              resources        = { requests = { storage = "4Gi" } }
             }
           }
         }
