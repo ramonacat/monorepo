@@ -1,6 +1,6 @@
 {
   "name": "@ramonacat/react-components",
-  "version": "0.1.5",
+  "version": "0.2.0",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/ramonacat/monorepo.git"
@@ -9,13 +9,13 @@
     "registry": "https://npm.pkg.github.com"
   },
   "exports": {
-    "./icons": "./dist/icons.mjs",
-    "./hooks": "./dist/hooks",
-    "./components/*": "./dist/components/*",
-    "./css": "./dist/css/index.mjs",
-    "./css/theme-contract.css.ts": "./dist/css/theme-contract.css.mjs",
-    "./math": "./dist/math/index.mjs",
-    "./react-components.css": "./dist/react-components.css"
+    "./icons": "./icons.mjs",
+    "./hooks": "./hooks",
+    "./components/*": "./components/*",
+    "./css": "./css/index.mjs",
+    "./css/theme-contract.css.ts": "./css/theme-contract.css.mjs",
+    "./math": "./math/index.mjs",
+    "./react-components.css": "./react-components.css"
   },
   "devDependencies": {
     "@antebudimir/eslint-plugin-vanilla-extract": "^1.17.0",
@@ -48,5 +48,8 @@
   },
   "scripts": {
     "build": "bash ./build.bash"
-  }
+  },
+  "files": [
+    "dist/"
+  ]
 }
