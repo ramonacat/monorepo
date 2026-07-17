@@ -1,12 +1,18 @@
 plugin "terraform" {
   enabled = true
   preset  = "recommended"
+  // https://github.com/terraform-linters/tflint/issues/2594#issuecomment-5000385760
+  // https://github.com/terraform-linters/tflint/issues/2596
+  signature = "pgp"
 }
 
 plugin "style-guide" {
   enabled = true
   version = "0.2.0"
   source  = "github.com/miztch/tflint-ruleset-style-guide"
+  // https://github.com/terraform-linters/tflint/issues/2594#issuecomment-5000385760
+  // https://github.com/terraform-linters/tflint/issues/2596
+  signature = "pgp"
 
   signing_key = <<-KEY
     -----BEGIN PGP PUBLIC KEY BLOCK-----
@@ -69,4 +75,7 @@ plugin "opa" {
   enabled = true
   version = "0.10.0"
   source  = "github.com/terraform-linters/tflint-ruleset-opa"
+  // https://github.com/terraform-linters/tflint/issues/2594#issuecomment-5000385760
+  // https://github.com/terraform-linters/tflint/issues/2596
+  signature = "pgp"
 }
