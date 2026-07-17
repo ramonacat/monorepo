@@ -1,6 +1,6 @@
 {
   "name": "@ramonacat/react-components",
-  "version": "0.1.3",
+  "version": "0.1.4",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/ramonacat/monorepo.git"
@@ -22,7 +22,7 @@
     "./components/Section": "./dist/components/Section.mjs",
     "./components/Table": "./dist/components/Table.mjs",
     "./css": "./dist/css/index.mjs",
-    "./css/theme-contract.css": "./dist/css/theme-contract.css.mjs",
+    "./css/theme-contract.css.ts": "./dist/css/theme-contract.css.mjs",
     "./math": "./dist/math.mjs",
     "./react-components.css": "./dist/react-components.css"
   },
