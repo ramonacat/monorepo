@@ -5,12 +5,12 @@ import {
   type ReactNode,
   type RefObject,
 } from "react";
-import { ChartData, type InternalEntry } from "./chart-data";
+import { ChartData, type Value, type InternalEntry } from "./chart-data";
 import { useElementDimensions } from "../../hooks/useElementDimensions";
 import { readThemeFont } from "../../css";
 import { useDpi } from "../../hooks/useDpi";
 
-export { ChartData };
+export { ChartData, type Value };
 
 export function LiveLineChart(
   allProps: {

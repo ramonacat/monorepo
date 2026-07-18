@@ -5,7 +5,7 @@ import { vanillaExtractPlugin } from "@vanilla-extract/vite-plugin";
 import react from "@vitejs/plugin-react";
 
 export default defineConfig({
-  plugins: [dts(), react(), vanillaExtractPlugin()],
+  plugins: [dts({ bundleTypes: true }), react(), vanillaExtractPlugin()],
   build: {
     lib: {
       name: "react-components",

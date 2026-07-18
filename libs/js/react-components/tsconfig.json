@@ -22,5 +22,5 @@
     "strictNullChecks": true,
     "strict": true
   },
-  "include": ["lib"]
+  "include": ["lib", "types"]
 }
