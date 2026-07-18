@@ -43,10 +43,10 @@ export default defineConfig({
           import.meta.dirname,
           "./lib/components/table/index.tsx",
         ),
-        css: resolve(import.meta.dirname, "./lib/css/index.ts"),
-        "css/theme-contract.css": resolve(
+        "css/index": resolve(import.meta.dirname, "./lib/css/index.ts"),
+        "theme-contract.css": resolve(
           import.meta.dirname,
-          "./lib/css/theme-contract.css.ts",
+          "./lib/theme-contract.css.ts",
         ),
         "math/index": resolve(import.meta.dirname, "./lib/math/index.ts"),
         "hooks/index": resolve(import.meta.dirname, "./lib/hooks/index.ts"),

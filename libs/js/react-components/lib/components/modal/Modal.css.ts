@@ -1,9 +1,10 @@
 import { globalStyle, style } from "@vanilla-extract/css";
-import { vars } from "../../css/theme-contract.css";
+import { vars } from "../../theme-contract.css";
+import { privateVars } from "../../css/theme-contract-private.css";
 
 export const closeIcon = style({
-  width: vars.sizes.icon.xxl,
-  height: vars.sizes.icon.xxl,
+  width: privateVars.sizes.icon.xxl,
+  height: privateVars.sizes.icon.xxl,
 });
 
 export const dialog = style({

@@ -1,5 +1,6 @@
 import { style } from "@vanilla-extract/css";
-import { vars } from "../../css/theme-contract.css";
+import { vars } from "../../theme-contract.css";
+import { privateVars } from "../../css/theme-contract-private.css";
 
 export const button = style({
   display: "flex",
@@ -7,7 +8,7 @@ export const button = style({
   alignItems: "center",
   border: "none",
   backgroundColor: vars.colors.button,
-  padding: `${vars.spacings.l}`,
+  padding: `${privateVars.spacings.l}`,
   textDecoration: "none",
   color: vars.colors.text,
 
@@ -20,7 +21,7 @@ export const button = style({
 export const buttonIconOnly = style([
   button,
   {
-    padding: vars.spacings.l,
+    padding: privateVars.spacings.l,
   },
 ]);
 
@@ -36,9 +37,9 @@ export const text = style({
 export const submit = style({
   justifyContent: "center",
   width: "100%",
-  fontSize: vars.sizes.font.attention,
+  fontSize: privateVars.sizes.font.attention,
 });
 
 export const contentsContainer = style({
-  marginLeft: vars.spacings.m,
+  marginLeft: privateVars.spacings.m,
 });

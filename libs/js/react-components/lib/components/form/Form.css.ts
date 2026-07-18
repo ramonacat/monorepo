@@ -1,35 +1,36 @@
 import { style } from "@vanilla-extract/css";
-import { vars } from "../../css/theme-contract.css";
+import { vars } from "../../theme-contract.css";
+import { privateVars } from "../../css/theme-contract-private.css";
 
 export const row = style({
   display: "flex",
   alignItems: "center",
-  margin: `${vars.spacings.l} 0`,
+  margin: `${privateVars.spacings.l} 0`,
   width: "100%",
 });
 
 export const label = style({
-  width: vars.sizes.form.label.width,
+  width: privateVars.sizes.form.label.width,
 });
 
 export const inputWrapper = style({
   display: "flex",
   alignItems: "stretch",
-  width: vars.sizes.form.input.width,
+  width: privateVars.sizes.form.input.width,
 });
 
 export const attachment = style({
   display: "flex",
   alignItems: "center",
-  border: `${vars.sizes.border.xs} solid ${vars.colors.inputBorder}`,
-  padding: `0 ${vars.spacings.l}`,
+  border: `${privateVars.sizes.border.xs} solid ${vars.colors.inputBorder}`,
+  padding: `0 ${privateVars.spacings.l}`,
 });
 
 export const input = style({
   flexGrow: "1",
-  border: `${vars.sizes.border.xs} solid ${vars.colors.inputBorder}`,
+  border: `${privateVars.sizes.border.xs} solid ${vars.colors.inputBorder}`,
   backgroundColor: vars.colors.inputBackground,
-  padding: vars.spacings.m,
+  padding: privateVars.spacings.m,
   minWidth: "0",
   color: `${vars.colors.text}`,
   ":focus-visible": {

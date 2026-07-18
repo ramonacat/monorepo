@@ -1,7 +1,10 @@
-import { vars } from "./theme-contract.css";
+import { themePrivate } from "./theme-private.css";
+import "./global.css.ts";
+import { vars } from "../theme-contract.css.ts";
+
+document.documentElement.classList.add(themePrivate);
 
 // yes, this is a bit hacky, but it's useful to use theme colors on <canvas /> without hardcoding them
-
 function extractVariableName(value: string) {
   const variableName = value.match(/^var\((?<variableName>.*)\)$/)?.groups
     ?.variableName;
