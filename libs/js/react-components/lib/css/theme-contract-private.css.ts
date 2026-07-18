@@ -1,12 +1,13 @@
 import { createThemeContract } from "@vanilla-extract/css";
 
-export const vars = createThemeContract({
+export const privateVars = createThemeContract({
   sizes: {
     border: {
       xs: "",
       s: "",
     },
     font: {
+      root: "",
       primary: "",
       h1: "",
       h2: "",
@@ -28,43 +29,10 @@ export const vars = createThemeContract({
       },
     },
   },
-  colors: {
-    brand: "",
-    tableBorder: "",
-    backgroundSecondary: "",
-    background: "",
-    text: "",
-    inputBorder: "",
-    inputBackground: "",
-    success: "",
-    error: "",
-    button: "",
-    buttonActive: "",
-    buttonHover: "",
-  },
   spacings: {
     s: "",
     m: "",
     l: "",
-  },
-  fonts: {
-    weights: {
-      normal: "",
-      bold: "",
-    },
-    families: {
-      default: "",
-      monospace: "",
-    },
-  },
-  modal: {
-    backdrop: {
-      color: "",
-      filter: "",
-    },
-  },
-  shadows: {
-    highlight: "",
   },
   animation: {
     duration: {

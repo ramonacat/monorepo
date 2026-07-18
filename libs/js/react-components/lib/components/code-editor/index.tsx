@@ -8,7 +8,7 @@ import type {
   CompletionContext,
   CompletionResult,
 } from "@codemirror/autocomplete";
-import { vars } from "../../css/theme-contract.css.ts";
+import { vars } from "../../theme-contract.css.ts";
 
 export default function CodeEditor(
   props: {
