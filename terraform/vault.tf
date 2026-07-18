@@ -62,6 +62,12 @@ resource "authentik_application" "vault" {
   protocol_provider = authentik_provider_oauth2.vault.id
 }
 
+resource "authentik_policy_binding" "vault-global-admins" {
+  order  = 0
+  target = authentik_application.vault.uuid
+  group  = authentik_group.global-admins.id
+}
+
 resource "authentik_application_entitlement" "vault" {
   name        = "vault"
   application = authentik_application.vault.uuid

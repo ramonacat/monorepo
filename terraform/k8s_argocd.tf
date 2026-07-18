@@ -61,6 +61,12 @@ data "authentik_provider_oauth2_config" "argocd" {
   provider_id = authentik_provider_oauth2.argocd.id
 }
 
+resource "authentik_policy_binding" "argocd-global-admins" {
+  order  = 0
+  target = authentik_application.argocd.uuid
+  group  = authentik_group.global-admins.id
+}
+
 resource "authentik_application" "argocd" {
   name              = "argocd"
   slug              = "argocd"
