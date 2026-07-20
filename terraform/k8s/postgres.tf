@@ -34,7 +34,7 @@ resource "helm_release" "cloudnative-pg-database" {
   repository       = "https://cloudnative-pg.github.io/charts"
   namespace        = "cloudnative-pg-database"
   create_namespace = true
-  version          = "0.8.0"
+  version          = "0.8.1"
 
   values = [yamlencode({
     version = { postgresql = "18" }
