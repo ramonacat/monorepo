@@ -73,7 +73,7 @@ plugin "style-guide" {
 
 plugin "opa" {
   enabled = true
-  version = "0.10.0"
+  version = "0.11.0"
   source  = "github.com/terraform-linters/tflint-ruleset-opa"
   // https://github.com/terraform-linters/tflint/issues/2594#issuecomment-5000385760
   // https://github.com/terraform-linters/tflint/issues/2596
