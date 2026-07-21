@@ -1,0 +1,86 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: attic
+  labels:
+    app: attic
+spec:
+  selector:
+    matchLabels:
+      app: attic
+  replicas: 2
+  strategy:
+    rollingUpdate:
+      maxSurge: 50%
+      maxUnavailable: 50%
+    type: RollingUpdate
+  template:
+    metadata:
+      labels:
+        app: ras
+    spec:
+      containers:
+        - name: attic
+          image: ghcr.io/ramonacat/attic:1784640429
+          imagePullPolicy: IfNotPresent
+          resources:
+            requests:
+              cpu: 25m
+              memory: 64Mi
+            limits:
+              cpu: 100m
+              memory: 512Mi
+          volumeMounts:
+            - mountPath: /etc/
+              name: config
+          envFrom:
+            - secretRef:
+                name: attic
+            - secretRef:
+                name: db
+      volumes:
+        - name: config
+          configMap:
+            name: config
+---
+apiVersion: external-secrets.io/v1
+kind: ExternalSecret
+metadata:
+  name: db
+spec:
+  refreshInterval: 1m
+  target:
+    name: db
+    creationPolicy: Owner
+    template:
+      data:
+        ATTIC_SERVER_DATABASE_URL: 'postgres://{{ .username }}:{{ .password }}@cloudnative-pg-database-cluster-pooler-rw.cloudnative-pg-database/attic'
+  dataFrom:
+    - sourceRef:
+        storeRef:
+          kind: ClusterSecretStore
+          name: vault
+      extract:
+        key: postgres/attic
+---
+apiVersion: external-secrets.io/v1
+kind: ExternalSecret
+metadata:
+  name: attic
+spec:
+  refreshInterval: 1m
+  target:
+    name: attic
+    creationPolicy: Owner
+    template:
+      data:
+        ATTIC_SERVER_TOKEN_RS256_SECRET_BASE64: '{{ .ATTIC_SERVER_TOKEN_RS256_SECRET_BASE64 }}'
+        AWS_ACCESS_KEY_ID: '{{ .AWS_ACCESS_KEY_ID }}'
+        AWS_SECRET_ACCESS_KEY: '{{ .AWS_SECRET_ACCESS_KEY }}'
+  dataFrom:
+    - sourceRef:
+        storeRef:
+          kind: ClusterSecretStore
+          name: vault
+      extract:
+        key: attic/secret

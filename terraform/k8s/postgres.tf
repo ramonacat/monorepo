@@ -85,6 +85,12 @@ resource "helm_release" "cloudnative-pg-database" {
           ensure         = "present"
           login          = true
           passwordSecret = { name = "ras" }
+        },
+        {
+          name           = "attic"
+          ensure         = "present"
+          login          = true
+          passwordSecret = { name = "attic" }
         }
       ]
     }
@@ -108,6 +114,11 @@ resource "helm_release" "cloudnative-pg-database" {
       {
         name   = "ras"
         owner  = "ras"
+        ensure = "present"
+      },
+      {
+        name   = "attic"
+        owner  = "attic"
         ensure = "present"
       }
     ]
