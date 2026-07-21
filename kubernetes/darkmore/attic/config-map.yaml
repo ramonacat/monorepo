@@ -6,7 +6,7 @@ data:
   attic.conf: |-
     listen = "0.0.0.0:8080"
     allowed-hosts = ["attic.infrastructure.ramona.fun"]
-    api-endpoint = "https://attic.infrastructure.ramona.fun"
+    api-endpoint = "https://attic.infrastructure.ramona.fun/"
     
     [storage]
     type = "s3"
