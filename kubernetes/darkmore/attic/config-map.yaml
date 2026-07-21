@@ -15,3 +15,8 @@ data:
     endpoint = "https://rustfs.infrastructure.ramona.fun"
     
     [database]
+    [chunking]
+    nar-size-threshold = 65536 # chunk files that are 64 KiB or larger
+    min-size = 16384
+    avg-size = 65536
+    max-size = 262144
