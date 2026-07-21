@@ -2,7 +2,10 @@ let
   ssh-keys = import ../data/ssh-keys.nix;
 
   users = [ ssh-keys.ramona.default ];
-  ci = [ ssh-keys.root.ci ];
+  ci = [
+    ssh-keys.root.ci
+    ssh-keys.root.ci-secret
+  ];
 
   shadowsoul = ssh-keys.machines.shadowsoul.rsa;
   hallewell = ssh-keys.machines.hallewell.rsa;
