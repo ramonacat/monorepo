@@ -28,6 +28,7 @@ resource "helm_release" "rustfs" {
     storageclass = {
       name            = "longhorn"
       dataStorageSize = "1Gi"
+      logStorageSize  = "1Gi"
     }
   })]
 }

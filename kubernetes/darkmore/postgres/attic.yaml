@@ -1,0 +1,42 @@
+apiVersion: external-secrets.io/v1
+kind: ExternalSecret
+metadata:
+  namespace: cloudnative-pg-database
+  name: attic
+spec:
+  refreshInterval: "24h"
+  target:
+    name: attic
+    creationPolicy: Owner
+    template:
+      metadata:
+        labels:
+          cnpg.io/reload: "true"
+      data:
+        username: "attic"
+        password: "{{ .password }}"
+  dataFrom:
+    - sourceRef:
+        generatorRef:
+          apiVersion: generators.external-secrets.io/v1alpha1
+          kind: Password
+          name: pg-password-generator
+---
+apiVersion: external-secrets.io/v1alpha1
+kind: PushSecret
+metadata:
+  namespace: cloudnative-pg-database
+  name: attic
+spec:
+  deletionPolicy: Delete
+  refreshInterval: 1m
+  secretStoreRefs:
+    - name: vault
+      kind: ClusterSecretStore
+  selector:
+    secret:
+      name: attic
+  data:
+    - match:
+        remoteRef:
+          remoteKey: postgres/attic
