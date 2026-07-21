@@ -3,7 +3,7 @@ resource "helm_release" "coredns" {
   chart      = "coredns"
   repository = "https://coredns.github.io/helm"
   namespace  = "kube-system"
-  version    = "1.46.1"
+  version    = "1.46.2"
 
   values = [yamlencode({
     replicaCount = 3
