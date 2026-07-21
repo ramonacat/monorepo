@@ -23,6 +23,10 @@ spec:
         - name: attic
           image: ghcr.io/ramonacat/attic:1784640429
           imagePullPolicy: IfNotPresent
+          command:
+            - /bin/attic
+            - --config
+            - /etc/attic/attic.conf
           resources:
             requests:
               cpu: 25m
@@ -31,7 +35,7 @@ spec:
               cpu: 100m
               memory: 512Mi
           volumeMounts:
-            - mountPath: /etc/
+            - mountPath: /etc/attic/
               name: config
           envFrom:
             - secretRef:
