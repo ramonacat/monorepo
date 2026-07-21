@@ -9,12 +9,14 @@
     tag = "latest";
     contents = [
       pkgs.attic-server
-      pkgs.cacert
     ];
-    config.Cmd = [
-      "/bin/atticd"
-      "--config"
-      "/etc/attic.conf"
-    ];
+    config = {
+      Cmd = [
+        "/bin/atticd"
+        "--config"
+        "/etc/attic.conf"
+      ];
+      Env = [ "SSL_CERT_FILE=${pkgs.cacert}/etc/ssl/certs/ca-bundle.crt" ];
+    };
   };
 }
