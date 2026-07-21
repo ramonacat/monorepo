@@ -124,6 +124,22 @@ provider "aws" {
   region     = "eu-central-1"
 }
 
+provider "aws" {
+  alias = "rustfs"
+
+  access_key                  = var.rustfs_access_key_id
+  secret_key                  = var.rustfs_access_key
+  region                      = "us-east-1"
+  s3_use_path_style           = true
+  skip_credentials_validation = true
+  skip_metadata_api_check     = true
+  skip_requesting_account_id  = true
+
+  endpoints {
+    s3 = "https://rustfs.infrastructure.ramona.fun/"
+  }
+}
+
 provider "vault" {
   address     = "https://vault.internal.ramona.fun"
   ca_cert_dir = "../certificates/"

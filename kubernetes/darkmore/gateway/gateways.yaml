@@ -213,7 +213,6 @@ spec:
       protocol: HTTP
       allowedRoutes:
         namespaces:
-          # there's only one route allowed for HTTP, and it is the HTTPS redirect
           from: All
     - name: https
       port: 443

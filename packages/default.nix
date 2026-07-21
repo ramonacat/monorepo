@@ -1,5 +1,6 @@
 inputs: {
   apps = {
+    attic = import ./attic.nix inputs;
     fup = import ./fup.nix inputs;
     r = import ./r.nix inputs;
     ramona-fun = import ./ramona-fun.nix inputs;
