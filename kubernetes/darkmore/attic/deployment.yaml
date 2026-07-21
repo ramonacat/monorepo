@@ -24,7 +24,7 @@ spec:
           image: ghcr.io/ramonacat/attic:1784640429
           imagePullPolicy: IfNotPresent
           command:
-            - /bin/attic
+            - /bin/atticd
             - --config
             - /etc/attic/attic.conf
           resources:
