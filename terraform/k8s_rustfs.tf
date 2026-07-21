@@ -14,16 +14,16 @@ resource "helm_release" "rustfs" {
     }
     config = {
       rustfs = {
-        domains = "rustfs.internal.ramona.fun"
+        domains = "rustfs.infrastructure.ramona.fun"
         metrics = { enabled = true }
       }
     }
     gatewayApi = {
       enabled         = true
       gatewayClass    = "kgateway"
-      listeners       = [{ https = { name = "web", port = 443 } }]
-      hostname        = "rustfs.internal.ramona.fun"
-      existingGateway = { name = "gateway-tailscale-internal", namespace = "kgateway-system" }
+      listeners       = { https = { name = "https", port = 443 } }
+      hostname        = "rustfs.infrastructure.ramona.fun"
+      existingGateway = { name = "gateway-tailscale", namespace = "kgateway-system" }
     }
     storageclass = {
       name            = "longhorn"

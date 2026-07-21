@@ -22,3 +22,13 @@ variable "aws_access_key" {
   type      = string
   sensitive = true
 }
+
+variable "rustfs_access_key_id" {
+  type      = string
+  sensitive = true
+}
+
+variable "rustfs_access_key" {
+  type      = string
+  sensitive = true
+}
