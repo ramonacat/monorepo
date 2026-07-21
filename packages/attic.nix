@@ -7,7 +7,10 @@
   container = pkgs.dockerTools.buildLayeredImage {
     name = "attic";
     tag = "latest";
-    contents = [ pkgs.attic-server ];
+    contents = [
+      pkgs.attic-server
+      pkgs.cacert
+    ];
     config.Cmd = [
       "/bin/atticd"
       "--config"
