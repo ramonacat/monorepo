@@ -63,6 +63,8 @@ in
     ++ [
       darkmore-worker-0
     ];
+  "nix-netrc.age".publicKeys = users ++ ci ++ allMachines;
+  "attic-admin.age".publicKeys = users;
   "darkmore-worker-0-ssh-host-key-rsa.age".publicKeys = users ++ ci ++ [ darkmore-worker-0 ];
   "darkmore-kubeconfig.age".publicKeys = users ++ ci;
   "backups-common-env.age".publicKeys = users ++ privateMachines;

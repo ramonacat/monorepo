@@ -46,6 +46,7 @@ resource "helm_release" "cloudnative-pg-database" {
         region = local.b2_account_region
         bucket = b2_bucket.cloudnative-pg-backups.bucket_name
       }
+      wal = { maxParallel = 10 }
     }
     cluster = {
       instances = 3
