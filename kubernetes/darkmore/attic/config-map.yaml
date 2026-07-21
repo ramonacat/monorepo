@@ -13,3 +13,5 @@ data:
     bucket = "attic"
     region = "us-east-1"
     endpoint = "https://rustfs.infrastructure.ramona.fun"
+    
+    [database]
