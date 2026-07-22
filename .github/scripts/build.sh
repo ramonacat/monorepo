@@ -79,7 +79,9 @@ main() {
 	output=$"# Build results\n## Homes\n"
 	headers=$(make-row "name" "closure" "diff")
 
+	nix shell nixpkgs#attic-client --command bash -c "attic login main https://attic.infrastructure.ramona.fun/ '$ATTIC_TOKEN'"
 	nix build -L -v ".#everything"
+	nix shell nixpkgs#attic-client --command bash -c "attic push main result"
 
 	output+=$(make-table "$headers" "$(make-rows-homes)")
 	output+=$(make-table "$headers" "$(make-rows-hosts)")

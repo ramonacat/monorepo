@@ -131,6 +131,7 @@ pkgs.mkShell {
 
       age
       argocd
+      attic-client
       backblaze-b2
       diesel-cli
       kubeconform

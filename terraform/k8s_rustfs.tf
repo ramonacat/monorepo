@@ -14,8 +14,9 @@ resource "helm_release" "rustfs" {
     }
     config = {
       rustfs = {
-        domains = "rustfs.infrastructure.ramona.fun"
-        metrics = { enabled = true }
+        domains   = "rustfs.infrastructure.ramona.fun"
+        metrics   = { enabled = true }
+        log_level = "WARN"
       }
     }
     gatewayApi = {
@@ -27,8 +28,8 @@ resource "helm_release" "rustfs" {
     }
     storageclass = {
       name            = "longhorn"
-      dataStorageSize = "1Gi"
-      logStorageSize  = "1Gi"
+      dataStorageSize = "5Gi"
+      logStorageSize  = "3Gi"
     }
   })]
 }
