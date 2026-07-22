@@ -130,6 +130,7 @@ pkgs.mkShell {
       inputs.agenix.packages."${pkgs.stdenv.hostPlatform.system}".default
 
       age
+      kubectl-cnpg
       argocd
       attic-client
       backblaze-b2
