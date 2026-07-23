@@ -54,6 +54,11 @@
         streamingConnectionIdleTimeout: 0s
         syncFrequency: 0s
         volumeStatsAggPeriod: 0s
+        evictionHard:
+            memory.available: "100Mi"
+            nodefs.available: "2%"
+            nodefs.inodesFree: "20%"
+            imagefs.available: "5%"
       '';
       kubelet-kubeconfig = "/etc/kubernetes/kubelet.conf";
     in
