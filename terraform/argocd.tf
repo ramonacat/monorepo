@@ -66,3 +66,68 @@ resource "argocd_application_set" "monorepo--apps" {
     }
   }
 }
+
+resource "tls_private_key" "deploy--ramonacat-monorepo-secret--argocd" {
+  algorithm = "ED25519"
+}
+
+resource "github_repository_deploy_key" "ramonacat-monorepo-secret--argocd" {
+  title      = "ArgoCD"
+  repository = github_repository.ramonacat-monorepo-secret.name
+  key        = tls_private_key.deploy--ramonacat-monorepo-secret--argocd.public_key_openssh
+  read_only  = true
+}
+
+resource "argocd_repository" "monorepo-secret" {
+  repo            = "git@github.com:ramonacat/monorepo-secret.git"
+  username        = "git"
+  ssh_private_key = tls_private_key.deploy--ramonacat-monorepo-secret--argocd.private_key_openssh
+}
+
+resource "argocd_application_set" "monorepo-secret--apps" {
+  metadata {
+    name = "monorepo-secret--apps"
+  }
+
+  spec {
+    generator {
+      git {
+        repo_url = argocd_repository.monorepo-secret.repo
+        revision = "HEAD"
+
+        directory {
+          path = "kubernetes/darkmore/*"
+        }
+      }
+    }
+
+    template {
+      metadata {
+        name = "monorepo-secret-darkmore-{{path.basename}}"
+      }
+
+      spec {
+        source {
+          repo_url        = argocd_repository.monorepo-secret.repo
+          target_revision = "HEAD"
+          path            = "{{path}}"
+        }
+
+
+        destination {
+          server    = "https://kubernetes.default.svc"
+          namespace = "{{path.basename}}"
+        }
+
+        sync_policy {
+          automated {
+            prune     = true
+            self_heal = true
+          }
+
+          sync_options = ["CreateNamespace=true", "ServerSideApply=true"]
+        }
+      }
+    }
+  }
+}

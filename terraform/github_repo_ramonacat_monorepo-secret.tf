@@ -28,3 +28,17 @@ resource "github_actions_repository_permissions" "ramonacat-monorepo-secret" {
   repository      = github_repository.ramonacat-monorepo-secret.name
   allowed_actions = "all"
 }
+
+resource "tailscale_tailnet_key" "monorepo-secret-ci" {
+  ephemeral           = true
+  reusable            = true
+  recreate_if_invalid = "always"
+  preauthorized       = true
+  tags                = ["tag:ci"]
+}
+
+resource "github_actions_secret" "ramonacat-monorepo-s-ecret--argo-tailscale-token" {
+  repository  = github_repository.ramonacat-monorepo-secret.id
+  secret_name = "TAILSCALE_AUTHKEY"
+  value       = tailscale_tailnet_key.monorepo-secret-ci.key
+}

@@ -60,6 +60,7 @@ resource "tailscale_acl" "default" {
     {
       grants = [
         { src = ["autogroup:admin"], "dst" : ["*"], "ip" : ["*"] },
+        { src = ["tag:ci"], "dst" : ["tag:k8s"], "ip" : ["*"] },
         {
           src = ["tag:server"],
           dst = ["tag:service-builds-host"],
@@ -139,10 +140,11 @@ resource "tailscale_acl" "default" {
 
         "tag:kubernetes-darkmore"               = [],
         "tag:kubernetes-darkmore-control-plane" = [],
+        "tag:ci"                                = [],
 
-        "tag:k8s-operator" : [],
-        "tag:k8s" : ["tag:k8s-operator"],
-        "tag:k8s-service" : ["tag:k8s-operator"]
+        "tag:k8s-operator" = [],
+        "tag:k8s"          = ["tag:k8s-operator"],
+        "tag:k8s-service"  = ["tag:k8s-operator"],
       },
       tests = [
         {
