@@ -29,6 +29,7 @@ spec:
       allowedRoutes:
         kinds:
           - kind: TCPRoute
+            group: gateway.networking.k8s.io
         namespaces:
           from: All
 ---
@@ -49,6 +50,8 @@ spec:
           name: fluent-bit
           namespace: fluent-operator
           port: 6514
+          group: ''
+          weight: 1
 --- 
 apiVersion: gateway.networking.k8s.io/v1beta1
 kind: ReferenceGrant

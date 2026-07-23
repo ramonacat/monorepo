@@ -6,6 +6,8 @@ spec:
   parentRefs:
   - name: gateway-tailscale
     namespace: kgateway-system
+    group: gateway.networking.k8s.io
+    kind: Gateway
   hostnames:
     - ras.infrastructure.ramona.fun
   rules:
@@ -13,3 +15,8 @@ spec:
       - name: ras
         kind: Service
         port: 80
+        group: ""
+      matches:
+        - path:
+            type: PathPrefix
+            value: /

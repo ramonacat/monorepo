@@ -19,6 +19,8 @@ spec:
   parentRefs:
   - name: gateway-public
     namespace: kgateway-system
+    group: gateway.networking.k8s.io
+    kind: Gateway
   hostnames:
     - jellyfin-test.ramona.fun
   rules:
@@ -26,6 +28,11 @@ spec:
       - name: jellyfin
         kind: Backend
         group: gateway.kgateway.dev
+        weight: 1
+      matches:
+        - path:
+            type: PathPrefix
+            value: /
 ---
 apiVersion: v1
 kind: Service
