@@ -9,6 +9,7 @@ spec:
           name: vault-active
           port: 8200
           weight: 1
+          group: ""
   parentRefs:
     - group: gateway.networking.k8s.io
       kind: Gateway

@@ -40,3 +40,4 @@ spec:
     - match:
         remoteRef:
           remoteKey: postgres/attic
+      conversionStrategy: None
