@@ -4,7 +4,7 @@ resource "helm_release" "rustfs" {
   repository       = "https://charts.rustfs.com"
   namespace        = "rustfs"
   create_namespace = true
-  version          = "0.10.0"
+  version          = "0.11.0"
 
   values = [yamlencode({
     replicaCount  = 3
