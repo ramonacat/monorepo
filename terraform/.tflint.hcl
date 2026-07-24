@@ -8,7 +8,7 @@ plugin "terraform" {
 
 plugin "style-guide" {
   enabled = true
-  version = "0.2.0"
+  version = "0.3.0"
   source  = "github.com/miztch/tflint-ruleset-style-guide"
   // https://github.com/terraform-linters/tflint/issues/2594#issuecomment-5000385760
   // https://github.com/terraform-linters/tflint/issues/2596
