@@ -20,6 +20,12 @@ resource "helm_release" "cloudnative-pg" {
 resource "b2_bucket" "cloudnative-pg-backups" {
   bucket_name = "ramona-kubernetes-${var.name}-postgres-backups"
   bucket_type = "allPrivate"
+
+  lifecycle_rules {
+    file_name_prefix                                       = ""
+    days_from_hiding_to_deleting                           = 1
+    days_from_starting_to_canceling_unfinished_large_files = 1
+  }
 }
 
 resource "b2_application_key" "cloudnative-pg-backups" {
@@ -50,7 +56,7 @@ resource "helm_release" "cloudnative-pg-database" {
     }
     cluster = {
       instances = 3
-      storage   = { size = "25Gi", storageClass = "hcloud-volumes" }
+      storage   = { size = "27Gi", storageClass = "hcloud-volumes" }
       monitoring = {
         enabled = true
       }

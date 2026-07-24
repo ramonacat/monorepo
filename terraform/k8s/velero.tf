@@ -1,6 +1,12 @@
 resource "b2_bucket" "backups" {
   bucket_name = "ramona-kubernetes-${var.name}-backups"
   bucket_type = "allPrivate"
+
+  lifecycle_rules {
+    file_name_prefix                                       = ""
+    days_from_hiding_to_deleting                           = 1
+    days_from_starting_to_canceling_unfinished_large_files = 1
+  }
 }
 
 resource "b2_application_key" "backups" {
