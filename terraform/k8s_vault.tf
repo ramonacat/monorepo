@@ -95,7 +95,7 @@ resource "helm_release" "vault" {
         parentRefs = [{ name = "gateway-tailscale", namespace = "kgateway-system" }]
       }
       dataStorage = {
-        size = "128Mi"
+        size = "512Mi"
       }
       ha = {
         enabled = true
