@@ -6,13 +6,19 @@
 }:
 {
   config = {
-    age.secrets.attic-admin = {
-      file = ../../../../secrets/attic-admin.age;
-      path = "${config.home.homeDirectory}/.config/attic/config.toml";
-    };
-    age.secrets.nix-netrc = {
-      file = ../../../../secrets/nix-netrc.age;
-      path = "${config.home.homeDirectory}/.config/nix-netrc";
+    age.secrets = {
+      attic-admin = {
+        file = ../../../../secrets/attic-admin.age;
+        path = "${config.home.homeDirectory}/.config/attic/config.toml";
+      };
+      nix-netrc = {
+        file = ../../../../secrets/nix-netrc.age;
+        path = "${config.home.homeDirectory}/.config/nix/netrc";
+      };
+      nix-tokens = {
+        file = ../../../../secrets/nix-tokens.age;
+        path = "${config.home.homeDirectory}/.config/nix/tokens";
+      };
     };
 
     nix = {
@@ -35,6 +41,7 @@
             "https://cache.nixos.org/"
             "https://attic.infrastructure.ramona.fun/main"
           ];
+        fallback = true;
       };
     };
   };

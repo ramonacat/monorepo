@@ -5,8 +5,14 @@
 }:
 {
   config = {
-    age.secrets.nix-serve-ssh-key.file = ../../secrets/nix-serve-ssh-key.age;
-    age.secrets.nix-netrc.file = ../../secrets/nix-netrc.age;
+    age.secrets = {
+      nix-serve-ssh-key.file = ../../secrets/nix-serve-ssh-key.age;
+      nix-netrc.file = ../../secrets/nix-netrc.age;
+      nix-tokens.file = ../../secrets/nix-tokens.age;
+    };
+    systemd.services.nix-daemon.serviceConfig = {
+      EnvironmentFile = config.age.secrets.nix-tokens.path;
+    };
 
     nix = {
       optimise.automatic = true;
