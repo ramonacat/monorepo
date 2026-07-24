@@ -41,6 +41,8 @@ spec:
             - secretRef:
                 name: attic
             - secretRef:
+                name: attic-object-storage
+            - secretRef:
                 name: db
           ports:
             - containerPort: 8080
@@ -82,6 +84,25 @@ spec:
     template:
       data:
         ATTIC_SERVER_TOKEN_RS256_SECRET_BASE64: '{{ .ATTIC_SERVER_TOKEN_RS256_SECRET_BASE64 }}'
+  dataFrom:
+    - sourceRef:
+        storeRef:
+          kind: ClusterSecretStore
+          name: vault
+      extract:
+        key: attic/secret
+---
+apiVersion: external-secrets.io/v1
+kind: ExternalSecret
+metadata:
+  name: attic-object-storage
+spec:
+  refreshInterval: 1m
+  target:
+    name: attic-object-storage
+    creationPolicy: Owner
+    template:
+      data:
         AWS_ACCESS_KEY_ID: '{{ .AWS_ACCESS_KEY_ID }}'
         AWS_SECRET_ACCESS_KEY: '{{ .AWS_SECRET_ACCESS_KEY }}'
   dataFrom:
@@ -90,4 +111,4 @@ spec:
           kind: ClusterSecretStore
           name: vault
       extract:
-        key: attic/secret
+        key: attic/object-storage
