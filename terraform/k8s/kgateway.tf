@@ -3,7 +3,7 @@ resource "helm_release" "kgateway-crds" {
   chart            = "oci://cr.kgateway.dev/kgateway-dev/charts/kgateway-crds"
   namespace        = "kgateway-system"
   create_namespace = true
-  version          = "2.3.6"
+  version          = "2.4.0"
 }
 
 resource "helm_release" "kgateway" {
