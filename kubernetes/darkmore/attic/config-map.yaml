@@ -10,8 +10,8 @@ data:
     
     [storage]
     type = "s3"
-    bucket = "attic"
-    region = "us-east-1"
+    bucket = "ramona-attic"
+    region = "us-west-002"
     endpoint = "https://s3.us-west-002.backblazeb2.com"
     
     [database]
