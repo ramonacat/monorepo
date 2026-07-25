@@ -16,3 +16,15 @@ spec:
       timeouts:
         backendRequest: "1800s"
         request: "1800s"
+---
+apiVersion: gateway.kgateway.dev/v1alpha1
+kind: BackendConfigPolicy
+metadata:
+  name: attic
+spec:
+  targetRefs:
+    - group: ''
+      kind: Service
+      name: attic
+  commonHttpProtocolOptions:
+    maxStreamDuration: "1800s"
