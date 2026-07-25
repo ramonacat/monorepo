@@ -15,6 +15,7 @@
           "${pkgs.coreutils}/bin/mkdir -p /usr/bin"
           "${pkgs.coreutils}/bin/ln -sf ${pkgs.openiscsi}/bin/iscsiadm /usr/bin/iscsiadm"
           "${pkgs.coreutils}/bin/ln -sf ${pkgs.util-linux}/bin/mount /usr/bin/mount"
+          "${pkgs.coreutils}/bin/ln -sf ${pkgs.util-linux}/bin/fstrim /usr/bin/fstrim"
           "${pkgs.coreutils}/bin/ln -sf ${pkgs.nfs-utils}/bin/mount.nfs /usr/bin/mount.nfs"
         ];
         RemainAfterExit = true;
