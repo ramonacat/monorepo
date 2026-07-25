@@ -13,3 +13,6 @@ spec:
       - name: attic
         kind: Service
         port: 80
+      timeouts:
+        backendRequest: "1800s"
+        request: "1800s"

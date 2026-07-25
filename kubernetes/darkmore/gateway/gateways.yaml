@@ -109,19 +109,6 @@ spec:
         "tailscale.com/tags": "tag:k8s,tag:k8s-service"
         "tailscale.com/hostname": "gateway"
 ---
-apiVersion: gateway.kgateway.dev/v1alpha1
-kind: ListenerPolicy
-metadata:
-  name: gateway-tailscale
-  namespace: kgateway-system
-spec:
-  targetRefs:
-    - group: gateway.networking.k8s.io
-      kind: Gateway
-      name: gateway-tailscale
-  default:
-    perConnectionBufferLimitBytes: 1024000
----
 apiVersion: gateway.networking.k8s.io/v1
 kind: Gateway
 metadata:
