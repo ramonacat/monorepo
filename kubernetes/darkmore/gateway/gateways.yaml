@@ -111,6 +111,9 @@ spec:
 ---
 apiVersion: gateway.kgateway.dev/v1alpha1
 kind: ListenerPolicy
+metadata:
+  name: gateway-tailscale
+  namespace: kgateway-system
 spec:
   targetRefs:
     - group: gateway.networking.k8s.io
