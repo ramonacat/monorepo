@@ -98,6 +98,12 @@ resource "helm_release" "cloudnative-pg-database" {
           ensure         = "present"
           login          = true
           passwordSecret = { name = "attic" }
+        },
+        {
+          name           = "red-proxy"
+          ensure         = "present"
+          login          = true
+          passwordSecret = { name = "red-proxy" }
         }
       ]
     }
@@ -126,6 +132,11 @@ resource "helm_release" "cloudnative-pg-database" {
       {
         name   = "attic"
         owner  = "attic"
+        ensure = "present"
+      },
+      {
+        name   = "red-proxy"
+        owner  = "red-proxy"
         ensure = "present"
       }
     ]
