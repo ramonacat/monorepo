@@ -8,3 +8,4 @@ resources:
   - generator.yaml
   - grafana.yaml
   - ras.yaml
+  - red-proxy.yaml
