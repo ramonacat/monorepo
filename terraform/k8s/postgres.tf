@@ -48,10 +48,10 @@ resource "helm_release" "cloudnative-pg-database" {
   values = [yamlencode({
     version = { postgresql = "18" }
     backups = {
-      enabled     = true
-      method = "plugin"
-      endpointURL = "https://s3.us-west-002.backblazeb2.com"
-      provider    = "s3"
+      enabled             = true
+      method              = "plugin"
+      endpointURL         = "https://s3.us-west-002.backblazeb2.com"
+      provider            = "s3"
       pluginConfiguration = { name = "barman-cloud.cloudnative-pg.io" }
       s3 = {
         region = "nbg1"
@@ -68,14 +68,14 @@ resource "helm_release" "cloudnative-pg-database" {
     }
     cluster = {
       instances = 3
-      storage   = { size = "28Gi", storageClass = "hcloud-volumes" }
+      storage   = { size = "20Gi", storageClass = "hcloud-volumes" }
       monitoring = {
         enabled = true
       }
       plugins = [
         {
-          name = "barman-cloud.cloudnative-pg.io"
-          enabled = true
+          name          = "barman-cloud.cloudnative-pg.io"
+          enabled       = true
           isWALArchiver = true
         }
       ]
