@@ -46,13 +46,14 @@ resource "helm_release" "cloudnative-pg-database" {
     version = { postgresql = "18" }
     backups = {
       enabled     = true
-      endpointURL = data.b2_account_info.account.s3_api_url
+      endpointURL = "https://nbg1.your-objectstorage.com"
       provider    = "s3"
       s3 = {
-        region = local.b2_account_region
-        bucket = b2_bucket.cloudnative-pg-backups.bucket_name
+        region = "nbg1"
+        bucket = "ramona-kubernetes-darkmore-postgres-backups"
       }
-      wal = { maxParallel = 10 }
+      wal    = { maxParallel = 10 }
+      secret = { create = false }
     }
     cluster = {
       instances = 3
@@ -157,9 +158,4 @@ resource "helm_release" "cloudnative-pg-database" {
       }
     ]
   })]
-
-  set_sensitive = [
-    { name = "backups.s3.accessKey", value = b2_application_key.cloudnative-pg-backups.application_key_id },
-    { name = "backups.s3.secretKey", value = b2_application_key.cloudnative-pg-backups.application_key }
-  ]
 }

@@ -88,7 +88,6 @@ resource "helm_release" "vault" {
         path = "/vault/secrets"
       }]
       logFormat = "json"
-      logLevel  = "debug"
       httproute = {
         enabled    = true
         hostnames  = ["vault.infrastructure.ramona.fun"]

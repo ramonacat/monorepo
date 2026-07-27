@@ -1,28 +1,3 @@
-resource "b2_bucket" "backups" {
-  bucket_name = "ramona-kubernetes-${var.name}-backups"
-  bucket_type = "allPrivate"
-
-  lifecycle_rules {
-    file_name_prefix                                       = ""
-    days_from_hiding_to_deleting                           = 1
-    days_from_starting_to_canceling_unfinished_large_files = 1
-  }
-}
-
-resource "b2_application_key" "backups" {
-  key_name     = "kubernetes-${var.name}-backups"
-  capabilities = ["deleteFiles", "listBuckets", "listFiles", "readBucketEncryption", "readBuckets", "readFiles", "shareFiles", "writeBucketEncryption", "writeFiles"]
-  bucket_ids   = [b2_bucket.backups.bucket_id]
-}
-
-data "b2_account_info" "account" {
-}
-
-locals {
-  // the b2 provider does not allow us to get the region, so I guess this is better than hardcoding maybe?
-  b2_account_region = regex("^.+://s3\\.(?P<region>.+)\\.backblaze.*", data.b2_account_info.account.s3_api_url).region
-}
-
 resource "helm_release" "velero" {
   name             = "velero"
   chart            = "velero"
@@ -44,7 +19,7 @@ resource "helm_release" "velero" {
       backupStorageLocation = [{
         name     = "default"
         provider = "aws"
-        bucket   = b2_bucket.backups.bucket_name
+        bucket   = "ramona-kubernetes-darkmore-backups"
         default  = true
         config = {
           region = "nbg1"
