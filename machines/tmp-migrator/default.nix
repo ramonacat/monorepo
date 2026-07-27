@@ -7,6 +7,9 @@
   ];
   config = {
     networking.hostName = "tmp-migrator";
-    environment.systemPackages = [ pkgs.rclone ];
+    environment.systemPackages = with pkgs; [
+      rclone
+      tmux
+    ];
   };
 }
