@@ -28,10 +28,13 @@ resource "b2_bucket" "cloudnative-pg-backups" {
   }
 }
 
-resource "b2_application_key" "cloudnative-pg-backups" {
-  key_name     = "kubernetes-${var.name}-postgres-backups"
-  capabilities = ["deleteFiles", "listBuckets", "listFiles", "readBucketEncryption", "readBuckets", "readFiles", "shareFiles", "writeBucketEncryption", "writeFiles"]
-  bucket_ids   = [b2_bucket.cloudnative-pg-backups.bucket_id]
+resource "helm_release" "cloudnative-pg-barman-plugin" {
+  name             = "cloudnative-pg-plugin-barman-cloud"
+  chart            = "plugin-barman-cloud"
+  repository       = "https://cloudnative-pg.github.io/charts"
+  namespace        = "cloudnative-pg"
+  create_namespace = true
+  version          = "0.7.0"
 }
 
 resource "helm_release" "cloudnative-pg-database" {
@@ -46,14 +49,22 @@ resource "helm_release" "cloudnative-pg-database" {
     version = { postgresql = "18" }
     backups = {
       enabled     = true
-      endpointURL = "https://nbg1.your-objectstorage.com"
+      method = "plugin"
+      endpointURL = "https://s3.us-west-002.backblazeb2.com"
       provider    = "s3"
+      pluginConfiguration = { name = "barman-cloud.cloudnative-pg.io" }
       s3 = {
         region = "nbg1"
         bucket = "ramona-kubernetes-darkmore-postgres-backups"
       }
       wal    = { maxParallel = 10 }
-      secret = { create = false }
+      secret = { create = false, name = "cloudnative-pg-database-cluster-backup-s3-creds" }
+      instanceSidecarConfiguration = {
+        env = [
+          { name = "AWS_REQUEST_CHECKSUM_CALCULATION", value = "when_required" },
+          { name = "AWS_RESPONSE_CHECKSUM_VALIDATION", value = "when_required" },
+        ]
+      }
     }
     cluster = {
       instances = 3
@@ -61,6 +72,13 @@ resource "helm_release" "cloudnative-pg-database" {
       monitoring = {
         enabled = true
       }
+      plugins = [
+        {
+          name = "barman-cloud.cloudnative-pg.io"
+          enabled = true
+          isWALArchiver = true
+        }
+      ]
       roles = [
         {
           name           = "crowdsec"
