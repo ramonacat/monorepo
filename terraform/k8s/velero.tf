@@ -47,8 +47,8 @@ resource "helm_release" "velero" {
         bucket   = b2_bucket.backups.bucket_name
         default  = true
         config = {
-          region = local.b2_account_region
-          s3Url  = data.b2_account_info.account.s3_api_url
+          region = "nbg1"
+          s3Url  = "https://nbg1.your-objectstorage.com"
         }
       }]
       volumeSnapshotLocation = [{
@@ -59,6 +59,9 @@ resource "helm_release" "velero" {
       features                = "EnableCSI"
       defaultSnapshotMoveData = true
 
+    }
+    credentials = {
+      existingSecret = "object-storage"
     }
     schedules = {
       default = {
@@ -80,15 +83,4 @@ resource "helm_release" "velero" {
       prometheusRule      = { enabled = true }
     }
   })]
-
-  set_sensitive = [
-    {
-      name  = "credentials.secretContents.cloud",
-      value = <<EOT
-      [default]
-      aws_access_key_id=${b2_application_key.backups.application_key_id}
-      aws_secret_access_key=${b2_application_key.backups.application_key}
-      EOT
-    }
-  ]
 }
