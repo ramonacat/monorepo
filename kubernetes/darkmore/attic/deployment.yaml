@@ -44,9 +44,6 @@ spec:
                 name: attic-object-storage
             - secretRef:
                 name: db
-          env:
-            - name: RUST_LOG
-              value: debug
           ports:
             - containerPort: 8080
               name: attic

@@ -35,7 +35,6 @@
       services.vault-agent.instances.main = {
         enable = true;
         settings = {
-          log_level = "debug";
           vault = [
             {
               address = "https://vault.internal.ramona.fun";
