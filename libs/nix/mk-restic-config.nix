@@ -9,7 +9,7 @@ let
   bucket = if config.ramona.machine.hasPublicIP then "ramona-public-backups" else "ramona-restic";
 in
 {
-  repository = "b2:${bucket}:/${repository}/";
+  repository = "s3:nbg1.your-objectstorage.com/${bucket}:/${repository}/";
   package = pkgs.restic.overrideAttrs {
     postFixup = ''
       wrapProgram $out/bin/restic --add-flag '--retry-lock=1h'
