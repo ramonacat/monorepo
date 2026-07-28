@@ -91,18 +91,12 @@ resource "helm_release" "cloudnative-pg-database" {
       ]
       roles = [
         {
-          name           = "crowdsec"
-          ensure         = "present"
-          login          = true
-          passwordSecret = { name = "crowdsec" }
-        },
-        {
           name           = "fluentbit"
           ensure         = "present"
           login          = true
           passwordSecret = { name = "fluentbit" }
         },
-        // TODO the following roles should be coming from an argument probably
+        // TODO the following roles should be deployed via argo or something
         {
           name           = "grafana"
           ensure         = "present"
@@ -137,11 +131,6 @@ resource "helm_release" "cloudnative-pg-database" {
       ]
     }
     databases = [
-      {
-        name   = "crowdsec"
-        owner  = "crowdsec"
-        ensure = "present"
-      },
       {
         name   = "fluentbit"
         owner  = "fluentbit"
