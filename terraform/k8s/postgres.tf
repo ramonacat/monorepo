@@ -57,7 +57,17 @@ resource "helm_release" "cloudnative-pg-database" {
         region = "nbg1"
         bucket = "ramona-kubernetes-darkmore-postgres-backups"
       }
-      wal    = { maxParallel = 10 }
+      wal  = { maxParallel = 32 }
+      data = { jobs = 32 }
+      scheduledBackups = [
+        {
+          name                 = "daily"
+          schedule             = "0 0 0 * * *"
+          backupOwnerReference = "self"
+          method               = "plugin"
+          pluginConfiguration  = { name = "barman-cloud.cloudnative-pg.io" }
+        }
+      ]
       secret = { create = false, name = "cloudnative-pg-database-cluster-backup-s3-creds" }
       instanceSidecarConfiguration = {
         env = [
