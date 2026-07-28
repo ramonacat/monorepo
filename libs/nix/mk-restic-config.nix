@@ -6,8 +6,7 @@
 options:
 let
   repository = if config.ramona.machine.hasPublicIP then "public" else "common";
-  bucket =
-    if config.ramona.machine.hasPublicIP then "ramona-public-backups" else "ramona-postgres-backups";
+  bucket = if config.ramona.machine.hasPublicIP then "ramona-public-backups" else "ramona-restic";
 in
 {
   repository = "b2:${bucket}:/${repository}/";
