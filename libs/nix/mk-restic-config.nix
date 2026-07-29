@@ -6,7 +6,7 @@
 options:
 let
   repository = if config.ramona.machine.hasPublicIP then "public" else "common";
-  bucket = if config.ramona.machine.hasPublicIP then "ramona-public-backups" else "ramona-restic";
+  bucket = if config.ramona.machine.hasPublicIP then "ramona-restic-public" else "ramona-restic";
 in
 {
   repository = "s3:nbg1.your-objectstorage.com/${bucket}/${repository}/";
