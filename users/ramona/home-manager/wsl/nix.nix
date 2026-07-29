@@ -30,7 +30,7 @@
         trusted-public-keys = [
           "nix-serve--hallewell:U/8IASkklbxXoFqzevYNdIle1xm3G54u9vUSHzmNaik="
           "cache.nixos.org-1:6NCHdD59X431o0gWypbMrAURkbJ16ZPMQFGspcDShjY="
-          "main:v6GjP95ntWZJfOZ5MtWKDTAhDWxX+ta1PCaNzh+Oi+c="
+          "main:9Q1Mm+tViVquBw+Q8B5BMsCbOhE2Ig3PcVJvm4BMuRs="
         ];
         substituters =
           let
