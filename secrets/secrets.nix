@@ -9,7 +9,6 @@ let
 
   shadowsoul = ssh-keys.machines.shadowsoul.rsa;
   hallewell = ssh-keys.machines.hallewell.rsa;
-  tmp-migrator = ssh-keys.machines.tmp-migrator.rsa;
 
   darkmore-control-plane-0 = ssh-keys.machines.darkmore-control-plane-0.rsa;
   darkmore-control-plane-1 = ssh-keys.machines.darkmore-control-plane-1.rsa;
@@ -29,8 +28,6 @@ let
     darkmore-control-plane-2
 
     darkmore-worker-0
-
-    tmp-migrator
   ];
 
   allMachines = privateMachines ++ publicServers;
@@ -71,8 +68,6 @@ in
   "attic-admin.age".publicKeys = users;
   "darkmore-worker-0-ssh-host-key-rsa.age".publicKeys = users ++ ci ++ [ darkmore-worker-0 ];
   "darkmore-kubeconfig.age".publicKeys = users ++ ci;
-  "tmp-migrator-ssh-host-key-rsa.age".publicKeys = users ++ ci ++ [ tmp-migrator ];
-  "tmp-migrator-ssh-host-key-ed25519.age".publicKeys = users ++ ci ++ [ tmp-migrator ];
   "backups-common-env.age".publicKeys = users ++ privateMachines;
   "backups-common-password.age".publicKeys = users ++ privateMachines;
   "backups-common-rclone.age".publicKeys = users ++ privateMachines;
