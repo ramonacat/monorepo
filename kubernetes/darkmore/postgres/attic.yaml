@@ -4,7 +4,7 @@ metadata:
   namespace: cloudnative-pg-database
   name: attic
 spec:
-  refreshInterval: "24h"
+  refreshPolicy: CreatedOnce
   target:
     name: attic
     creationPolicy: Owner

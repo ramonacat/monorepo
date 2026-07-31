@@ -4,7 +4,7 @@ metadata:
   namespace: cloudnative-pg-database
   name: red-proxy
 spec:
-  refreshInterval: "24h"
+  refreshPolicy: CreatedOnce
   target:
     name: red-proxy
     creationPolicy: Owner

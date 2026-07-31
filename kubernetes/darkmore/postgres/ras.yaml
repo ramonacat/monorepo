@@ -4,7 +4,7 @@ metadata:
   namespace: cloudnative-pg-database
   name: ras
 spec:
-  refreshInterval: "24h"
+  refreshPolicy: CreatedOnce
   target:
     name: ras
     creationPolicy: Owner
