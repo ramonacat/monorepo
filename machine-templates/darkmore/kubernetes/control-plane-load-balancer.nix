@@ -16,6 +16,7 @@
           server {
               listen ${toString config.ramona.kubernetes.control-plane-port};
               proxy_pass k8s_control_plane;
+              proxy_connect_timeout 1s;
           }
         '';
       };
