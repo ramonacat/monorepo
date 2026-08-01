@@ -32,6 +32,9 @@ resource "authentik_provider_oauth2" "api-public" {
   invalidation_flow  = authentik_flow.default-provider-invalidation.uuid
   grant_types        = ["authorization_code"]
   signing_key        = authentik_certificate_key_pair.api-public-oidc.id
+  property_mappings = [
+    authentik_property_mapping_provider_scope.entitlements.id
+  ]
 
   allowed_redirect_uris = [
     {
@@ -51,5 +54,16 @@ resource "authentik_application" "api-public" {
 resource "authentik_policy_binding" "api-public-global-admins" {
   order  = 0
   target = authentik_application.api-public.uuid
+  group  = authentik_group.global-admins.id
+}
+
+resource "authentik_application_entitlement" "api-public--admin" {
+  name        = "admin"
+  application = authentik_application.api-public.uuid
+}
+
+resource "authentik_policy_binding" "global-admins--api-public--admin" {
+  order  = 0
+  target = authentik_application_entitlement.api-public--admin.id
   group  = authentik_group.global-admins.id
 }

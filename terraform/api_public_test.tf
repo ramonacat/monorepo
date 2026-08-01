@@ -32,6 +32,9 @@ resource "authentik_provider_oauth2" "api-public-test" {
   invalidation_flow  = authentik_flow.default-provider-invalidation.uuid
   grant_types        = ["authorization_code"]
   signing_key        = authentik_certificate_key_pair.api-public-test-oidc.id
+  property_mappings = [
+    authentik_property_mapping_provider_scope.entitlements.id
+  ]
 
   allowed_redirect_uris = [
     {
@@ -69,4 +72,15 @@ output "api-public-test-client-secret" {
 
 output "api-public-test-client-issuer-url" {
   value = data.authentik_provider_oauth2_config.api-public-test.issuer_url
+}
+
+resource "authentik_application_entitlement" "api-public-test--admin" {
+  name        = "admin"
+  application = authentik_application.api-public-test.uuid
+}
+
+resource "authentik_policy_binding" "global-admins--api-public-test--admin" {
+  order  = 0
+  target = authentik_application_entitlement.api-public-test--admin.id
+  group  = authentik_group.global-admins.id
 }
