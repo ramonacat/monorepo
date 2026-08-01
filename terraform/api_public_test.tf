@@ -84,3 +84,13 @@ resource "authentik_policy_binding" "global-admins--api-public-test--admin" {
   target = authentik_application_entitlement.api-public-test--admin.id
   group  = authentik_group.global-admins.id
 }
+
+resource "vault_kv_secret_v2" "api-public-test--oauth" {
+  mount = "secrets/kubernetes/darkmore"
+  name  = "api-public-test/oauth"
+  data_json = jsonencode({
+    DOCS_OAUTH_CLIENT_ID     = authentik_provider_oauth2.api-public-test.client_id
+    DOCS_OAUTH_CLIENT_SECRET = authentik_provider_oauth2.api-public-test.client_secret
+    DOCS_OIDC_ISSUER_URL     = data.authentik_provider_oauth2_config.api-public-test.issuer_url
+  })
+}
