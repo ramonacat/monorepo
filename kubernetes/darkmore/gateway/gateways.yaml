@@ -120,7 +120,7 @@ spec:
       kind: Gateway
       name: gateway-tailscale
   default:
-    perConnectionBufferLimitBytes: 1024000
+    perConnectionBufferLimitBytes: 10240000
 ---
 apiVersion: gateway.networking.k8s.io/v1
 kind: Gateway
