@@ -2,7 +2,7 @@ import { themePrivate } from "./theme-private.css";
 import "./global.css.ts";
 import { vars } from "../theme-contract.css.ts";
 
-document.documentElement.classList.add(themePrivate);
+export { themePrivate as rootTheme };
 
 // yes, this is a bit hacky, but it's useful to use theme colors on <canvas /> without hardcoding them
 function extractVariableName(value: string) {
