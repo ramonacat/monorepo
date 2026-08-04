@@ -1,6 +1,5 @@
 {
   pkgs,
-  flake,
   config,
   ...
 }:
@@ -32,15 +31,10 @@
           "cache.nixos.org-1:6NCHdD59X431o0gWypbMrAURkbJ16ZPMQFGspcDShjY="
           "main:9Q1Mm+tViVquBw+Q8B5BMsCbOhE2Ig3PcVJvm4BMuRs="
         ];
-        substituters =
-          let
-            hosts = flake.hosts.builds-hosts;
-          in
-          (map (x: "ssh://nix-ssh@${x}") hosts)
-          ++ [
-            "https://cache.nixos.org/"
-            "https://attic.infrastructure.ramona.fun/main"
-          ];
+        substituters = [
+          "https://cache.nixos.org/"
+          "https://attic.infrastructure.ramona.fun/main"
+        ];
         fallback = true;
       };
     };
