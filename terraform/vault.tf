@@ -6,10 +6,6 @@ resource "tls_private_key" "vault-oidc" {
 resource "tls_self_signed_cert" "vault-oidc" {
   private_key_pem = tls_private_key.vault-oidc.private_key_pem
 
-  subject {
-    common_name = "vault authentik"
-  }
-
   validity_period_hours = 24 * 365
 
   allowed_uses = [
@@ -17,6 +13,10 @@ resource "tls_self_signed_cert" "vault-oidc" {
     "digital_signature",
     "server_auth",
   ]
+
+  subject {
+    common_name = "vault authentik"
+  }
 }
 
 resource "authentik_certificate_key_pair" "vault-oidc" {

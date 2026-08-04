@@ -46,14 +46,14 @@ resource "kubernetes_namespace_v1" "vault" {
 }
 
 resource "kubernetes_secret_v1" "vault" {
-  metadata {
-    name      = "aws"
-    namespace = kubernetes_namespace_v1.vault.metadata[0].name
-  }
-
   data = {
     AWS_ACCESS_KEY_ID     = aws_iam_access_key.vault.id
     AWS_SECRET_ACCESS_KEY = aws_iam_access_key.vault.secret
+  }
+
+  metadata {
+    name      = "aws"
+    namespace = kubernetes_namespace_v1.vault.metadata[0].name
   }
 }
 

@@ -6,10 +6,6 @@ resource "tls_private_key" "api-public-oidc" {
 resource "tls_self_signed_cert" "api-public-oidc" {
   private_key_pem = tls_private_key.api-public-oidc.private_key_pem
 
-  subject {
-    common_name = "api-public authentik"
-  }
-
   validity_period_hours = 24 * 365
 
   allowed_uses = [
@@ -17,6 +13,10 @@ resource "tls_self_signed_cert" "api-public-oidc" {
     "digital_signature",
     "server_auth",
   ]
+
+  subject {
+    common_name = "api-public authentik"
+  }
 }
 
 resource "authentik_certificate_key_pair" "api-public-oidc" {

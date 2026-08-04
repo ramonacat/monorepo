@@ -6,10 +6,6 @@ resource "tls_private_key" "grafana-oidc" {
 resource "tls_self_signed_cert" "grafana-oidc" {
   private_key_pem = tls_private_key.grafana-oidc.private_key_pem
 
-  subject {
-    common_name = "grafana authentik"
-  }
-
   validity_period_hours = 24 * 365
 
   allowed_uses = [
@@ -17,6 +13,10 @@ resource "tls_self_signed_cert" "grafana-oidc" {
     "digital_signature",
     "server_auth",
   ]
+
+  subject {
+    common_name = "grafana authentik"
+  }
 }
 
 resource "authentik_certificate_key_pair" "grafana-oidc" {
