@@ -55,12 +55,6 @@ resource "authentik_application" "api-public" {
   protocol_provider = authentik_provider_oauth2.api-public.id
 }
 
-resource "authentik_policy_binding" "api-public-global-admins" {
-  order  = 0
-  target = authentik_application.api-public.uuid
-  group  = authentik_group.global-admins.id
-}
-
 resource "authentik_application_entitlement" "api-public--admin" {
   name        = "admin"
   application = authentik_application.api-public.uuid
