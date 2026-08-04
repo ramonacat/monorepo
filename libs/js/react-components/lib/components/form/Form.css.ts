@@ -7,6 +7,13 @@ export const row = style({
   alignItems: "center",
   margin: `${privateVars.spacings.l} 0`,
   width: "100%",
+
+  "@media": {
+    "(max-width: 500px)": {
+      flexDirection: "column",
+      alignItems: "flex-start",
+    },
+  },
 });
 
 export const label = style({

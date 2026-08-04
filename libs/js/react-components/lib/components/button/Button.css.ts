@@ -41,5 +41,9 @@ export const submit = style({
 });
 
 export const contentsContainer = style({
+  margin: "0 auto",
+});
+
+export const contentsContainerWithIcon = style({
   marginLeft: privateVars.spacings.m,
 });

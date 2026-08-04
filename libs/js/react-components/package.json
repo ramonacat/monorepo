@@ -1,6 +1,6 @@
 {
   "name": "@ramonacat/react-components",
-  "version": "0.5.0",
+  "version": "0.6.0",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/ramonacat/monorepo.git"
@@ -19,7 +19,8 @@
     "./css": "./dist/css/index.js",
     "./theme-contract.css.ts": "./dist/theme-contract.css.js",
     "./math": "./dist/math/index.js",
-    "./react-components.css": "./dist/react-components.css"
+    "./react-components.css": "./dist/react-components.css",
+    "./default-theme.css.ts": "./dist/default-theme.css.js"
   },
   "devDependencies": {
     "@antebudimir/eslint-plugin-vanilla-extract": "^1.17.0",
