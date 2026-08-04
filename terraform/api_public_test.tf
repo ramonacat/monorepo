@@ -53,6 +53,7 @@ resource "authentik_application" "api-public-test" {
   name              = "api-public-test"
   slug              = "api-public-test"
   protocol_provider = authentik_provider_oauth2.api-public-test.id
+  meta_hide         = true
 }
 
 resource "authentik_policy_binding" "api-public-test-global-admins" {

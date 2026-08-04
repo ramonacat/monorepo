@@ -27,7 +27,8 @@
           let
             hosts = flake.hosts.builds-hosts;
           in
-          map (x: "ssh://nix-ssh@${x}?ssh-key=${config.age.secrets.nix-serve-ssh-key.path}") hosts;
+          (map (x: "ssh://nix-ssh@${x}?ssh-key=${config.age.secrets.nix-serve-ssh-key.path}") hosts)
+          ++ [ "https://attic.infrastructure.ramona.fun" ];
         fallback = true;
       };
     };
