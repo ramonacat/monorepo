@@ -6,10 +6,6 @@ resource "tls_private_key" "argocd-oidc" {
 resource "tls_self_signed_cert" "argocd-oidc" {
   private_key_pem = tls_private_key.argocd-oidc.private_key_pem
 
-  subject {
-    common_name = "argocd authentik"
-  }
-
   validity_period_hours = 24 * 365
 
   allowed_uses = [
@@ -17,6 +13,10 @@ resource "tls_self_signed_cert" "argocd-oidc" {
     "digital_signature",
     "server_auth",
   ]
+
+  subject {
+    common_name = "argocd authentik"
+  }
 }
 
 resource "authentik_certificate_key_pair" "argocd-oidc" {
@@ -57,8 +57,9 @@ resource "authentik_provider_oauth2" "argocd" {
 }
 
 data "authentik_provider_oauth2_config" "argocd" {
-  depends_on  = [authentik_application.argocd]
   provider_id = authentik_provider_oauth2.argocd.id
+
+  depends_on = [authentik_application.argocd]
 }
 
 resource "authentik_policy_binding" "argocd-global-admins" {
