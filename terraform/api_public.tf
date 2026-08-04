@@ -52,6 +52,7 @@ data "authentik_provider_oauth2_config" "api-public" {
 resource "authentik_application" "api-public" {
   name              = "api-public"
   slug              = "api-public"
+  meta_hide         = true
   protocol_provider = authentik_provider_oauth2.api-public.id
 }
 
