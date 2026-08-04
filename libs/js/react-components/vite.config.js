@@ -48,6 +48,10 @@ export default defineConfig({
           import.meta.dirname,
           "./lib/theme-contract.css.ts",
         ),
+        "default-theme.css": resolve(
+          import.meta.dirname,
+          "./lib/default-theme.css.ts",
+        ),
         "math/index": resolve(import.meta.dirname, "./lib/math/index.ts"),
         "hooks/index": resolve(import.meta.dirname, "./lib/hooks/index.ts"),
       },

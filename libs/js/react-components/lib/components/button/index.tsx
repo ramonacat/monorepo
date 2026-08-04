@@ -12,12 +12,21 @@ function mkClassName(hasChildren: boolean, ...other: (string | undefined)[]) {
   return [buttonStyle, ...other.filter((x) => x !== undefined)].join(" ");
 }
 
-function Contents({ children }: { children?: ReactNode }) {
+function Contents({
+  children,
+  hasIcon,
+}: {
+  children?: ReactNode;
+  hasIcon: boolean;
+}) {
   if (children === undefined) {
     return "";
   }
+
   return (
-    <div className={css.contentsContainer}>
+    <div
+      className={`${css.contentsContainer} ${hasIcon ? css.contentsContainerWithIcon : ""}`}
+    >
       <span className={css.text}>{children}</span>
     </div>
   );
@@ -46,7 +55,7 @@ export function ButtonLink({
       {...restProps}
     >
       {icon}
-      <Contents>{children}</Contents>
+      <Contents hasIcon={typeof icon !== "undefined"}>{children}</Contents>
     </NavLink>
   );
 }
@@ -72,7 +81,7 @@ export function Button({
   return (
     <button {...mergedProps}>
       {icon}
-      <Contents>{children}</Contents>
+      <Contents hasIcon={typeof icon !== "undefined"}>{children}</Contents>
     </button>
   );
 }

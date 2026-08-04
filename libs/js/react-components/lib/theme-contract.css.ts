@@ -3,19 +3,21 @@ import { createThemeContract } from "@vanilla-extract/css";
 // TODO this needs more thorough cleanup
 export const vars = createThemeContract({
   colors: {
-    brand: "",
-    tableBorder: "",
-    backgroundSecondary: "",
     background: "",
-    text: "",
-    textHeader: "",
-    inputBorder: "",
-    inputBackground: "",
-    success: "",
-    error: "",
+    backgroundSecondary: "",
+    brand: "",
     button: "",
     buttonActive: "",
     buttonHover: "",
+    error: "",
+    foreground: "",
+    inputBackground: "",
+    inputBorder: "",
+    linkHover: "",
+    success: "",
+    tableBorder: "",
+    text: "",
+    textHeader: "",
   },
   fonts: {
     weights: {
@@ -25,6 +27,9 @@ export const vars = createThemeContract({
     families: {
       default: "",
       monospace: "",
+    },
+    sizes: {
+      root: "",
     },
   },
   modal: {

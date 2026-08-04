@@ -2,9 +2,25 @@ import { globalStyle } from "@vanilla-extract/css";
 import { vars } from "../theme-contract.css";
 import { privateVars } from "./theme-contract-private.css";
 
-globalStyle("*, *::after, *::before", {
+globalStyle("*, *::before, *::after", {
   boxSizing: "border-box",
   margin: 0,
+  padding: 0,
+});
+
+globalStyle("body", {
+  backgroundColor: vars.colors.background,
+  color: vars.colors.foreground,
+  fontFamily: vars.fonts.families.default,
+  fontSize: vars.fonts.sizes.root,
+});
+
+globalStyle("a", {
+  color: vars.colors.foreground,
+});
+
+globalStyle("a:hover", {
+  color: vars.colors.linkHover,
 });
 
 globalStyle("body", {
