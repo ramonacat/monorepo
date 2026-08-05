@@ -1,19 +1,18 @@
 import { style } from "@vanilla-extract/css";
 import { vars } from "../../theme-contract.css";
-import { privateVars } from "../../css/theme-contract-private.css";
 
 export const button = style({
   display: "flex",
   alignContent: "center",
   alignItems: "center",
   border: "none",
-  backgroundColor: vars.colors.button,
-  padding: `${privateVars.spacings.l}`,
+  backgroundColor: vars.button.colors.normal,
+  padding: `${vars.defaults.spacings.l}`,
   textDecoration: "none",
-  color: vars.colors.text,
+  color: vars.text.colors.normal,
 
   ":hover": {
-    backgroundColor: vars.colors.buttonHover,
+    backgroundColor: vars.button.colors.hover,
     cursor: "pointer",
   },
 });
@@ -21,12 +20,12 @@ export const button = style({
 export const buttonIconOnly = style([
   button,
   {
-    padding: privateVars.spacings.l,
+    padding: vars.defaults.spacings.l,
   },
 ]);
 
 export const buttonActive = style({
-  backgroundColor: vars.colors.buttonActive,
+  backgroundColor: vars.button.colors.active,
 });
 
 export const text = style({
@@ -37,7 +36,7 @@ export const text = style({
 export const submit = style({
   justifyContent: "center",
   width: "100%",
-  fontSize: privateVars.sizes.font.attention,
+  fontSize: vars.text.sizes.attention,
 });
 
 export const contentsContainer = style({
@@ -45,5 +44,5 @@ export const contentsContainer = style({
 });
 
 export const contentsContainerWithIcon = style({
-  marginLeft: privateVars.spacings.m,
+  marginLeft: vars.defaults.spacings.m,
 });

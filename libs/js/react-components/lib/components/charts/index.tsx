@@ -7,8 +7,8 @@ import {
 } from "react";
 import { ChartData, type Value, type InternalEntry } from "./chart-data";
 import { useElementDimensions } from "../../hooks/useElementDimensions";
-import { readThemeFont } from "../../css";
 import { useDpi } from "../../hooks/useDpi";
+import fonts from "../../css/fonts.ts";
 
 export { ChartData, type Value };
 
@@ -48,7 +48,7 @@ export function LiveLineChart(
     context.lineWidth = 2;
     context.strokeStyle = lineColor;
     context.fillStyle = textColor;
-    context.font = `16px ${readThemeFont("default")}`;
+    context.font = `16px ${fonts.families.default}`;
     const redrawCanvas = (items: readonly InternalEntry[]) => {
       const now = Date.now() / 1000;
       const start = now - windowSize;

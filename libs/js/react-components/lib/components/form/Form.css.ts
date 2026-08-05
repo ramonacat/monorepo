@@ -1,11 +1,10 @@
 import { style } from "@vanilla-extract/css";
 import { vars } from "../../theme-contract.css";
-import { privateVars } from "../../css/theme-contract-private.css";
 
 export const row = style({
   display: "flex",
   alignItems: "center",
-  margin: `${privateVars.spacings.l} 0`,
+  margin: `${vars.defaults.spacings.l} 0`,
   width: "100%",
 
   "@media": {
@@ -17,31 +16,31 @@ export const row = style({
 });
 
 export const label = style({
-  width: privateVars.sizes.form.label.width,
+  width: vars.label.sizes.width,
 });
 
 export const inputWrapper = style({
   display: "flex",
   alignItems: "stretch",
-  width: privateVars.sizes.form.input.width,
+  width: vars.input.sizes.width,
 });
 
 export const attachment = style({
   display: "flex",
   alignItems: "center",
-  border: `${privateVars.sizes.border.xs} solid ${vars.colors.inputBorder}`,
-  padding: `0 ${privateVars.spacings.l}`,
+  border: `${vars.input.sizes.border} solid ${vars.input.colors.border}`,
+  padding: `0 ${vars.defaults.spacings.l}`,
 });
 
 export const input = style({
   flexGrow: "1",
-  border: `${privateVars.sizes.border.xs} solid ${vars.colors.inputBorder}`,
-  backgroundColor: vars.colors.inputBackground,
-  padding: privateVars.spacings.m,
+  border: `${vars.input.sizes.border} solid ${vars.input.colors.border}`,
+  backgroundColor: vars.input.colors.background,
+  padding: vars.defaults.spacings.m,
   minWidth: "0",
-  color: `${vars.colors.text}`,
+  color: `${vars.text.colors.normal}`,
   ":focus-visible": {
-    boxShadow: vars.shadows.highlight,
+    boxShadow: vars.defaults.shadows.highlight,
   },
   selectors: {
     [`&:has(+ ${attachment})`]: {

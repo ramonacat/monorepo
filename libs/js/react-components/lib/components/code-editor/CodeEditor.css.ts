@@ -1,6 +1,5 @@
 import { style } from "@vanilla-extract/css";
 import { vars } from "../../theme-contract.css";
-import { privateVars } from "../../css/theme-contract-private.css";
 
 export const container = style({
   contain: "layout",
@@ -12,20 +11,20 @@ export const codeEditor = style({
 
 export const status = style({
   position: "absolute",
-  right: privateVars.spacings.l,
-  bottom: privateVars.spacings.l,
-  transition: `opacity ${privateVars.animation.duration.m} ${privateVars.animation.timingFunction.replace}`,
+  right: vars.defaults.spacings.l,
+  bottom: vars.defaults.spacings.l,
+  transition: `opacity ${vars.defaults.animation.duration.m} ${vars.defaults.animation.timingFunction.replace}`,
   opacity: 0,
-  width: privateVars.sizes.icon.xxl,
-  height: privateVars.sizes.icon.xxl,
+  width: vars.icon.sizes.xxl,
+  height: vars.icon.sizes.xxl,
 });
 
 export const success = style({
-  color: vars.colors.success,
+  color: vars.defaults.colors.success,
 });
 
 export const error = style({
-  color: vars.colors.error,
+  color: vars.defaults.colors.error,
 });
 
 export const show = style({
