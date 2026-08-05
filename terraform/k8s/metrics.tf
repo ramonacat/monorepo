@@ -88,7 +88,7 @@ resource "helm_release" "kube-prometheus-stack" {
         storageSpec = {
           volumeClaimTemplate = {
             spec = {
-              storageClassName = "longhorn"
+              storageClassName = "hcloud-volumes"
               accessModes      = ["ReadWriteOnce"]
               resources        = { requests = { storage = "20Gi" } }
             }
