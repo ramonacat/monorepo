@@ -74,6 +74,8 @@ export const vars = createThemeContract({
       h5: "",
       h6: "",
       attention: "",
+
+      maxColumnWidth: "",
     },
     fonts: {
       weights: {
