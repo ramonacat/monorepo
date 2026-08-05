@@ -34,8 +34,8 @@ export default function CodeEditor(
   editorProps.extensions.push(
     EditorView.theme({
       "& *": {
-        "font-family": vars.fonts.families.monospace,
-        "font-weight": vars.fonts.weights.normal,
+        "font-family": vars.text.fonts.families.monospace,
+        "font-weight": vars.text.fonts.weights.normal,
       },
     }),
   );

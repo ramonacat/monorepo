@@ -1,20 +1,19 @@
 import { globalStyle, style } from "@vanilla-extract/css";
 import { vars } from "../../theme-contract.css";
-import { privateVars } from "../../css/theme-contract-private.css";
 
 export const closeIcon = style({
-  width: privateVars.sizes.icon.xxl,
-  height: privateVars.sizes.icon.xxl,
+  width: vars.icon.sizes.xxl,
+  height: vars.icon.sizes.xxl,
 });
 
 export const dialog = style({
   margin: "auto",
   border: "0",
-  backgroundColor: vars.colors.background,
+  backgroundColor: vars.defaults.colors.background,
   padding: "0",
   width: "80%",
   height: "80%",
-  color: vars.colors.text,
+  color: vars.text.colors.normal,
   "::backdrop": {
     backgroundColor: vars.modal.backdrop.color,
   },
