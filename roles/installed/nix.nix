@@ -21,7 +21,7 @@
         netrc-file = config.age.secrets.nix-netrc.path;
         trusted-public-keys = [
           "nix-serve--hallewell:U/8IASkklbxXoFqzevYNdIle1xm3G54u9vUSHzmNaik="
-          "main:9Q1Mm+tViVquBw+Q8B5BMsCbOhE2Ig3PcVJvm4BMuRs="
+          "main:Ijh1gpf5zuqCEsdfP6nBeGLg+/v+9SW7T3+cS81TqW4="
         ];
         substituters =
           let
