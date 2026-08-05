@@ -17,7 +17,6 @@
     ./prometheus-exporter.nix
     ./restic-home.nix
     ./ssh.nix
-    ./syslog.nix
     ./tailscale.nix
     ./vault-agent.nix
   ];

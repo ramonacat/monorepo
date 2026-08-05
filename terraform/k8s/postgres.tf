@@ -78,7 +78,7 @@ resource "helm_release" "cloudnative-pg-database" {
     }
     cluster = {
       instances = 3
-      storage   = { size = "20Gi", storageClass = "hcloud-volumes" }
+      storage   = { size = "10Gi", storageClass = "hcloud-volumes" }
       monitoring = {
         enabled = true
       }
@@ -90,19 +90,12 @@ resource "helm_release" "cloudnative-pg-database" {
         }
       ]
       roles = [
-        {
-          name           = "fluentbit"
-          ensure         = "present"
-          login          = true
-          passwordSecret = { name = "fluentbit" }
-        },
         // TODO the following roles should be deployed via argo or something
         {
           name           = "grafana"
           ensure         = "present"
           login          = true
           passwordSecret = { name = "grafana" }
-          inRoles        = ["fluentbit"]
         },
         {
           name           = "authentik"
@@ -131,11 +124,6 @@ resource "helm_release" "cloudnative-pg-database" {
       ]
     }
     databases = [
-      {
-        name   = "fluentbit"
-        owner  = "fluentbit"
-        ensure = "present"
-      },
       // TODO the following databases should be coming from an argument probably
       {
         name   = "authentik"

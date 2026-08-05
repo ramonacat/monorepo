@@ -3,7 +3,6 @@ kind: Kustomization
 resources:
   - attic.yaml
   - authentik.yaml
-  - fluentbit.yaml
   - generator.yaml
   - grafana.yaml
   - ras.yaml
