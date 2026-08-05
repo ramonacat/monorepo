@@ -78,7 +78,7 @@ resource "helm_release" "cloudnative-pg-database" {
     }
     cluster = {
       instances = 3
-      storage   = { size = "20Gi", storageClass = "hcloud-volumes" }
+      storage   = { size = "10Gi", storageClass = "hcloud-volumes" }
       monitoring = {
         enabled = true
       }
