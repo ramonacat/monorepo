@@ -67,6 +67,8 @@ export const theme = createTheme(vars, {
       h4: "1.6rem",
       h5: "1.5rem",
       h6: "1.4rem",
+
+      maxColumnWidth: "150rex",
     },
     fonts,
   },
