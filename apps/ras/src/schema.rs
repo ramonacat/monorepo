@@ -27,6 +27,19 @@ diesel::table! {
     }
 }
 
+diesel::table! {
+    versions (versioned_item, store_path) {
+        versioned_item -> Text,
+        store_path -> Text,
+        version -> Int8,
+    }
+}
+
 diesel::joinable!(home_closure_state -> home_closure (closure_name));
 
-diesel::allow_tables_to_appear_in_same_query!(home_closure, home_closure_state, host_closure_state,);
+diesel::allow_tables_to_appear_in_same_query!(
+    home_closure,
+    home_closure_state,
+    host_closure_state,
+    versions,
+);

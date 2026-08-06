@@ -44,3 +44,17 @@ pub struct HomeClosureState {
     pub current_closure: String,
     pub current_closure_updated_at: DateTime<Utc>,
 }
+
+#[derive(Queryable, Selectable)]
+#[diesel(
+    table_name = crate::schema::versions,
+    check_for_backend(diesel::pg::Pg),
+    primary_key(versioned_item, store_path)
+)]
+pub struct Version {
+    #[allow(unused)]
+    pub versioned_item: String,
+    #[allow(unused)]
+    pub store_path: String,
+    pub version: i64,
+}

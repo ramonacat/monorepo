@@ -10,10 +10,13 @@ use diesel_migrations::{EmbeddedMigrations, MigrationHarness, embed_migrations};
 use dotenvy::dotenv;
 use tracing::instrument;
 
+use crate::versions::post_version;
+
 mod homes;
 mod hosts;
 mod models;
 mod schema;
+mod versions;
 
 pub const MIGRATIONS: EmbeddedMigrations = embed_migrations!("migrations/");
 
@@ -59,6 +62,7 @@ async fn main() {
             "/homes/{name}/current_closure/{hostname}",
             post(homes::post_current_closure),
         )
+        .route("/versions", post(post_version))
         .with_state(app_state);
 
     // run our app with hyper, listening globally on port 3000
