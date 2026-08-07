@@ -48,6 +48,22 @@
             replace = true;
             nodeRuntimes = [ "node24" ];
           };
+          "${config.networking.hostName}-${toString i}-secret" = {
+            enable = true;
+            url = "https://github.com/ramonacat/monorepo-secret";
+            tokenFile = config.age.secrets.github-pat-runner-registration.path;
+            extraLabels = [ "nixos" ];
+            extraPackages = with pkgs; [
+              # TODO these should probably be managed by the pipelines instead with devshells or something
+              openssh
+              jq
+              proot
+              curl
+              ramona.fup
+            ];
+            replace = true;
+            nodeRuntimes = [ "node24" ];
+          };
         }) (lib.range 1 runner.count)
       );
     };
