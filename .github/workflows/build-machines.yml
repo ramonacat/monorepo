@@ -65,7 +65,7 @@ jobs:
           token: "${{ secrets.PAT }}"
     
   upload-containers:
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
     if: github.ref == 'refs/heads/main'
     permissions:
       contents: read
@@ -92,7 +92,7 @@ jobs:
         run: ./.github/scripts/upload-containers.bash
 
   npm-publish:
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
     if: github.ref == 'refs/heads/main'
     permissions:
       contents: read

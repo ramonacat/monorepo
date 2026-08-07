@@ -18,7 +18,7 @@ main() {
 		store_path=$(realpath "$image_path")
 		versions_payload=$(jq --null-input --arg item "${image_path:2}" --arg store_path "$store_path" '{"versioned_item": $item, "store_path": $store_path}')
 
-		versions_response=$(curl --silent --fail --request POST \
+		versions_response=$(curl --fail --request POST \
 			--header 'Content-Type: application/json' \
 			--data "$versions_payload" \
 			"https://ras.infrastructure.ramona.fun/versions")
