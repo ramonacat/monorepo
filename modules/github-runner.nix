@@ -44,6 +44,7 @@
               proot
               curl
               ramona.fup
+              docker
             ];
             replace = true;
             nodeRuntimes = [ "node24" ];
@@ -60,6 +61,7 @@
               proot
               curl
               ramona.fup
+              docker
             ];
             replace = true;
             nodeRuntimes = [ "node24" ];
