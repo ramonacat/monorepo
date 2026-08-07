@@ -59,6 +59,9 @@
             ];
             replace = true;
             nodeRuntimes = [ "node24" ];
+            serviceOverrides = {
+              "ReadWritePaths" = "/var/run/docker.sock";
+            };
           };
           "${config.networking.hostName}-${toString i}-secret" = {
             enable = true;
@@ -78,6 +81,9 @@
             ];
             replace = true;
             nodeRuntimes = [ "node24" ];
+            serviceOverrides = {
+              "ReadWritePaths" = "/var/run/docker.sock";
+            };
           };
         }) (lib.range 1 runner.count)
       );
