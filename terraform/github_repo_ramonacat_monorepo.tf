@@ -37,3 +37,17 @@ resource "github_branch_protection" "ramonacat-monorepo--main" {
     contexts = ["build", "flake-check", "upload-coverage", "terraform"]
   }
 }
+
+resource "tailscale_tailnet_key" "monorepo-ci" {
+  ephemeral           = true
+  reusable            = true
+  recreate_if_invalid = "always"
+  preauthorized       = true
+  tags                = ["tag:ci"]
+}
+
+resource "github_actions_secret" "ramonacat-monorepo--argo-tailscale-token" {
+  repository  = github_repository.ramonacat-monorepo.id
+  secret_name = "TAILSCALE_AUTHKEY"
+  value       = tailscale_tailnet_key.monorepo-ci.key
+}
