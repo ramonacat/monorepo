@@ -82,3 +82,27 @@ pub async fn post_version(
 
     Json(result.unwrap())
 }
+
+pub async fn post_version_check(
+    extract::State(app_state): extract::State<AppState>,
+    extract::Json(request): extract::Json<PostVersionRequest>,
+) -> Json<PostVersionResponse> {
+    use crate::schema::versions::dsl;
+
+    let mut connection = app_state.db_connect().await;
+
+    let latest_closure: Option<crate::models::Version> = dsl::versions
+        .filter(dsl::versioned_item.eq(request.versioned_item))
+        .order(dsl::version.desc())
+        .first(&mut connection)
+        .await
+        .optional()
+        .unwrap();
+
+    Json(PostVersionResponse {
+        version: latest_closure.as_ref().map_or_else(|| 1, |x| x.version + 1),
+        updated: latest_closure
+            .as_ref()
+            .is_none_or(|x| x.store_path != request.store_path),
+    })
+}

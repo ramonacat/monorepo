@@ -10,7 +10,7 @@ use diesel_migrations::{EmbeddedMigrations, MigrationHarness, embed_migrations};
 use dotenvy::dotenv;
 use tracing::instrument;
 
-use crate::versions::post_version;
+use crate::versions::{post_version, post_version_check};
 
 mod homes;
 mod hosts;
@@ -63,6 +63,7 @@ async fn main() {
             post(homes::post_current_closure),
         )
         .route("/versions", post(post_version))
+        .route("/versions/actions/check", post(post_version_check))
         .with_state(app_state);
 
     // run our app with hyper, listening globally on port 3000
