@@ -16,7 +16,7 @@ data:
     
     [database]
     [chunking]
-    nar-size-threshold = 65536 # chunk files that are 64 KiB or larger
-    min-size = 16384
-    avg-size = 65536
-    max-size = 262144
+    nar-size-threshold = 262144 # chunk files that are 64 KiB or larger
+    min-size = 262144
+    avg-size = 524288
+    max-size = 1048576
