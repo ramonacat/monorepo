@@ -33,8 +33,12 @@
       users.users.github-runners = {
         isSystemUser = true;
         group = "github-runners";
+        extraGroups = [ "docker" ];
       };
       nix.settings.trusted-users = [ "github-runners" ];
+      virtualisation.docker = {
+        enable = 1;
+      };
       services.github-runners = lib.mergeAttrsList (
         map (i: {
           "${config.networking.hostName}-${toString i}" = {
