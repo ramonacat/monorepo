@@ -11,7 +11,13 @@ data "tailscale_devices" "all" {
 }
 
 locals {
-  tailscale_device = lookup({ for device in data.tailscale_devices.all.devices : device.hostname => device }, var.hostname, null)
+  tailscale_device = one(
+    lookup(
+      { for device in data.tailscale_devices.all.devices : device.hostname => device... },
+      var.hostname,
+      null
+    )[*]
+  )
 }
 
 resource "tailscale_device_tags" "node" {

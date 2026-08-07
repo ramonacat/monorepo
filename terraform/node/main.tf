@@ -25,7 +25,13 @@ resource "tailscale_tailnet_key" "default" {
 }
 
 locals {
-  tailscale_device = lookup({ for device in data.tailscale_devices.all.devices : device.hostname => device }, var.name, null)
+  tailscale_device = one(
+    lookup(
+      { for device in data.tailscale_devices.all.devices : device.hostname => device... },
+      var.name,
+      null
+    )[*]
+  )
 }
 
 resource "tailscale_device_tags" "node" {

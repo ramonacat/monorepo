@@ -108,6 +108,7 @@ resource "helm_release" "argo-cd" {
             }
           ]
         })
+        "kustomize.buildOptions" = "--enable-helm"
       },
       params = {
         "server.insecure" = true
