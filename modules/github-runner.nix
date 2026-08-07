@@ -37,7 +37,7 @@
       };
       nix.settings.trusted-users = [ "github-runners" ];
       virtualisation.docker = {
-        enable = 1;
+        enable = true;
       };
       services.github-runners = lib.mergeAttrsList (
         map (i: {
