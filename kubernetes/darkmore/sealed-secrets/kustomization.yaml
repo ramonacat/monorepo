@@ -1,0 +1,18 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+helmCharts:
+  - name: sealed-secrets
+    repo: https://bitnami.github.io/sealed-secrets
+    version: "2.19.1"
+    namespace: sealed-secrets
+    valuesInline:
+      metrics:
+        prometheusRule:
+          enabled: true
+        serviceMonitor:
+          enabled: true
+        dashboards:
+          create: true
+          labels:
+            grafana_dashboard: "1"
+          namespace: "grafana"
