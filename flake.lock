@@ -195,11 +195,11 @@
     "lix": {
       "flake": false,
       "locked": {
-        "lastModified": 1785999501,
-        "narHash": "sha256-2MLaQcipG3DG+MbqqT4c16KTZ3+l4mCrZSBoctD/dik=",
-        "rev": "2c86e95b2c49826505fadaa453a631dfbaac288f",
+        "lastModified": 1786105146,
+        "narHash": "sha256-tXtfwu7qnsFgZa5WrriBuHa9LLL64WyveNuBvEdvoew=",
+        "rev": "00e8627eba3c66bc6971c8eff76a8bd7d7f4d799",
         "type": "tarball",
-        "url": "https://git.lix.systems/api/v1/repos/lix-project/lix/archive/2c86e95b2c49826505fadaa453a631dfbaac288f.tar.gz"
+        "url": "https://git.lix.systems/api/v1/repos/lix-project/lix/archive/00e8627eba3c66bc6971c8eff76a8bd7d7f4d799.tar.gz"
       },
       "original": {
         "type": "tarball",
@@ -238,11 +238,11 @@
         "systems": "systems_3"
       },
       "locked": {
-        "lastModified": 1786072111,
-        "narHash": "sha256-m6NWUbZC08A/bHjR0sy7Ee1/xjnqGxQzLcHHLzVMPYY=",
+        "lastModified": 1786154692,
+        "narHash": "sha256-+KyMg7tMfMcfFjUg59BD3OMUzehv9xsNK7ZMY3ZepGc=",
         "owner": "Infinidoge",
         "repo": "nix-minecraft",
-        "rev": "02f9da181da65a0f2f869b8a1ea8cd263fbd1d31",
+        "rev": "fad712d66c18a08c582214c3f52c3d12e0cc16f9",
         "type": "github"
       },
       "original": {
@@ -379,11 +379,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1786076960,
-        "narHash": "sha256-jfR6OhwurCKn1tREyfOcK/Omxf1Q/DzDDFbnEr1mBLs=",
+        "lastModified": 1786160316,
+        "narHash": "sha256-oLoc3ZLg1LX/S5Jb3v6MrF415AzDyC4vgeWy9UcYTQk=",
         "owner": "oxalica",
         "repo": "rust-overlay",
-        "rev": "57a23bfaf4f7017267294b161175db1e32eb1c85",
+        "rev": "4e1c940c96560ceab7c547f89642231371a66646",
         "type": "github"
       },
       "original": {
