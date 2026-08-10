@@ -10,6 +10,8 @@ helmCharts:
       existingSecret: 'renovate'
       cronjob:
         schedule: '* * * * *'
+      env:
+        LOG_LEVEL: "debug"
       renovate:
         config: |
           {
