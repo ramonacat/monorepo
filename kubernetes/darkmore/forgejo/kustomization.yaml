@@ -2,7 +2,7 @@ apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 helmCharts:
   - name: forgejo
-    repo: oci://code.forgejo.org/forgejo-helm/forgejo
+    repo: oci://code.forgejo.org/forgejo-helm
     releaseName: forgejo
     version: "17.1.4"
     namespace: forgejo
