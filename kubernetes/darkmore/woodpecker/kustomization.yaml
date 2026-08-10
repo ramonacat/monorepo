@@ -32,3 +32,4 @@ helmCharts:
 resources:
   - http-route.yaml
   - secret.yaml
+  - database.yaml
