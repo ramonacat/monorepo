@@ -11,8 +11,6 @@ helmCharts:
         env:
           WOODPECKER_BACKEND_K8S_PULL_SECRET_NAMES: 'ghcr'
       server:
-        statefulSet:
-          replicaCount: 2
         prometheus:
           podmonitor:
             enabled: true
