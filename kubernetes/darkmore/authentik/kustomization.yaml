@@ -48,6 +48,8 @@ helmCharts:
             parentRefs:
             - name: gateway-public
               namespace: kgateway-system
+              group: gateway.networking.k8s.io
+              kind: Gateway
       worker:
         metrics:
           enabled: true

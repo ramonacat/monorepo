@@ -16,6 +16,7 @@ spec:
         kind: Service
         port: 80
         group: ""
+        weight: 1
       matches:
         - path:
             type: PathPrefix

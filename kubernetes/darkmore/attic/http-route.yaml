@@ -6,6 +6,7 @@ spec:
   parentRefs:
   - name: gateway-tailscale
     namespace: kgateway-system
+    group: gateway.networking.k8s.io
   hostnames:
     - attic.infrastructure.ramona.fun
   rules:
@@ -13,6 +14,12 @@ spec:
       - name: attic
         kind: Service
         port: 80
+        group: ""
+        weight: 1
+      matches:
+        - path:
+            type: PathPrefix
+            value: /
       timeouts:
         backendRequest: "1800s"
         request: "1800s"
