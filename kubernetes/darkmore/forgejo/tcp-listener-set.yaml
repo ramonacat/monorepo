@@ -7,6 +7,7 @@ spec:
     group: gateway.networking.k8s.io
     kind: Gateway
     name: gateway-public
+    namespace: kgateway-system
   listeners:
     - name: ssh
       port: 22
