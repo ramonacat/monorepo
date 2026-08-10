@@ -48,3 +48,7 @@ resource "authentik_group" "global-admins" {
   name         = "global admins"
   is_superuser = true
 }
+
+resource "authentik_group" "infra-users" {
+  name = "infra users"
+}
