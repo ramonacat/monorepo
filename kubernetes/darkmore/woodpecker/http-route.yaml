@@ -1,0 +1,25 @@
+apiVersion: gateway.networking.k8s.io/v1
+kind: HTTPRoute
+metadata:
+  name: woodpecker
+spec:
+  parentRefs:
+  - name: gateway-tailscale
+    namespace: kgateway-system
+    group: gateway.networking.k8s.io
+  hostnames:
+    - woodpecker.infrastructure.ramona.fun
+  rules:
+    - backendRefs:
+      - name: woodpecker-woodpecker
+        kind: Service
+        port: 80
+        group: ""
+        weight: 1
+      matches:
+        - path:
+            type: PathPrefix
+            value: /
+      timeouts:
+        backendRequest: "1800s"
+        request: "1800s"

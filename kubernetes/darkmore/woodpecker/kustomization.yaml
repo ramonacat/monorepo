@@ -1,0 +1,30 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+helmCharts:
+  - name: woodpecker
+    repo: oci://ghcr.io/woodpecker-ci/helm/
+    releaseName: woodpecker
+    version: "3.7.0"
+    namespace: woodpecker
+    valuesInline:
+      server:
+        statefulSet:
+          replicaCount: 2
+        prometheus:
+          podmonitor:
+            enabled: true
+          rules:
+            enabled: true
+        grafana:
+          dashboards:
+            enabled: true
+        env:
+          WOODPECKER_HOST: 'https://woodpecker.infrastructure.ramona.fun'
+          WOODPECKER_OPEN: 'true'
+          WOODPECKER_ADMIN: 'ramona'
+          WOODPECKER_FORGEJO: 'true'
+          WOODPECKER_FORGEJO_URL: 'https://code.ramona.fun'
+        extraSecretNamesForEnvFrom: ["woodpecker-secrets"]
+resources:
+  - http-route.yaml
+  - secret.yaml
