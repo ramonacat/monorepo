@@ -6,6 +6,7 @@ inputs: {
     ramona-fun = import ./ramona-fun.nix inputs;
     ras = import ./ras.nix inputs;
     sawin-gallery = import ./sawin-gallery.nix inputs;
+    ci = import ./ci.nix inputs;
   };
   libs = {
     js = {
