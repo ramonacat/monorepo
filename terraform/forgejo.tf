@@ -58,6 +58,7 @@ resource "authentik_provider_oauth2" "forgejo" {
     authentik_property_mapping_provider_scope.forgejo.id,
     authentik_property_mapping_provider_scope.email.id,
     authentik_property_mapping_provider_scope.profile.id,
+    authentik_property_mapping_provider_scope.openid.id,
   ]
 
   allowed_redirect_uris = [

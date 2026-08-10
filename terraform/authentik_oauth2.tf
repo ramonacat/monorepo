@@ -40,3 +40,13 @@ resource "authentik_property_mapping_provider_scope" "profile" {
   }
   EOT
 }
+
+resource "authentik_property_mapping_provider_scope" "openid" {
+  name       = "authentik default OAuth Mapping: OpenID 'openid'"
+  scope_name = "openid"
+  expression = <<-EOT
+  # This scope is required by the OpenID-spec, and must as such exist in authentik.
+  # The scope by itself does not grant any information
+  return {}
+  EOT
+}
