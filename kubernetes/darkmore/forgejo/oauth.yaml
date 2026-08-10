@@ -1,0 +1,23 @@
+apiVersion: external-secrets.io/v1
+kind: ExternalSecret
+metadata:
+  name: forgejo-oauth
+spec:
+  refreshInterval: 1m
+  target:
+    name: forgejo-oauth
+    creationPolicy: Owner
+    template:
+      data:
+        key: '{{ .CLIENT_ID }}'
+        secret: '{{ .CLIENT_SECRET }}'
+  dataFrom:
+    - sourceRef:
+        storeRef:
+          kind: ClusterSecretStore
+          name: vault
+      extract:
+        key: forgejo/oauth
+        conversionStrategy: Default
+        decodingStrategy: None
+        metadataPolicy: None

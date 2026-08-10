@@ -1,0 +1,104 @@
+apiVersion: postgresql.cnpg.io/v1
+kind: Database
+metadata:
+  name: forgejo
+  namespace: cloudnative-pg-database
+  labels:
+    cnpg.io/reload: "true"
+spec:
+  cluster:
+    name: "cloudnative-pg-database-cluster"
+  databaseReclaimPolicy: delete
+  ensure: present
+  name: forgejo
+  owner: forgejo
+---
+apiVersion: postgresql.cnpg.io/v1
+kind: DatabaseRole
+metadata:
+  name: forgejo
+  namespace: cloudnative-pg-database
+  labels:
+    cnpg.io/reload: "true"
+spec:
+  cluster:
+    name: "cloudnative-pg-database-cluster"
+  databaseRoleReclaimPolicy: delete
+  ensure: present
+  inherit: true
+  name: forgejo
+  login: true
+  passwordSecret:
+    name: forgejo
+---
+apiVersion: external-secrets.io/v1
+kind: ExternalSecret
+metadata:
+  namespace: cloudnative-pg-database
+  name: forgejo
+spec:
+  refreshPolicy: CreatedOnce
+  target:
+    name: forgejo
+    creationPolicy: Owner
+    template:
+      metadata:
+        labels:
+          cnpg.io/reload: "true"
+      data:
+        username: "forgejo"
+        password: "{{ .password }}"
+  dataFrom:
+    - sourceRef:
+        generatorRef:
+          apiVersion: generators.external-secrets.io/v1alpha1
+          kind: Password
+          name: pg-password-generator
+---
+apiVersion: external-secrets.io/v1alpha1
+kind: PushSecret
+metadata:
+  namespace: cloudnative-pg-database
+  name: forgejo
+spec:
+  deletionPolicy: Delete
+  refreshInterval: 1m
+  secretStoreRefs:
+    - name: vault
+      kind: ClusterSecretStore
+  selector:
+    secret:
+      name: forgejo
+  data:
+    - match:
+        remoteRef:
+          remoteKey: postgres/forgejo
+      conversionStrategy: None
+---
+apiVersion: external-secrets.io/v1
+kind: ExternalSecret
+metadata:
+  name: forgejo-db
+spec:
+  refreshInterval: 1m
+  target:
+    name: forgejo-db
+    creationPolicy: Owner
+    template:
+      data:
+        database: |
+          DB_TYPE: 'postgres'
+          HOST: 'cloudnative-pg-database-cluster-pooler-rw.cloudnative-pg-database'
+          NAME: 'forgejo'
+          USER: '{{ .username }}'
+          PASSWD: '{{ .password }}'
+  dataFrom:
+    - sourceRef:
+        storeRef:
+          kind: ClusterSecretStore
+          name: vault
+      extract:
+        key: postgres/forgejo
+        conversionStrategy: Default
+        decodingStrategy: None
+        metadataPolicy: None

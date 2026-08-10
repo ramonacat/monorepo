@@ -1,0 +1,44 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+helmCharts:
+  - name: forgejo
+    repo: oci://code.forgejo.org/forgejo-helm/forgejo
+    releaseName: forgejo
+    version: "17.1.4"
+    namespace: forgejo
+    valuesInline:
+      httpRoute:
+        enabled: true
+        parentRefs: [{name: "gateway-public", namespace: "kgateway-system"}]
+        hostnames: ["code.ramona.fun"]
+      tcpRoute:
+        enabled: true
+        parentRefs: [{name: "ssh", group: "gateway.networking.k8s.io", kind: "ListenerSet"}]
+        port: 22
+      persistence:
+        accessModes: ["ReadWriteMany"]
+        storageClass: longhorn
+      gitea:
+        metrics:
+          enabled: true
+          serviceMonitor:
+            enabled: true
+        oauth:
+          - name: "authentik"
+            provider: 'openidConnect'
+            secret: forgejo-oauth
+            autoDiscoverUrl: "https://account.ramona.fun/application/o/forgejo/.well-known/openid-configuration"
+            scopes: 'email profile forgejo'
+            requiredClaimName: 'forgejo'
+            groupClaimName: 'forgejo'
+            adminGroup: 'admin'
+            restrictedGroup: 'restricted'
+        config:
+          APP_NAME: "ramona's code"
+        additionalConfigSources:
+          - secret:
+              secretName: forgejo-db
+
+resources:
+  - database.yaml
+  - tcp-listener-set.yml
