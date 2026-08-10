@@ -26,7 +26,7 @@ helmCharts:
         oauth:
           - name: "authentik"
             provider: 'openidConnect'
-            secret: forgejo-oauth
+            existingSecret: forgejo-oauth
             autoDiscoverUrl: "https://account.ramona.fun/application/o/forgejo/.well-known/openid-configuration"
             scopes: 'email profile forgejo'
             requiredClaimName: 'forgejo'
