@@ -37,6 +37,8 @@ helmCharts:
           APP_NAME: "ramona's code"
           log:
             LEVEL: "debug"
+          oauth2:
+            JWT_SIGNING_ALGORITHM: RS256
           service:
             DISABLE_REGISTRATION: "true"
           oauth2_client:
