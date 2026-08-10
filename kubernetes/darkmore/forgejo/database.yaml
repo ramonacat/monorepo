@@ -87,11 +87,12 @@ spec:
     template:
       data:
         database: |
-          DB_TYPE: 'postgres'
-          HOST: 'cloudnative-pg-database-cluster-pooler-rw.cloudnative-pg-database'
-          NAME: 'forgejo'
-          USER: '{{ .username }}'
-          PASSWD: '{{ .password }}'
+          DB_TYPE='postgres'
+          HOST_PRIMARY='cloudnative-pg-database-cluster-pooler-rw.cloudnative-pg-database'
+          HOST_REPLICA='cloudnative-pg-database-cluster-pooler-ro.cloudnative-pg-database'
+          NAME='forgejo'
+          USER='{{ .username }}'
+          PASSWD='{{ .password }}'
   dataFrom:
     - sourceRef:
         storeRef:
