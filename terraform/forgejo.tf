@@ -56,6 +56,8 @@ resource "authentik_provider_oauth2" "forgejo" {
   signing_key        = authentik_certificate_key_pair.forgejo-oidc.id
   property_mappings = [
     authentik_property_mapping_provider_scope.forgejo.id,
+    authentik_property_mapping_provider_scope.email.id,
+    authentik_property_mapping_provider_scope.profile.id,
   ]
 
   allowed_redirect_uris = [
@@ -70,7 +72,6 @@ resource "authentik_provider_oauth2" "forgejo" {
 resource "authentik_application" "forgejo" {
   name              = "forgejo"
   slug              = "forgejo"
-  meta_hide         = true
   protocol_provider = authentik_provider_oauth2.forgejo.id
 }
 

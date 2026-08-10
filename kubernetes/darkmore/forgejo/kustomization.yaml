@@ -35,6 +35,8 @@ helmCharts:
             restrictedGroup: 'restricted'
         config:
           APP_NAME: "ramona's code"
+          log:
+            LEVEL: "debug"
           service:
             DISABLE_REGISTRATION: "true"
           oauth2_client:
