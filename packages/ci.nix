@@ -7,7 +7,7 @@
   container = pkgs.dockerTools.buildLayeredImage {
     name = "ci";
     tag = "latest";
-    copyToRoot = pkgs.buildEnv {
+    contents = pkgs.buildEnv {
       name = "ci";
       paths = with pkgs; [
         age
