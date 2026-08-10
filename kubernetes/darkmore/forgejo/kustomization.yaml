@@ -41,4 +41,5 @@ helmCharts:
 
 resources:
   - database.yaml
-  - tcp-listener-set.yml
+  - tcp-listener-set.yaml
+  - oauth.yaml
