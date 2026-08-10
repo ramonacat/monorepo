@@ -11,7 +11,7 @@ spec:
     - woodpecker.infrastructure.ramona.fun
   rules:
     - backendRefs:
-      - name: woodpecker-woodpecker
+      - name: woodpecker-server
         kind: Service
         port: 80
         group: ""
