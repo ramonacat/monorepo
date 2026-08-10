@@ -22,7 +22,7 @@ helmCharts:
           dashboards:
             enabled: true
         env:
-          WOODPECKER_HOST: 'https://woodpecker.infrastructure.ramona.fun'
+          WOODPECKER_HOST: 'https://woodpecker.ramona.fun'
           WOODPECKER_OPEN: 'true'
           WOODPECKER_ADMIN: 'ramona'
           WOODPECKER_FORGEJO: 'true'

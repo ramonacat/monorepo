@@ -4,11 +4,12 @@ metadata:
   name: woodpecker
 spec:
   parentRefs:
-  - name: gateway-tailscale
+  - name: gateway-public
+    kind: Gateway
     namespace: kgateway-system
     group: gateway.networking.k8s.io
   hostnames:
-    - woodpecker.infrastructure.ramona.fun
+    - woodpecker.ramona.fun
   rules:
     - backendRefs:
       - name: woodpecker-server
