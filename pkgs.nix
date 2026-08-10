@@ -15,6 +15,7 @@ let
         ];
       });
       tflint = prev.callPackage ./overrides/tflint.nix { };
+      agenix = inputs.agenix.packages."${system}".default;
     })
   ];
   pkgsConfig = {

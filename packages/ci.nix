@@ -1,4 +1,4 @@
-{ pkgs, inputs, ... }:
+{ pkgs, ... }:
 {
   # TODO should probably support just skipping package/coverage/checks as needed
   package = pkgs.runCommand "ci-package" { } "echo > $out";
@@ -10,8 +10,8 @@
     copyToRoot = pkgs.buildEnv {
       name = "ci";
       paths = with pkgs; [
-        inputs.agenix.packages."${pkgs.stdenv.hostPlatform.system}".default
-
+        age
+        agenix
         terraform
         tflint
         backblaze-b2
