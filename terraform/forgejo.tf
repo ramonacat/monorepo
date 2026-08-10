@@ -35,11 +35,11 @@ resource "authentik_property_mapping_provider_scope" "forgejo" {
     }
     forgejo_claims = {}
 
-    if "gituser" in entitlement_names:
+    if "forgejo_user" in entitlement_names:
         forgejo_claims["forgejo"] = "user"
-    if "gitadmin" in entitlement_names:
+    elif "forgejo_admin" in entitlement_names:
         forgejo_claims["forgejo"] = "admin"
-    if "gitrestricted" in entitlement_names:
+    else:
         forgejo_claims["forgejo"] = "restricted"
 
     return forgejo_claims
@@ -76,7 +76,7 @@ resource "authentik_application" "forgejo" {
 }
 
 resource "authentik_application_entitlement" "forgejo--user" {
-  name        = "user"
+  name        = "forgejo_user"
   application = authentik_application.forgejo.uuid
 }
 
@@ -87,18 +87,18 @@ resource "authentik_policy_binding" "infra-users--forgejo--user" {
 }
 
 resource "authentik_application_entitlement" "forgejo--admin" {
-  name        = "admin"
+  name        = "forgejo_admin"
   application = authentik_application.forgejo.uuid
 }
 
-resource "authentik_policy_binding" "infra-users--forgejo--admin" {
+resource "authentik_policy_binding" "global-admins--forgejo--admin" {
   order  = 0
   target = authentik_application_entitlement.forgejo--admin.id
-  group  = authentik_group.infra-users.id
+  group  = authentik_group.global-admins.id
 }
 
 resource "authentik_application_entitlement" "forgejo--restricted" {
-  name        = "restricted"
+  name        = "forgejo_restricted"
   application = authentik_application.forgejo.uuid
 }
 
