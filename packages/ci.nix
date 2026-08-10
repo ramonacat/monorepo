@@ -21,7 +21,7 @@
         coreutils
         util-linux
       ];
-      pathsToLink = "/bin";
+      pathsToLink = ["/bin"];
     };
     config = {
       Cmd = [
