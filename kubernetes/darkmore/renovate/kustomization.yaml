@@ -1,0 +1,27 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+helmCharts:
+  - name: renovate
+    repo: oci://ghcr.io/renovatebot/charts
+    releaseName: renovate
+    version: "46.251.0"
+    namespace: renovate
+    valuesInline:
+      existingSecret: 'renovate'
+      cronjob:
+        schedule: '* * * * *'
+      renovate:
+        config: |
+          {
+            "platform": "forgejo",
+            "endpoint": "https://code.ramona.fun",
+            "autodiscover": true,
+            "hostRules": [
+              {"matchHost": "npm.pkg.github.com", "hostType": "npm", "token": "{{ secrets.GITHUB_TOKEN }}"},
+              {"matchHost": "api.github.com", "hostType": "github", "token": "{{ secrets.GITHUB_TOKEN }}"},
+              {"matchHost": "github.com", "hostType": "github", "token": "{{ secrets.GITHUB_TOKEN }}"},
+              {"matchHost": "ghcr.io", "hostType": "docker", "password": "{{ secrets.GITHUB_TOKEN }}"}
+            ]
+          }
+resources:
+  - secret.yaml
