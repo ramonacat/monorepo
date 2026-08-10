@@ -1,0 +1,99 @@
+apiVersion: postgresql.cnpg.io/v1
+kind: Database
+metadata:
+  name: woodpecker
+  namespace: cloudnative-pg-database
+  labels:
+    cnpg.io/reload: "true"
+spec:
+  cluster:
+    name: "cloudnative-pg-database-cluster"
+  databaseReclaimPolicy: delete
+  ensure: present
+  name: woodpecker
+  owner: woodpecker
+---
+apiVersion: postgresql.cnpg.io/v1
+kind: DatabaseRole
+metadata:
+  name: woodpecker
+  namespace: cloudnative-pg-database
+  labels:
+    cnpg.io/reload: "true"
+spec:
+  cluster:
+    name: "cloudnative-pg-database-cluster"
+  databaseRoleReclaimPolicy: delete
+  ensure: present
+  inherit: true
+  name: woodpecker
+  login: true
+  passwordSecret:
+    name: woodpecker
+---
+apiVersion: external-secrets.io/v1
+kind: ExternalSecret
+metadata:
+  namespace: cloudnative-pg-database
+  name: woodpecker
+spec:
+  refreshPolicy: CreatedOnce
+  target:
+    name: woodpecker
+    creationPolicy: Owner
+    template:
+      metadata:
+        labels:
+          cnpg.io/reload: "true"
+      data:
+        username: "woodpecker"
+        password: "{{ .password }}"
+  dataFrom:
+    - sourceRef:
+        generatorRef:
+          apiVersion: generators.external-secrets.io/v1alpha1
+          kind: Password
+          name: pg-password-generator
+---
+apiVersion: external-secrets.io/v1alpha1
+kind: PushSecret
+metadata:
+  namespace: cloudnative-pg-database
+  name: woodpecker
+spec:
+  deletionPolicy: Delete
+  refreshInterval: 1m
+  secretStoreRefs:
+    - name: vault
+      kind: ClusterSecretStore
+  selector:
+    secret:
+      name: woodpecker
+  data:
+    - match:
+        remoteRef:
+          remoteKey: postgres/woodpecker
+      conversionStrategy: None
+---
+apiVersion: external-secrets.io/v1
+kind: ExternalSecret
+metadata:
+  name: woodpecker-db
+spec:
+  refreshInterval: 1m
+  target:
+    name: woodpecker-db
+    creationPolicy: Owner
+    template:
+      data:
+        WOODPECKER_DATABASE_DATASOURCE: "postgres://{{ .username }}:{{ .password }}@cloudnative-pg-database-cluster-pooler-rw.cloudnative-pg-database:5432/woodpecker"
+  dataFrom:
+    - sourceRef:
+        storeRef:
+          kind: ClusterSecretStore
+          name: vault
+      extract:
+        key: postgres/woodpecker
+        conversionStrategy: Default
+        decodingStrategy: None
+        metadataPolicy: None

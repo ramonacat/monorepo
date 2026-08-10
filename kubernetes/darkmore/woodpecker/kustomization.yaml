@@ -27,7 +27,8 @@ helmCharts:
           WOODPECKER_ADMIN: 'ramona'
           WOODPECKER_FORGEJO: 'true'
           WOODPECKER_FORGEJO_URL: 'https://code.ramona.fun'
-        extraSecretNamesForEnvFrom: ["woodpecker-secrets"]
+          WOODPECKER_DATABASE_DRIVER: postgres
+        extraSecretNamesForEnvFrom: ["woodpecker-secrets", "woodpecker-db"]
 resources:
   - http-route.yaml
   - secret.yaml
