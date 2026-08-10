@@ -22,7 +22,7 @@ helmCharts:
               {"matchHost": "npm.pkg.github.com", "hostType": "npm", "token": "{{ secrets.GITHUB_TOKEN }}"},
               {"matchHost": "api.github.com", "hostType": "github", "token": "{{ secrets.GITHUB_TOKEN }}"},
               {"matchHost": "github.com", "hostType": "github", "token": "{{ secrets.GITHUB_TOKEN }}"},
-              {"matchHost": "ghcr.io", "hostType": "docker", "password": "{{ secrets.GITHUB_TOKEN }}"}
+              {"matchHost": "ghcr.io", "hostType": "docker", "username": "ramonacat", "password": "{{ secrets.GITHUB_TOKEN }}"}
             ]
           }
 resources:
