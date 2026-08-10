@@ -3,9 +3,9 @@ kind: Kustomization
 helmCharts:
   - name: forgejo-runner
     repo: oci://code.forgejo.org/forgejo-helm
-    releaseName: forgejo
-    version: "17.1.4"
-    namespace: forgejo
+    releaseName: forgejo-runnner
+    version: "0.7.5"
+    namespace: forgejo-runner
     valuesInline:
       runner:
         config:
