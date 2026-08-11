@@ -22,4 +22,4 @@ cat >~/.config/rclone/rclone.conf <<-EOT
 EOT
 
 echo "$GITHUB_TOKEN" | skopeo login --username ramonacat --password-stdin ghcr.io
-echo "$FORGEJO_PASSWORD" | skopeo login --username ci --password-stdin code.ramona.fun
+echo "$FORGEJO_TOKEN" | skopeo login --username ramona --password-stdin code.ramona.fun
