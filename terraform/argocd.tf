@@ -67,21 +67,20 @@ resource "argocd_application_set" "monorepo--apps" {
   }
 }
 
-resource "tls_private_key" "deploy--ramonacat-monorepo-secret--argocd" {
-  algorithm = "ED25519"
-}
-
-resource "github_repository_deploy_key" "ramonacat-monorepo-secret--argocd" {
-  title      = "ArgoCD"
-  repository = github_repository.ramonacat-monorepo-secret.name
-  key        = tls_private_key.deploy--ramonacat-monorepo-secret--argocd.public_key_openssh
-  read_only  = true
+data "vault_kv_secret_v2" "argo-cd-forgejo" {
+  mount = "secrets/kubernetes/darkmore"
+  name  = "argo-cd/forgejo"
 }
 
 resource "argocd_repository" "monorepo-secret" {
-  repo            = "git@github.com:ramonacat/monorepo-secret.git"
+  repo            = "ssh://git@code.ramona.fun/ramona/monorepo-secret.git"
   username        = "git"
-  ssh_private_key = tls_private_key.deploy--ramonacat-monorepo-secret--argocd.private_key_openssh
+  ssh_private_key = data.vault_kv_secret_v2.argo-cd-forgejo.data.ssh_key
+}
+
+output "test" {
+  sensitive = true
+  value     = data.vault_kv_secret_v2.argo-cd-forgejo.data.ssh_key
 }
 
 resource "argocd_application_set" "monorepo-secret--apps" {

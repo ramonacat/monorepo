@@ -119,6 +119,11 @@ resource "helm_release" "argo-cd" {
         g, ${authentik_group.global-admins.name}, role:admin
         EOT
       },
+      ssh = {
+        extraHosts = <<-EOT
+          code.ramona.fun ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAACAQCcNmDrVqqyJcASo3q1z5+EnosFL9xHUgp4AhbGjeJ0OLhoD+zszr1+QZwrQAX1oYRq7qr3Jz9xvetJRTmt8kEohuTmlwe47B/m1hYHHq5nWMuPGbY6AaYinKtiOqiBnopTr5DzRQdm4MEHiTMSXJ1VC3e4ATBfHkNB9iFLJjqrEPdzjZC5wx2nI1SA98AUwX83cWi15fxDVS6H68yBADnFPHbc6xOUwPxORRjh0nAnDJQBZCGt54z9qx7R6tjPm0D5Dp9G46OKLHjBJpnKEje4ALU0dfV3WBf3n0LKp5p0sNKRUEooosqGE28DpirQK9TforLJvu1S0OQTGEcKacR198jlSlY5qCWOekgCEj5xN3AKtZE+WZCVuQQD7O3/boht1y4OUfpvC+e5pe/XIiigQZZ/5sMN2JeDkuNef3q6n0kJhVwtCJpRdhFGinE9uuXOoyPWn5zQgKdosYFfYWjQzM0xtOuIPXxfgRfdmy+St/78ISEDfujPGZoZSnVNc2FF/h6P4XhC7+QgAeDqutFYHnS6A5/GwE9PoSAk+qlH8nBAVllKxsMLwQu9zoV5PilLeumlYDTPAqY6V24Ti0Pn7Tgn0JIs4t+hCXlwCxy1RAezcPs6i/BazAVGeiwrFQuhQ4AcNppVJdOuoMfMjJoCP7NpSkVdKX/thMs9evIlMw==
+        EOT
+      }
     },
     redis-ha = {
       enabled          = true,
