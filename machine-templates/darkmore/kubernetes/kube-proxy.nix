@@ -7,6 +7,7 @@
   systemd.services.kube-proxy = {
     description = "kubernetes proxy";
     wantedBy = [ "kubernetes.target" ];
+    after = [ "network.target" ];
     unitConfig = {
       StartLimitIntervalSec = 5;
     };

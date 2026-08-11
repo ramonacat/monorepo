@@ -8,6 +8,7 @@
   systemd.services.kube-scheduler = lib.mkIf config.ramona.kubernetes.is-control-plane {
     description = "kubernetes scheduler";
     wantedBy = [ "kubernetes.target" ];
+    after = [ "network.target" ];
     unitConfig = {
       StartLimitIntervalSec = 5;
     };

@@ -8,6 +8,7 @@
   systemd.services.kube-controller-manager = lib.mkIf config.ramona.kubernetes.is-control-plane {
     description = "kubernetes controller manager";
     wantedBy = [ "kubernetes.target" ];
+    after = [ "network.target" ];
     unitConfig = {
       StartLimitIntervalSec = 5;
     };

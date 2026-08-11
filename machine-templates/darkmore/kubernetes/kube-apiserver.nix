@@ -35,6 +35,7 @@
         {
           description = "kubernetes apiserver service";
           wantedBy = [ "kubernetes.target" ];
+          after = [ "network.target" ];
           unitConfig = {
             StartLimitIntervalSec = 5;
           };
