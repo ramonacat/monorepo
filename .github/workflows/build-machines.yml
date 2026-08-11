@@ -60,6 +60,9 @@ jobs:
           edit-mode: replace
           token: "${{ secrets.PAT }}"
 
+      - name: Log in to registry
+        run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
+
       - name: upload to the container registry
         if: github.ref == 'refs/heads/main'
         run: ./.github/scripts/upload-containers.bash
