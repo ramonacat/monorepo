@@ -21,6 +21,7 @@
       coreutils
       util-linux
       docker
+      jq
 
       nix
       cacert
