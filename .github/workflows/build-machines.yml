@@ -7,6 +7,12 @@ on:
 jobs:
   build:
     runs-on: self-hosted
+    permissions:
+      contents: read
+      packages: write
+      attestations: write
+      id-token: write
+
     steps:
       - name: Checkout the repo
         uses: actions/checkout@v7
