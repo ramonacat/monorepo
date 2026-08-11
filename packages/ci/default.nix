@@ -22,6 +22,7 @@
       util-linux
       skopeo
       jq
+      rclone
 
       nix
       cacert
