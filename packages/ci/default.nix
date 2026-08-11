@@ -47,7 +47,7 @@
         echo "extra-experimental-features = flakes nix-command" >> /etc/nix/nix.conf
         echo "$SSH_KEY" > ~/.ssh/id_ed25519 && chmod 0600 ~/.ssh/id_ed25519 && ssh-keygen -y -f ~/.ssh/id_ed25519 > ~/.ssh/id_ed25519.pub
 
-        echo > ~/.config/rclone/rclone.conf <<-EOT
+        cat > ~/.config/rclone/rclone.conf <<-EOT
         [default]
         type=s3
         provider=Hetzner
