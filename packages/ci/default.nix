@@ -4,7 +4,7 @@
   package = pkgs.runCommand "ci-package" { } "echo > $out";
   coverage = pkgs.runCommand "ci-coverage" { } "echo > $out";
   checks = { };
-  container = pkgs.dockerTools.buildLayeredImage {
+  container = pkgs.dockerTools.buildLayeredImageWithNixDb {
     name = "ci";
     tag = "latest";
     contents = pkgs.buildEnv {
@@ -22,6 +22,7 @@
         bash
         coreutils
         util-linux
+        docker
 
         nix
         cacert
