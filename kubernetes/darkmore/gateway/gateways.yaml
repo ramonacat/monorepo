@@ -11,6 +11,9 @@ spec:
   default: 
     proxyProtocol: {}
     httpSettings:
+      upgradeConfig:
+        enabledUpgrades:
+          - websocket
       accessLog: 
         - fileSink:
             path: /dev/stdout
@@ -121,6 +124,10 @@ spec:
       name: gateway-tailscale
   default:
     perConnectionBufferLimitBytes: 20480000
+    httpSettings:
+      upgradeConfig:
+        enabledUpgrades:
+          - websocket
 ---
 apiVersion: gateway.networking.k8s.io/v1
 kind: Gateway
