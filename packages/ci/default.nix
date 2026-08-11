@@ -23,6 +23,7 @@
       skopeo
       jq
       rclone
+      curl
 
       nix
       cacert
