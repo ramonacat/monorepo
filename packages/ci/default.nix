@@ -41,6 +41,7 @@
         mkdir -p ~/.config/rclone/
 
         attic login main https://attic.infrastructure.ramona.fun/ "$ATTIC_TOKEN"
+        attic use main
 
         echo "extra-experimental-features = flakes nix-command" >> /etc/nix/nix.conf
         echo "$SSH_KEY" > ~/.ssh/id_ed25519 && chmod 0600 ~/.ssh/id_ed25519 && ssh-keygen -y -f ~/.ssh/id_ed25519 > ~/.ssh/id_ed25519.pub
