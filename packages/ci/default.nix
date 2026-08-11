@@ -55,7 +55,7 @@
         endpoint=nbg1.your-objectstorage.com
         EOT
 
-        echo "GITHUB_TOKEN" | skopeo login --username ramonacat --password-stdin ghcr.io
+        echo "$GITHUB_TOKEN" | skopeo login --username ramonacat --password-stdin ghcr.io
       '')
     ];
     extraCommands = ''
