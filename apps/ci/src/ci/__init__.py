@@ -65,7 +65,7 @@ def main() -> None:
                             [
                                 "skopeo",
                                 "copy",
-                                f"docker-archive:$container_path",
+                                f"docker-archive:{container_path}",
                                 f"docker://{container_fullname}",
                             ]
                         )
