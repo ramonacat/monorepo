@@ -1,9 +1,32 @@
-{ pkgs, ... }:
 {
+  pkgs,
+  pyproject-nix,
+  uv2nix,
+  pyproject-build-systems,
+  ...
+}:
+let
+  project-root = ../../apps/ci;
+  workspace = uv2nix.lib.workspace.loadWorkspace { workspaceRoot = project-root; };
+  overlay = workspace.mkPyprojectOverlay { sourcePreference = "wheel"; };
+  python-set =
+    (pkgs.callPackage pyproject-nix.build.packages { python = pkgs.python3; }).overrideScope
+      (
+        pkgs.lib.composeManyExtensions [
+          pyproject-build-systems.overlays.wheel
+          overlay
+        ]
+      );
+in
+rec {
   # TODO should probably support just skipping package/coverage/checks as needed
-  package = pkgs.runCommand "ci-package" { } "echo > $out";
+  package = python-set.mkVirtualEnv "ci-env" workspace.deps.default;
   coverage = pkgs.runCommand "ci-coverage" { } "echo > $out";
-  checks = { };
+  checks = {
+    ci-black =
+      pkgs.runCommand "ci-black" { }
+        "${pkgs.python3Packages.black}/bin/black --check ${project-root} && echo > $out";
+  };
   container = pkgs.dockerTools.buildLayeredImageWithNixDb {
     name = "ci";
     tag = "latest";
@@ -69,6 +92,8 @@
             }"
         '';
       })
+
+      package
     ];
     extraCommands = ''
       mkdir usr

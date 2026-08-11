@@ -25,3 +25,4 @@ target/
 terraform/.terraform/
 test-results/
 vendor/
+__pycache__/

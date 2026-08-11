@@ -143,6 +143,11 @@ pkgs.mkShell {
       shfmt
       tflint
       vault
+      skopeo
+      python3Packages.python
+      python3Packages.uv
+      python3Packages.black
+      python3Packages.mypy
 
       package-versions.nodejs
       package-versions.rust-version

@@ -78,11 +78,6 @@ resource "argocd_repository" "monorepo-secret" {
   ssh_private_key = data.vault_kv_secret_v2.argo-cd-forgejo.data.ssh_key
 }
 
-output "test" {
-  sensitive = true
-  value     = data.vault_kv_secret_v2.argo-cd-forgejo.data.ssh_key
-}
-
 resource "argocd_application_set" "monorepo-secret--apps" {
   metadata {
     name = "monorepo-secret--apps"
