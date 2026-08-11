@@ -75,6 +75,9 @@
       ln -s ../bin usr/bin
 
       mkdir -m 1777 tmp
+      # skopeo insists on using this
+      mkdir -m 1777 -p var/tmp
+
       mkdir -vp root
     '';
     config = {
