@@ -10,6 +10,8 @@
     contents = pkgs.buildEnv {
       name = "ci";
       paths = with pkgs; [
+        ./root
+
         age
         agenix
         terraform
@@ -20,16 +22,37 @@
         bash
         coreutils
         util-linux
+
+        nix
+        cacert
+        gitMinimal
+        gnutar
+        gzip
+        openssh
+        xz
+        iana-etc
       ];
-      pathsToLink = ["/bin"];
+      pathsToLink = [ "/bin" ];
     };
+    extraCommands = ''
+      mkdir usr
+      ln -s ../bin usr/bin
+
+      mkdir -m 1777 tmp
+      mkdir -vp root
+    '';
     config = {
       Cmd = [
         "/bin/true"
       ];
       Env = [
+        "ENV=/etc/profile.d/nix.sh"
+        "BASH_ENV=/etc/profile.d/nix.sh"
+        "NIX_BUILD_SHELL=/bin/bash"
+        "PAGER=cat"
         "SSL_CERT_FILE=${pkgs.cacert}/etc/ssl/certs/ca-bundle.crt"
-        "PATH=/bin"
+        "PATH=/usr/bin:/bin"
+        "USER=root"
       ];
     };
   };
