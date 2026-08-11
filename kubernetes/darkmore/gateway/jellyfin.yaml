@@ -22,7 +22,7 @@ spec:
     group: gateway.networking.k8s.io
     kind: Gateway
   hostnames:
-    - jellyfin-test.ramona.fun
+    - jellyfin.ramona.fun
   rules:
     - backendRefs:
       - name: jellyfin

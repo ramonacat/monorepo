@@ -1,3 +1,4 @@
+// TODO ovh_domain module?
 resource "ovh_domain_name_servers" "ramona-fun" {
   domain = "ramona.fun"
 
@@ -7,7 +8,6 @@ resource "ovh_domain_name_servers" "ramona-fun" {
   servers { host = "ns4.dnsimple-edge.org" }
 }
 
-// TODO get this from tailscale provider instead of hardcoding
 moved {
   from = dnsimple_zone_record.MX-1--ramona-fun
   to   = module.fastmail-dns--ramona-fun.dnsimple_zone_record.MX-1
@@ -76,12 +76,4 @@ moved {
 moved {
   from = dnsimple_zone_record.AAAA--thronton-devices-ramona-fun
   to   = dnsimple_zone_record.AAAA--thornton-devices-ramona-fun
-}
-
-resource "dnsimple_zone_record" "CNAME--jellyfin-ramona-fun" {
-  zone_name = dnsimple_zone.ramona-fun.name
-  name      = "jellyfin"
-  type      = "CNAME"
-  value     = "cb380c2c50bc.sn.mynetname.net."
-  ttl       = 60
 }
