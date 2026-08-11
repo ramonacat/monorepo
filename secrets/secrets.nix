@@ -5,6 +5,7 @@ let
   ci = [
     ssh-keys.root.ci
     ssh-keys.root.ci-secret
+    ssh-keys.root.ci-woodpecker
   ];
 
   shadowsoul = ssh-keys.machines.shadowsoul.rsa;

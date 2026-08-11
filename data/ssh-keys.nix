@@ -8,6 +8,7 @@
   root = {
     ci = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIFkRskZZaMsOngUvKYgL8K6t5FBhMurjTkqbfxNLj0wE";
     ci-secret = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIAXeGp3Udg6pk/FQCuHJhhUy4ydJuc3fdJzjcuxMWkDZ";
+    ci-woodpecker = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIGuBbwc4DCQMXSObqZ7HF5PnAOwmVtaveW+pApXNTmVk";
   };
 
   # TODO this shouuuuld be possible to generate automagically, probably? or we should store a json with all machine data, so scripts can fill it in without manual intervention
