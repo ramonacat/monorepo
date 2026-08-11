@@ -11,7 +11,7 @@ main() {
 	local version
 	local -r now=$(date +%s)
 
-	for image_path in ./containers/*; do
+	for image_path in ./result/containers/*; do
 		image_name=$(basename "$image_path")
 		tag="ghcr.io/ramonacat/$image_name:$now"
 

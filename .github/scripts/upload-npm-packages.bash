@@ -4,7 +4,7 @@ set -euo pipefail
 main() {
 	echo "//npm.pkg.github.com/:_authToken=${GITHUB_TOKEN}" >~/.npmrc
 
-	for package_path in ./npm-packages/*; do
+	for package_path in ./result/npm-packages/*; do
 		pushd "$package_path"
 
 		npm publish
