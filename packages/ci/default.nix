@@ -7,34 +7,30 @@
   container = pkgs.dockerTools.buildLayeredImageWithNixDb {
     name = "ci";
     tag = "latest";
-    contents = pkgs.buildEnv {
-      name = "ci";
-      paths = with pkgs; [
-        ./root
+    contents = with pkgs; [
+      ./root
 
-        age
-        agenix
-        terraform
-        tflint
-        backblaze-b2
-        shfmt
-        attic-client
-        bash
-        coreutils
-        util-linux
-        docker
+      age
+      agenix
+      terraform
+      tflint
+      backblaze-b2
+      shfmt
+      attic-client
+      bash
+      coreutils
+      util-linux
+      docker
 
-        nix
-        cacert
-        gitMinimal
-        gnutar
-        gzip
-        openssh
-        xz
-        iana-etc
-      ];
-      pathsToLink = [ "/bin" ];
-    };
+      nix
+      cacert
+      gitMinimal
+      gnutar
+      gzip
+      openssh
+      xz
+      iana-etc
+    ];
     extraCommands = ''
       mkdir usr
       ln -s ../bin usr/bin
