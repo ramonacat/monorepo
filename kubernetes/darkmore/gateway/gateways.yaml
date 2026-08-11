@@ -10,7 +10,10 @@ spec:
     name: gateway-public
   default: 
     proxyProtocol: {}
+    perConnectionBufferLimitBytes: 1024000000
     httpSettings:
+      streamIdleTimeout: "1800s"
+      idleTimeout: "1800s"
       upgradeConfig:
         enabledUpgrades:
           - websocket
