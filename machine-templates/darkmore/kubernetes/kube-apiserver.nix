@@ -40,6 +40,7 @@
             StartLimitIntervalSec = 5;
           };
           serviceConfig = {
+            CPUSchedulingPolicy = "rr";
             CPUSchedulingPriority = 49;
             IOSchedulingPriority = 1;
             Nice = -10;

@@ -104,6 +104,7 @@
           MemoryAccounting = true;
           Restart = "on-failure";
           RestartSec = "1000ms";
+          CPUSchedulingPolicy = "rr";
           CPUSchedulingPriority = 49;
           IOSchedulingPriority = 1;
           Nice = -10;
