@@ -40,6 +40,12 @@ class RuntimeInfo(object):
     cache_client: S3Client
     cache_bucket: str
 
+    attic_token: str
+    github_token: str
+    forgejo_token: str
+
+    ssh_key: str
+
     def __init__(self):
         self.repository_name = _read_env("CI_REPO_NAME")
         self.repository_owner = _read_env("CI_REPO_OWNER")
@@ -65,6 +71,10 @@ class RuntimeInfo(object):
         )
 
         self.cache_bucket = "ramona-woodpecker-cache"
+        self.attic_token = _read_env("ATTIC_TOKEN")
+        self.github_token = _read_env("GITHUB_TOKEN")
+        self.forgejo_token = _read_env("FORGEJO_TOKEN")
+        self.ssh_key = _read_env("SSH_KEY")
 
     @override
     def __str__(self) -> str:

@@ -57,28 +57,6 @@ rec {
       xz
       iana-etc
 
-      (pkgs.stdenvNoCC.mkDerivation {
-        name = "scripts";
-        src = ./scripts;
-        nativeBuildInputs = [ makeWrapper ];
-
-        installPhase = ''
-          mkdir -p $out/bin/
-
-          cp prepare-ci.bash $out/bin/prepare-ci
-
-          wrapProgram $out/bin/prepare-ci \
-            --prefix PATH : "${
-              lib.makeBinPath [
-                attic-client
-                rclone
-                openssh
-                skopeo
-              ]
-            }"
-        '';
-      })
-
       package
     ];
     extraCommands = ''

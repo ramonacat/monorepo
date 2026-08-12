@@ -1,12 +1,14 @@
 from argparse import ArgumentParser, Namespace
 from datetime import UTC, datetime
 from glob import glob
+from os import makedirs
+import os
 from os.path import basename, realpath
+import subprocess
 from time import sleep
 from typing import Callable, TypedDict, cast
 import requests
 
-from ci import containers
 from ci.cache import DirectoryCache
 from ci.runtime_info import RuntimeInfo
 
@@ -18,6 +20,25 @@ class FailedRequest(BaseException):
 class VersionStatus(TypedDict):
     version: int
     updated: bool
+
+
+class RunCommandError(BaseException):
+    pass
+
+
+def run_command(command: list[str], silent: bool = True) -> None:
+    print(f"running {command}")
+
+    result = subprocess.run(command)
+
+    if result.returncode != 0:
+        raise RunCommandError(
+            f"failed to run {command}",
+            {"stdout": result.stdout, "stderr": result.stderr},
+        )
+    elif not silent:
+        print(f"stdout:\n{result.stdout}\n")
+        print(f"stderr:\n{result.stderr}\n")
 
 
 def post_version(versioned_item: str, store_path: str) -> VersionStatus:
@@ -60,6 +81,60 @@ def execute_cache_command(name: str, args: Namespace, runtime: RuntimeInfo):
             raise CommandError(f"unknown cache command: {name}")
 
 
+def execute_setup(_args: Namespace, runtime: RuntimeInfo):
+    required_dirs = ["/etc/nix", "~/.ssh", "~/.config/rclone"]
+    for dir in required_dirs:
+        makedirs(os.path.expanduser(dir), exist_ok=True)
+
+    run_command(
+        [
+            "attic",
+            "login",
+            "https://attic.infrastructure.ramona.fun/",
+            runtime.attic_token,
+        ]
+    )
+
+    ssh_key_path = os.path.expanduser("~/.ssh/id_ed25519")
+    descriptor = os.open(
+        ssh_key_path, flags=os.O_WRONLY | os.O_CREAT | os.O_TRUNC, mode=0o600
+    )
+    with open(descriptor, "w") as file:
+        _ = file.write(runtime.ssh_key)
+
+    result = subprocess.run(["ssh-keygen", "-y", "-f", ssh_key_path])
+    if result.returncode != 0:
+        raise RunCommandError(
+            "ssh-keygen", {"stdout": result.stdout, "stderr": result.stderr}
+        )
+
+    with open(os.path.expanduser("~/.ssh/id_ed25519.pub"), "w") as file:
+        _ = file.write(str(result.stdout))
+
+    run_command(
+        [
+            "skopeo",
+            "login",
+            "--username",
+            "ramonacat",
+            "--password",
+            runtime.github_token,
+            "ghcr.io",
+        ]
+    )
+    run_command(
+        [
+            "skopeo",
+            "login",
+            "--username",
+            "ramona",
+            "--password",
+            runtime.forgejo_token,
+            "code.ramona.fun",
+        ]
+    )
+
+
 def execute_command(name: str, args: Namespace, runtime: RuntimeInfo) -> None:
     now_unix = (datetime.now(UTC) - datetime(1970, 1, 1, tzinfo=UTC)).total_seconds()
 
@@ -82,13 +157,20 @@ def execute_command(name: str, args: Namespace, runtime: RuntimeInfo) -> None:
 
                     container_fullname = f"code.ramona.fun/ramona/{runtime.repository_name}/{container_name}:{now_unix}"
                     retry(
-                        lambda: containers.upload_archive(
-                            container_path, container_fullname
+                        lambda: run_command(
+                            [
+                                "skopeo",
+                                "copy",
+                                f"docker-archive:{container_path}",
+                                f"docker://{container_fullname}",
+                            ]
                         )
                     )
         case "cache":
             cache_command = cast(str, args.cache_command)
             execute_cache_command(cache_command, args, runtime)
+        case "setup":
+            execute_setup(args, runtime)
         case _:
             raise CommandError(f"unknown command: {name}")
 
@@ -110,6 +192,8 @@ def main() -> None:
     parser_cache_push = subparsers_cache.add_parser("push")
     _ = parser_cache_push.add_argument("key", help="cache key")
     _ = parser_cache_push.add_argument("path", help="path to cache")
+
+    _ = subparsers.add_parser("setup")
 
     args = parser.parse_args()
     command = cast(str, args.command)
