@@ -17,6 +17,7 @@
       Restart = "on-failure";
       User = "kubernetes";
       Group = "kubernetes";
+      CPUSchedulingPolicy = "rr";
       CPUSchedulingPriority = 49;
       IOSchedulingPriority = 1;
       Nice = -10;

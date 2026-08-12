@@ -34,6 +34,7 @@
       {
         RestartSec = "10s";
         Restart = "on-failure";
+        CPUSchedulingPolicy = "rr";
         CPUSchedulingPriority = 49;
         IOSchedulingPriority = 1;
         Nice = -10;
