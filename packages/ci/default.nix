@@ -35,7 +35,22 @@ rec {
 
       age
       agenix
-      terraform
+      (pkgs.writeShellScriptBin "terraform" ''
+        set -euo pipefail
+
+        set -a
+        eval "$(${pkgs.age}/bin/age --decrypt --identity "~/.ssh/id_ed25519" "$(git rev-parse --show-toplevel)/secrets/terraform-tokens.age")"
+        set +a
+
+        export KUBECONFIG=$(mktemp)
+        chown $(id -u):$(id -g) "$KUBECONFIG"
+        cleanup() { rm "$KUBECONFIG" || true; }
+        trap cleanup EXIT
+
+        ${pkgs.age}/bin/age --decrypt --identity "~/.ssh/id_ed25519" --output "$KUBECONFIG" "$(git rev-parse --show-toplevel)/secrets/terraform-tokens.age"
+
+        ${pkgs.terraform}/bin/terraform "$@"
+      '')
       tflint
       backblaze-b2
       shfmt
@@ -56,42 +71,6 @@ rec {
       openssh
       xz
       iana-etc
-
-      (pkgs.stdenvNoCC.mkDerivation {
-        name = "scripts";
-        src = ./scripts;
-        nativeBuildInputs = [ makeWrapper ];
-
-        installPhase = ''
-          mkdir -p $out/bin/
-
-          cp prepare-ci.bash $out/bin/prepare-ci
-          cp download-cache.bash $out/bin/download-cache
-          cp upload-cache.bash $out/bin/upload-cache
-
-          wrapProgram $out/bin/prepare-ci \
-            --prefix PATH : "${
-              lib.makeBinPath [
-                attic-client
-                rclone
-                openssh
-                skopeo
-              ]
-            }"
-          wrapProgram $out/bin/download-cache \
-            --prefix PATH : "${
-              lib.makeBinPath [
-                rclone
-              ]
-            }"
-          wrapProgram $out/bin/upload-cache \
-            --prefix PATH : "${
-              lib.makeBinPath [
-                rclone
-              ]
-            }"
-        '';
-      })
 
       package
     ];
