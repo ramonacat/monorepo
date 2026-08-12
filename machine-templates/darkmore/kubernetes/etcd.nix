@@ -57,6 +57,11 @@
           WATCH_PROGRESS_NOTIFY_INTERVAL = "5s";
         };
       };
+      systemd.services.etcd.serviceConfig = lib.mkIf config.ramona.kubernetes.is-control-plane {
+        CPUSchedulingPriority = 49;
+        IOSchedulingPriority = 1;
+        Nice = -10;
+      };
 
       services.restic.backups.etcd =
         let

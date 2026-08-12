@@ -104,6 +104,9 @@
           MemoryAccounting = true;
           Restart = "on-failure";
           RestartSec = "1000ms";
+          CPUSchedulingPriority = 49;
+          IOSchedulingPriority = 1;
+          Nice = -10;
           ExecStart =
             let
               kubelet-script = pkgs.writeShellScriptBin "kubelet-wrapper" ''

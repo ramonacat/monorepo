@@ -40,6 +40,9 @@
             StartLimitIntervalSec = 5;
           };
           serviceConfig = {
+            CPUSchedulingPriority = 49;
+            IOSchedulingPriority = 1;
+            Nice = -10;
             ExecStart = ''
               ${pkgs.kubernetes}/bin/kube-apiserver \
                   --advertise-address=${config.ramona.kubernetes.ip} \

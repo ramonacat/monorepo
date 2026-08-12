@@ -34,6 +34,9 @@
       {
         RestartSec = "10s";
         Restart = "on-failure";
+        CPUSchedulingPriority = 49;
+        IOSchedulingPriority = 1;
+        Nice = -10;
         ExecStart = ''
           ${pkgs.kubernetes}/bin/kube-proxy \
               --config=${kube-proxy-config} \

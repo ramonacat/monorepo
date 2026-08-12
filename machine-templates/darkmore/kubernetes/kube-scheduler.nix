@@ -17,6 +17,9 @@
       Restart = "on-failure";
       User = "kubernetes";
       Group = "kubernetes";
+      CPUSchedulingPriority = 49;
+      IOSchedulingPriority = 1;
+      Nice = -10;
       ExecStart = ''
         ${pkgs.kubernetes}/bin/kube-scheduler \
             --authentication-kubeconfig=/etc/kubernetes/scheduler.conf \
