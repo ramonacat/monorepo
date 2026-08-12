@@ -35,7 +35,22 @@ rec {
 
       age
       agenix
-      terraform
+      (pkgs.writeShellScriptBin "terraform" ''
+        set -euo pipefail
+
+        set -a
+        eval "$(${pkgs.age}/bin/age --decrypt --identity "~/.ssh/id_ed25519" "$(git rev-parse --show-toplevel)/secrets/terraform-tokens.age")"
+        set +a
+
+        export KUBECONFIG=$(mktemp)
+        chown $(id -u):$(id -g) "$KUBECONFIG"
+        cleanup() { rm "$KUBECONFIG" || true; }
+        trap cleanup EXIT
+
+        ${pkgs.age}/bin/age --decrypt --identity "~/.ssh/id_ed25519" --output "$KUBECONFIG" "$(git rev-parse --show-toplevel)/secrets/terraform-tokens.age"
+
+        ${pkgs.terraform}/bin/terraform "$@"
+      '')
       tflint
       backblaze-b2
       shfmt
