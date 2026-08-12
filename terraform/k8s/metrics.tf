@@ -1,6 +1,7 @@
 resource "helm_release" "kube-prometheus-stack" {
   name             = "kube-prometheus-stack"
-  chart            = "oci://ghcr.io/prometheus-community/charts/kube-prometheus-stack"
+  chart            = "kube-prometheus-stack"
+  repository       = "https://prometheus-community.github.io/helm-charts"
   namespace        = "kube-prometheus-stack"
   create_namespace = true
   version          = "88.3.0"
@@ -144,7 +145,8 @@ resource "helm_release" "metrics-api" {
 
 resource "helm_release" "prometheus-systemd-exporter" {
   name             = "prometheus-systemd-exporter"
-  chart            = "oci://ghcr.io/prometheus-community/charts/prometheus-systemd-exporter"
+  chart            = "prometheus-systemd-exporter"
+  repository       = "https://prometheus-community.github.io/helm-charts"
   namespace        = "prometheus-systemd-exporter"
   create_namespace = true
   version          = "0.5.2"
