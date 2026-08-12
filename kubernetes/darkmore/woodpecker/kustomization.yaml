@@ -10,6 +10,8 @@ helmCharts:
       agent:
         env:
           WOODPECKER_BACKEND_K8S_PULL_SECRET_NAMES: 'ghcr'
+          WOODPECKER_BACKEND_K8S_STORAGE_CLASS: hcloud-volumes
+          WOODPECKER_BACKEND_K8S_STORAGE_RWX: "false"
       server:
         prometheus:
           podmonitor:
@@ -26,8 +28,6 @@ helmCharts:
           WOODPECKER_FORGEJO: 'true'
           WOODPECKER_FORGEJO_URL: 'https://code.ramona.fun'
           WOODPECKER_DATABASE_DRIVER: postgres
-          WOODPECKER_BACKEND_K8S_STORAGE_CLASS: hcloud-volumes
-          WOODPECKER_BACKEND_K8S_STORAGE_RWX: "false"
         extraSecretNamesForEnvFrom: ["woodpecker-secrets", "woodpecker-db"]
 resources:
   - http-route.yaml
