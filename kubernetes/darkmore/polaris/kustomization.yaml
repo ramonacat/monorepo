@@ -1,0 +1,10 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+helmCharts:
+  - name: polaris
+    repo: https://charts.fairwinds.com/stable
+    releaseName: polaris
+    version: "6.0.0"
+    namespace: polaris
+resources:
+  - http-route.yaml
