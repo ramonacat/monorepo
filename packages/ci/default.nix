@@ -66,8 +66,6 @@ rec {
           mkdir -p $out/bin/
 
           cp prepare-ci.bash $out/bin/prepare-ci
-          cp download-cache.bash $out/bin/download-cache
-          cp upload-cache.bash $out/bin/upload-cache
 
           wrapProgram $out/bin/prepare-ci \
             --prefix PATH : "${
@@ -76,18 +74,6 @@ rec {
                 rclone
                 openssh
                 skopeo
-              ]
-            }"
-          wrapProgram $out/bin/download-cache \
-            --prefix PATH : "${
-              lib.makeBinPath [
-                rclone
-              ]
-            }"
-          wrapProgram $out/bin/upload-cache \
-            --prefix PATH : "${
-              lib.makeBinPath [
-                rclone
               ]
             }"
         '';
