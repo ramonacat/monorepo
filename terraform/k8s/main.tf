@@ -48,7 +48,7 @@ resource "helm_release" "tailscale" {
   repository       = "https://pkgs.tailscale.com/helmcharts"
   namespace        = "tailscale"
   create_namespace = true
-  version          = "1.98.9"
+  version          = "1.102.2"
 
   lifecycle {
     ignore_changes = [create_namespace]
