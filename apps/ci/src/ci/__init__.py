@@ -90,10 +90,12 @@ def execute_setup(_args: Namespace, runtime: RuntimeInfo):
         [
             "attic",
             "login",
+            "main",
             "https://attic.infrastructure.ramona.fun/",
             runtime.attic_token,
         ]
     )
+    run_command(["attic", "use", "main"])
 
     ssh_key_path = os.path.expanduser("~/.ssh/id_ed25519")
     descriptor = os.open(
