@@ -29,7 +29,7 @@ class RunCommandError(BaseException):
 def run_command(command: list[str], silent: bool = True) -> None:
     print(f"running {command}")
 
-    result = subprocess.run(command)
+    result = subprocess.run(command, capture_output=True)
 
     if result.returncode != 0:
         raise RunCommandError(
@@ -101,10 +101,10 @@ def execute_setup(_args: Namespace, runtime: RuntimeInfo):
     descriptor = os.open(
         ssh_key_path, flags=os.O_WRONLY | os.O_CREAT | os.O_TRUNC, mode=0o600
     )
-    with open(descriptor, "w") as file:
-        _ = file.write(runtime.ssh_key)
+    with open(descriptor, "w+b") as file:
+        _ = file.write(runtime.ssh_key.encode('utf-8'))
 
-    result = subprocess.run(["ssh-keygen", "-y", "-f", ssh_key_path])
+    result = subprocess.run(["ssh-keygen", "-y", "-f", ssh_key_path], capture_output=True)
     if result.returncode != 0:
         raise RunCommandError(
             "ssh-keygen", {"stdout": result.stdout, "stderr": result.stderr}
