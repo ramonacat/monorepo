@@ -78,4 +78,10 @@ class RuntimeInfo(object):
 
     @override
     def __str__(self) -> str:
-        return f"repository: {self.repository_url}"
+        return (
+            f"repository_name: {self.repository_name}\n"
+            f"repository_owner: {self.repository_owner}\n"
+            f"repository_url: {self.repository_url}\n"
+            f"branch: {self.branch}\n"
+            f"cache_bucket: {self.cache_bucket}"
+        )

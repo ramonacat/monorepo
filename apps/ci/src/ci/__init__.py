@@ -1,16 +1,19 @@
 from argparse import ArgumentParser, Namespace
 from datetime import UTC, datetime
 from glob import glob
-from os import makedirs
+import logging
 import os
 from os.path import basename, realpath
 import subprocess
+import sys
 from time import sleep
 from typing import Callable, TypedDict, cast
 import requests
 
 from ci.cache import DirectoryCache
 from ci.runtime_info import RuntimeInfo
+
+logger = logging.getLogger(__name__)
 
 
 class FailedRequest(BaseException):
@@ -27,7 +30,7 @@ class RunCommandError(BaseException):
 
 
 def run_command(command: list[str], silent: bool = True) -> None:
-    print(f"running {command}")
+    logger.info(f"running {command}")
 
     result = subprocess.run(command, capture_output=True)
 
@@ -37,8 +40,9 @@ def run_command(command: list[str], silent: bool = True) -> None:
             {"stdout": result.stdout, "stderr": result.stderr},
         )
     elif not silent:
-        print(f"stdout:\n{result.stdout}\n")
-        print(f"stderr:\n{result.stderr}\n")
+        logger.info(
+            f"command exectued, stdout:\n{result.stdout}\nstderr:\n{result.stderr}\n"
+        )
 
 
 def post_version(versioned_item: str, store_path: str) -> VersionStatus:
@@ -82,13 +86,6 @@ def execute_cache_command(name: str, args: Namespace, runtime: RuntimeInfo):
 
 
 def execute_setup(_args: Namespace, runtime: RuntimeInfo):
-    required_dirs = ["/etc/nix", "~/.ssh", "~/.config/rclone"]
-    for dir in required_dirs:
-        makedirs(os.path.expanduser(dir), exist_ok=True)
-
-    with open("/etc/nix/nix.conf", "a+b") as file:
-        _ = file.write(b"extra-experimental-features = flakes nix-command\n");
-
     run_command(
         [
             "attic",
@@ -105,10 +102,12 @@ def execute_setup(_args: Namespace, runtime: RuntimeInfo):
         ssh_key_path, flags=os.O_WRONLY | os.O_CREAT | os.O_TRUNC, mode=0o600
     )
     with open(descriptor, "w+b") as file:
-        _ = file.write(runtime.ssh_key.encode('utf-8'))
+        _ = file.write(runtime.ssh_key.encode("utf-8"))
         _ = file.write(b"\n")
 
-    result = subprocess.run(["ssh-keygen", "-y", "-f", ssh_key_path], capture_output=True)
+    result = subprocess.run(
+        ["ssh-keygen", "-y", "-f", ssh_key_path], capture_output=True
+    )
     if result.returncode != 0:
         raise RunCommandError(
             "ssh-keygen", {"stdout": result.stdout, "stderr": result.stderr}
@@ -146,7 +145,7 @@ def execute_command(name: str, args: Namespace, runtime: RuntimeInfo) -> None:
 
     match name:
         case "publish":
-            print("starting publish")
+            logger.info("starting publish")
 
             for container_path in glob("./result/containers/*"):
                 container_name = basename(container_path)
@@ -155,11 +154,13 @@ def execute_command(name: str, args: Namespace, runtime: RuntimeInfo) -> None:
                     f"{runtime.repository_name}:containers:{container_name}"
                 )
 
-                print(f"found container {container_name} with store_path {store_path}")
+                logger.info(
+                    f"found container {container_name} with store_path {store_path}"
+                )
                 version_result = post_version(container_item_id, store_path)
 
                 if version_result["updated"]:
-                    print(f"container changed, publishing")
+                    logger.info(f"container changed, publishing")
 
                     container_fullname = f"code.ramona.fun/ramona/{runtime.repository_name}/{container_name}:{now_unix}"
                     retry(
@@ -182,6 +183,10 @@ def execute_command(name: str, args: Namespace, runtime: RuntimeInfo) -> None:
 
 
 def main() -> None:
+    logging.basicConfig(stream=sys.stderr, level="INFO")
+
+    logging.info("ci command initializing")
+
     parser = ArgumentParser(description="ci")
 
     subparsers = parser.add_subparsers(dest="command", help="command", required=True)
@@ -206,12 +211,12 @@ def main() -> None:
 
     runtime = RuntimeInfo()
 
-    print(f"running ci\n{runtime}")
+    logger.info(f"ci with runtime information:\n{runtime}\n")
 
     try:
         execute_command(command, args, runtime)
     except CommandError as e:
-        print(e)
+        logger.error(e)
 
         parser.print_usage()
         exit(1)

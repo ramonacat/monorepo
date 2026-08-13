@@ -39,7 +39,7 @@ rec {
         set -euo pipefail
 
         set -a
-        eval "$(${pkgs.age}/bin/age --decrypt --identity "~/.ssh/id_ed25519" "$(git rev-parse --show-toplevel)/secrets/terraform-tokens.age")"
+        eval "$(${pkgs.age}/bin/age --decrypt --identity "$HOME/.ssh/id_ed25519" "$(git rev-parse --show-toplevel)/secrets/terraform-tokens.age")"
         set +a
 
         export KUBECONFIG=$(mktemp)
@@ -47,7 +47,7 @@ rec {
         cleanup() { rm "$KUBECONFIG" || true; }
         trap cleanup EXIT
 
-        ${pkgs.age}/bin/age --decrypt --identity "~/.ssh/id_ed25519" --output "$KUBECONFIG" "$(git rev-parse --show-toplevel)/secrets/terraform-tokens.age"
+        ${pkgs.age}/bin/age --decrypt --identity "$HOME/.ssh/id_ed25519" --output "$KUBECONFIG" "$(git rev-parse --show-toplevel)/secrets/terraform-tokens.age"
 
         ${pkgs.terraform}/bin/terraform "$@"
       '')
@@ -82,7 +82,9 @@ rec {
       # skopeo insists on using this
       mkdir -m 1777 -p var/tmp
 
-      mkdir -vp root
+      mkdir -vp root/
+      mkdir -vp /root/.ssh/
+      mkdir -vp /root/.config/rclone/
     '';
     config = {
       Cmd = [
@@ -96,6 +98,7 @@ rec {
         "SSL_CERT_FILE=${pkgs.cacert}/etc/ssl/certs/ca-bundle.crt"
         "PATH=/usr/bin:/bin"
         "USER=root"
+        "HOME=/root"
       ];
     };
   };
