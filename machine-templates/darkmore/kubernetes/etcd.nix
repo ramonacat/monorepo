@@ -60,7 +60,8 @@
       systemd.services.etcd.serviceConfig = lib.mkIf config.ramona.kubernetes.is-control-plane {
         CPUSchedulingPolicy = "rr";
         CPUSchedulingPriority = 49;
-        IOSchedulingPriority = 1;
+        IOSchedulingClass = "best-effort";
+        IOSchedulingPriority = 0;
         Nice = -10;
       };
 
