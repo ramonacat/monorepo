@@ -86,6 +86,9 @@ def execute_setup(_args: Namespace, runtime: RuntimeInfo):
     for dir in required_dirs:
         makedirs(os.path.expanduser(dir), exist_ok=True)
 
+    with open("/etc/nix/nix.conf", "a+b") as file:
+        _ = file.write(b"extra-experimental-features = flakes nix-command\n");
+
     run_command(
         [
             "attic",
