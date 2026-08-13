@@ -103,6 +103,7 @@ def execute_setup(_args: Namespace, runtime: RuntimeInfo):
     )
     with open(descriptor, "w+b") as file:
         _ = file.write(runtime.ssh_key.encode('utf-8'))
+        _ = file.write(b"\n")
 
     result = subprocess.run(["ssh-keygen", "-y", "-f", ssh_key_path], capture_output=True)
     if result.returncode != 0:

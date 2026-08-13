@@ -14,7 +14,7 @@ def _read_env(name: str, default: str | None = None) -> str:
         else:
             return default
 
-    return result
+    return result.replace("\\n", "\n")
 
 
 class StartupError(BaseException):
