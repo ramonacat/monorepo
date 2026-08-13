@@ -20,7 +20,15 @@
         ];
         RemainAfterExit = true;
       };
-      wantedBy = [ "multi-user.target" ];
+      wantedBy = [
+        "multi-user.target"
+      ];
+    };
+    systemd.services.iscsid = {
+      wantedBy = [
+        "containerd.service"
+        "kubelet.service"
+      ];
     };
 
     boot.kernelModules = [ "dm_crypt" ];
