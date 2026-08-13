@@ -83,8 +83,8 @@ rec {
       mkdir -m 1777 -p var/tmp
 
       mkdir -vp root/
-      mkdir -vp /root/.ssh/
-      mkdir -vp /root/.config/rclone/
+      mkdir -vp root/.ssh/
+      mkdir -vp root/.config/rclone/
     '';
     config = {
       Cmd = [
