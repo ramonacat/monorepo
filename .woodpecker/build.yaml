@@ -1,0 +1,22 @@
+when:
+  - event: pull_request
+  - event: push
+    branch: main
+steps:
+  - name: build
+    image: ghcr.io/ramonacat/ci:1786748955
+    commands:
+      - ./.woodpecker/scripts/build.bash
+    environment:
+      ATTIC_TOKEN:
+        from_secret: "attic_token"
+      SSH_KEY:
+        from_secret: "ssh_key"
+      CACHE_ACCESS_KEY_ID:
+        from_secret: "hetzner_access_key_id"
+      CACHE_ACCESS_KEY_SECRET:
+        from_secret: "hetzner_secret_access_key"
+      GITHUB_TOKEN:
+        from_secret: "github_token"
+      FORGEJO_TOKEN:
+        from_secret: "forgejo_token"
