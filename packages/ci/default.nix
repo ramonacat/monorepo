@@ -53,20 +53,23 @@ rec {
       '')
       tflint
       backblaze-b2
-      shfmt
       attic-client
-      bash
       coreutils
       util-linux
       skopeo
-      shellcheck
       jq
-      rclone
       curl
+
+      bash
+      shellcheck
+      shfmt
+
       nodejs_26
+
       rustc
       cargo
       rustfmt
+      clippy
 
       nix
       cacert
