@@ -28,11 +28,17 @@
       enableRootSlice = lib.mkForce false;
       enableSystemSlice = lib.mkForce false;
       enableUserSlices = lib.mkForce false;
+      settings = {
+        OOM = {
+          SwapUsedLimit = "80%";
+          DefaultMemoryPressureDurationSec = "5";
+        };
+      };
     };
 
     systemd.slices."kubepods".sliceConfig = {
       ManagedOOMMemoryPressure = "kill";
-      ManagedOOMMemoryPressureLimit = lib.mkDefault "80%";
+      ManagedOOMMemoryPressureLimit = "60%";
     };
   };
 }
