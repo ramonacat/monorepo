@@ -168,8 +168,8 @@ def execute_command(name: str, args: Namespace, runtime: RuntimeInfo) -> None:
                     _ = run_command(["npm", "publish"])
 
             for iso_path in glob("./result/iso/*"):
-                name = basename(iso_path)
-                container_item_id = f"{runtime.repository_name}:isos:{name}"
+                iso_name = basename(iso_path)
+                container_item_id = f"{runtime.repository_name}:isos:{iso_name}"
                 store_path = realpath(next(Path(iso_path).glob("*.iso")))
                 version_result = post_version(container_item_id, store_path)
 
@@ -180,7 +180,7 @@ def execute_command(name: str, args: Namespace, runtime: RuntimeInfo) -> None:
 
                     with open(store_path, "r") as file:
                         runtime.cache_client.upload_fileobj(
-                            file, runtime.public_bucket, f"isos/{name}.iso"
+                            file, runtime.public_bucket, f"isos/{iso_name}.iso"
                         )
 
             cache_command = cast(str, args.cache_command)
