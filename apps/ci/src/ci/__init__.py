@@ -16,7 +16,7 @@ from ci.runtime_info import RuntimeInfo
 logger = logging.getLogger(__name__)
 
 
-class FailedRequest(BaseException):
+class FailedRequest(Exception):
     pass
 
 
@@ -25,7 +25,7 @@ class VersionStatus(TypedDict):
     updated: bool
 
 
-class RunCommandError(BaseException):
+class RunCommandError(Exception):
     pass
 
 
@@ -69,7 +69,7 @@ def retry[T](callback: Callable[[], T]) -> T:
             sleep(cast(int, 2**i))
 
 
-class CommandError(BaseException):
+class CommandError(Exception):
     pass
 
 

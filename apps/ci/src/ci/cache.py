@@ -1,9 +1,12 @@
 from io import SEEK_SET
+import logging
 import tarfile
 import tempfile
 import botocore
 
 from ci.runtime_info import RuntimeInfo
+
+logger = logging.getLogger(__name__)
 
 
 class DirectoryCache(object):
@@ -25,7 +28,7 @@ class DirectoryCache(object):
             while len(all_keys) > 0:
                 key = all_keys.pop()
 
-                print(f"trying: {key}")
+                logger.info(f"trying: {key}")
 
                 try:
                     self._runtime.cache_client.download_fileobj(
@@ -37,13 +40,15 @@ class DirectoryCache(object):
                     botocore.exceptions.ClientError  # pyright: ignore[reportUnknownMemberType, reportAttributeAccessIssue]
                 ) as error:  # pyright: ignore[reportUnknownVariableType]
                     if (
-                        error.response["Error"]["Code"]
-                        == "404"  # pyright: ignore[reportUnknownMemberType]
+                        error.response["Error"][
+                            "Code"
+                        ]  # pyright: ignore[reportUnknownMemberType]
+                        == "404"
                     ):
                         if len(all_keys) > 0:
                             continue
                         else:
-                            print(f"no cache found for key {cache_key}")
+                            logger.info(f"no cache found for key {cache_key}")
 
                             return
 
@@ -51,19 +56,19 @@ class DirectoryCache(object):
 
             _ = file.seek(SEEK_SET, 0)
 
-            print(f"extracting")
+            logger.info(f"extracting")
 
             with tarfile.open(mode="r", fileobj=file) as tar:
                 tar.extractall()
 
     def push(self, cache_key: str, path: str) -> None:
         if self._runtime.branch != "main":
-            print("not on the main branch, not saving cache")
+            logger.info("not on the main branch, not saving cache")
 
             return
 
         bucket_path = self._make_path("main", cache_key)
-        print(f"uploading {path} to {bucket_path}")
+        logger.info(f"uploading {path} to {bucket_path}")
 
         with tempfile.TemporaryFile() as file:
             with tarfile.open(fileobj=file, mode="w:gz") as tar:
