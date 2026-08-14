@@ -165,7 +165,15 @@ def execute_command(name: str, args: Namespace, runtime: RuntimeInfo) -> None:
 
             for npm_path in glob("./result/npm-packages/*"):
                 with chdir(npm_path):
-                    _ = run_command(["npm", "publish"])
+                    npm_name = basename(npm_path)
+                    store_path = realpath(npm_path)
+                    version_result = post_version(
+                        f"{runtime.repository_name}:npm-packages:{npm_name}", store_path
+                    )
+
+                    # TODO also add a check on PRs to ensure version is bumped
+                    if version_result["updated"]:
+                        _ = run_command(["npm", "publish"])
 
             for iso_path in glob("./result/iso/*"):
                 iso_name = basename(iso_path)
