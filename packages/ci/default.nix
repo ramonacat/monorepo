@@ -66,6 +66,7 @@ rec {
       nodejs_26
       rustc
       cargo
+      rustfmt
 
       nix
       cacert
