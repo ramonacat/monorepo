@@ -4,7 +4,7 @@ resource "helm_release" "longhorn" {
   repository       = "https://charts.longhorn.io"
   namespace        = "longhorn-system"
   create_namespace = true
-  version          = "1.12.0"
+  version          = "1.12.1"
 
   values = [yamlencode({
     httproute = {
