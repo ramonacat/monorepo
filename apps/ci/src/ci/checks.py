@@ -44,7 +44,9 @@ def check_nodejs(root: AppRoot):
 
 def check_terraform(root: AppRoot):
     with chdir(root["path"].parent):
+        _ = run_command(["terraform", "init"])
         _ = run_command(["terraform", "fmt", "-recursive", "-check", "-diff", "."])
+        _ = run_command(["tflint", "--init"])
         _ = run_command(["tflint"])
         _ = run_command(["terraform", "validate"])
 
