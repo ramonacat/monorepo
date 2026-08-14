@@ -194,8 +194,8 @@ def execute_command(name: str, args: Namespace, runtime: RuntimeInfo) -> None:
 
             app_roots = find_roots(repository_root)
             run_checks(app_roots)
-        case _:
-            raise CommandError(f"unknown command: {name}")
+        case unkown:
+            raise CommandError(f"unknown command: '{unkown}'")
 
 
 def main() -> None:
