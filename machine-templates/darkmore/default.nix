@@ -23,5 +23,16 @@
       smartctl.enable = lib.mkForce false;
       systemd.enable = lib.mkForce false;
     };
+
+    systemd.oomd = {
+      enableRootSlice = lib.mkForce false;
+      enableSystemSlice = lib.mkForce false;
+      enableUserSlices = lib.mkForce false;
+    };
+
+    systemd.slices."kubepods".sliceConfig = {
+      ManagedOOMMemoryPressure = "kill";
+      ManagedOOMMemoryPressureLimit = lib.mkDefault "80%";
+    };
   };
 }

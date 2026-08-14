@@ -3,7 +3,7 @@ _: {
     systemd.oomd = {
       enable = true;
       enableRootSlice = true;
-      enableSystemSlice = true;
+      enableSystemSlice = false;
       enableUserSlices = true;
     };
   };
