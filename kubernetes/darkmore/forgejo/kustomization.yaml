@@ -11,6 +11,11 @@ helmCharts:
         enabled: true
         parentRefs: [{name: "gateway-public", namespace: "kgateway-system"}]
         hostnames: ["code.ramona.fun"]
+        matches:
+          # this is to allow for long package uploads/downloads
+          timeouts:
+            backendRequest: "1800s"
+            request: "1800s"
       tcpRoute:
         enabled: true
         parentRefs: [{name: "ssh", group: "gateway.networking.k8s.io", kind: "ListenerSet"}]
