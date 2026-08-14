@@ -1,8 +1,12 @@
+import logging
+
 import igittigitt
 from contextlib import chdir
 
 from ci.app import AppRoot
 from ci.commands import run_command
+
+logger = logging.getLogger(__name__)
 
 
 class CheckError(BaseException):
@@ -11,6 +15,8 @@ class CheckError(BaseException):
 
 def run_checks(roots: list[AppRoot]):
     for root in roots:
+        logger.info(f"runnning checks for {root["path"]}")
+
         if "nix" in root["config"]:
             check_nix(root)
 

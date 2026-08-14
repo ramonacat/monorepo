@@ -40,11 +40,9 @@ class DirectoryCache(object):
                     botocore.exceptions.ClientError  # pyright: ignore[reportUnknownMemberType, reportAttributeAccessIssue]
                 ) as error:  # pyright: ignore[reportUnknownVariableType]
                     if (
-                        error.response[
+                        error.response[  # pyright: ignore[reportUnknownMemberType]
                             "Error"
-                        ][  # pyright: ignore[reportUnknownMemberType]
-                            "Code"
-                        ]
+                        ]["Code"]
                         == "404"
                     ):
                         if len(all_keys) > 0:
