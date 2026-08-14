@@ -63,6 +63,7 @@ rec {
       jq
       rclone
       curl
+      nodejs_26
 
       nix
       cacert
