@@ -182,7 +182,7 @@ def execute_command(name: str, args: Namespace, runtime: RuntimeInfo) -> None:
                         runtime.cache_client.upload_fileobj(
                             file, runtime.public_bucket, f"isos/{iso_name}.iso"
                         )
-
+        case "cache":
             cache_command = cast(str, args.cache_command)
             execute_cache_command(cache_command, args, runtime)
         case "setup":
@@ -194,8 +194,8 @@ def execute_command(name: str, args: Namespace, runtime: RuntimeInfo) -> None:
 
             app_roots = find_roots(repository_root)
             run_checks(app_roots)
-        case unkown:
-            raise CommandError(f"unknown command: '{unkown}'")
+        case unknown:
+            raise CommandError(f"unknown command: '{unknown}'")
 
 
 def main() -> None:
