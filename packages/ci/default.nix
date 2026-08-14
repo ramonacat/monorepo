@@ -64,6 +64,8 @@ rec {
       rclone
       curl
       nodejs_26
+      rustc
+      cargo
 
       nix
       cacert
