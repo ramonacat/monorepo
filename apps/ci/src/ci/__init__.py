@@ -1,4 +1,5 @@
 from argparse import ArgumentParser, Namespace
+from contextlib import chdir
 from datetime import UTC, datetime
 from glob import glob
 import logging
@@ -161,7 +162,27 @@ def execute_command(name: str, args: Namespace, runtime: RuntimeInfo) -> None:
                             ]
                         )
                     )
-        case "cache":
+
+            for npm_path in glob("./result/npm-packages/*"):
+                with chdir(npm_path):
+                    _ = run_command(["npm", "publish"])
+
+            for iso_path in glob("./result/iso/*"):
+                name = basename(iso_path)
+                container_item_id = f"{runtime.repository_name}:isos:{name}"
+                store_path = realpath(next(Path(iso_path).glob("*.iso")))
+                version_result = post_version(container_item_id, store_path)
+
+                logger.info(f"found iso {name} with store path {store_path}")
+
+                if version_result["updated"]:
+                    logger.info("iso changed, publishing")
+
+                    with open(store_path, "r") as file:
+                        runtime.cache_client.upload_fileobj(
+                            file, runtime.public_bucket, f"isos/{name}.iso"
+                        )
+
             cache_command = cast(str, args.cache_command)
             execute_cache_command(cache_command, args, runtime)
         case "setup":

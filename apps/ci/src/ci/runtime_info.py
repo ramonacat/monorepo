@@ -40,6 +40,8 @@ class RuntimeInfo(object):
     cache_client: S3Client
     cache_bucket: str
 
+    public_bucket: str
+
     attic_token: str
     github_token: str
     forgejo_token: str
@@ -71,6 +73,8 @@ class RuntimeInfo(object):
         )
 
         self.cache_bucket = "ramona-woodpecker-cache"
+        self.public_bucket = "ramona-public"
+
         self.attic_token = _read_env("ATTIC_TOKEN")
         self.github_token = _read_env("GITHUB_TOKEN")
         self.forgejo_token = _read_env("FORGEJO_TOKEN")
