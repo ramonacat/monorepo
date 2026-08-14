@@ -59,6 +59,7 @@ rec {
       coreutils
       util-linux
       skopeo
+      shellcheck
       jq
       rclone
       curl
