@@ -84,6 +84,7 @@ def execute_setup(_args: Namespace, runtime: RuntimeInfo):
     descriptor = os.open(
         ssh_key_path, flags=os.O_WRONLY | os.O_CREAT | os.O_TRUNC, mode=0o600
     )
+
     with open(descriptor, "w+b") as file:
         _ = file.write(runtime.ssh_key.encode("utf-8"))
         _ = file.write(b"\n")
@@ -115,6 +116,16 @@ def execute_setup(_args: Namespace, runtime: RuntimeInfo):
             "code.ramona.fun",
         ]
     )
+
+    with open(os.path.expanduser("~/.npmrc"), "wb") as file:
+        _ = file.write(
+            f"//npm.pkg.github.com/:_authToken={runtime.github_token}\n".encode("utf-8")
+        )
+        _ = file.write(
+            f"//code.ramona.fun/api/packages/ramona/npm/:_authToken={runtime.forgejo_token}\n".encode(
+                "utf-8"
+            )
+        )
 
 
 def execute_command(name: str, args: Namespace, runtime: RuntimeInfo) -> None:
