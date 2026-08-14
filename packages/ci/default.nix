@@ -70,6 +70,7 @@ rec {
       cargo
       rustfmt
       clippy
+      clang
 
       nix
       cacert
