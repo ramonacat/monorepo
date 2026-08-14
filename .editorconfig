@@ -1,0 +1,7 @@
+[*.{sh,bash}]
+
+[terraform/.terraform/**]
+ignore = true
+
+[**/node_modules/**]
+ignore = true
