@@ -4,13 +4,16 @@ from glob import glob
 import logging
 import os
 from os.path import basename, realpath
-import subprocess
+from pathlib import Path
 import sys
 from time import sleep
 from typing import Callable, TypedDict, cast
 import requests
 
+from ci.app import find_roots
 from ci.cache import DirectoryCache
+from ci.checks import run_checks
+from ci.commands import run_command
 from ci.runtime_info import RuntimeInfo
 
 logger = logging.getLogger(__name__)
@@ -23,26 +26,6 @@ class FailedRequest(Exception):
 class VersionStatus(TypedDict):
     version: int
     updated: bool
-
-
-class RunCommandError(Exception):
-    pass
-
-
-def run_command(command: list[str], silent: bool = True) -> None:
-    logger.info(f"running {command}")
-
-    result = subprocess.run(command, capture_output=True)
-
-    if result.returncode != 0:
-        raise RunCommandError(
-            f"failed to run {command}",
-            {"stdout": result.stdout, "stderr": result.stderr},
-        )
-    elif not silent:
-        logger.info(
-            f"command exectued, stdout:\n{result.stdout}\nstderr:\n{result.stderr}\n"
-        )
 
 
 def post_version(versioned_item: str, store_path: str) -> VersionStatus:
@@ -86,7 +69,7 @@ def execute_cache_command(name: str, args: Namespace, runtime: RuntimeInfo):
 
 
 def execute_setup(_args: Namespace, runtime: RuntimeInfo):
-    run_command(
+    _ = run_command(
         [
             "attic",
             "login",
@@ -95,7 +78,7 @@ def execute_setup(_args: Namespace, runtime: RuntimeInfo):
             runtime.attic_token,
         ]
     )
-    run_command(["attic", "use", "main"])
+    _ = run_command(["attic", "use", "main"])
 
     ssh_key_path = os.path.expanduser("~/.ssh/id_ed25519")
     descriptor = os.open(
@@ -105,18 +88,12 @@ def execute_setup(_args: Namespace, runtime: RuntimeInfo):
         _ = file.write(runtime.ssh_key.encode("utf-8"))
         _ = file.write(b"\n")
 
-    result = subprocess.run(
-        ["ssh-keygen", "-y", "-f", ssh_key_path], capture_output=True
-    )
-    if result.returncode != 0:
-        raise RunCommandError(
-            "ssh-keygen", {"stdout": result.stdout, "stderr": result.stderr}
-        )
+    public_key = run_command(["ssh-keygen", "-y", "-f", ssh_key_path])
 
     with open(os.path.expanduser("~/.ssh/id_ed25519.pub"), "w") as file:
-        _ = file.write(str(result.stdout))
+        _ = file.write(str(public_key))
 
-    run_command(
+    _ = run_command(
         [
             "skopeo",
             "login",
@@ -127,7 +104,7 @@ def execute_setup(_args: Namespace, runtime: RuntimeInfo):
             "ghcr.io",
         ]
     )
-    run_command(
+    _ = run_command(
         [
             "skopeo",
             "login",
@@ -163,7 +140,7 @@ def execute_command(name: str, args: Namespace, runtime: RuntimeInfo) -> None:
                     logger.info(f"container changed, publishing")
 
                     container_fullname = f"code.ramona.fun/ramona/{runtime.repository_name}/{container_name}:{now_unix}"
-                    retry(
+                    _ = retry(
                         lambda: run_command(
                             [
                                 "skopeo",
@@ -178,6 +155,13 @@ def execute_command(name: str, args: Namespace, runtime: RuntimeInfo) -> None:
             execute_cache_command(cache_command, args, runtime)
         case "setup":
             execute_setup(args, runtime)
+        case "check":
+            repository_root = Path(
+                run_command(["git", "rev-parse", "--show-toplevel"]).rstrip()
+            )
+
+            app_roots = find_roots(repository_root)
+            run_checks(app_roots)
         case _:
             raise CommandError(f"unknown command: {name}")
 
@@ -205,6 +189,7 @@ def main() -> None:
     _ = parser_cache_push.add_argument("path", help="path to cache")
 
     _ = subparsers.add_parser("setup")
+    _ = subparsers.add_parser("check")
 
     args = parser.parse_args()
     command = cast(str, args.command)

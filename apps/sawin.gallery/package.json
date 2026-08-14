@@ -6,7 +6,8 @@
   "scripts": {
     "dev": "vite",
     "build": "tsc && vite build",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "check": "tsc && npx prettier --check ."
   },
   "devDependencies": {
     "prettier": "^3.8.4",
