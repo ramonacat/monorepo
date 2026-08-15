@@ -32,7 +32,7 @@ spec:
         - name: WOODPECKER_MIN_AGENTS
           value: "0"
         - name: WOODPECKER_MAX_AGENTS
-          value: "2"
+          value: "1"
         - name: WOODPECKER_WORKFLOWS_PER_AGENT
           value: "2"
         - name: WOODPECKER_GRPC_ADDR
@@ -42,7 +42,7 @@ spec:
         - name: WOODPECKER_PROVIDER
           value: "scaleway"
         - name: WOODPECKER_SCALEWAY_SERVER_TYPES 
-          value: "BASIC3-X2C-8G:nl-ams-1"
+          value: "BASIC2-A8C-32G:nl-ams-1"
         - name: WOODPECKER_SCALEWAY_PROJECT
           value: "ed770f01-66c8-4181-8fc7-6821ef6cac9a"
         - name: WOODPECKER_SCALEWAY_TAGS
