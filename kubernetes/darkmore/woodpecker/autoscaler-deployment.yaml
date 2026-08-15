@@ -109,13 +109,6 @@ spec:
             default_user:
               groups: [ docker ]
 
-          apt:
-            sources:
-              docker.list:
-                keyid: 9DC858229FC7DD38854AE2D88D81803C0EBFCD88
-                keyserver: https://download.docker.com/linux/ubuntu/gpg
-                source: deb https://download.docker.com/linux/ubuntu $RELEASE stable
-
           packages:
             - docker-ce
             - docker-compose-plugin
