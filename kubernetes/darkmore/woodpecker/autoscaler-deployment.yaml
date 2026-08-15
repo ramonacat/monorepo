@@ -17,7 +17,7 @@ spec:
     spec:
       containers:
       - name: autoscaler
-        image: woodpeckerci/autoscaler:1.5.0
+        image: woodpeckerci/autoscaler:next
         imagePullPolicy: IfNotPresent
         resources:
           requests:
@@ -41,7 +41,7 @@ spec:
           value: "true"
         - name: WOODPECKER_PROVIDER
           value: "scaleway"
-        - name: WOODPECKER_SCALEWAY_INSTANCE_TYPE
+        - name: WOODPECKER_SCALEWAY_SERVER_TYPES 
           value: "BASIC3-X2C-8G"
         - name: WOODPECKER_SCALEWAY_PROJECT
           value: "ed770f01-66c8-4181-8fc7-6821ef6cac9a"
