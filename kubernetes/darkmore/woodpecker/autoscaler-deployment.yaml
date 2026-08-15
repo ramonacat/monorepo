@@ -136,9 +136,9 @@ spec:
                   volumes:
                     - /var/run/docker.sock:/var/run/docker.sock
                   environment:
-                    {{"{"}}{{"{"}}{{"- range $key, value := .Environment}}"}}
-                    - {{"{{"}} {{"$"}}key{{"}}"}}={{ {{"$"}}value }}
-                    {{"{{- end -}}"}}
+                    {{`{{`}}- range $key, $value := .Environment{{`}}`}}
+                    - {{"{{"}} $key{{"}}"}}={{ $value }}
+                    {{"{{"}}- end{{"}}"}}
 
           runcmd:
             {{"{{"}}- range .PreExec{{"}}"}}
@@ -151,7 +151,7 @@ spec:
             - {{"{{"}} .{{"}}"}}
             {{"{{"}}- end{{"}}"}}
 
-          final_message: "The system is finally up, after {{"\\$"}}UPTIME seconds"
+          final_message: "The system is finally up, after $UPTIME seconds"
   dataFrom:
     - sourceRef:
         storeRef:
