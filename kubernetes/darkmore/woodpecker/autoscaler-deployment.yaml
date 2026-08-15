@@ -41,7 +41,7 @@ spec:
           value: "true"
         - name: WOODPECKER_PROVIDER
           value: "scaleway"
-        - name: WOODPECKER_SCALEWAY_SERVER_TYPES
+        - name: WOODPECKER_SCALEWAY_INSTANCE_TYPE
           value: "BASIC3-X4C-16G"
         - name: WOODPECKER_SCALEWAY_PROJECT
           value: "ed770f01-66c8-4181-8fc7-6821ef6cac9a"
