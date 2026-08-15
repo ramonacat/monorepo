@@ -54,8 +54,6 @@ spec:
             secretKeyRef:
               name: autoscaler-userdata
               key: userdata
-        - name: WOODPECKER_AGENT_IDLE_TIMEOUT
-          value: "5m"
         envFrom:
           - secretRef:
               name: autoscaler
@@ -98,7 +96,7 @@ spec:
     template:
       data:
         userdata: |-
-          #cloud-config
+          {{`#cloud-config
 
           package_reboot_if_required: false
           package_update: true
@@ -131,27 +129,29 @@ spec:
               version: '3'
               services:
                 woodpecker-agent:
-                  image: {{"{{"}} .Image{{"}}"}}
+                  image: {{ .Image }}
                   restart: always
                   volumes:
                     - /var/run/docker.sock:/var/run/docker.sock
                   environment:
-                    {{`{{`}}- range $key, {{`$value`}} := .Environment{{`}}`}}
-                    - {{"{{"}} {{`$key`}}{{"}}"}}={{ {{`$value`}} }}
-                    {{"{{"}}- end{{"}}"}}
+                    {{- range $key, $value := .Environment }}
+                    - {{ $key }}={{ $value }}
+                    {{- end }}
 
           runcmd:
-            {{"{{"}}- range .PreExec{{"}}"}}
-            - {{"{{"}} .{{"}}"}}
-            {{"{{"}}- end{{"}}"}}
+            {{- range .PreExec }}
+            - {{ . }}
+            {{- end }}`}}
             - ['sh', '-c', 'curl -fsSL https://tailscale.com/install.sh | sh']
             - ['tailscale', 'up', '--auth-key={{ .authkey }}']
+            {{`
             - sh -xc "cd /root; docker compose up -d"
-            {{"{{"}}- range .PostExec{{"}}"}}
-            - {{"{{"}} .{{"}}"}}
-            {{"{{"}}- end{{"}}"}}
+            {{- range .PostExec }}
+            - {{ . }}
+            {{- end }}
+            `}}
 
-          final_message: "The system is finally up, after {{`$UPTIME`}} seconds"
+          final_message: "The system is finally up, after $UPTIME seconds"
   dataFrom:
     - sourceRef:
         storeRef:
