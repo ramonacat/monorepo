@@ -143,7 +143,7 @@ spec:
             - {{ . }}
             {{- end }}`}}
             - ['sh', '-c', 'curl -fsSL https://tailscale.com/install.sh | sh']
-            - ['tailscale', 'up', '--auth-key={{ .authkey }}']
+            - ['sudo', 'tailscale', 'up', '--auth-key={{ .authkey }}']
             {{`
             - sh -xc "cd /root; docker compose up -d"
             {{- range .PostExec }}
