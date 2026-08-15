@@ -8,6 +8,7 @@ helmCharts:
     namespace: woodpecker
     valuesInline:
       agent:
+        enabled: false
         env:
           WOODPECKER_BACKEND_K8S_PULL_SECRET_NAMES: 'ghcr'
           WOODPECKER_BACKEND_K8S_STORAGE_CLASS: hcloud-volumes
@@ -33,3 +34,4 @@ resources:
   - http-route.yaml
   - secret.yaml
   - database.yaml
+  - autoscaler-deployment.yaml

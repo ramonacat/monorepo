@@ -1,0 +1,77 @@
+# https://kubernetes.io/docs/concepts/workloads/controllers/deployment/
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: autoscaler
+  labels:
+    app: autoscaler
+spec:
+  selector:
+    matchLabels:
+      app: autoscaler
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: autoscaler
+    spec:
+      containers:
+      - name: autoscaler
+        image: woodpeckerci/autoscaler:1.5.0
+        imagePullPolicy: IfNotPresent
+        resources:
+          requests:
+            cpu: 50m
+            memory: 64Mi
+          limits:
+            cpu: 100m
+            memory: 128Mi
+        env:
+        - name: WOODPECKER_SERVER
+          value: http://woodpecker/
+        - name: WOODPECKER_MIN_AGENTS
+          value: "0"
+        - name: WOODPECKER_MAX_AGENTS
+          value: "2"
+        - name: WOODPECKER_WORKFLOWS_PER_AGENT
+          value: "2"
+        - name: WOODPECKER_GRPC_ADDR
+          value: "woodpecker-server:9000"
+        - name: WOODPECKER_GRPC_SECURE
+          value: "true"
+        - name: WOODPECKER_PROVIDER
+          value: "scaleway"
+        - name: WOODPECKER_SCALEWAY_SERVER_TYPES
+          value: "BASIC3-X4C-16G"
+        - name: WOODPECKER_SCALEWAY_PROJECT
+          value: "ed770f01-66c8-4181-8fc7-6821ef6cac9a"
+        envFrom:
+          - secretRef:
+              name: autoscaler
+      restartPolicy: Always
+---
+apiVersion: external-secrets.io/v1
+kind: ExternalSecret
+metadata:
+  name: autoscaler
+spec:
+  refreshInterval: 1m
+  target:
+    name: autoscaler
+    creationPolicy: Owner
+    template:
+      data:
+        WOODPECKER_TOKEN: "{{ .WOODPECKER_TOKEN }}"
+        WOODPECKER_SCALEWAY_ACCESS_KEY: "{{ .WOODPECKER_SCALEWAY_ACCESS_KEY }}"
+        WOODPECKER_SCALEWAY_SECRET_KEY: "{{ .WOODPECKER_SCALEWAY_SECRET_KEY }}"
+  dataFrom:
+    - sourceRef:
+        storeRef:
+          kind: ClusterSecretStore
+          name: vault
+      extract:
+        key: woodpecker/autoscaler
+        conversionStrategy: Default
+        decodingStrategy: None
+        metadataPolicy: None
+
