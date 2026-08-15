@@ -28,7 +28,7 @@ spec:
             memory: 128Mi
         env:
         - name: WOODPECKER_SERVER
-          value: http://woodpecker-server/
+          value: https://woodpecker.ramona.fun/
         - name: WOODPECKER_MIN_AGENTS
           value: "0"
         - name: WOODPECKER_MAX_AGENTS
@@ -36,7 +36,7 @@ spec:
         - name: WOODPECKER_WORKFLOWS_PER_AGENT
           value: "2"
         - name: WOODPECKER_GRPC_ADDR
-          value: "woodpecker-server:9000"
+          value: "woodpecker.ramona.fun:9000"
         - name: WOODPECKER_GRPC_SECURE
           value: "true"
         - name: WOODPECKER_PROVIDER

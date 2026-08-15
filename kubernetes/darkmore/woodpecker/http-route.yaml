@@ -24,3 +24,41 @@ spec:
       timeouts:
         backendRequest: "1800s"
         request: "1800s"
+---
+apiVersion: gateway.networking.k8s.io/v1
+kind: ListenerSet
+metadata:
+  name: grpc
+spec:
+  parentRef:
+    group: gateway.networking.k8s.io
+    kind: Gateway
+    name: gateway-public
+    namespace: kgateway-system
+  listeners:
+    - name: grpc
+      port: 9000
+      protocol: TCP
+      allowedRoutes:
+        kinds:
+          - kind: TCPRoute
+        namespaces:
+          from: All
+---
+apiVersion: gateway.networking.k8s.io/v1alpha2
+kind: TCPRoute
+metadata:
+  name: grpc
+spec:
+  parentRefs:
+    - group: gateway.networking.k8s.io
+      kind: ListenerSet
+      name: grpc
+  rules:
+    - name: grpc
+      backendRefs:
+        - group: ""
+          kind: Service
+          name: woodpecker-server
+          weight: 1
+          port: 9000
