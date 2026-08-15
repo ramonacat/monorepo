@@ -136,7 +136,7 @@ spec:
                   volumes:
                     - /var/run/docker.sock:/var/run/docker.sock
                   environment:
-                    {{"{{"}}- range {{"$"}}key, {{"$"}}value := .Environment{{"}}"}}
+                    {{"{{- range"}} {{"$"}}key, {{"$"}}value := .Environment{{"}}"}}
                     - {{"{{"}} {{"$"}}key{{"}}"}}={{ {{"$"}}value }}
                     {{"{{"}}- end{{"}}"}}
 
