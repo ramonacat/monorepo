@@ -30,8 +30,8 @@
       enableUserSlices = lib.mkForce false;
       settings = {
         OOM = {
-          SwapUsedLimit = "60%";
-          DefaultMemoryPressureDurationSec = "5";
+          SwapUsedLimit = "70%";
+          DefaultMemoryPressureDurationSec = "30";
         };
       };
     };
