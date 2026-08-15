@@ -49,6 +49,8 @@ spec:
           value: "woodpecker,ci"
         - name: WOODPECKER_SCALEWAY_ZONE
           value: "nl-ams-1"
+        - name: WOODPECKER_SCALEWAY_IMAGE
+          value: 63cb3ba6-570a-48f8-a5b8-29c9650e6980
         envFrom:
           - secretRef:
               name: autoscaler
