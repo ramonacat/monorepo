@@ -28,7 +28,7 @@ spec:
             memory: 128Mi
         env:
         - name: WOODPECKER_SERVER
-          value: http://woodpecker/
+          value: http://woodpecker-server/
         - name: WOODPECKER_MIN_AGENTS
           value: "0"
         - name: WOODPECKER_MAX_AGENTS
