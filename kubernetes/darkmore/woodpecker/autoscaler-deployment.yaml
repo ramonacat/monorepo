@@ -47,8 +47,8 @@ spec:
           value: "ed770f01-66c8-4181-8fc7-6821ef6cac9a"
         - name: WOODPECKER_SCALEWAY_TAGS
           value: "woodpecker,ci"
-        - name: WOODPECKER_SCALEWAY_IMAGE
-          value: 63cb3ba6-570a-48f8-a5b8-29c9650e6980
+        - name: WOODPECKER_SCALEWAY_STORAGE_TYPE
+          value: "sbs_volume"
         envFrom:
           - secretRef:
               name: autoscaler
