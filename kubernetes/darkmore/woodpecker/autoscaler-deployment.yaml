@@ -138,7 +138,7 @@ spec:
                   environment:
                     {{"{{- range \\$key, value := .Environment}}"}}
                     - {{"{{"}} {{"\\$"}}key{{"}}"}}={{ {{"\\$"}}value }}
-                    {{"{{"}}- end{{"}}"}}
+                    {{"{{- end -}}"}}
 
           runcmd:
             {{"{{"}}- range .PreExec{{"}}"}}
