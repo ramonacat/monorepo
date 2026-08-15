@@ -42,7 +42,7 @@ spec:
         - name: WOODPECKER_PROVIDER
           value: "scaleway"
         - name: WOODPECKER_SCALEWAY_SERVER_TYPES 
-          value: "BASIC2-A8C-32G:nl-ams-1"
+          value: "GP1-XS:nl-ams-1"
         - name: WOODPECKER_SCALEWAY_PROJECT
           value: "ed770f01-66c8-4181-8fc7-6821ef6cac9a"
         - name: WOODPECKER_SCALEWAY_TAGS
@@ -78,4 +78,5 @@ spec:
         conversionStrategy: Default
         decodingStrategy: None
         metadataPolicy: None
+---
 
