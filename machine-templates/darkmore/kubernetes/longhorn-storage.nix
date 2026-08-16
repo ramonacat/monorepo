@@ -17,6 +17,7 @@
           "${pkgs.coreutils}/bin/ln -sf ${pkgs.util-linux}/bin/mount /usr/bin/mount"
           "${pkgs.coreutils}/bin/ln -sf ${pkgs.util-linux}/bin/fstrim /usr/bin/fstrim"
           "${pkgs.coreutils}/bin/ln -sf ${pkgs.nfs-utils}/bin/mount.nfs /usr/bin/mount.nfs"
+          "${pkgs.cryptsetup}/bin/ln -sf ${pkgs.cryptsetup}/bin/cryptsetup /usr/bin/cryptsetup"
         ];
         RemainAfterExit = true;
       };
