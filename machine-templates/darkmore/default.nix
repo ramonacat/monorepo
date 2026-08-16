@@ -24,28 +24,32 @@
       systemd.enable = lib.mkForce false;
     };
 
-    systemd.oomd = {
-      enableRootSlice = lib.mkForce false;
-      enableSystemSlice = lib.mkForce false;
-      enableUserSlices = lib.mkForce false;
-      settings = {
-        OOM = {
-          SwapUsedLimit = "70%";
-          DefaultMemoryPressureDurationSec = "30";
+    systemd = {
+      oomd = {
+        enableRootSlice = lib.mkForce false;
+        enableSystemSlice = lib.mkForce false;
+        enableUserSlices = lib.mkForce false;
+        settings = {
+          OOM = {
+            SwapUsedLimit = "70%";
+            DefaultMemoryPressureDurationSec = "30";
+          };
         };
       };
-    };
 
-    systemd.slices."kubepods".sliceConfig = {
-      ManagedOOMSwap = "kill";
-      ManagedOOMMemoryPressure = "kill";
-      ManagedOOMMemoryPressureLimit = "40%";
-    };
-    systemd.slices."kubepods-burstable".sliceConfig = {
-      ManagedOOMSwap = "kill";
-      ManagedOOMMemoryPressure = "kill";
-      ManagedOOMPreference = "avoid";
-      ManagedOOMMemoryPressureLimit = "80%";
+      slices = {
+        "kubepods".sliceConfig = {
+          ManagedOOMSwap = "kill";
+          ManagedOOMMemoryPressure = "kill";
+          ManagedOOMMemoryPressureLimit = "40%";
+        };
+        "kubepods-burstable".sliceConfig = {
+          ManagedOOMSwap = "kill";
+          ManagedOOMMemoryPressure = "kill";
+          ManagedOOMPreference = "avoid";
+          ManagedOOMMemoryPressureLimit = "80%";
+        };
+      };
     };
   };
 }
