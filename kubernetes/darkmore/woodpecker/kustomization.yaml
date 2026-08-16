@@ -15,7 +15,7 @@ helmCharts:
           WOODPECKER_BACKEND_K8S_STORAGE_RWX: "false"
       server:
         statefulSet:
-          replicaCount: 2
+          replicaCount: 1
         prometheus:
           podmonitor:
             enabled: true
