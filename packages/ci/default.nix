@@ -81,6 +81,9 @@ rec {
       xz
       iana-etc
 
+      python3Packages.python
+      python3Packages.uv
+
       package
     ];
     extraCommands = ''
