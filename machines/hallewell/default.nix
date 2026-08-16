@@ -24,6 +24,7 @@ _: {
     ./postgresql.nix
     ./servarr.nix
     ./znc.nix
+    ./woodpecker-agent.nix
   ];
   config = {
     ramona.machine.location = "home";
