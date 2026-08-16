@@ -59,6 +59,9 @@ rec {
       skopeo
       jq
       curl
+      pkg-config
+      openssl_4_0.dev
+      postgresql_18.dev
 
       bash
       shellcheck
