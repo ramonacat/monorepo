@@ -24,7 +24,6 @@ _: {
           WOODPECKER_GRPC_SECURE = "true";
           WOODPECKER_BACKEND = "docker";
           WOODPECKER_MAX_WORKFLOWS = "4";
-          WOODPECKER_BACKEND_DOCKER_VOLUMES = "/etc/ssl/certs:/etc/ssl/certs:ro";
         };
 
         environmentFile = [ secrets-path ];
