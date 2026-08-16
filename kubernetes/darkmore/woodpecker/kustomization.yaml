@@ -14,6 +14,8 @@ helmCharts:
           WOODPECKER_BACKEND_K8S_STORAGE_CLASS: hcloud-volumes
           WOODPECKER_BACKEND_K8S_STORAGE_RWX: "false"
       server:
+        statefulSet:
+          replicaCount: 2
         prometheus:
           podmonitor:
             enabled: true
