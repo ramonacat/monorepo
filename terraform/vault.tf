@@ -122,11 +122,31 @@ resource "vault_policy" "cert-self-issue" {
     }
   EOT
 }
+resource "vault_mount" "kv-secrets-hosts" {
+  path    = "secrets/hosts"
+  type    = "kv"
+  options = { version = "2" }
+}
+
+resource "vault_kv_secret_backend_v2" "hosts" {
+  mount        = vault_mount.kv-secrets-hosts.path
+  max_versions = 5
+}
+
+resource "vault_policy" "hosts-secrets" {
+  name = "host-secrets"
+
+  policy = <<-EOT
+    path "/secrets/hosts/*" {
+      capabilities = ["create", "patch", "read", "update"]
+    }
+  EOT
+}
 
 resource "vault_cert_auth_backend_role" "hosts" {
   name           = "hosts"
   certificate    = module.pki-hosts.certificate
   backend        = vault_auth_backend.cert.path
   ocsp_enabled   = false
-  token_policies = ["default", vault_policy.cert-self-issue.name]
+  token_policies = ["default", vault_policy.cert-self-issue.name, vault_policy.hosts-secrets.name]
 }
