@@ -140,6 +140,10 @@ resource "vault_policy" "hosts-secrets" {
     path "/secrets/hosts/*" {
       capabilities = ["create", "patch", "read", "update"]
     }
+
+    path "/secrets/kubernetes/darkmore/woodpecker/agent-secret" {
+      capabilities = ["read" ]
+    }
   EOT
 }
 
