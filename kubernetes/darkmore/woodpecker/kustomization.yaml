@@ -24,6 +24,8 @@ helmCharts:
         grafana:
           dashboards:
             enabled: true
+        persistentVolume:
+          enabled: false
         env:
           WOODPECKER_HOST: 'https://woodpecker.ramona.fun'
           WOODPECKER_OPEN: 'true'
