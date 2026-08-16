@@ -28,6 +28,14 @@ _: {
         };
 
         environmentFile = [ secrets-path ];
+        extraGroups = [ "docker" ];
+      };
+
+      systemd.services.woodpecker-agent-hallewell.serviceConfig = {
+        ReadWritePaths = [
+          "/etc/woodpecker"
+          "/var/run/docker.sock"
+        ];
       };
     };
 }
