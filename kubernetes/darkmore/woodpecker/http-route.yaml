@@ -44,3 +44,6 @@ spec:
           name: woodpecker-server
           weight: 1
           port: 9000
+      timeouts:
+        backendRequest: "1800s"
+        request: "1800s"
