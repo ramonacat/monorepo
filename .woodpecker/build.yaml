@@ -4,7 +4,7 @@ when:
     branch: main
 steps:
   - name: build
-    image: ghcr.io/ramonacat/ci:1786749649
+    image: ghcr.io/ramonacat/ci:1786867212
     commands:
       - ./.woodpecker/scripts/build.bash
     environment:
