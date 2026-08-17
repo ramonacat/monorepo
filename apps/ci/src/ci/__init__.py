@@ -8,7 +8,7 @@ from os.path import basename, realpath
 from pathlib import Path
 import sys
 from time import sleep
-from typing import Callable, TypedDict, cast
+from typing import Callable, Never, TypedDict, cast
 import requests
 
 from ci.app import find_roots
@@ -29,16 +29,25 @@ class VersionStatus(TypedDict):
     updated: bool
 
 
-def post_version(versioned_item: str, store_path: str) -> VersionStatus:
-    response = requests.post(
-        "https://ras.infrastructure.ramona.fun/versions",
-        json={"versioned_item": versioned_item, "store_path": store_path},
-    )
+def api_post(url: str, json: object) -> object:
+    response = requests.post(url, json=json)
 
     if not response:
-        raise FailedRequest(response)
+        raise FailedRequest(
+            f"request to {url} failed with status {response.status_code}, response body:\n{response.text}"
+        )
 
-    return cast(VersionStatus, response.json())
+    return cast(object, response.json)
+
+
+def post_version(versioned_item: str, store_path: str) -> VersionStatus:
+    return cast(
+        VersionStatus,
+        api_post(
+            "https://ras.infrastructure.ramona.fun/versions",
+            json={"versioned_item": versioned_item, "store_path": store_path},
+        ),
+    )
 
 
 def retry[T](callback: Callable[[], T]) -> T:
@@ -190,6 +199,34 @@ def execute_command(name: str, args: Namespace, runtime: RuntimeInfo) -> None:
                         runtime.cache_client.upload_fileobj(
                             file, runtime.public_bucket, f"isos/{iso_name}.iso"
                         )
+            for closure_path in glob("./result/hosts/*"):
+                home_name = basename(closure_path)
+                store_path = realpath(closure_path)
+
+                logger.info(
+                    f"found nixos configuration {home_name} with store path {store_path}"
+                )
+
+                # TODO also do nix-store closure-diff and post the results as a comment on the PR
+                _ = api_post(
+                    f"https://ras.infrastructure.ramona.fun/hosts/{home_name}/latest_closure",
+                    json={"latest_closure": store_path},
+                )
+
+            for home_path in glob("./result/homes/*"):
+                home_name = basename(home_path)
+                store_path = realpath(home_path)
+
+                logger.info(
+                    f"found home-manager configuration {home_name} with store path {store_path}"
+                )
+
+                # TODO do a diff and post as PR comment
+                _ = api_post(
+                    f"https://ras.infrastructure.ramona.fun/homes/{home_name}/latest_closure",
+                    json={"latest_closure": store_path},
+                )
+
         case "cache":
             cache_command = cast(str, args.cache_command)
             execute_cache_command(cache_command, args, runtime)
