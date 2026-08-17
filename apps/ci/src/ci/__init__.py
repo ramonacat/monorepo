@@ -186,7 +186,7 @@ def execute_command(name: str, args: Namespace, runtime: RuntimeInfo) -> None:
                 if version_result["updated"]:
                     logger.info("iso changed, publishing")
 
-                    with open(store_path, "r") as file:
+                    with open(store_path, "rb") as file:
                         runtime.cache_client.upload_fileobj(
                             file, runtime.public_bucket, f"isos/{iso_name}.iso"
                         )
