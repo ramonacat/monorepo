@@ -185,7 +185,7 @@ def execute_command(name: str, args: Namespace, runtime: RuntimeInfo) -> None:
                     if version_result["updated"]:
                         _ = run_command(["npm", "publish"])
 
-            for iso_path in glob("./result/iso/*"):
+            for iso_path in glob("./result/iso/**"):
                 iso_name = basename(iso_path)
                 container_item_id = f"{runtime.repository_name}:isos:{iso_name}"
                 store_path = realpath(iso_path)
@@ -196,7 +196,7 @@ def execute_command(name: str, args: Namespace, runtime: RuntimeInfo) -> None:
                 if version_result["updated"]:
                     logger.info("iso changed, publishing")
 
-                    with open(store_path, "rb") as file:
+                    with open(next(Path(store_path).glob("*.iso")), "rb") as file:
                         runtime.cache_client.upload_fileobj(
                             file,
                             runtime.public_bucket,
