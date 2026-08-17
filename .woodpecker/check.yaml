@@ -4,7 +4,7 @@ when:
     branch: main
 steps:
   - name: check
-    image: ghcr.io/ramonacat/ci:1786996701
+    image: ghcr.io/ramonacat/ci:1786999196
     commands:
       - ./.woodpecker/scripts/check.bash
     environment:
