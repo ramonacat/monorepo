@@ -28,5 +28,8 @@ _: {
   ];
   config = {
     ramona.machine.location = "home";
+    virtualisation.docker.daemon.settings = {
+      "data-root" = "/mnt/nas3/docker/";
+    };
   };
 }
