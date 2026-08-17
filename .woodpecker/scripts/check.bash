@@ -17,13 +17,7 @@ main() {
 	ATTIC_PID=$!
 	trap cleanup EXIT
 
-	nix build .#everything --fallback
-
-	if [[ "${CI_COMMIT_SOURCE_BRANCH:-${CI_COMMIT_BRANCH:-main}}" == "main" ]]; then
-		echo "on the main branch, publishing changed containers"
-
-		ci publish
-	fi
+	ci check
 
 	ci cache push terraform terraform/.terraform
 }
