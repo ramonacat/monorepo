@@ -49,6 +49,8 @@ spec:
           value: "woodpecker,ci"
         - name: WOODPECKER_SCALEWAY_STORAGE_TYPE
           value: "sbs_volume"
+        - name: WOODPECKER_SCALEWAY_STORAGE_SIZE
+          value: "100"
         - name: WOODPECKER_CLOUDINIT_TEMPLATE
           valueFrom:
             secretKeyRef:
