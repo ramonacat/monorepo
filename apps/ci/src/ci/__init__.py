@@ -8,7 +8,7 @@ from os.path import basename, realpath
 from pathlib import Path
 import sys
 from time import sleep
-from typing import Callable, Never, TypedDict, cast
+from typing import Callable, TypedDict, cast
 import requests
 
 from ci.app import find_roots
@@ -37,7 +37,7 @@ def api_post(url: str, json: object) -> object:
             f"request to {url} failed with status {response.status_code}, response body:\n{response.text}"
         )
 
-    return cast(object, response.json)
+    return cast(object, response.json())
 
 
 def post_version(versioned_item: str, store_path: str) -> VersionStatus:

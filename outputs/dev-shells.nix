@@ -146,6 +146,7 @@ pkgs.mkShell {
       skopeo
       python3Packages.python
       python3Packages.uv
+      woodpecker-cli
 
       package-versions.nodejs
       package-versions.rust-version
