@@ -6,6 +6,7 @@ import logging
 import os
 from os.path import basename, realpath
 from pathlib import Path
+import re
 import sys
 from time import sleep
 from typing import Callable, TypedDict, cast
@@ -187,7 +188,7 @@ def execute_command(name: str, args: Namespace, runtime: RuntimeInfo) -> None:
             for iso_path in glob("./result/iso/*"):
                 iso_name = basename(iso_path)
                 container_item_id = f"{runtime.repository_name}:isos:{iso_name}"
-                store_path = realpath(next(Path(iso_path).glob("*.iso")))
+                store_path = realpath(iso_path)
                 version_result = post_version(container_item_id, store_path)
 
                 logger.info(f"found iso {name} with store path {store_path}")
@@ -197,7 +198,9 @@ def execute_command(name: str, args: Namespace, runtime: RuntimeInfo) -> None:
 
                     with open(store_path, "rb") as file:
                         runtime.cache_client.upload_fileobj(
-                            file, runtime.public_bucket, f"isos/{iso_name}.iso"
+                            file,
+                            runtime.public_bucket,
+                            f"isos/{re.sub("^(nixos-.*?)-\\d.*", "\\1", iso_name)}.iso",
                         )
             for closure_path in glob("./result/hosts/*"):
                 home_name = basename(closure_path)
