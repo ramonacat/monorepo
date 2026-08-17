@@ -24,8 +24,18 @@ _: {
     ./postgresql.nix
     ./servarr.nix
     ./znc.nix
+    ./woodpecker-agent.nix
   ];
   config = {
     ramona.machine.location = "home";
+    virtualisation.docker = {
+      autoPrune = {
+        enable = true;
+        dates = "daily";
+      };
+      daemon.settings = {
+        "data-root" = "/mnt/nas3/docker/";
+      };
+    };
   };
 }
