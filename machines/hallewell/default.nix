@@ -18,7 +18,6 @@ _: {
     ./bcachefs.nix
     ./github-runner.nix
     ./hardware.nix
-    ./minecraft.nix
     ./navidrome.nix
     ./networking.nix
     ./postgresql.nix
