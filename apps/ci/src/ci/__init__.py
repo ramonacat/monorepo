@@ -30,13 +30,16 @@ class VersionStatus(TypedDict):
     updated: bool
 
 
-def api_post(url: str, json: object) -> object:
+def api_post(url: str, json: object, ignore_body: bool = False) -> object:
     response = requests.post(url, json=json)
 
     if not response:
         raise FailedRequest(
             f"request to {url} failed with status {response.status_code}, response body:\n{response.text}"
         )
+
+    if ignore_body:
+        return {}
 
     return cast(object, response.json())
 
@@ -214,6 +217,7 @@ def execute_command(name: str, args: Namespace, runtime: RuntimeInfo) -> None:
                 _ = api_post(
                     f"https://ras.infrastructure.ramona.fun/hosts/{home_name}/latest_closure",
                     json={"latest_closure": store_path},
+                    ignore_body=True,
                 )
 
             for home_path in glob("./result/homes/*"):
@@ -228,6 +232,7 @@ def execute_command(name: str, args: Namespace, runtime: RuntimeInfo) -> None:
                 _ = api_post(
                     f"https://ras.infrastructure.ramona.fun/homes/{home_name}/latest_closure",
                     json={"latest_closure": store_path},
+                    ignore_body=True,
                 )
 
         case "cache":
