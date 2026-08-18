@@ -128,7 +128,7 @@ class RuntimeInfo(object):
             (datetime.now(UTC) - datetime(1970, 1, 1, tzinfo=UTC)).total_seconds()
         )
 
-        pull_request_base = _read_env("CI_COMMIT_SOURCE_BRANCH", "")
+        pull_request_base = _read_env("CI_COMMIT_TARGET_BRANCH", "")
         if pull_request_base != "":
             self.pull_request = PullRequestInfo(pull_request_base)
         else:
