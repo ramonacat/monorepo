@@ -106,10 +106,8 @@ def execute_validate_built(runtime: RuntimeInfo):
             if not version_status["updated"]:
                 return
 
-            package_json_absolute_path = npm_package / "package.json"
-            package_json_path = package_json_absolute_path.relative_to(
-                runtime.repository.root
-            )
+            # TODO how do we handle apps? do we even need to?
+            package_json_path = Path("libs/js") / app_name / "package.json"
 
             base_package_json = cast(
                 dict[str, object],
@@ -123,7 +121,7 @@ def execute_validate_built(runtime: RuntimeInfo):
                     )
                 ),
             )
-            with open(package_json_absolute_path, "rb") as package_json_file:
+            with open(package_json_path, "rb") as package_json_file:
                 package_json = cast(dict[str, object], json.load(package_json_file))
 
             if base_package_json["version"] == package_json["version"]:
