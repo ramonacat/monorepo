@@ -1,69 +1,18 @@
 from argparse import ArgumentParser, Namespace
-from contextlib import chdir
-from datetime import UTC, datetime
-from glob import glob
 import logging
 import os
-from os.path import basename, realpath
 from pathlib import Path
-import re
 import sys
-from time import sleep
-from typing import Callable, TypedDict, cast
-import requests
+from typing import cast
 
 from ci.app import find_roots
 from ci.cache import DirectoryCache
 from ci.checks import run_checks
 from ci.commands import run_command
+from ci.publish import execute_publish
 from ci.runtime_info import RuntimeInfo
 
 logger = logging.getLogger(__name__)
-
-
-class FailedRequest(Exception):
-    pass
-
-
-class VersionStatus(TypedDict):
-    version: int
-    updated: bool
-
-
-def api_post(url: str, json: object, ignore_body: bool = False) -> object:
-    response = requests.post(url, json=json)
-
-    if not response:
-        raise FailedRequest(
-            f"request to {url} failed with status {response.status_code}, response body:\n{response.text}"
-        )
-
-    if ignore_body:
-        return {}
-
-    return cast(object, response.json())
-
-
-def post_version(versioned_item: str, store_path: str) -> VersionStatus:
-    return cast(
-        VersionStatus,
-        api_post(
-            "https://ras.infrastructure.ramona.fun/versions",
-            json={"versioned_item": versioned_item, "store_path": store_path},
-        ),
-    )
-
-
-def retry[T](callback: Callable[[], T]) -> T:
-    i: int = 0
-    while True:
-        try:
-            return callback()
-        except Exception as e:
-            if i == 5:
-                raise Exception("retries exhausted", e)
-            i += 1
-            sleep(cast(int, 2**i))
 
 
 class CommandError(Exception):
@@ -143,98 +92,9 @@ def execute_setup(_args: Namespace, runtime: RuntimeInfo):
 
 
 def execute_command(name: str, args: Namespace, runtime: RuntimeInfo) -> None:
-    now_unix = (datetime.now(UTC) - datetime(1970, 1, 1, tzinfo=UTC)).total_seconds()
-
     match name:
         case "publish":
-            logger.info("starting publish")
-
-            for container_path in glob("./result/containers/*"):
-                container_name = basename(container_path)
-                store_path = realpath(container_path)
-                container_item_id = (
-                    f"{runtime.repository_name}:containers:{container_name}"
-                )
-
-                logger.info(
-                    f"found container {container_name} with store_path {store_path}"
-                )
-                version_result = post_version(container_item_id, store_path)
-
-                if version_result["updated"]:
-                    logger.info(f"container changed, publishing")
-
-                    container_fullname = f"code.ramona.fun/ramona/{runtime.repository_name}/{container_name}:{now_unix}"
-                    _ = retry(
-                        lambda: run_command(
-                            [
-                                "skopeo",
-                                "copy",
-                                f"docker-archive:{container_path}",
-                                f"docker://{container_fullname}",
-                            ]
-                        )
-                    )
-
-            for npm_path in glob("./result/npm-packages/*"):
-                with chdir(npm_path):
-                    npm_name = basename(npm_path)
-                    store_path = realpath(npm_path)
-                    version_result = post_version(
-                        f"{runtime.repository_name}:npm-packages:{npm_name}", store_path
-                    )
-
-                    # TODO also add a check on PRs to ensure version is bumped
-                    if version_result["updated"]:
-                        _ = run_command(["npm", "publish"])
-
-            for iso_path in glob("./result/iso/**"):
-                iso_name = basename(iso_path)
-                container_item_id = f"{runtime.repository_name}:isos:{iso_name}"
-                store_path = realpath(iso_path)
-                version_result = post_version(container_item_id, store_path)
-
-                logger.info(f"found iso {name} with store path {store_path}")
-
-                if version_result["updated"]:
-                    logger.info("iso changed, publishing")
-
-                    with open(next(Path(store_path).rglob("*.iso")), "rb") as file:
-                        runtime.cache_client.upload_fileobj(
-                            file,
-                            runtime.public_bucket,
-                            f"isos/{re.sub("^(nixos-.*?)-\\d.*", "\\1", iso_name)}.iso",
-                        )
-            for closure_path in glob("./result/hosts/*"):
-                home_name = basename(closure_path)
-                store_path = realpath(closure_path)
-
-                logger.info(
-                    f"found nixos configuration {home_name} with store path {store_path}"
-                )
-
-                # TODO also do nix-store closure-diff and post the results as a comment on the PR
-                _ = api_post(
-                    f"https://ras.infrastructure.ramona.fun/hosts/{home_name}/latest_closure",
-                    json={"latest_closure": store_path},
-                    ignore_body=True,
-                )
-
-            for home_path in glob("./result/homes/*"):
-                home_name = basename(home_path)
-                store_path = realpath(home_path)
-
-                logger.info(
-                    f"found home-manager configuration {home_name} with store path {store_path}"
-                )
-
-                # TODO do a diff and post as PR comment
-                _ = api_post(
-                    f"https://ras.infrastructure.ramona.fun/homes/{home_name}/latest_closure",
-                    json={"latest_closure": store_path},
-                    ignore_body=True,
-                )
-
+            execute_publish(runtime)
         case "cache":
             cache_command = cast(str, args.cache_command)
             execute_cache_command(cache_command, args, runtime)

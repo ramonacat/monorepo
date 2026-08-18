@@ -1,3 +1,4 @@
+from datetime import UTC, datetime
 from os import environ
 from typing import override
 import boto3
@@ -48,6 +49,8 @@ class RuntimeInfo(object):
 
     ssh_key: str
 
+    now_timestamp: int
+
     def __init__(self):
         self.repository_name = _read_env("CI_REPO_NAME")
         self.repository_owner = _read_env("CI_REPO_OWNER")
@@ -79,6 +82,9 @@ class RuntimeInfo(object):
         self.github_token = _read_env("GITHUB_TOKEN")
         self.forgejo_token = _read_env("FORGEJO_TOKEN")
         self.ssh_key = _read_env("SSH_KEY")
+        self.now_timestamp = round(
+            (datetime.now(UTC) - datetime(1970, 1, 1, tzinfo=UTC)).total_seconds()
+        )
 
     @override
     def __str__(self) -> str:

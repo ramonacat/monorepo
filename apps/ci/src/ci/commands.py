@@ -1,7 +1,21 @@
 import logging
 import subprocess
+from time import sleep
+from typing import Callable, cast
 
 logger = logging.getLogger(__name__)
+
+
+def retry[T](callback: Callable[[], T]) -> T:
+    i: int = 0
+    while True:
+        try:
+            return callback()
+        except Exception as e:
+            if i == 5:
+                raise Exception("retries exhausted", e)
+            i += 1
+            sleep(cast(int, 2**i))
 
 
 class RunCommandError(Exception):
