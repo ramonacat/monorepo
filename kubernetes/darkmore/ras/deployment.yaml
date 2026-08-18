@@ -22,6 +22,8 @@ spec:
       labels:
         app: ras
     spec:
+      imagePullSecrets:
+        - name: forgejo-container-credentials
       containers:
       - name: ras
         image: code.ramona.fun/ramona/monorepo/ras:1786960918.194204
@@ -81,3 +83,23 @@ spec:
         conversionStrategy: Default
         decodingStrategy: None
         metadataPolicy: None
+---
+apiVersion: external-secrets.io/v1
+kind: ExternalSecret
+metadata:
+  name: forgejo-container-credentials
+spec:
+  target:
+    name: forgejo-container-credentials
+    creationPolicy: Owner
+    template:
+      type: kubernetes.io/dockerconfigjson
+      data:
+        .dockerconfigjson: '{{ index . "docker-config-json" | toString }}'
+  dataFrom:
+    - sourceRef:
+        storeRef:
+          kind: ClusterSecretStore
+          name: vault
+      extract:
+        key: forgejo-container-registry-config

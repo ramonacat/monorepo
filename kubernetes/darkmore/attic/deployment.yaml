@@ -19,6 +19,8 @@ spec:
       labels:
         app: attic
     spec:
+      imagePullSecrets:
+        - name: forgejo-container-credentials
       containers:
         - name: attic
           image: code.ramona.fun/ramona/monorepo/attic:1786960918.194204
@@ -112,3 +114,23 @@ spec:
           name: vault
       extract:
         key: attic/object-storage
+---
+apiVersion: external-secrets.io/v1
+kind: ExternalSecret
+metadata:
+  name: forgejo-container-credentials
+spec:
+  target:
+    name: forgejo-container-credentials
+    creationPolicy: Owner
+    template:
+      type: kubernetes.io/dockerconfigjson
+      data:
+        .dockerconfigjson: '{{ index . "docker-config-json" | toString }}'
+  dataFrom:
+    - sourceRef:
+        storeRef:
+          kind: ClusterSecretStore
+          name: vault
+      extract:
+        key: forgejo-container-registry-config
