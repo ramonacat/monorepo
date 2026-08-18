@@ -1,6 +1,8 @@
 from argparse import ArgumentParser, Namespace
+import json
 import logging
 import os
+from os.path import basename, realpath
 from pathlib import Path
 import sys
 from typing import cast
@@ -10,6 +12,7 @@ from ci.cache import DirectoryCache
 from ci.checks import run_checks
 from ci.commands import run_command
 from ci.publish import execute_publish
+from ci.ras_client import VersionedItemId, check_version
 from ci.runtime_info import RuntimeInfo
 
 logger = logging.getLogger(__name__)
@@ -91,6 +94,44 @@ def execute_setup(_args: Namespace, runtime: RuntimeInfo):
         )
 
 
+def execute_validate_built(runtime: RuntimeInfo):
+    for npm_package in Path("./result/npm-packages").glob("*"):
+        app_name = basename(npm_package)
+        store_path = realpath(npm_package)
+
+        if runtime.pull_request != None:
+            version_status = check_version(
+                VersionedItemId.npm_package(app_name, runtime), store_path
+            )
+            if not version_status["updated"]:
+                return
+
+            package_json_absolute_path = npm_package / "package.json"
+            package_json_path = package_json_absolute_path.relative_to(
+                runtime.repository.root
+            )
+
+            base_package_json = cast(
+                dict[str, object],
+                json.loads(
+                    run_command(
+                        [
+                            "git",
+                            "show",
+                            f"{runtime.pull_request.base}:{package_json_path}",
+                        ]
+                    )
+                ),
+            )
+            with open(package_json_absolute_path, "rb") as package_json_file:
+                package_json = cast(dict[str, object], json.load(package_json_file))
+
+            if base_package_json["version"] == package_json["version"]:
+                raise Exception(
+                    f"npm package {app_name} has changed, but version field was not updated"
+                )
+
+
 def execute_command(name: str, args: Namespace, runtime: RuntimeInfo) -> None:
     match name:
         case "publish":
@@ -101,12 +142,10 @@ def execute_command(name: str, args: Namespace, runtime: RuntimeInfo) -> None:
         case "setup":
             execute_setup(args, runtime)
         case "check":
-            repository_root = Path(
-                run_command(["git", "rev-parse", "--show-toplevel"]).rstrip()
-            )
-
-            app_roots = find_roots(repository_root)
+            app_roots = find_roots(runtime.repository.root)
             run_checks(app_roots)
+        case "validate-built":
+            execute_validate_built(runtime)
         case unknown:
             raise CommandError(f"unknown command: '{unknown}'")
 
@@ -135,6 +174,7 @@ def main() -> None:
 
     _ = subparsers.add_parser("setup")
     _ = subparsers.add_parser("check")
+    _ = subparsers.add_parser("validate-built")
 
     args = parser.parse_args()
     command = cast(str, args.command)

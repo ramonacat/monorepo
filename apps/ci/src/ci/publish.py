@@ -6,7 +6,7 @@ from pathlib import Path
 import re
 
 from ci.commands import retry, run_command
-from ci.ras_client import api_post, post_version
+from ci.ras_client import VersionedItemId, api_post, update_version
 from ci.runtime_info import RuntimeInfo
 
 logger = logging.getLogger(__name__)
@@ -18,15 +18,15 @@ def execute_publish(runtime: RuntimeInfo):
     for container_path in glob("./result/containers/*"):
         container_name = basename(container_path)
         store_path = realpath(container_path)
-        container_item_id = f"{runtime.repository_name}:containers:{container_name}"
+        container_item_id = VersionedItemId.container(container_name, runtime)
 
         logger.info(f"found container {container_name} with store_path {store_path}")
-        version_result = post_version(container_item_id, store_path)
+        version_result = update_version(container_item_id, store_path)
 
         if version_result["updated"]:
             logger.info(f"container changed, publishing")
 
-            container_fullname = f"code.ramona.fun/ramona/{runtime.repository_name}/{container_name}:{runtime.now_timestamp}"
+            container_fullname = f"code.ramona.fun/ramona/{runtime.repository.name}/{container_name}:{runtime.now_timestamp}"
             _ = retry(
                 lambda: run_command(
                     [
@@ -42,8 +42,8 @@ def execute_publish(runtime: RuntimeInfo):
         with chdir(npm_path):
             npm_name = basename(npm_path)
             store_path = realpath(npm_path)
-            version_result = post_version(
-                f"{runtime.repository_name}:npm-packages:{npm_name}", store_path
+            version_result = update_version(
+                VersionedItemId.npm_package(npm_name, runtime), store_path
             )
 
             # TODO also add a check on PRs to ensure version is bumped
@@ -52,9 +52,9 @@ def execute_publish(runtime: RuntimeInfo):
 
     for iso_path in glob("./result/iso/*"):
         iso_name = basename(iso_path)
-        container_item_id = f"{runtime.repository_name}:isos:{iso_name}"
+        container_item_id = VersionedItemId.container(iso_name, runtime)
         store_path = realpath(iso_path)
-        version_result = post_version(container_item_id, store_path)
+        version_result = update_version(container_item_id, store_path)
 
         logger.info(f"found iso {iso_name} with store path {store_path}")
 
