@@ -1,18 +1,7 @@
-resource "tls_private_key" "deploy--ramonacat-monorepo--argocd" {
-  algorithm = "ED25519"
-}
-
-resource "github_repository_deploy_key" "ramonacat-monorepo--argocd" {
-  title      = "ArgoCD"
-  repository = github_repository.ramonacat-monorepo.name
-  key        = tls_private_key.deploy--ramonacat-monorepo--argocd.public_key_openssh
-  read_only  = true
-}
-
 resource "argocd_repository" "monorepo" {
-  repo            = "git@github.com:ramonacat/monorepo.git"
+  repo            = "ssh://git@code.ramona.fun/ramona/monorepo.git"
   username        = "git"
-  ssh_private_key = tls_private_key.deploy--ramonacat-monorepo--argocd.private_key_openssh
+  ssh_private_key = data.vault_kv_secret_v2.argo-cd-forgejo.data.ssh_key
 }
 
 resource "argocd_application_set" "monorepo--apps" {

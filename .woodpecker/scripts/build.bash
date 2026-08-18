@@ -18,7 +18,7 @@ main() {
 	trap cleanup EXIT
 
 	nix build .#everything --fallback
-	# ci validate-built
+	ci validate-built
 
 	if [[ "${CI_COMMIT_SOURCE_BRANCH:-${CI_COMMIT_BRANCH:-main}}" == "main" ]]; then
 		echo "on the main branch, publishing changed containers"

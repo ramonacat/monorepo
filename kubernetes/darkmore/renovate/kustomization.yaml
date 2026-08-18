@@ -21,6 +21,7 @@ helmCharts:
             "autodiscover": true,
             "hostRules": [
               {"matchHost": "npm.pkg.github.com", "hostType": "npm", "token": "{{ secrets.GITHUB_TOKEN }}"},
+              {"matchHost": "code.ramona.fun", "hostType": "npm", "token": "{{ secrets.FORGEJO_TOKEN }}"},
               {"matchHost": "api.github.com", "hostType": "github", "token": "{{ secrets.GITHUB_TOKEN }}"},
               {"matchHost": "github.com", "hostType": "github", "token": "{{ secrets.GITHUB_TOKEN }}"},
               {"matchHost": "ghcr.io", "hostType": "docker", "username": "ramonacat", "password": "{{ secrets.GITHUB_TOKEN }}"},

@@ -98,5 +98,5 @@ in
   "user-password-public-ramona.age".publicKeys = users ++ publicServers;
   "user-password-public-root.age".publicKeys = users ++ publicServers;
   "wireless-passwords.age".publicKeys = users ++ workstations;
-  "github-pat-npm-registry.age".publicKeys = users;
+  "cli-tokens.age".publicKeys = users;
 }

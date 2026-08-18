@@ -1,12 +1,11 @@
 when:
-  - event: pull_request
-  - event: push
-    branch: main
+  - event: cron
+    cron: flake-update
 steps:
-  - name: build
+  - name: check
     image: code.ramona.fun/ramona/monorepo/ci:1787074275
     commands:
-      - ./.woodpecker/scripts/build.bash
+      - ./.woodpecker/scripts/flake-update.bash
     environment:
       ATTIC_TOKEN:
         from_secret: "attic_token"
