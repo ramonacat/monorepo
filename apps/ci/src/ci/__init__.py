@@ -93,6 +93,13 @@ def execute_setup(_args: Namespace, runtime: RuntimeInfo):
             )
         )
 
+    with open(os.path.expanduser("~/.netrc"), "wb") as file:
+        _ = file.write(
+            f"machine code.ramona.fun login ramona password {runtime.forgejo_token}".encode(
+                "utf-8"
+            )
+        )
+
 
 def execute_validate_built(runtime: RuntimeInfo):
     for npm_package in Path("./result/npm-packages").glob("*"):
