@@ -61,7 +61,9 @@ def execute_publish(runtime: RuntimeInfo):
         if version_result["updated"]:
             logger.info("iso changed, publishing")
 
-            with open(next(Path(store_path).rglob("*.iso")), "rb") as file:
+            iso_path = Path(store_path).glob("iso/*.iso")
+
+            with open(next(iso_path), "rb") as file:
                 runtime.cache_client.upload_fileobj(
                     file,
                     runtime.public_bucket,

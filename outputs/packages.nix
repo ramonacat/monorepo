@@ -40,7 +40,8 @@ rec {
       + (pkgs.lib.concatStringsSep "\n" (
         pkgs.lib.mapAttrsToList (k: v: "ln -s ${v.package} $out/npm-packages/${k}") local-packages.libs.js
       ))
-      + "\nln -s ${flake.nixosConfigurations.iso.config.system.build.isoImage} $out/iso\n"
+      + "\nmkdir -p $out/iso\n"
+      + "\nln -s ${flake.nixosConfigurations.iso.config.system.build.isoImage} $out/iso/ramona\n"
     );
   default = coverage;
 }
