@@ -38,10 +38,13 @@ def execute_publish(runtime: RuntimeInfo):
                 )
             )
 
-    for npm_path in glob("./result/npm-packages/*"):
+    for npm_path in Path("./result/npm-packages/").glob("*"):
+        npm_path = npm_path.absolute()
+
         with chdir(npm_path):
             npm_name = basename(npm_path)
             store_path = realpath(npm_path)
+
             version_result = update_version(
                 VersionedItemId.npm_package(npm_name, runtime), store_path
             )
