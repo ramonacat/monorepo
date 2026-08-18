@@ -2,7 +2,7 @@ use axum::{Json, extract};
 use diesel::{
     BoolExpressionMethods as _, ExpressionMethods, OptionalExtension, define_sql_function,
     dsl::insert_into,
-    query_dsl::methods::{FilterDsl, LimitDsl, OrderDsl, SelectDsl as _},
+    query_dsl::methods::{FilterDsl, LimitDsl, OrderDsl},
     sql_types::{BigInt, Nullable},
 };
 use diesel_async::{AsyncConnection, RunQueryDsl};
@@ -20,6 +20,7 @@ pub struct PostVersionRequest {
 pub struct PostVersionResponse {
     version: i64,
     updated: bool,
+    previous_store_path: Option<String>,
 }
 
 define_sql_function! { fn coalesce(x: Nullable<BigInt>, y: BigInt) -> BigInt; }
@@ -48,20 +49,20 @@ pub async fn post_version(
                 return Ok(PostVersionResponse {
                     version: current.version,
                     updated: false,
+                    previous_store_path: Some(current.store_path),
                 });
             }
 
-            let new_version = dsl::versions
-                .select(dsl::version)
+            let latest_version: Option<crate::models::Version> = dsl::versions
                 .filter(dsl::versioned_item.eq(&request.versioned_item))
                 .order(dsl::version.desc())
                 .limit(1)
                 .first(connection)
                 .await
                 .optional()
-                .unwrap()
-                .unwrap_or(0i64)
-                + 1;
+                .unwrap();
+
+            let new_version = latest_version.as_ref().map(|x| x.version).unwrap_or(0i64) + 1;
 
             insert_into(dsl::versions)
                 .values((
@@ -76,6 +77,7 @@ pub async fn post_version(
             Ok(PostVersionResponse {
                 version: new_version,
                 updated: true,
+                previous_store_path: latest_version.map(|x| x.store_path),
             })
         })
         .await;
@@ -104,5 +106,6 @@ pub async fn post_version_check(
         updated: latest_closure
             .as_ref()
             .is_none_or(|x| x.store_path != request.store_path),
+        previous_store_path: latest_closure.as_ref().map(|x| x.store_path.clone()),
     })
 }
