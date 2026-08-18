@@ -1,4 +1,4 @@
-_:
+{ config, ... }:
 let
   mutable-npm-path = "~/.mutable_nodejs_modules";
 in
@@ -16,7 +16,7 @@ in
     sessionPath = [ "${mutable-npm-path}/bin/" ];
     sessionVariablesExtra = ''
       set -a
-      eval "$(cat {config.age.secrets.cli-tokens.path})" >/dev/null
+      eval "$(cat ${config.age.secrets.cli-tokens.path})" >/dev/null
       set +a
     '';
   };
