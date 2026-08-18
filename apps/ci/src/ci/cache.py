@@ -16,7 +16,7 @@ class DirectoryCache(object):
         self._runtime = runtime
 
     def _make_path(self, branch: str, cache_key: str) -> str:
-        return f"{self._runtime.repository_owner}/{self._runtime.repository_name}/{branch}/{cache_key}.tar.gz"
+        return f"{self._runtime.repository.owner}/{self._runtime.repository.name}/{branch}/{cache_key}.tar.gz"
 
     def pull(self, cache_key: str) -> None:
         all_keys = [self._make_path("main", cache_key)]

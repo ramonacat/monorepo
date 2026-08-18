@@ -43,7 +43,8 @@ def check_nix(root: AppRoot):
 
 
 def check_nodejs(root: AppRoot):
-    with chdir(root["path"].parent):
+    path = root["path"].parent
+    with chdir(path):
         _ = run_command(["npm", "install"])
         _ = run_command(["npm", "run", "check"])
 
