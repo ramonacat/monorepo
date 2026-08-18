@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
+ci setup
+
 BRANCH_NAME=update_$(date +%Y%m%d%H%M%S)
 git config user.name "roboramona"
 git config user.email "<>"
