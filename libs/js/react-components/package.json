@@ -1,12 +1,12 @@
 {
-  "name": "@ramonacat/react-components",
+  "name": "@ramona/react-components",
   "version": "0.9.0",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/ramonacat/monorepo.git"
   },
   "publishConfig": {
-    "registry": "https://npm.pkg.github.com"
+    "registry": "https://code.ramona.fun/api/packages/ramona/npm/"
   },
   "type": "module",
   "exports": {

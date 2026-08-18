@@ -21,7 +21,7 @@ spec:
     spec:
       containers:
         - name: attic
-          image: ghcr.io/ramonacat/attic:1786534541
+          image: code.ramona.fun/ramona/monorepo/attic:1786960918.194204
           imagePullPolicy: IfNotPresent
           command:
             - /bin/atticd
