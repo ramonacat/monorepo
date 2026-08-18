@@ -131,6 +131,8 @@ class RuntimeInfo(object):
         pull_request_base = _read_env("CI_COMMIT_SOURCE_BRANCH", "")
         if pull_request_base != "":
             self.pull_request = PullRequestInfo(pull_request_base)
+        else:
+            self.pull_request = None
 
     @override
     def __str__(self) -> str:
