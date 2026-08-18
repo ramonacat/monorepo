@@ -24,30 +24,9 @@ resource "github_branch_default" "ramonacat-monorepo--main" {
   branch     = github_branch.ramonacat-monorepo--main.branch
 }
 
-resource "github_actions_repository_permissions" "ramonacat-monorepo" {
-  repository      = github_repository.ramonacat-monorepo.name
-  allowed_actions = "all"
-}
-
-resource "github_branch_protection" "ramonacat-monorepo--main" {
-  repository_id = github_repository.ramonacat-monorepo.node_id
-  pattern       = "main"
-
-  required_status_checks {
-    contexts = ["build", "flake-check", "upload-coverage", "terraform"]
-  }
-}
-
-resource "tailscale_tailnet_key" "monorepo-ci" {
-  ephemeral           = true
-  reusable            = true
-  recreate_if_invalid = "always"
-  preauthorized       = true
-  tags                = ["tag:ci"]
-}
-
-resource "github_actions_secret" "ramonacat-monorepo--argo-tailscale-token" {
-  repository  = github_repository.ramonacat-monorepo.id
-  secret_name = "TAILSCALE_AUTHKEY"
-  value       = tailscale_tailnet_key.monorepo-ci.key
+resource "github_repository_deploy_key" "ramonacat-monorepo--forgejo-mirror" {
+  title      = "forgejo mirror"
+  repository = github_repository.ramonacat-monorepo.name
+  key        = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIK8qhu6NoFvmNMiMk4LxcrtxtfxYrIs0FyL0BzKCrNW0"
+  read_only  = false
 }
