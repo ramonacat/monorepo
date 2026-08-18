@@ -109,6 +109,7 @@ def execute_validate_built(runtime: RuntimeInfo):
             # TODO how do we handle apps? do we even need to?
             package_json_path = Path("libs/js") / app_name / "package.json"
 
+            _ = run_command(["git", "fetch"])
             base_package_json = cast(
                 dict[str, object],
                 json.loads(
@@ -116,7 +117,7 @@ def execute_validate_built(runtime: RuntimeInfo):
                         [
                             "git",
                             "show",
-                            f"{runtime.pull_request.base}:{package_json_path}",
+                            f"origin/{runtime.pull_request.base}:{package_json_path}",
                         ]
                     )
                 ),
