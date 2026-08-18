@@ -2,7 +2,7 @@
 let
   package-versions = import ../data/package-versions.nix { inherit pkgs; };
   package-options = {
-    name = "sawin.gallery";
+    name = "ramona/react-components";
     npmDeps = pkgs.importNpmLock {
       npmRoot = ../libs/js/react-components;
     };
