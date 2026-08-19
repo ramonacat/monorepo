@@ -47,3 +47,16 @@ spec:
       timeouts:
         backendRequest: "7200s"
         request: "7200s"
+---
+apiVersion: gateway.kgateway.dev/v1alpha1
+kind: BackendConfigPolicy
+metadata:
+  name: woodpecker
+spec:
+  targetRefs:
+    - group: ''
+      kind: Service
+      name: woodpecker-server
+  commonHttpProtocolOptions:
+    maxStreamDuration: "3600s"
+    idleTimeout: "3600s"

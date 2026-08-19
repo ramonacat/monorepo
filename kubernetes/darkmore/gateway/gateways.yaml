@@ -12,8 +12,8 @@ spec:
     proxyProtocol: {}
     perConnectionBufferLimitBytes: 1024000000
     httpSettings:
-      streamIdleTimeout: "1800s"
-      idleTimeout: "1800s"
+      streamIdleTimeout: "7200s"
+      idleTimeout: "7200s"
       upgradeConfig:
         enabledUpgrades:
           - websocket

@@ -24,6 +24,8 @@ _: {
           WOODPECKER_GRPC_SECURE = "true";
           WOODPECKER_BACKEND = "docker";
           WOODPECKER_MAX_WORKFLOWS = "4";
+          WOODPECKER_KEEPALIVE_TIMEOUT = "30m";
+          WOODPECKER_RETRY_TIMEOUT = "30m";
         };
 
         environmentFile = [ secrets-path ];
