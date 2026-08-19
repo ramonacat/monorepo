@@ -17,7 +17,7 @@ main() {
 	ATTIC_PID=$!
 	trap cleanup EXIT
 
-	nix build .#everything --fallback
+	nix build '.#everything' --fallback --print-build-logs
 	ci validate-built
 
 	if [[ "${CI_COMMIT_SOURCE_BRANCH:-${CI_COMMIT_BRANCH:-main}}" == "main" ]]; then
