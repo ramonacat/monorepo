@@ -15,6 +15,12 @@ resource "authentik_brand" "ramona" {
         display: none; 
     }
   EOT
+
+  lifecycle {
+    # workaround for: https://github.com/goauthentik/terraform-provider-authentik/issues/938
+    # otherwise the property will just always be marked as changed
+    ignore_changes = [branding_custom_css]
+  }
 }
 
 resource "authentik_flow" "default" {
