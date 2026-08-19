@@ -45,5 +45,5 @@ spec:
           weight: 1
           port: 9000
       timeouts:
-        backendRequest: "1800s"
-        request: "1800s"
+        backendRequest: "7200s"
+        request: "7200s"
