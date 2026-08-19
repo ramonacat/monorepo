@@ -24,6 +24,11 @@ resource "argocd_application_set" "monorepo--apps" {
     template {
       metadata {
         name = "monorepo-darkmore-{{path.basename}}"
+        annotations = {
+          # workaround for gateway resources being out of sync
+          # https://github.com/argoproj/argo-cd/issues/22151#issuecomment-3804230010
+          "argocd.argoproj.io/compare-options" = "ServerSideDiff=true,IncludeMutationWebhook=true"
+        }
       }
 
       spec {
@@ -87,6 +92,12 @@ resource "argocd_application_set" "monorepo-secret--apps" {
     template {
       metadata {
         name = "monorepo-secret-darkmore-{{path.basename}}"
+
+        annotations = {
+          # workaround for gateway resources being out of sync
+          # https://github.com/argoproj/argo-cd/issues/22151#issuecomment-3804230010
+          "argocd.argoproj.io/compare-options" = "ServerSideDiff=true,IncludeMutationWebhook=true"
+        }
       }
 
       spec {
