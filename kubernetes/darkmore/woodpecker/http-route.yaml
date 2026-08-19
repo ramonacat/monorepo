@@ -22,8 +22,8 @@ spec:
             type: PathPrefix
             value: /
       timeouts:
-        backendRequest: "1800s"
-        request: "1800s"
+        backendRequest: "7200s"
+        request: "7200s"
 ---
 apiVersion: gateway.networking.k8s.io/v1
 kind: HTTPRoute
