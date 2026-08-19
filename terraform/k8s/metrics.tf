@@ -132,7 +132,7 @@ resource "helm_release" "metrics-api" {
   repository       = "https://kubernetes-sigs.github.io/metrics-server/"
   namespace        = "kube-system"
   create_namespace = true
-  version          = "3.13.1"
+  version          = "3.14.0"
 
   values = [yamlencode({
     replicas = 2
