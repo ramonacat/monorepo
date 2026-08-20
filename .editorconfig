@@ -5,3 +5,6 @@ ignore = true
 
 [**/node_modules/**]
 ignore = true
+
+[**/gradlew]
+ignore = true
