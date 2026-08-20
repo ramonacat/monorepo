@@ -3,7 +3,7 @@ kind: Kustomization
 helmCharts:
   - name: sealed-secrets
     repo: https://bitnami.github.io/sealed-secrets
-    version: "2.19.2"
+    version: "2.19.3"
     namespace: sealed-secrets
     valuesInline:
       metrics:
