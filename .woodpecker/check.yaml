@@ -4,7 +4,7 @@ when:
     branch: main
 steps:
   - name: check
-    image: code.ramona.fun/ramona/monorepo/ci:1787092315
+    image: code.ramona.fun/ramona/monorepo/ci:1787300969
     commands:
       - ./.woodpecker/scripts/check.bash
     environment:
