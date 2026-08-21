@@ -29,6 +29,10 @@ class ShellConfig(TypedDict):
     pass
 
 
+class AndroidConfig(TypedDict):
+    pass
+
+
 class AppConfig(TypedDict):
     nix: NotRequired[NixConfig]
     nodejs: NotRequired[NodejsConfig]
@@ -36,6 +40,7 @@ class AppConfig(TypedDict):
     rust: NotRequired[RustConfig]
     python: NotRequired[PythonConfig]
     shell: NotRequired[ShellConfig]
+    android: NotRequired[AndroidConfig]
 
 
 class AppRoot(TypedDict):

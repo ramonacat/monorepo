@@ -44,6 +44,10 @@ class VersionedItemId:
     def npm_package(cls, name: str, runtime: RuntimeInfo) -> VersionedItemId:
         return VersionedItemId("npm-packages", name, runtime)
 
+    @classmethod
+    def apk(cls, name: str, runtime: RuntimeInfo) -> VersionedItemId:
+        return VersionedItemId("apks", name, runtime)
+
     @override
     def __str__(self) -> str:
         return self._raw

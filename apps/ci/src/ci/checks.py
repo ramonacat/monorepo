@@ -35,6 +35,9 @@ def run_checks(roots: list[AppRoot]):
         if "shell" in root["config"]:
             check_shell(root)
 
+        if "android" in root["config"]:
+            check_android(root)
+
 
 def check_nix(root: AppRoot):
     with chdir(root["path"].parent):
@@ -84,3 +87,9 @@ def check_shell(root: AppRoot):
         ]
 
         _ = run_command(["shellcheck"] + [str(path) for path in shell_scripts])
+
+
+def check_android(root: AppRoot):
+    with chdir(root["path"].parent):
+        _ = run_command(["ktfmt", "--dry-run", "--set-exit-if-changed", "."])
+        _ = run_command(["./gradlew", "lint"])
