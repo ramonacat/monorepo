@@ -3,6 +3,21 @@ set -euo pipefail
 
 declare ATTIC_PID=""
 
+hack-renovate-update() {
+	git config user.name "roboramona"
+	git config user.email "<>"
+
+	nix build '.#rapp.mitmCache.updateScript' && ./result
+
+	if [[ ! -z "$(git status --porcelain)" ]]; then
+		git checkout -b "$CI_COMMIT_SOURCE_BRANCH"
+		git commit -am"update deps.json"
+		git push origin "$CI_COMMIT_SOURCE_BRANCH"
+
+		exit 1
+	fi
+}
+
 cleanup() {
 	if [[ "$ATTIC_PID" != "" ]]; then
 		kill $ATTIC_PID || true
@@ -16,6 +31,8 @@ main() {
 	attic watch-store main &
 	ATTIC_PID=$!
 	trap cleanup EXIT
+
+	hack-renovate-update
 
 	nix build '.#everything' --fallback --print-build-logs
 	ci validate-built

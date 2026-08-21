@@ -29,6 +29,7 @@ rec {
     mitmCache = gradle.fetchDeps {
       pkg = package;
       data = ./deps.json;
+      useBwrap = false;
     };
 
     installPhase = ''
