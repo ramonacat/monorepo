@@ -125,6 +125,7 @@ rec {
         "HOME=/root"
         "PKG_CONFIG_PATH=${pkgs.openssl.dev}/lib/pkgconfig:${pkgs.postgresql_18.dev}/lib/pkgconfig"
         "ANDROID_HOME=${package-versions.android.sdk}/libexec/android-sdk"
+        "JAVA_HOME=${package-versions.android.jdk.home}"
       ];
     };
   };
