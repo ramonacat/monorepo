@@ -97,6 +97,8 @@ rec {
       mkdir -m 1777 tmp
       # skopeo insists on using this
       mkdir -m 1777 -p var/tmp
+      # android builds insist on using this
+      mkdir -m 1777 -p var/empty
 
       mkdir -vp root/
       mkdir -vp root/.ssh/
