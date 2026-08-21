@@ -10,4 +10,16 @@
       "wasm32-unknown-unknown"
     ];
   };
+  android = rec {
+    composition = pkgs.androidenv.composeAndroidPackages {
+      platformVersions = [
+        "24"
+        "37"
+      ];
+      buildToolsVersions = [ "36.0.0" ];
+    };
+    sdk = composition.androidsdk;
+    jdk = pkgs.jdk25;
+    gradle = pkgs.gradle_9;
+  };
 }

@@ -8,6 +8,14 @@ _: {
         filtered_items.always_show = [
           ".github"
           ".gitignore"
+          ".woodpecker"
+          ".ramonarc.json"
+          ".editorconfig"
+          ".envrc"
+          ".python-version"
+          ".env"
+          ".npmrc"
+          ".prettierignore"
         ];
       };
     };

@@ -12,6 +12,15 @@ from ci.runtime_info import RuntimeInfo
 logger = logging.getLogger(__name__)
 
 
+def _publish_to_bucket(path: Path, name: str, runtime: RuntimeInfo):
+    with open(path, "rb") as file:
+        runtime.cache_client.upload_fileobj(
+            file,
+            runtime.public_bucket,
+            f"publish/{runtime.repository.owner}/{runtime.repository.name}/{name}",
+        )
+
+
 def execute_publish(runtime: RuntimeInfo):
     logger.info("starting publish")
 
@@ -66,18 +75,32 @@ def execute_publish(runtime: RuntimeInfo):
 
             iso_path = Path(store_path).glob("iso/*.iso")
 
-            with open(next(iso_path), "rb") as file:
-                runtime.cache_client.upload_fileobj(
-                    file,
-                    runtime.public_bucket,
-                    f"isos/{re.sub("^(nixos-.*?)-\\d.*", "\\1", iso_name)}.iso",
-                )
+            _publish_to_bucket(
+                next(iso_path), re.sub("^(nixos-.*?)-\\d.*", "\\1", iso_name), runtime
+            )
+
+    for apk_path in Path("./result/apk").glob("*"):
+        app_name = basename(apk_path)
+        apk_item_id = VersionedItemId.apk(app_name, runtime)
+        store_path = realpath(apk_path)
+
+        logger.info(f"found apk {app_name} with store path {store_path}")
+        version_result = update_version(apk_item_id, store_path)
+
+        if version_result["updated"]:
+            logger.info("apk changed, publishing")
+
+            _publish_to_bucket(apk_path / "debug.apk", f"{app_name}/debug.apk", runtime)
+            _publish_to_bucket(
+                apk_path / "release.apk", f"{app_name}/release.apk", runtime
+            )
+
     for closure_path in glob("./result/hosts/*"):
         home_name = basename(closure_path)
         store_path = realpath(closure_path)
 
         logger.info(
-            f"found nixos configuration {home_name} with store path {store_path}"
+            f"found nixos configuration {home_name} with store path {store_path}, publishing"
         )
 
         # TODO also do nix-store closure-diff and post the results as a comment on the PR
@@ -92,7 +115,7 @@ def execute_publish(runtime: RuntimeInfo):
         store_path = realpath(home_path)
 
         logger.info(
-            f"found home-manager configuration {home_name} with store path {store_path}"
+            f"found home-manager configuration {home_name} with store path {store_path}, publishing"
         )
 
         # TODO do a diff and post as PR comment
