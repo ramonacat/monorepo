@@ -40,6 +40,9 @@ rec {
       + (pkgs.lib.concatStringsSep "\n" (
         pkgs.lib.mapAttrsToList (k: v: "ln -s ${v.package} $out/npm-packages/${k}") local-packages.libs.js
       ))
+      + "\nmkdir -p $out/apks/\n"
+      # TODO all apks should be automatically added here
+      + "\nln -s ${flake.packages.x86_64-linux.rapp} $out/apks/rapp"
       + "\nmkdir -p $out/iso\n"
       + "\nln -s ${flake.nixosConfigurations.iso.config.system.build.isoImage} $out/iso/ramona\n"
     );

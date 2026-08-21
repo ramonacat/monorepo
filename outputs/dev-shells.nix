@@ -130,26 +130,31 @@ pkgs.mkShell {
       inputs.agenix.packages."${pkgs.stdenv.hostPlatform.system}".default
 
       age
-      kubectl-cnpg
       argocd
       attic-client
       backblaze-b2
       diesel-cli
+      ktfmt
       kubeconform
+      kubectl-cnpg
       openssl_4_0.dev
       pkg-config
       postgresql_18
-      shellcheck
-      shfmt
-      tflint
-      vault
-      skopeo
       python3Packages.python
       python3Packages.uv
+      shellcheck
+      shfmt
+      skopeo
+      tflint
+      vault
       woodpecker-cli
 
       package-versions.nodejs
       package-versions.rust-version
+      package-versions.android.sdk
+      package-versions.android.jdk
+      package-versions.android.gradle
     ];
+  ANDROID_HOME = "${package-versions.android.sdk}/libexec/android-sdk";
   RAMONA_FLAKE_ROOT = ./..;
 }
