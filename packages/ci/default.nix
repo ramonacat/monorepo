@@ -55,15 +55,18 @@ rec {
       tflint
       backblaze-b2
       attic-client
-      coreutils
-      util-linux
-      skopeo
-      jq
-      curl
-      pkg-config
-      openssl_4_0
+
       openssl_4_0.dev
+
       postgresql_18.dev
+
+      coreutils
+      curl
+      findutils
+      jq
+      pkg-config
+      skopeo
+      util-linux
 
       bash
       shellcheck
@@ -77,21 +80,21 @@ rec {
       clippy
       clang
 
-      nix
       cacert
       gitMinimal
       gnutar
       gzip
+      iana-etc
+      nix
       openssh
       xz
-      iana-etc
 
       python3Packages.python
       python3Packages.uv
 
-      package-versions.android.sdk
-      package-versions.android.jdk
       package-versions.android.gradle
+      package-versions.android.jdk
+      package-versions.android.sdk
       ktfmt
 
       package
