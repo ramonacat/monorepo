@@ -83,6 +83,7 @@ rec {
       cacert
       gitMinimal
       gnutar
+      gnused
       gzip
       iana-etc
       nix
