@@ -4,7 +4,7 @@ helmCharts:
   - name: renovate
     repo: oci://ghcr.io/renovatebot/charts
     releaseName: renovate
-    version: "46.254.1"
+    version: "46.254.2"
     namespace: renovate
     valuesInline:
       existingSecret: 'renovate'
