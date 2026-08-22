@@ -9,8 +9,10 @@ let
     src = ../libs/js/react-components;
     buildPhase = ''
       npm run build
+
       mkdir $out/
       cp -r ./* $out/
+      rm -r $out/node_modules/
     '';
 
     inherit (package-versions) nodejs;
