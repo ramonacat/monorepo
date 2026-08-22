@@ -100,6 +100,12 @@ provider "ovh" {
 provider "b2" {
 }
 
+provider "b2" {
+  alias              = "eu"
+  application_key_id = var.b2_eu_access_key_id
+  application_key    = var.b2_eu_access_key
+}
+
 provider "github" {
   owner = "ramonacat"
 }
