@@ -10,9 +10,9 @@ data:
     
     [storage]
     type = "s3"
-    bucket = "ramona-attic"
-    region = "nbg1"
-    endpoint = "https://nbg1.your-objectstorage.com/"
+    bucket = "ramona-eu-attic"
+    region = "eu-central-003"
+    endpoint = "https://s3.eu-central-003.backblazeb2.com/"
     
     [database]
     [chunking]

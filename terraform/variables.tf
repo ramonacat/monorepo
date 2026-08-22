@@ -22,3 +22,13 @@ variable "aws_access_key" {
   type      = string
   sensitive = true
 }
+
+variable "b2_eu_access_key_id" {
+  type      = string
+  sensitive = true
+}
+
+variable "b2_eu_access_key" {
+  type      = string
+  sensitive = true
+}
