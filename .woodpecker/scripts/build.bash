@@ -7,7 +7,7 @@ hack-renovate-update() {
 	git config user.name "roboramona"
 	git config user.email "<>"
 
-	nix build '.#rapp.mitmCache.updateScript' && ./result
+	nix build '.#rapp.mitmCache.updateScript' --fallback && ./result
 
 	if [[ ! -z "$(git status --porcelain)" ]]; then
 		git checkout -b "$CI_COMMIT_SOURCE_BRANCH"
