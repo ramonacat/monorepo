@@ -43,6 +43,8 @@ def check_nix(root: AppRoot):
     with chdir(root["path"].parent):
         _ = run_command(["nix", "fmt", "--", "--fail-on-change"])
         _ = run_command(["nix", "flake", "check"])
+        _ = run_command(["statix", "check", "."])
+        _ = run_command(["deadnix", "--fail", "."])
 
 
 def check_nodejs(root: AppRoot):
