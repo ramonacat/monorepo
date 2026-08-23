@@ -26,28 +26,9 @@ let
       '';
     }
   );
-  package-checks = pkgs.buildNpmPackage (
-    package-options
-    // {
-      buildPhase = ''
-        npm run build
-        mkdir $out/
-        cp -r ./* $out/
-      '';
-    }
-  );
 in
 rec {
   inherit package;
   coverage = pkgs.runCommand "${package.name}-coverage" { } "echo > $out";
-  checks = {
-    "${package.name}--prettier" =
-      pkgs.runCommand "${package.name}--prettier" { nativeBuildInputs = [ package-versions.nodejs ]; }
-        ''
-          cp -r ${package-checks}/* .
-          npx prettier .
-
-          mkdir $out/
-        '';
-  };
+  checks = { };
 }

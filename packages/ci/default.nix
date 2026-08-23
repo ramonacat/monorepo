@@ -90,6 +90,9 @@ rec {
       openssh
       xz
 
+      statix
+      deadnix
+
       python3Packages.python
       python3Packages.uv
 

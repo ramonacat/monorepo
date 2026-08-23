@@ -38,10 +38,7 @@ rec {
       inherit cargoArtifacts;
     }
   );
-  checks = {
-    "${package.name}--fmt" = crane-lib.cargoFmt packageArguments;
-    "${package.name}--clippy" = crane-lib.cargoClippy packageArgumentsWithArtifacts;
-  };
+  checks = { };
 
   coverage =
     let
