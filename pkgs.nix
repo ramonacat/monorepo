@@ -16,6 +16,12 @@ let
       });
       tflint = prev.callPackage ./overrides/tflint.nix { };
       agenix = inputs.agenix.packages."${system}".default;
+      openiscsi = prev.openiscsi.overrideAttrs (_: {
+        patches = prev.fetchurl {
+          url = "https://github.com/open-iscsi/open-iscsi/commit/8112cdd9514df076dc64ca3d4e85283aa701ce7e.patch";
+          hash = "sha256-PMqnKPqAC95KTB4T4Ticy9hHEZ1F/w+nZ6TZJaS/iIw=";
+        };
+      });
     })
   ];
   pkgsConfig = {
