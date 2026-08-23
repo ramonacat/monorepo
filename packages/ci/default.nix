@@ -130,6 +130,7 @@ rec {
         "PKG_CONFIG_PATH=${pkgs.openssl.dev}/lib/pkgconfig:${pkgs.postgresql_18.dev}/lib/pkgconfig"
         "ANDROID_HOME=${package-versions.android.sdk}/libexec/android-sdk"
         "JAVA_HOME=${package-versions.android.jdk.home}"
+        "GRADLE_OPTS=-Dorg.gradle.project.android.aapt2FromMavenOverride=${package-versions.android.sdk}/libexec/android-sdk/build-tools/36.0.0/aapt2"
       ];
     };
   };
