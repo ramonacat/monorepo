@@ -15,9 +15,13 @@ _: {
           '';
           destination = secrets-path;
           exec = [
-            "/run/current-system/sw/bin/systemctl"
-            "restart"
-            "woodpecker-agent-main"
+            {
+              command = [
+                "/run/current-system/sw/bin/systemctl"
+                "restart"
+                "woodpecker-agent-main"
+              ];
+            }
           ];
         }
       ];
