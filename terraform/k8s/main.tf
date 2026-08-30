@@ -37,6 +37,14 @@ module "k8s--control-plane-nodes" {
   vault_role         = var.vault_role
 }
 
+resource "hcloud_volume" "longhorn" {
+  for_each = toset(keys(var.nodes))
+
+  name      = "kubernetes-darkmore-longhorn-${each.value}"
+  size      = 100
+  server_id = module.k8s--control-plane-nodes[each.value].server_id
+}
+
 resource "tailscale_oauth_client" "kubernetes" {
   scopes = ["services", "devices:core", "auth_keys"]
   tags   = ["tag:k8s-operator"]
