@@ -33,5 +33,9 @@
     };
 
     boot.kernelModules = [ "dm_crypt" ];
+    fileSystems."/mnt/longhorn" = {
+      device = "/dev/disk/by-label/longhorn";
+      fsType = "ext4";
+    };
   };
 }
