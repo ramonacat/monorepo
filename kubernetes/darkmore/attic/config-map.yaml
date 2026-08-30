@@ -9,10 +9,8 @@ data:
     api-endpoint = "https://attic.infrastructure.ramona.fun/"
     
     [storage]
-    type = "s3"
-    bucket = "ramona-eu-attic"
-    region = "eu-central-003"
-    endpoint = "https://s3.eu-central-003.backblazeb2.com/"
+    type = "local"
+    path = "/var/data/"
     
     [database]
     [chunking]
