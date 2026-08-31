@@ -39,17 +39,20 @@ spec:
           volumeMounts:
             - mountPath: /etc/attic/
               name: config
+            - mountPath: /var/data/
+              name: data
           envFrom:
             - secretRef:
                 name: attic
-            - secretRef:
-                name: attic-object-storage
             - secretRef:
                 name: db
           ports:
             - containerPort: 8080
               name: attic
       volumes:
+        - name: data
+          persistentVolumeClaim:
+            claimName: attic-data
         - name: config
           configMap:
             name: config
@@ -93,27 +96,6 @@ spec:
           name: vault
       extract:
         key: attic/secret
----
-apiVersion: external-secrets.io/v1
-kind: ExternalSecret
-metadata:
-  name: attic-object-storage
-spec:
-  refreshInterval: 1m
-  target:
-    name: attic-object-storage
-    creationPolicy: Owner
-    template:
-      data:
-        AWS_ACCESS_KEY_ID: '{{ .AWS_ACCESS_KEY_ID }}'
-        AWS_SECRET_ACCESS_KEY: '{{ .AWS_SECRET_ACCESS_KEY }}'
-  dataFrom:
-    - sourceRef:
-        storeRef:
-          kind: ClusterSecretStore
-          name: vault
-      extract:
-        key: attic/object-storage
 ---
 apiVersion: external-secrets.io/v1
 kind: ExternalSecret
