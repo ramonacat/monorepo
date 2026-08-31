@@ -52,7 +52,7 @@ spec:
       volumes:
         - name: data
           persistentVolumeClaim:
-            claimName: attic-data
+            claimName: data
         - name: config
           configMap:
             name: config
