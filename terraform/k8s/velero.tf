@@ -47,7 +47,8 @@ resource "helm_release" "velero" {
           excludedNamespaces = [
             helm_release.longhorn.namespace,
             helm_release.kube-prometheus-stack.namespace,
-            helm_release.cloudnative-pg-database.namespace
+            helm_release.cloudnative-pg-database.namespace,
+            "velero"
           ]
         }
       }
