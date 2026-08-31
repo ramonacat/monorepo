@@ -58,5 +58,5 @@ spec:
       kind: Service
       name: woodpecker-server
   commonHttpProtocolOptions:
-    maxStreamDuration: "3600s"
-    idleTimeout: "3600s"
+    maxStreamDuration: "7200s"
+    idleTimeout: "7200s"

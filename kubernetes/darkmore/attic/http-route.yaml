@@ -21,8 +21,8 @@ spec:
             type: PathPrefix
             value: /
       timeouts:
-        backendRequest: "3600s"
-        request: "3600s"
+        backendRequest: "7200s"
+        request: "7200s"
 ---
 apiVersion: gateway.kgateway.dev/v1alpha1
 kind: BackendConfigPolicy
@@ -34,4 +34,4 @@ spec:
       kind: Service
       name: attic
   commonHttpProtocolOptions:
-    maxStreamDuration: "3600s"
+    maxStreamDuration: "7200s"
