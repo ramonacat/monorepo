@@ -40,17 +40,11 @@ spec:
         - name: WOODPECKER_GRPC_SECURE
           value: "true"
         - name: WOODPECKER_PROVIDER
-          value: "scaleway"
-        - name: WOODPECKER_SCALEWAY_SERVER_TYPES 
-          value: "GP1-XS:nl-ams-1"
+          value: "hetzner"
+        - name: WOODPECKER_HETZNERCLOUD_SERVER_TYPE
+          value: "cx43:nbg1,cx53:nbg1,cpx42:nbg1,cpx52:nbg1"
         - name: WOODPECKER_SCALEWAY_PROJECT
           value: "ed770f01-66c8-4181-8fc7-6821ef6cac9a"
-        - name: WOODPECKER_SCALEWAY_TAGS
-          value: "woodpecker,ci"
-        - name: WOODPECKER_SCALEWAY_STORAGE_TYPE
-          value: "sbs_volume"
-        - name: WOODPECKER_SCALEWAY_STORAGE_SIZE
-          value: "100"
         - name: WOODPECKER_CLOUDINIT_TEMPLATE
           valueFrom:
             secretKeyRef:
