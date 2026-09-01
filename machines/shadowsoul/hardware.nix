@@ -27,7 +27,7 @@
 
     fileSystems = {
       "/" = {
-        device = "/dev/disk/by-uuid/a1d31050-d300-425c-bf6b-bfd8ba9039f2";
+        device = "/dev/disk/by-uuid/4459e4d3-51f6-4b1f-b074-31a163a89a61";
         fsType = "bcachefs";
         options = [
           "x-systemd.wants=/dev/sda"
@@ -36,7 +36,7 @@
       };
 
       "/boot" = {
-        device = "/dev/disk/by-uuid/A408-FCA2";
+        device = "/dev/disk/by-uuid/A8D3-4F6D";
         fsType = "vfat";
       };
 
@@ -50,7 +50,7 @@
       };
     };
 
-    swapDevices = [ { device = "/dev/disk/by-uuid/f968be24-cead-4d7f-9f7e-f9a7646a9a39"; } ];
+    swapDevices = [ { device = "/dev/disk/by-uuid/993d84ac-5dd2-408d-b3d3-74b667b989a3"; } ];
 
     nixpkgs.hostPlatform = lib.mkDefault "x86_64-linux";
     hardware.cpu.intel.updateMicrocode = lib.mkDefault config.hardware.enableRedistributableFirmware;
