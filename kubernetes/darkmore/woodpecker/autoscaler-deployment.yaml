@@ -40,7 +40,7 @@ spec:
         - name: WOODPECKER_GRPC_SECURE
           value: "true"
         - name: WOODPECKER_PROVIDER
-          value: "hetzner"
+          value: "hetznercloud"
         - name: WOODPECKER_HETZNERCLOUD_SERVER_TYPE
           value: "cx43:nbg1,cx53:nbg1,cpx42:nbg1,cpx52:nbg1"
         - name: WOODPECKER_SCALEWAY_PROJECT
