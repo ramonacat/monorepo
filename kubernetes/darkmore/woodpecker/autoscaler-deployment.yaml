@@ -43,8 +43,8 @@ spec:
           value: "hetznercloud"
         - name: WOODPECKER_HETZNERCLOUD_SERVER_TYPE
           value: "cx43:nbg1,cx53:nbg1,cpx42:nbg1,cpx52:nbg1"
-        - name: WOODPECKER_SCALEWAY_PROJECT
-          value: "ed770f01-66c8-4181-8fc7-6821ef6cac9a"
+        - name: WOODPECKER_HETZNERCLOUD_SSH_KEYS
+          value: "ramona"
         - name: WOODPECKER_CLOUDINIT_TEMPLATE
           valueFrom:
             secretKeyRef:
