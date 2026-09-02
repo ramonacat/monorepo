@@ -42,7 +42,7 @@ spec:
         - name: WOODPECKER_PROVIDER
           value: "hetznercloud"
         - name: WOODPECKER_HETZNERCLOUD_SERVER_TYPE
-          value: "cx43:nbg1,cx53:nbg1,cpx42:nbg1,cpx52:nbg1"
+          value: "cx53:nbg1,cpx52:nbg1"
         - name: WOODPECKER_HETZNERCLOUD_SSH_KEYS
           value: "ramona"
         - name: WOODPECKER_CLOUDINIT_TEMPLATE
