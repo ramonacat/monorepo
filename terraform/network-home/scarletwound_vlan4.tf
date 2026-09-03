@@ -51,3 +51,8 @@ resource "routeros_ip_address" "scarletwound-vlan4" {
   network   = "10.32.3.0"
 }
 
+resource "routeros_ip_dhcp_server_lease" "scarletwound-hallewell" {
+  provider    = routeros.router-scarletwound
+  mac_address = "70:85:C2:A8:65:04"
+  address     = "10.32.3.254"
+}
