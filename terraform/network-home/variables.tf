@@ -17,3 +17,13 @@ variable "cert_ca_hosts" {
 variable "cert_ca_internal" {
   type = string
 }
+
+variable "wifi_psk_iot" {
+  type      = string
+  sensitive = true
+}
+
+variable "wifi_psk_low_privilege" {
+  type      = string
+  sensitive = true
+}

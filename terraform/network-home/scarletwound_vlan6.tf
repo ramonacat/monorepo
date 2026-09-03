@@ -39,7 +39,13 @@ resource "routeros_dhcp_server" "scarletwound-iot" {
 resource "routeros_bridge_vlan" "scarletwound-vlan6" {
   provider = routeros.router-scarletwound
   bridge   = routeros_interface_bridge.scarletwound-bridge0.name
-  tagged   = [routeros_interface_bridge.scarletwound-bridge0.name]
+  tagged = [
+    routeros_interface_bridge.scarletwound-bridge0.name,
+  ]
+  untagged = [
+    routeros_interface_wireless.scarletwound-wlan1-iot.name,
+    routeros_interface_wireless.scarletwound-wlan2-iot.name,
+  ]
   vlan_ids = [6]
 }
 

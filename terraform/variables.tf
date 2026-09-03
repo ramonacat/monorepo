@@ -32,3 +32,13 @@ variable "b2_eu_access_key" {
   type      = string
   sensitive = true
 }
+
+variable "wifi_psk_iot" {
+  type      = string
+  sensitive = true
+}
+
+variable "wifi_psk_low_privilege" {
+  type      = string
+  sensitive = true
+}
