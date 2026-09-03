@@ -7,7 +7,7 @@ terraform {
 }
 
 provider "routeros" {
-  hosturl        = "https://10.32.0.1/"
+  hosturl        = "https://10.32.2.1/"
   username       = "terraform"
   ca_certificate = "../certificates/ca-hosts.crt"
   alias          = "router-scarletwound"
