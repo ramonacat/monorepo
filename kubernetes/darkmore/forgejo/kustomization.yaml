@@ -23,6 +23,7 @@ helmCharts:
       persistence:
         accessModes: ["ReadWriteMany"]
         storageClass: longhorn
+        size: 25Gi
       gitea:
         metrics:
           enabled: true
