@@ -12,7 +12,7 @@ _: {
           "netbios name" = "smbnix";
           "security" = "user";
           # note: localhost is the ipv6 localhost ::1
-          "hosts allow" = "100. 10.69.10. 127.0.0.1 localhost";
+          "hosts allow" = "100. 10. 127.0.0.1 localhost";
           "hosts deny" = "0.0.0.0/0";
           "guest account" = "nas";
           "map to guest" = "bad user";
