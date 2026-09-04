@@ -6,7 +6,7 @@
         let
           anonuid = config.users.users.nas.uid;
           paths = import ../../../data/paths.nix;
-          options = "rw,sync,all_squash,anonuid=${builtins.toString anonuid},no_subtree_check,insecure";
+          options = "rw,sync,all_squash,anonuid=${toString anonuid},no_subtree_check,insecure";
         in
         ''
           ${paths.hallewell.nas-share} 10.0.0.0/8(${options}) 100.0.0.0/8(${options})
