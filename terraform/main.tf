@@ -81,6 +81,9 @@ terraform {
       source  = "grafana/grafana"
       version = ">= 4.40.0"
     }
+    routeros = {
+      source = "terraform-routeros/routeros"
+    }
   }
 }
 
@@ -137,4 +140,16 @@ provider "vault" {
 
 provider "grafana" {
   url = "https://grafana.infrastructure.ramona.fun"
+}
+
+module "network-home" {
+  source = "./network-home"
+
+  cert_ca_root           = vault_pki_secret_backend_root_cert.a.certificate
+  cert_ca_internal       = module.pki-internal.certificate
+  cert_ca_hosts          = module.pki-hosts.certificate
+  vault_pki              = module.pki-hosts.mount_path
+  vault_role             = vault_pki_secret_backend_role.hosts.name
+  wifi_psk_iot           = var.wifi_psk_iot
+  wifi_psk_low_privilege = var.wifi_psk_low_privilege
 }
