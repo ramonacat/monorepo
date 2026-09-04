@@ -56,3 +56,10 @@ resource "routeros_ip_dhcp_server_lease" "scarletwound-hallewell" {
   mac_address = "70:85:C2:A8:65:04"
   address     = "10.32.3.254"
 }
+
+resource "routeros_ipv6_address" "scarletwound-vlan4-ula" {
+  provider    = routeros.router-scarletwound
+  address = "fd62:821e:8341:ca7::/64"
+  interface = routeros_interface_vlan.scarletwound-vlan4.name
+  advertise = true
+}

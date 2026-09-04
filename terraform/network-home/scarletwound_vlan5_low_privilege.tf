@@ -41,6 +41,7 @@ resource "routeros_bridge_vlan" "scarletwound-vlan5" {
   bridge   = routeros_interface_bridge.scarletwound-bridge0.name
   tagged = [
     routeros_interface_bridge.scarletwound-bridge0.name,
+    "ether4"
   ]
   untagged = [
     routeros_interface_wireless.scarletwound-wlan1-low-privilege.name,

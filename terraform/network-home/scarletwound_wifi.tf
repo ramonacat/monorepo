@@ -5,6 +5,10 @@ resource "routeros_interface_wireless" "scarletwound-wlan1" {
   default_authentication = false
   hide_ssid              = true
   mode                   = "ap-bridge"
+  channel_width = "20/40mhz-XX"
+  country = "germany"
+  band = "2ghz-b/g/n"
+  frequency = "auto"
 }
 
 resource "routeros_interface_wireless" "scarletwound-wlan2" {
@@ -14,6 +18,10 @@ resource "routeros_interface_wireless" "scarletwound-wlan2" {
   default_authentication = false
   hide_ssid              = true
   mode                   = "ap-bridge"
+  channel_width = "20/40/80mhz-XXXX"
+  country = "germany"
+  band = "5ghz-a/n/ac"
+  frequency = "auto"
 }
 
 resource "routeros_interface_wireless_security_profiles" "scarletwound-low-privilege" {

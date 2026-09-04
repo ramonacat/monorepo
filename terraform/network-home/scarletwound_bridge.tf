@@ -28,6 +28,14 @@ resource "routeros_interface_bridge_port" "scarletwound-ether3" {
   pvid        = 2
 }
 
+resource "routeros_interface_bridge_port" "scarletwound-ether4" {
+  provider    = routeros.router-scarletwound
+  interface   = "ether4"
+  bridge      = routeros_interface_bridge.scarletwound-bridge0.name
+  frame_types = "admit-only-vlan-tagged"
+  pvid        = 3
+}
+
 resource "routeros_interface_bridge_port" "scarletwound-ether5" {
   provider    = routeros.router-scarletwound
   interface   = "ether5"

@@ -41,6 +41,7 @@ resource "routeros_bridge_vlan" "scarletwound-vlan6" {
   bridge   = routeros_interface_bridge.scarletwound-bridge0.name
   tagged = [
     routeros_interface_bridge.scarletwound-bridge0.name,
+    "ether5"
   ]
   untagged = [
     routeros_interface_wireless.scarletwound-wlan1-iot.name,
@@ -56,3 +57,9 @@ resource "routeros_ip_address" "scarletwound-vlan6" {
   network   = "10.32.5.0"
 }
 
+resource "routeros_ipv6_address" "scarletwound-vlan6-ula" {
+  provider    = routeros.router-scarletwound
+  address = "fd80:10e:18be:ca7::/64"
+  interface = routeros_interface_vlan.scarletwound-vlan6.name
+  advertise = true
+}
