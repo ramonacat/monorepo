@@ -72,3 +72,14 @@ resource "routeros_system_clock" "scarletwound" {
   provider       = routeros.router-scarletwound
   time_zone_name = "Europe/Berlin"
 }
+
+resource "routeros_ip_dns" "scarletwound" {
+  provider       = routeros.router-scarletwound
+  
+  mdns_repeat_ifaces = [
+    routeros_interface_vlan.scarletwound-vlan2.name,
+    routeros_interface_vlan.scarletwound-vlan4.name,
+    routeros_interface_vlan.scarletwound-vlan5.name,
+    routeros_interface_vlan.scarletwound-vlan6.name,
+  ]
+}
