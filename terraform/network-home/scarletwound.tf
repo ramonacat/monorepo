@@ -74,8 +74,8 @@ resource "routeros_system_clock" "scarletwound" {
 }
 
 resource "routeros_ip_dns" "scarletwound" {
-  provider       = routeros.router-scarletwound
-  
+  provider = routeros.router-scarletwound
+
   mdns_repeat_ifaces = [
     routeros_interface_vlan.scarletwound-vlan2.name,
     routeros_interface_vlan.scarletwound-vlan4.name,

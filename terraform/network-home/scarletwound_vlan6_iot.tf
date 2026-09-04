@@ -58,8 +58,8 @@ resource "routeros_ip_address" "scarletwound-vlan6" {
 }
 
 resource "routeros_ipv6_address" "scarletwound-vlan6-ula" {
-  provider    = routeros.router-scarletwound
-  address = "fd80:10e:18be:ca7::/64"
+  provider  = routeros.router-scarletwound
+  address   = "fd80:10e:18be:ca7::/64"
   interface = routeros_interface_vlan.scarletwound-vlan6.name
   advertise = true
 }
