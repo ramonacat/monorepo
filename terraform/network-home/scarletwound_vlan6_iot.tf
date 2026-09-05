@@ -30,7 +30,7 @@ resource "routeros_ip_pool" "scarletwound-iot" {
 resource "routeros_dhcp_server" "scarletwound-iot" {
   provider                  = routeros.router-scarletwound
   interface                 = routeros_interface_vlan.scarletwound-vlan6.name
-  name                      = "pool-iot"
+  name                      = "dhcp-iot"
   lease_time                = "6h"
   dynamic_lease_identifiers = "client-mac,client-id"
   address_pool              = routeros_ip_pool.scarletwound-iot.name
@@ -62,4 +62,10 @@ resource "routeros_ipv6_address" "scarletwound-vlan6-ula" {
   address   = "fd80:10e:18be:ca7::/64"
   interface = routeros_interface_vlan.scarletwound-vlan6.name
   advertise = true
+}
+
+resource "routeros_ip_dhcp_server_lease" "scarletwound-vlan6-homeassistant" {
+  provider    = routeros.router-scarletwound
+  mac_address = "74:E6:E2:2B:6D:E0"
+  address     = "10.32.5.251"
 }
