@@ -5,7 +5,7 @@ helmCharts:
     releaseName: authentik
     namespace: authentik
     repo: https://charts.goauthentik.io
-    version: "2026.8.0"
+    version: "2026.8.1"
     valuesInline:
       authentik:
         email:
