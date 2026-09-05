@@ -34,7 +34,7 @@ resource "helm_release" "cloudnative-pg-barman-plugin" {
   repository       = "https://cloudnative-pg.github.io/charts"
   namespace        = "cloudnative-pg"
   create_namespace = true
-  version          = "0.7.1"
+  version          = "0.8.0"
 }
 
 resource "helm_release" "cloudnative-pg-database" {
