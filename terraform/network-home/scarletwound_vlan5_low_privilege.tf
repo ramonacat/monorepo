@@ -30,7 +30,7 @@ resource "routeros_ip_pool" "scarletwound-low-privilege" {
 resource "routeros_dhcp_server" "scarletwound-low-privilege" {
   provider                  = routeros.router-scarletwound
   interface                 = routeros_interface_vlan.scarletwound-vlan5.name
-  name                      = "pool-low-privilege"
+  name                      = "dhcp-low-privilege"
   lease_time                = "6h"
   dynamic_lease_identifiers = "client-mac,client-id"
   address_pool              = routeros_ip_pool.scarletwound-low-privilege.name
