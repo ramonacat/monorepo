@@ -2,7 +2,7 @@ when:
   - event: cron
     cron: flake-update
 steps:
-  - name: check
+  - name: flake update
     image: code.ramona.fun/ramona/monorepo/ci:1787497382
     commands:
       - ./.woodpecker/scripts/flake-update.bash
@@ -19,3 +19,5 @@ steps:
         from_secret: "github_token"
       FORGEJO_TOKEN:
         from_secret: "forgejo_token"
+    volumes:
+      - /nix/store/:/nix/store/

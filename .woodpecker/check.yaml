@@ -20,3 +20,5 @@ steps:
         from_secret: "github_token"
       FORGEJO_TOKEN:
         from_secret: "forgejo_token"
+    volumes:
+      - /nix/store/:/nix/store/
