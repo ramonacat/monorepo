@@ -39,7 +39,7 @@ resource "routeros_dhcp_server" "scarletwound-servers" {
 resource "routeros_bridge_vlan" "scarletwound-vlan4" {
   provider = routeros.router-scarletwound
   bridge   = routeros_interface_bridge.scarletwound-bridge0.name
-  tagged   = [routeros_interface_bridge.scarletwound-bridge0.name, "ether5"]
+  tagged   = [routeros_interface_bridge.scarletwound-bridge0.name, "ether5", "ether3"]
   untagged = ["ether2"]
   vlan_ids = [4]
 }
@@ -55,6 +55,12 @@ resource "routeros_ip_dhcp_server_lease" "scarletwound-hallewell" {
   provider    = routeros.router-scarletwound
   mac_address = "70:85:C2:A8:65:04"
   address     = "10.32.3.254"
+}
+
+resource "routeros_ip_dhcp_server_lease" "scarletwound-pikvm" {
+  provider    = routeros.router-scarletwound
+  mac_address = "E4:5F:01:23:13:40"
+  address     = "10.32.3.253"
 }
 
 resource "routeros_ipv6_address" "scarletwound-vlan4-ula" {

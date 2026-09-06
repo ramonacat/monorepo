@@ -39,7 +39,7 @@ resource "routeros_bridge_vlan" "scarletwound-vlan2" {
   provider = routeros.router-scarletwound
   bridge   = routeros_interface_bridge.scarletwound-bridge0.name
   tagged   = [routeros_interface_bridge.scarletwound-bridge0.name, "ether5"]
-  untagged = ["ether1", "ether3"]
+  untagged = ["ether1"]
   vlan_ids = [2]
 }
 
