@@ -23,11 +23,12 @@ resource "routeros_interface_bridge_port" "scarletwound-ether2" {
 }
 
 resource "routeros_interface_bridge_port" "scarletwound-ether3" {
-  provider    = routeros.router-scarletwound
-  interface   = "ether3"
-  bridge      = routeros_interface_bridge.scarletwound-bridge0.name
-  frame_types = "admit-only-untagged-and-priority-tagged"
-  pvid        = 2
+  provider         = routeros.router-scarletwound
+  interface        = "ether3"
+  bridge           = routeros_interface_bridge.scarletwound-bridge0.name
+  frame_types      = "admit-only-vlan-tagged"
+  pvid             = 3
+  multicast_router = "temporary-query"
 }
 
 resource "routeros_interface_bridge_port" "scarletwound-ether4" {

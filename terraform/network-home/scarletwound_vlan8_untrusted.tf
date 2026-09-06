@@ -48,6 +48,18 @@ resource "routeros_bridge_vlan" "scarletwound-vlan8" {
   vlan_ids = [8]
 }
 
+resource "routeros_ip_dhcp_server_lease" "scarletwound-tv" {
+  provider    = routeros.router-scarletwound
+  mac_address = "AC:5A:F0:A1:6D:65"
+  address     = "10.32.7.253"
+}
+
+resource "routeros_ip_dhcp_server_lease" "scarletwound-printer" {
+  provider    = routeros.router-scarletwound
+  mac_address = "94:DD:F8:90:D3:D1"
+  address     = "10.32.7.254"
+}
+
 resource "routeros_ip_address" "scarletwound-vlan8" {
   provider  = routeros.router-scarletwound
   address   = "10.32.7.1/24"

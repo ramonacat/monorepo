@@ -1,4 +1,3 @@
-
 resource "vault_pki_secret_backend_cert" "scarletwound-ssl" {
   backend     = var.vault_pki
   name        = var.vault_role
@@ -50,6 +49,14 @@ resource "routeros_ip_service" "scarletwound-www-ssl" {
   disabled    = false
   port        = 443
   numbers     = "www-ssl"
+  certificate = routeros_system_certificate.scarletwound-ssl.name
+}
+
+resource "routeros_ip_service" "scarletwound-api-ssl" {
+  provider    = routeros.router-scarletwound
+  disabled    = false
+  port        = 8729
+  numbers     = "api-ssl"
   certificate = routeros_system_certificate.scarletwound-ssl.name
 }
 
