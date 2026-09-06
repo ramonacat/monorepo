@@ -157,4 +157,6 @@ pkgs.mkShell {
     ];
   ANDROID_HOME = "${package-versions.android.sdk}/libexec/android-sdk";
   RAMONA_FLAKE_ROOT = ./..;
+  VAULT_CAPATH = ../certificates;
+  VAULT_ADDR = "https://vault.internal.ramona.fun";
 }
