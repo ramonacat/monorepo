@@ -1,4 +1,3 @@
-
 resource "vault_pki_secret_backend_cert" "scarletwound-ssl" {
   backend     = var.vault_pki
   name        = var.vault_role
