@@ -53,6 +53,14 @@ resource "routeros_ip_service" "scarletwound-www-ssl" {
   certificate = routeros_system_certificate.scarletwound-ssl.name
 }
 
+resource "routeros_ip_service" "scarletwound-api-ssl" {
+  provider    = routeros.router-scarletwound
+  disabled    = false
+  port        = 8729
+  numbers     = "api-ssl"
+  certificate = routeros_system_certificate.scarletwound-ssl.name
+}
+
 resource "routeros_interface_list" "scarletwound-lan" {
   provider = routeros.router-scarletwound
   name     = "LAN"
