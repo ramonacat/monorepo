@@ -4,18 +4,17 @@ _: {
     ../../roles/installed
     ../../roles/private
     ../../roles/server-private
-    ../../roles/tailscale-nginx
     ../../roles/builds-host
 
     ./immich
     ./jellyfin
     ./nas
-    ./nginx
     ./paperless
 
     ./atuin-server.nix
     ./autounrar-dls.nix
     ./bcachefs.nix
+    ./caddy.nix
     ./github-runner.nix
     ./hardware.nix
     ./navidrome.nix
