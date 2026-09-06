@@ -81,5 +81,6 @@ resource "routeros_ip_dns" "scarletwound" {
     routeros_interface_vlan.scarletwound-vlan4.name,
     routeros_interface_vlan.scarletwound-vlan5.name,
     routeros_interface_vlan.scarletwound-vlan6.name,
+    routeros_interface_vlan.scarletwound-vlan8.name,
   ]
 }

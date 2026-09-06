@@ -1,7 +1,9 @@
 resource "routeros_interface_bridge" "scarletwound-bridge0" {
   provider = routeros.router-scarletwound
 
-  name = "bridge0"
+  name              = "bridge0"
+  igmp_snooping     = true
+  multicast_querier = true
 }
 
 resource "routeros_interface_bridge_port" "scarletwound-ether1" {
@@ -81,4 +83,3 @@ resource "routeros_interface_list_member" "scarletwound-lan-bridge0" {
   interface = routeros_interface_bridge.scarletwound-bridge0.name
   list      = routeros_interface_list.scarletwound-lan.name
 }
-
