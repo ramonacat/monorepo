@@ -4,6 +4,8 @@
       secrets-path = "/var/ramona/secrets/caddy/env";
     in
     {
+      ramona.machine.tailscale-tags = [ "tag:home-front-proxy" ];
+      services.tailscale.permitCertUid = "caddy";
       ramona.vault-agent.templates = [
         {
           contents = ''
@@ -26,6 +28,7 @@
       services.caddy = {
         enable = true;
         email = "ramona@luczkiewi.cz";
+        openFirewall = true;
         environmentFile = secrets-path;
         package = pkgs.caddy.withPlugins {
           plugins = [
@@ -47,13 +50,13 @@
             in
             ''
               webdav /webdav {
-                  root = ${paths.hallewell.nas-share}/ramona/webdav
+                  root ${paths.hallewell.nas-share}/ramona/webdav
               }
             '';
         };
         virtualHosts."assistant.home.ramona.fun" = {
           extraConfig = ''
-            reverse_proxy localhost:8123
+            reverse_proxy http://homeassistant:8123
           '';
         };
       };
