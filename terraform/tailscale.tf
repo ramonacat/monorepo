@@ -45,7 +45,7 @@ moved {
 }
 
 resource "tailscale_dns_configuration" "default" {
-  override_local_dns = true
+  override_local_dns = false
 
   nameservers {
     address            = "8.8.8.8"

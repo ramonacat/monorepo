@@ -1,59 +1,55 @@
-resource "routeros_interface_vlan" "scarletwound-vlan5" {
-  provider = routeros.router-scarletwound
+module "scarletwound-vlan5" {
+  source = "../routeros-vlan"
+  providers = {
+    routeros = routeros.router-scarletwound
+  }
 
-  interface = routeros_interface_bridge.scarletwound-bridge0.name
-  name      = "vlan5"
-  comment   = "low privilege"
+  name      = "low-privilege"
+  cidr      = "10.32.4.0/24"
   vlan_id   = 5
-}
-
-resource "routeros_ip_dhcp_server_network" "scarletwound-vlan5" {
-  provider = routeros.router-scarletwound
-  address  = "10.32.4.0/24"
-  gateway  = "10.32.4.1"
-  netmask  = 24
+  interface = routeros_interface_bridge.scarletwound-bridge0.name
+  tagged_ports = [
+    routeros_interface_bridge.scarletwound-bridge0.name,
+    "ether4",
+  ]
+  untagged_ports = [
+    routeros_interface_wireless.scarletwound-wlan1-low-privilege.name,
+    routeros_interface_wireless.scarletwound-wlan2-low-privilege.name,
+  ]
 }
 
 resource "routeros_interface_list_member" "scarletwound-lan-vlan5" {
   provider  = routeros.router-scarletwound
-  interface = routeros_interface_vlan.scarletwound-vlan5.name
+  interface = module.scarletwound-vlan5.vlan_interface
   list      = routeros_interface_list.scarletwound-lan.name
 }
 
-resource "routeros_ip_pool" "scarletwound-low-privilege" {
-  provider = routeros.router-scarletwound
-  name     = "pool-low-privilege"
-  ranges   = ["10.32.4.32-10.32.4.254"]
-  comment  = "low-privilege/vlan5"
+moved {
+  from = routeros_ip_pool.scarletwound-low-privilege
+  to   = module.scarletwound-vlan5.routeros_ip_pool.main
 }
 
-resource "routeros_dhcp_server" "scarletwound-low-privilege" {
-  provider                  = routeros.router-scarletwound
-  interface                 = routeros_interface_vlan.scarletwound-vlan5.name
-  name                      = "dhcp-low-privilege"
-  lease_time                = "6h"
-  dynamic_lease_identifiers = "client-mac,client-id"
-  address_pool              = routeros_ip_pool.scarletwound-low-privilege.name
+moved {
+  from = routeros_interface_vlan.scarletwound-vlan5
+  to   = module.scarletwound-vlan5.routeros_interface_vlan.main
 }
 
-resource "routeros_bridge_vlan" "scarletwound-vlan5" {
-  provider = routeros.router-scarletwound
-  bridge   = routeros_interface_bridge.scarletwound-bridge0.name
-  tagged = [
-    routeros_interface_bridge.scarletwound-bridge0.name,
-    "ether4"
-  ]
-  untagged = [
-    routeros_interface_wireless.scarletwound-wlan1-low-privilege.name,
-    routeros_interface_wireless.scarletwound-wlan2-low-privilege.name,
-  ]
-  vlan_ids = [5]
+moved {
+  from = routeros_ip_dhcp_server_network.scarletwound-vlan5
+  to   = module.scarletwound-vlan5.routeros_ip_dhcp_server_network.main
 }
 
-resource "routeros_ip_address" "scarletwound-vlan5" {
-  provider  = routeros.router-scarletwound
-  address   = "10.32.4.1/24"
-  interface = routeros_interface_vlan.scarletwound-vlan5.name
-  network   = "10.32.4.0"
+moved {
+  from = routeros_dhcp_server.scarletwound-low-privilege
+  to   = module.scarletwound-vlan5.routeros_dhcp_server.main
 }
 
+moved {
+  from = routeros_bridge_vlan.scarletwound-vlan5
+  to   = module.scarletwound-vlan5.routeros_bridge_vlan.main
+}
+
+moved {
+  from = routeros_ip_address.scarletwound-vlan5
+  to   = module.scarletwound-vlan5.routeros_ip_address.main
+}

@@ -23,12 +23,11 @@ resource "routeros_interface_bridge_port" "scarletwound-ether2" {
 }
 
 resource "routeros_interface_bridge_port" "scarletwound-ether3" {
-  provider         = routeros.router-scarletwound
-  interface        = "ether3"
-  bridge           = routeros_interface_bridge.scarletwound-bridge0.name
-  frame_types      = "admit-only-vlan-tagged"
-  pvid             = 3
-  multicast_router = "temporary-query"
+  provider    = routeros.router-scarletwound
+  interface   = "ether3"
+  bridge      = routeros_interface_bridge.scarletwound-bridge0.name
+  frame_types = "admit-only-vlan-tagged"
+  pvid        = 3
 }
 
 resource "routeros_interface_bridge_port" "scarletwound-ether4" {
@@ -52,7 +51,7 @@ resource "routeros_bridge_port" "scarletwound-wlan1-iot" {
   interface   = routeros_interface_wireless.scarletwound-wlan1-iot.name
   bridge      = routeros_interface_bridge.scarletwound-bridge0.name
   frame_types = "admit-only-untagged-and-priority-tagged"
-  pvid        = routeros_interface_vlan.scarletwound-vlan6.vlan_id
+  pvid        = module.scarletwound-vlan6.vlan_id
 }
 
 resource "routeros_bridge_port" "scarletwound-wlan2-iot" {
@@ -60,7 +59,7 @@ resource "routeros_bridge_port" "scarletwound-wlan2-iot" {
   interface   = routeros_interface_wireless.scarletwound-wlan2-iot.name
   bridge      = routeros_interface_bridge.scarletwound-bridge0.name
   frame_types = "admit-only-untagged-and-priority-tagged"
-  pvid        = routeros_interface_vlan.scarletwound-vlan6.vlan_id
+  pvid        = module.scarletwound-vlan6.vlan_id
 }
 
 resource "routeros_bridge_port" "scarletwound-wlan1-low-privilege" {
@@ -68,7 +67,7 @@ resource "routeros_bridge_port" "scarletwound-wlan1-low-privilege" {
   interface   = routeros_interface_wireless.scarletwound-wlan1-low-privilege.name
   bridge      = routeros_interface_bridge.scarletwound-bridge0.name
   frame_types = "admit-only-untagged-and-priority-tagged"
-  pvid        = routeros_interface_vlan.scarletwound-vlan5.vlan_id
+  pvid        = module.scarletwound-vlan5.vlan_id
 }
 
 resource "routeros_bridge_port" "scarletwound-wlan2-low-privilege" {
@@ -76,7 +75,7 @@ resource "routeros_bridge_port" "scarletwound-wlan2-low-privilege" {
   interface   = routeros_interface_wireless.scarletwound-wlan2-low-privilege.name
   bridge      = routeros_interface_bridge.scarletwound-bridge0.name
   frame_types = "admit-only-untagged-and-priority-tagged"
-  pvid        = routeros_interface_vlan.scarletwound-vlan5.vlan_id
+  pvid        = module.scarletwound-vlan5.vlan_id
 }
 
 resource "routeros_interface_list_member" "scarletwound-lan-bridge0" {

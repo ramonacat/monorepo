@@ -40,22 +40,26 @@
         };
         globalConfig = ''
           order webdav before file_server
-
-          acme_dns dnsimple {$DNSIMPLE_TOKEN}
         '';
-        virtualHosts."hallewell.ibis-draconis.ts.net" = {
-          extraConfig =
-            let
-              paths = import ../../data/paths.nix;
-            in
-            ''
-              webdav /webdav {
+        /*
+          virtualHosts."hallewell.ibis-draconis.ts.net" = {
+            extraConfig =
+              let
+                paths = import ../../data/paths.nix;
+              in
+              ''
+                webdav /webdav {
                   root ${paths.hallewell.nas-share}/ramona/webdav
-              }
-            '';
-        };
+                }
+              '';
+          };
+        */
         virtualHosts."assistant.home.ramona.fun" = {
           extraConfig = ''
+            tls {
+              dns dnsimple {$DNSIMPLE_TOKEN}
+            }
+
             reverse_proxy http://homeassistant:8123
           '';
         };

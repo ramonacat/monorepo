@@ -83,11 +83,19 @@ resource "routeros_system_clock" "scarletwound" {
 resource "routeros_ip_dns" "scarletwound" {
   provider = routeros.router-scarletwound
 
+  allow_remote_requests = true
   mdns_repeat_ifaces = [
-    routeros_interface_vlan.scarletwound-vlan2.name,
-    routeros_interface_vlan.scarletwound-vlan4.name,
-    routeros_interface_vlan.scarletwound-vlan5.name,
-    routeros_interface_vlan.scarletwound-vlan6.name,
-    routeros_interface_vlan.scarletwound-vlan8.name,
+    module.scarletwound-vlan2.vlan_interface,
+    module.scarletwound-vlan4.vlan_interface,
+    module.scarletwound-vlan5.vlan_interface,
+    module.scarletwound-vlan6.vlan_interface,
+    module.scarletwound-vlan8.vlan_interface,
   ]
+}
+
+resource "routeros_ip_dns_record" "scarletwound--assistant-home-ramona-fun" {
+  provider = routeros.router-scarletwound
+  name     = "assistant.home.ramona.fun"
+  address  = routeros_ip_dhcp_server_lease.scarletwound-hallewell.address
+  type     = "A"
 }
