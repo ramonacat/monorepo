@@ -44,6 +44,11 @@ resource "authentik_provider_oauth2" "home-assistant" {
       url               = "http://homeassistant:8123/auth/oidc/callback"
       redirect_uri_type = "authorization"
     },
+    {
+      matching_mode     = "strict",
+      url               = "https://assistant.home.ramona.fun/auth/oidc/callback"
+      redirect_uri_type = "authorization"
+    },
   ]
 }
 
@@ -58,10 +63,16 @@ resource "authentik_application" "home-assistant" {
   meta_hide         = true
 }
 
-resource "authentik_policy_binding" "home-assistant-global-admins" {
+resource "authentik_policy_binding" "home-assistant-ha-admins" {
   order  = 0
   target = authentik_application.home-assistant.uuid
-  group  = authentik_group.global-admins.id
+  group  = authentik_group.ha-admins.id
+}
+
+resource "authentik_policy_binding" "home-assistant-ha-users" {
+  order  = 1
+  target = authentik_application.home-assistant.uuid
+  group  = authentik_group.ha-users.id
 }
 
 output "home-assistant-client-id" {

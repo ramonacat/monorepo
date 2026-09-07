@@ -1,9 +1,5 @@
 { config, ... }: {
   imports = [
-    ../tailscale-nginx
-
-    ./nginx
-
     ./serve.nix
   ];
   config = {

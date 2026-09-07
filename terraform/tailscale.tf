@@ -7,6 +7,10 @@ data "tailscale_device" "pikvm" {
   hostname = "pikvm"
 }
 
+data "tailscale_device" "homeassistant" {
+  hostname = "homeassistant"
+}
+
 moved {
   from = tailscale_device_tags.tags
   to   = tailscale_device_tags.devices
@@ -18,8 +22,8 @@ resource "tailscale_device_tags" "pikvm" {
 }
 
 resource "tailscale_device_tags" "homeassistant" {
-  device_id = data.tailscale_device.pikvm.node_id
-  tags      = ["tag:server", "tag:server-private", "tag:server-private-home"]
+  device_id = data.tailscale_device.homeassistant.node_id
+  tags      = ["tag:server", "tag:server-private", "tag:server-private-home", "tag:home-services"]
 }
 
 removed {
@@ -115,6 +119,13 @@ resource "tailscale_acl" "default" {
           ip = [
             "tcp:443",
           ]
+        },
+        {
+          src = ["tag:home-front-proxy"]
+          dst = ["tag:home-services"]
+          ip = [
+            "tcp:8123"
+          ]
         }
       ],
       autoApprovers = {
@@ -144,6 +155,9 @@ resource "tailscale_acl" "default" {
         "tag:k8s-operator" = [],
         "tag:k8s"          = ["tag:k8s-operator"],
         "tag:k8s-service"  = ["tag:k8s-operator"],
+
+        "tag:home-front-proxy" = [],
+        "tag:home-services"    = [],
       },
       tests = [
         {
