@@ -1349,7 +1349,6 @@
    "pom": "sha256-SFyj1RGqOEIH21cG4HQdx5rORdQOBIn57ylzGq+xT3w="
   },
   "org/jetbrains/kotlin#kotlin-build-tools-impl/2.4.20": {
-   "jar": "sha256-aPtvJmpmRjobo925m5bl6yAqsZpcpOO1ba1e7GJkHH0=",
    "pom": "sha256-ehOrLYGKXekq+iMASqm67ZlnG7SFU7cJjPkg+nhcM1E="
   },
   "org/jetbrains/kotlin#kotlin-compiler-embeddable/2.4.0": {
@@ -1452,7 +1451,6 @@
    "pom": "sha256-znBcUOfgr7IimKz/Cpg8226g9/4tG0c87kKzhAW8NX8="
   },
   "org/jetbrains/kotlin#kotlin-script-runtime/2.4.20": {
-   "jar": "sha256-/FoZ33i+RF2E6DUuDQEJimqBgTJKpQxve/hQM46B4bQ=",
    "pom": "sha256-3Q44RrYabWQTAJWMxS5Gk817R70dYmUF84Oy+dI63g4="
   },
   "org/jetbrains/kotlin#kotlin-stdlib-jdk7/2.2.10": {
