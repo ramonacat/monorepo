@@ -49,7 +49,7 @@ resource "routeros_interface_wireless" "scarletwound-wlan1-low-privilege" {
   master_interface = routeros_interface_wireless.scarletwound-wlan1.name
   name             = "wlan1-low-privilege"
   ssid             = "ramona/lp"
-  vlan_id          = routeros_interface_vlan.scarletwound-vlan5.vlan_id
+  vlan_id          = module.scarletwound-vlan5.vlan_id
   disabled         = false
 }
 
@@ -60,7 +60,7 @@ resource "routeros_interface_wireless" "scarletwound-wlan2-low-privilege" {
   master_interface = routeros_interface_wireless.scarletwound-wlan2.name
   name             = "wlan2-low-privilege"
   ssid             = "ramona/lp"
-  vlan_id          = routeros_interface_vlan.scarletwound-vlan5.vlan_id
+  vlan_id          = module.scarletwound-vlan5.vlan_id
   disabled         = false
 }
 
@@ -71,7 +71,7 @@ resource "routeros_interface_wireless" "scarletwound-wlan1-iot" {
   master_interface = routeros_interface_wireless.scarletwound-wlan1.name
   name             = "wlan1-iot"
   ssid             = "ramona/iot"
-  vlan_id          = routeros_interface_vlan.scarletwound-vlan6.vlan_id
+  vlan_id          = module.scarletwound-vlan6.vlan_id
   disabled         = false
 }
 
@@ -82,6 +82,6 @@ resource "routeros_interface_wireless" "scarletwound-wlan2-iot" {
   master_interface = routeros_interface_wireless.scarletwound-wlan2.name
   name             = "wlan2-iot"
   ssid             = "ramona/iot"
-  vlan_id          = routeros_interface_vlan.scarletwound-vlan6.vlan_id
+  vlan_id          = module.scarletwound-vlan6.vlan_id
   disabled         = false
 }

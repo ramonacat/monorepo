@@ -9,7 +9,7 @@ resource "routeros_interface_bridge_port" "everbleed-bridge0-ether1" {
 
   interface = "ether1"
   bridge    = routeros_interface_bridge.everbleed-bridge0.name
-  pvid      = routeros_interface_vlan.scarletwound-vlan2.vlan_id
+  pvid      = module.scarletwound-vlan2.vlan_id
 }
 
 resource "routeros_interface_bridge_port" "everbleed-bridge0-ether2" {
@@ -25,7 +25,7 @@ resource "routeros_interface_bridge_port" "everbleed-bridge0-ether3" {
 
   interface = "ether3"
   bridge    = routeros_interface_bridge.everbleed-bridge0.name
-  pvid      = routeros_interface_vlan.scarletwound-vlan8.vlan_id
+  pvid      = module.scarletwound-vlan8.vlan_id
 }
 
 resource "routeros_interface_bridge_port" "everbleed-bridge0-ether4" {
@@ -33,7 +33,7 @@ resource "routeros_interface_bridge_port" "everbleed-bridge0-ether4" {
 
   interface = "ether4"
   bridge    = routeros_interface_bridge.everbleed-bridge0.name
-  pvid      = routeros_interface_vlan.scarletwound-vlan2.vlan_id
+  pvid      = module.scarletwound-vlan2.vlan_id
 }
 
 resource "routeros_interface_bridge_port" "everbleed-bridge0-ether5" {
@@ -41,7 +41,7 @@ resource "routeros_interface_bridge_port" "everbleed-bridge0-ether5" {
 
   interface = "ether5"
   bridge    = routeros_interface_bridge.everbleed-bridge0.name
-  pvid      = routeros_interface_vlan.scarletwound-vlan6.vlan_id
+  pvid      = module.scarletwound-vlan6.vlan_id
 }
 
 resource "routeros_interface_bridge_port" "everbleed-bridge0-ether6" {
@@ -49,7 +49,7 @@ resource "routeros_interface_bridge_port" "everbleed-bridge0-ether6" {
 
   interface = "ether6"
   bridge    = routeros_interface_bridge.everbleed-bridge0.name
-  pvid      = routeros_interface_vlan.scarletwound-vlan2.vlan_id
+  pvid      = module.scarletwound-vlan2.vlan_id
 }
 
 resource "routeros_interface_bridge_port" "everbleed-bridge0-ether7" {
@@ -57,7 +57,7 @@ resource "routeros_interface_bridge_port" "everbleed-bridge0-ether7" {
 
   interface = "ether7"
   bridge    = routeros_interface_bridge.everbleed-bridge0.name
-  pvid      = routeros_interface_vlan.scarletwound-vlan8.vlan_id
+  pvid      = module.scarletwound-vlan8.vlan_id
 }
 
 resource "routeros_interface_bridge_port" "everbleed-bridge0-ether8" {
@@ -65,7 +65,7 @@ resource "routeros_interface_bridge_port" "everbleed-bridge0-ether8" {
 
   interface = "ether8"
   bridge    = routeros_interface_bridge.everbleed-bridge0.name
-  pvid      = routeros_interface_vlan.scarletwound-vlan2.vlan_id
+  pvid      = module.scarletwound-vlan2.vlan_id
 }
 
 resource "routeros_interface_bridge_port" "everbleed-bridge0-ether20" {
@@ -73,5 +73,5 @@ resource "routeros_interface_bridge_port" "everbleed-bridge0-ether20" {
 
   interface = "ether20"
   bridge    = routeros_interface_bridge.everbleed-bridge0.name
-  pvid      = routeros_interface_vlan.scarletwound-vlan2.vlan_id
+  pvid      = module.scarletwound-vlan2.vlan_id
 }

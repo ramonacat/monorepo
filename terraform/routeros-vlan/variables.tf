@@ -7,8 +7,9 @@ variable "interface" {
 }
 
 variable "bridge" {
-  type    = string
-  default = vars.interface
+  type     = string
+  nullable = true
+  default  = null
 }
 
 variable "name" {

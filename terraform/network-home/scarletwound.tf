@@ -85,10 +85,10 @@ resource "routeros_ip_dns" "scarletwound" {
 
   allow_remote_requests = true
   mdns_repeat_ifaces = [
-    routeros_interface_vlan.scarletwound-vlan2.name,
-    routeros_interface_vlan.scarletwound-vlan4.name,
-    routeros_interface_vlan.scarletwound-vlan5.name,
-    routeros_interface_vlan.scarletwound-vlan6.name,
-    routeros_interface_vlan.scarletwound-vlan8.name,
+    module.scarletwound-vlan2.vlan_interface,
+    module.scarletwound-vlan4.vlan_interface,
+    module.scarletwound-vlan5.vlan_interface,
+    module.scarletwound-vlan6.vlan_interface,
+    module.scarletwound-vlan8.vlan_interface,
   ]
 }

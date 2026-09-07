@@ -7,46 +7,47 @@ terraform {
 }
 
 locals {
-  prefix_length = replace(vars.cidr, "/^.*\\//", "")
+  prefix_length = replace(var.cidr, "/^.*\\//", "")
+  bridge        = coalesce(var.bridge, var.interface)
 }
 
 resource "routeros_interface_vlan" "main" {
-  interface = vars.interface
-  name      = "vlan${vars.vlan_id}"
-  comment   = vars.name
-  vlan_id   = vars.vlan_id
+  interface = var.interface
+  name      = "vlan${var.vlan_id}"
+  comment   = var.name
+  vlan_id   = var.vlan_id
 }
 
 resource "routeros_ip_dhcp_server_network" "main" {
-  address = vars.cidr
-  gateway = cidrhost(vars.cidr, 1)
-  dns_server = [cidrhost(vars.cidr, 1)]
-  netmask = locals.prefix_length
+  address    = var.cidr
+  gateway    = cidrhost(var.cidr, 1)
+  dns_server = [cidrhost(var.cidr, 1)]
+  netmask    = local.prefix_length
 }
 
 resource "routeros_ip_pool" "main" {
-  name = "pool-${vars.name}"
+  name = "pool-${var.name}"
   # TODO this will be wrong for subnets that aren't /24
-  ranges  = ["${cidrhost(vars.cidr, 32)}-${cidrhost(vars.cidr, 254)}"]
-  comment = "${vars.name}/vlan${vars.vlan_id}"
+  ranges  = ["${cidrhost(var.cidr, 32)}-${cidrhost(var.cidr, 254)}"]
+  comment = "${var.name}/vlan${var.vlan_id}"
 }
 
 resource "routeros_dhcp_server" "main" {
-  interface                 = vars.interface
-  name                      = "dhcp-${vars.name}"
+  interface                 = routeros_interface_vlan.main.name
+  name                      = "dhcp-${var.name}"
   lease_time                = "6h"
   dynamic_lease_identifiers = "client-mac,client-id"
 }
 
 resource "routeros_bridge_vlan" "main" {
-  bridge   = vars.bridge
-  tagged   = vars.tagged_ports
-  untagged = vars.untagged_ports
-  vlan_ids = [vars.vlan_id]
+  bridge   = local.bridge
+  tagged   = var.tagged_ports
+  untagged = var.untagged_ports
+  vlan_ids = [var.vlan_id]
 }
 
-resource "routeros_ip_address" "scarletwound-vlan2" {
-  address   = "${cidrhost(vars.cidr, 1)}/${locals.prefix_length}"
-  interface = vars.interface
-  network   = cidrhost(vars.cidr, 0)
+resource "routeros_ip_address" "main" {
+  address   = "${cidrhost(var.cidr, 1)}/${local.prefix_length}"
+  interface = routeros_interface_vlan.main.name
+  network   = cidrhost(var.cidr, 0)
 }
