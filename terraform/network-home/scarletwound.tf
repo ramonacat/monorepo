@@ -92,3 +92,10 @@ resource "routeros_ip_dns" "scarletwound" {
     module.scarletwound-vlan8.vlan_interface,
   ]
 }
+
+resource "routeros_ip_dns_record" "scarletwound--assistant-home-ramona-fun" {
+  provider = routeros.router-scarletwound
+  name     = "assistant.home.ramona.fun"
+  address  = routeros_ip_dhcp_server_lease.scarletwound-hallewell.address
+  type     = "A"
+}
