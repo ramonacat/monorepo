@@ -83,6 +83,7 @@ resource "routeros_system_clock" "scarletwound" {
 resource "routeros_ip_dns" "scarletwound" {
   provider = routeros.router-scarletwound
 
+  allow_remote_requests = true
   mdns_repeat_ifaces = [
     routeros_interface_vlan.scarletwound-vlan2.name,
     routeros_interface_vlan.scarletwound-vlan4.name,
