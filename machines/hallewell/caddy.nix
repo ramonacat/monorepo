@@ -36,7 +36,7 @@
           hash = "sha256-MGUZ7T6QSvNqxrP0S7ezErTIJrZ0Ehp1XJNWu5PlBT4=";
         };
         globalConfig = ''
-          order webdav before file_server;
+          order webdav before file_server
 
           acme_dns dnsimple {$DNSIMPLE_TOKEN}
         '';
@@ -53,7 +53,7 @@
         };
         virtualHosts."assistant.home.ramona.fun" = {
           extraConfig = ''
-            reverse_proxy homeassistant:8123
+            reverse_proxy localhost:8123
           '';
         };
       };
