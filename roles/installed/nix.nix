@@ -1,5 +1,4 @@
 {
-  flake,
   config,
   ...
 }:
@@ -23,12 +22,7 @@
           "nix-serve--hallewell:U/8IASkklbxXoFqzevYNdIle1xm3G54u9vUSHzmNaik="
           "main:Ijh1gpf5zuqCEsdfP6nBeGLg+/v+9SW7T3+cS81TqW4="
         ];
-        substituters =
-          let
-            hosts = flake.hosts.builds-hosts;
-          in
-          (map (x: "ssh://nix-ssh@${x}?ssh-key=${config.age.secrets.nix-serve-ssh-key.path}") hosts)
-          ++ [ "https://attic.infrastructure.ramona.fun/main" ];
+        substituters = [ "https://attic.infrastructure.ramona.fun/main" ];
         fallback = true;
       };
     };

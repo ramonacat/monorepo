@@ -10,6 +10,8 @@ steps:
     environment:
       ATTIC_TOKEN:
         from_secret: "attic_token"
+      ATTIC_HOME_TOKEN:
+        from_secret: "attic_home_token"
       SSH_KEY:
         from_secret: "ssh_key"
       CACHE_ACCESS_KEY_ID:

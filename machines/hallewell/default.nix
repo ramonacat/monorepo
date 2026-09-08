@@ -11,6 +11,7 @@ _: {
     ./nas
     ./paperless
 
+    ./attic.nix
     ./atuin-server.nix
     ./autounrar-dls.nix
     ./bcachefs.nix
@@ -21,8 +22,8 @@ _: {
     ./networking.nix
     ./postgresql.nix
     ./servarr.nix
-    ./znc.nix
     ./woodpecker-agent.nix
+    ./znc.nix
   ];
   config = {
     ramona.machine.location = "home";

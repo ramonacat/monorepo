@@ -63,6 +63,15 @@
             reverse_proxy http://homeassistant:8123
           '';
         };
+        virtualHosts."attic.home.ramona.fun" = {
+          extraConfig = ''
+            tls {
+              dns dnsimple {$DNSIMPLE_TOKEN}
+            }
+
+            reverse_proxy http://127.0.0.1:8874
+          '';
+        };
       };
     };
 }
