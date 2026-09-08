@@ -56,7 +56,7 @@ def execute_setup(_args: Namespace, runtime: RuntimeInfo):
                 runtime.attic_home_token,
             ]
         )
-        _ = run_command(["attic", "use", "main"])
+        _ = run_command(["attic", "use", "home:main"])
         runtime.attic_home_available = True
     except RunCommandError:
         logger.info("attic.home.ramona.fun is not available")
