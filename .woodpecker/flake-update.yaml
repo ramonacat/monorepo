@@ -3,7 +3,7 @@ when:
     cron: flake-update
 steps:
   - name: check
-    image: code.ramona.fun/ramona/monorepo/ci:1788873374
+    image: code.ramona.fun/ramona/monorepo/ci:1788899663
     commands:
       - ./.woodpecker/scripts/flake-update.bash
     environment:
