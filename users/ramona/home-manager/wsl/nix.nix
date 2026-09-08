@@ -30,6 +30,7 @@
           "nix-serve--hallewell:U/8IASkklbxXoFqzevYNdIle1xm3G54u9vUSHzmNaik="
           "cache.nixos.org-1:6NCHdD59X431o0gWypbMrAURkbJ16ZPMQFGspcDShjY="
           "main:Ijh1gpf5zuqCEsdfP6nBeGLg+/v+9SW7T3+cS81TqW4="
+          "main:3C+LexoJwRwF2lN6ZHHQsYsObdBt5wjPxyLZhySIyEE="
         ];
         substituters = [
           "https://cache.nixos.org/"
