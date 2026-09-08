@@ -61,6 +61,7 @@ resource "authentik_application" "home-assistant" {
   slug              = "home-assistant"
   protocol_provider = authentik_provider_oauth2.home-assistant.id
   meta_hide         = true
+  meta_launch_url   = "https://assistant.home.ramona.fun/"
 }
 
 resource "authentik_policy_binding" "home-assistant-ha-admins" {
