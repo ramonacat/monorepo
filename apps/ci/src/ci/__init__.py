@@ -10,7 +10,7 @@ from typing import cast
 from ci.app import find_roots
 from ci.cache import DirectoryCache
 from ci.checks import run_checks
-from ci.commands import run_command
+from ci.commands import RunCommandError, run_command
 from ci.publish import execute_publish
 from ci.ras_client import VersionedItemId, check_version
 from ci.runtime_info import RuntimeInfo
@@ -45,6 +45,21 @@ def execute_setup(_args: Namespace, runtime: RuntimeInfo):
         ]
     )
     _ = run_command(["attic", "use", "main"])
+
+    try:
+        _ = run_command(
+            [
+                "attic",
+                "login",
+                "home",
+                "https://attic.home.ramona.fun/",
+                runtime.attic_home_token,
+            ]
+        )
+        _ = run_command(["attic", "use", "main"])
+        runtime.attic_home_available = True
+    except RunCommandError:
+        logger.info("attic.home.ramona.fun is not available")
 
     ssh_key_path = os.path.expanduser("~/.ssh/id_ed25519")
     descriptor = os.open(

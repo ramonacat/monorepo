@@ -86,6 +86,7 @@ class RuntimeInfo(object):
     public_bucket: str
 
     attic_token: str
+    attic_home_token: str
     github_token: str
     forgejo_token: str
 
@@ -93,6 +94,8 @@ class RuntimeInfo(object):
 
     now_timestamp: int
     pull_request: PullRequestInfo | None
+
+    attic_home_available: bool
 
     def __init__(self):
 
@@ -121,6 +124,7 @@ class RuntimeInfo(object):
         self.public_bucket = "ramona-public"
 
         self.attic_token = _read_env("ATTIC_TOKEN")
+        self.attic_home_token = _read_env("ATTIC_HOME_TOKEN")
         self.github_token = _read_env("GITHUB_TOKEN")
         self.forgejo_token = _read_env("FORGEJO_TOKEN")
         self.ssh_key = _read_env("SSH_KEY")
@@ -133,6 +137,8 @@ class RuntimeInfo(object):
             self.pull_request = PullRequestInfo(pull_request_base)
         else:
             self.pull_request = None
+
+        self.attic_home_available = False
 
     @override
     def __str__(self) -> str:

@@ -99,3 +99,10 @@ resource "routeros_ip_dns_record" "scarletwound--assistant-home-ramona-fun" {
   address  = routeros_ip_dhcp_server_lease.scarletwound-hallewell.address
   type     = "A"
 }
+
+resource "routeros_ip_dns_record" "scarletwound--attic-home-ramona-fun" {
+  provider = routeros.router-scarletwound
+  name     = "attic.home.ramona.fun"
+  address  = routeros_ip_dhcp_server_lease.scarletwound-hallewell.address
+  type     = "A"
+}
