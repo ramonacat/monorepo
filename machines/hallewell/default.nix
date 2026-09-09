@@ -1,10 +1,11 @@
 _: {
   imports = [
     ../../roles/all
+    ../../roles/at-home
+    ../../roles/builds-host
     ../../roles/installed
     ../../roles/private
     ../../roles/server-private
-    ../../roles/builds-host
 
     ./immich
     ./jellyfin
