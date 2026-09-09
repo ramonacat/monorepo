@@ -945,13 +945,17 @@
    "pom": "sha256-ocF1HWWabSQ1Eyr0Qvl1KTPtniUNH+mwqzxOKgJ9LUI="
   }
  },
- "https://plugins.gradle.org/m2/org/gradle": {
-  "toolchains#foojay-resolver/1.0.0": {
+ "https://plugins.gradle.org/m2/org": {
+  "bouncycastle#bcutil-jdk18on/1.80.2": {
+   "jar": "sha256-vHjTLX/7FB7ifk+3ffBCWdhCyJnn6Or5EvmQ1yU707Q=",
+   "pom": "sha256-Joi+GvSZ1SUJYRTML1HHp6TKI8PScxe3HhjByWvsA9E="
+  },
+  "gradle/toolchains#foojay-resolver/1.0.0": {
    "jar": "sha256-eLhqR9/fdpfJvRXaeJg/2A2nJH1uAvwQa98H4DiLYKg=",
    "module": "sha256-YZDPDkLmZMEeGsCnhWmasCtUnOo0OSxnnzbYosVQ/Lk=",
    "pom": "sha256-m8SLSeQi2e2rw5asGNiwQd/CIhLX+ujjVmfShdSBApo="
   },
-  "toolchains/foojay-resolver-convention#org.gradle.toolchains.foojay-resolver-convention.gradle.plugin/1.0.0": {
+  "gradle/toolchains/foojay-resolver-convention#org.gradle.toolchains.foojay-resolver-convention.gradle.plugin/1.0.0": {
    "pom": "sha256-8TMkmhh1Suah0nAdANhJsa+6ewaD3bX8GxinAHHOwvo="
   }
  },
@@ -1249,10 +1253,6 @@
   "org/bouncycastle#bcprov-jdk18on/1.80.2": {
    "jar": "sha256-szIn8H3OJk2vGqwueY7xCaSQHzGr7axTY1dG3ZNnnTs=",
    "pom": "sha256-EqUFpxejvHZH99jt6ndzLJxty1PE32Kju1i3pUIooo8="
-  },
-  "org/bouncycastle#bcutil-jdk18on/1.80.2": {
-   "jar": "sha256-vHjTLX/7FB7ifk+3ffBCWdhCyJnn6Or5EvmQ1yU707Q=",
-   "pom": "sha256-Joi+GvSZ1SUJYRTML1HHp6TKI8PScxe3HhjByWvsA9E="
   },
   "org/checkerframework#checker-qual/2.5.8": {
    "pom": "sha256-M6xqDxNBrpZkfH1EZfSqPST+l9Jpe87izq5vyLXvLDw="
