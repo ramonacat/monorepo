@@ -35,6 +35,7 @@
         substituters = [
           "https://cache.nixos.org/"
           "https://attic.infrastructure.ramona.fun/main"
+          "https://attic.home.ramona.fun/main"
         ];
         fallback = true;
       };

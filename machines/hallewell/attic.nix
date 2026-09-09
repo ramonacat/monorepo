@@ -36,9 +36,9 @@ _: {
           chunking = {
             nar-size-threshold = 64 * 1024;
 
-            min-size = 16 * 1024;
-            avg-size = 64 * 1024;
-            max-size = 256 * 1024;
+            min-size = 512 * 1024;
+            avg-size = 1024 * 1024;
+            max-size = 2048 * 1024;
           };
         };
       };
