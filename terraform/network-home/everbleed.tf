@@ -87,6 +87,10 @@ resource "routeros_ip_address" "everbleed-vlan3" {
   interface = routeros_interface_vlan.everbleed-vlan3.name
 }
 
+locals {
+  everbleed_vlan3_ip = replace(routeros_ip_address.everbleed-vlan3.address, "/\\/\\d+$/", "")
+}
+
 resource "routeros_ip_route" "everbleed-default" {
   provider    = routeros.router-everbleed
   dst_address = "0.0.0.0/0"

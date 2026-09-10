@@ -19,6 +19,10 @@ resource "routeros_bridge_vlan" "scarletwound-vlan3" {
   vlan_ids = [3]
 }
 
+locals {
+  scarletwound_vlan3_ip = replace(routeros_ip_address.scarletwound-vlan3.address, "/\\/\\d+$/", "")
+}
+
 resource "routeros_ip_address" "scarletwound-vlan3" {
   provider  = routeros.router-scarletwound
   address   = "10.32.2.1/24"
