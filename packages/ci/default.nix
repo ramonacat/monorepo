@@ -62,6 +62,7 @@ rec {
 
       coreutils
       curl
+      diffutils
       findutils
       jq
       pkg-config
