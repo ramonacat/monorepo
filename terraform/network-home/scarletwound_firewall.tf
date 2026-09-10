@@ -3,14 +3,62 @@ module "scarletwound-firewall" {
   providers = {
     routeros = routeros.router-scarletwound
   }
-  rules = [
+  rules_v4 = [
     { chain = "forward", action = "fasttrack-connection", connection_state = "established,related", packet_mark = "!dampen" },
     { chain = "forward", action = "accept", connection_state = "established,related,untracked" },
     { chain = "input", action = "accept", connection_state = "established,related,untracked" },
     { chain = "input", action = "drop", connection_state = "invalid", },
     { chain = "input", action = "accept", protocol = "icmp" },
     { chain = "input", action = "accept", dst_address = "127.0.0.1", },
-    { chain = "input", action = "drop", in_interface_list = "!${routeros_interface_list.scarletwound-lan.name}" },
+    { chain = "input", action = "accept", in_interface = routeros_interface_vlan.scarletwound-vlan3.name, comment = "allow communication with other devices on the management vlan" },
+    {
+      chain        = "input",
+      action       = "accept",
+      dst_address  = local.scarletwound_vlan3_ip,
+      protocol     = "tcp",
+      dst_port     = "80,443,8291,8729",
+      in_interface = module.scarletwound-vlan2.vlan_interface,
+      comment      = "allow management access from workstations"
+    },
+    {
+      chain        = "input",
+      action       = "accept",
+      protocol     = "tcp",
+      dst_port     = "5678",
+      in_interface = module.scarletwound-vlan2.vlan_interface,
+      comment      = "allow mikrotik's neighbour discovery from workstations"
+    },
+    {
+      chain       = "input",
+      action      = "accept",
+      dst_address = local.scarletwound_vlan3_ip,
+      protocol    = "tcp",
+      dst_port    = "8729",
+      src_address = routeros_ip_dhcp_server_lease.scarletwound-vlan6-homeassistant.address,
+      comment     = "allow homeassistant api access"
+    },
+    {
+      chain    = "input",
+      action   = "accept",
+      protocol = "tcp",
+      dst_port = "53",
+      comment  = "dns/tcp"
+    },
+    {
+      chain    = "input",
+      action   = "accept",
+      protocol = "udp",
+      dst_port = "53,5353",
+      comment  = "dns/udp"
+    },
+    {
+      chain    = "input",
+      action   = "accept",
+      protocol = "udp",
+      dst_port = "5351",
+      comment  = "NAT PMP"
+    },
+    { chain = "input", action = "drop" },
     { chain = "forward", action = "drop", connection_state = "invalid" },
     { chain = "forward", action = "drop", connection_nat_state = "!dstnat", connection_state = "new", in_interface_list = routeros_interface_list.scarletwound-wan.name },
     { chain = "forward", action = "accept", in_interface = module.scarletwound-vlan2.vlan_interface, out_interface = routeros_interface_vlan.scarletwound-vlan3.name },
@@ -72,6 +120,15 @@ module "scarletwound-firewall" {
       comment     = "homeassistant -> hallewell (nfs/tcp)"
     },
     {
+      chain       = "forward",
+      action      = "accept",
+      src_address = routeros_ip_dhcp_server_lease.scarletwound-tv.address,
+      dst_address = routeros_ip_dhcp_server_lease.scarletwound-hallewell.address,
+      dst_port    = "8096"
+      protocol    = "tcp"
+      comment     = "tv -> hallewell (jellyfin)"
+    },
+    {
       chain         = "forward",
       action        = "accept",
       src_address   = routeros_ip_dhcp_server_lease.scarletwound-vlan6-homeassistant.address,
@@ -91,6 +148,28 @@ module "scarletwound-firewall" {
       disabled = false,
       comment  = "drop forwarding that is not explicitly allowed"
     }
+  ]
+
+  rules_v6 = [
+    {
+      chain        = "input",
+      action       = "accept",
+      protocol     = "tcp",
+      dst_port     = "80,443,8291,8729",
+      in_interface = module.scarletwound-vlan2.vlan_interface,
+      comment      = "allow management access from workstations"
+    },
+    {
+      chain        = "input",
+      action       = "accept",
+      protocol     = "tcp",
+      dst_port     = "5678",
+      in_interface = module.scarletwound-vlan2.vlan_interface,
+      comment      = "allow mikrotik's neighbour discovery from workstations"
+    },
+    { chain = "input", action = "accept", protocol = "icmpv6" },
+    { chain = "input", action = "drop" },
+    { chain = "forward", action = "drop" },
   ]
 }
 

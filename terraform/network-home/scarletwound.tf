@@ -44,22 +44,6 @@ resource "routeros_system_certificate" "scarletwound-ca-hosts" {
   }
 }
 
-resource "routeros_ip_service" "scarletwound-www-ssl" {
-  provider    = routeros.router-scarletwound
-  disabled    = false
-  port        = 443
-  numbers     = "www-ssl"
-  certificate = routeros_system_certificate.scarletwound-ssl.name
-}
-
-resource "routeros_ip_service" "scarletwound-api-ssl" {
-  provider    = routeros.router-scarletwound
-  disabled    = false
-  port        = 8729
-  numbers     = "api-ssl"
-  certificate = routeros_system_certificate.scarletwound-ssl.name
-}
-
 resource "routeros_interface_list" "scarletwound-internet-access" {
   provider = routeros.router-scarletwound
 
