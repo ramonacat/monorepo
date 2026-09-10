@@ -31,6 +31,9 @@
             };
           };
         };
+        gopls = {
+          enable = true;
+        };
       };
 
       keymaps.lspBuf = {
