@@ -25,6 +25,7 @@ resource "routeros_ip_firewall_filter" "rules" {
   out_interface        = each.value.out_interface
   protocol             = each.value.protocol
   src_address          = each.value.src_address
+  packet_mark          = each.value.packet_mark
 }
 
 resource "routeros_move_items" "firewall-filter" {

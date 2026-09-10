@@ -25,3 +25,9 @@ resource "routeros_ip_address" "scarletwound-vlan3" {
   interface = routeros_interface_vlan.scarletwound-vlan3.name
   network   = "10.32.2.0"
 }
+
+resource "routeros_interface_list_member" "scarletwound-lan-vlan3" {
+  provider  = routeros.router-scarletwound
+  interface = routeros_interface_vlan.scarletwound-vlan3.name
+  list      = routeros_interface_list.scarletwound-lan.name
+}

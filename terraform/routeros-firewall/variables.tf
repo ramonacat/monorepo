@@ -15,5 +15,6 @@ variable "rules" {
     protocol             = optional(string)
     src_address          = optional(string, "0.0.0.0/0")
     src_port             = optional(string)
+    packet_mark          = optional(string)
   }))
 }
