@@ -28,7 +28,6 @@
    "pom": "sha256-/leyKEF/TXxneQPcYftKfPmT1gNJneJtjYET5HfMTxs="
   },
   "androidx/annotation#annotation-jvm/1.10.0": {
-   "jar": "sha256-3dBy3btVMXjiBVF853ey8Fqp5BKYLZ7LTu3HTxIS9pc=",
    "module": "sha256-Qq/KN0GUJz5AZ7k3z8RHvTyMT9RB9B1E+VQFDf1hBt0=",
    "pom": "sha256-XuzgkDtIEKodqFQU3EwnRgRth4pUOqEt1PH+dBcfdQY="
   },
@@ -48,14 +47,14 @@
    "module": "sha256-5jhuha/dhlBE4hZXXkk+05pjpjJb2SU3miFCnDlByLU=",
    "pom": "sha256-txIll07Ah+uWwl72gZ9VscIvUw6FykRrpzX7Zu0E/1w="
   },
-  "androidx/annotation/annotation-experimental/1.4.1/annotation-experimental-1.4.1": {
-   "aar": "sha256-a9THx0dvgmDNO9u4EYNYPpP8n3kMJ96n3DFBgcv4eqA="
+  "androidx/annotation#annotation/1.9.1": {
+   "module": "sha256-8gSwW3KKl1YXGLxxYkLkfGKcAIWoDudPylPU1ji8vj8=",
+   "pom": "sha256-xzOIHC4X1ffIZhzAKpFZyxYLeyCUon1ZORbIfT4lBjY="
   },
   "androidx/arch/core#core-common/2.1.0": {
    "pom": "sha256-g7uzlg6qvGAKw2bJTLWUFORBUyodaqk4iwuL/6zlzwE="
   },
   "androidx/arch/core#core-common/2.2.0": {
-   "jar": "sha256-ZTCKBrHADuGGy54ZMhOD8EO5k4E/FSLEf0o+MwO9ukE=",
    "module": "sha256-7fQgDP3C2UYjIlLJnl3LnGG7kJ61RQsmE9HU/cl0uYE=",
    "pom": "sha256-HhfUr41kJb4qafivTWVKh+BFYlmp7vFUKGm8sCNUfig="
   },
@@ -73,14 +72,8 @@
    "aar": "sha256-yUaPVuBQBuoVGkJsVJV80Hmbi4OledKEbdIgYfM+Xs0="
   },
   "androidx/collection#collection-jvm/1.5.0": {
-   "jar": "sha256-cLNZJOS6vN/6N9Dlde4DnFai2XEjNCYkxItgMjNwQ0E=",
    "module": "sha256-3eheKSUJIxtUcbsJG1dQmdT0MWHrKB6HOFA4oBYQcuY=",
    "pom": "sha256-EcQVhk00AvYdQm5nIQFY3OGwRoBBJSaplPGCPs08s4g="
-  },
-  "androidx/collection#collection-ktx/1.5.0": {
-   "jar": "sha256-k5tKhpdkDnfYPk6LTEqdGPgTAZjFlhGUr43Z253Hw1M=",
-   "module": "sha256-QiiJTiXux+FzKbIGunLoqtJVvFNQGNxirMXv87XHqqU=",
-   "pom": "sha256-mD+NBjDQctW/zRZqSYrHIT86RKmMCQUQBM6WQp2GfOo="
   },
   "androidx/collection#collection/1.0.0": {
    "pom": "sha256-p5E6UnWtaOVV0mEuvowUw2exU+FMpIoYcqZImQIOVO8="
@@ -116,12 +109,6 @@
    "module": "sha256-hwhI9k4DmjoVvJyf7i5K40CllpbOgDanQ3yxAbT1v24=",
    "pom": "sha256-vyd2TuCvCPcfZDqBoZAgfbNMGgK9l7tpI+Ux0641gAw="
   },
-  "androidx/compose/animation/animation-android/1.12.0/animation-android-1.12.0": {
-   "aar": "sha256-W+JPnUKDKkHk5bZfR3osuyZPZcaFM8GvszOpQsuP8TI="
-  },
-  "androidx/compose/animation/animation-core-android/1.12.0/animation-core-android-1.12.0": {
-   "aar": "sha256-A/JskOZe3XSmzTg2HuMSUz1JDKSZGlyDh0Wr2oR5j3U="
-  },
   "androidx/compose/foundation#foundation-android/1.12.0": {
    "module": "sha256-CtKGq1FZngOOO6i4/rVGf5KW15AyubL//SqVxsuhvso=",
    "pom": "sha256-v48ljwZX7qIkpmPcRj9Dym98YYlzQvsHBmqYwSHhQdo="
@@ -137,9 +124,6 @@
   "androidx/compose/foundation#foundation/1.12.0": {
    "module": "sha256-Y/FWRxsfk+gXQ3llBkrYgUxa/grnKEm9hDnw6HwoXJ0=",
    "pom": "sha256-ETtmC8LyvayY4OhLcAOB0QcTQ5sOZwkj1a9jCeSPHyk="
-  },
-  "androidx/compose/foundation/foundation-android/1.12.0/foundation-android-1.12.0": {
-   "aar": "sha256-ZXwFRl7dro/3oeVaSmFbwm2pASg0pE4eQoLe61Sujqc="
   },
   "androidx/compose/foundation/foundation-layout-android/1.12.0/foundation-layout-android-1.12.0": {
    "aar": "sha256-zDJuqule/jXW5yCuAfbppqRWSJx+WGi0sJcZ+2N5GGQ="
@@ -162,9 +146,6 @@
   "androidx/compose/material3#material3/1.4.0": {
    "module": "sha256-dXCB0Sja+IAcHdmsxDH6UmnmVrKKCkkK6YzO5o6cNFI=",
    "pom": "sha256-ZytDH1nI4KhSJpCy9G8beWZxBjiJPGDDHF8Z+EctYsw="
-  },
-  "androidx/compose/material3/material3-android/1.4.0/material3-android-1.4.0": {
-   "aar": "sha256-Ojfos23zgi/h5gWfD5+v2ogAOIhgR3YkrBuUIsQYo24="
   },
   "androidx/compose/runtime#runtime-android/1.12.0": {
    "module": "sha256-P3ZQ7YLSy8Rs+hsvPLp5lVwLjUrlelGCQPY+12Rc3Do=",
@@ -201,21 +182,14 @@
   "androidx/compose/runtime/runtime-android/1.12.0/runtime-android-1.12.0": {
    "aar": "sha256-QAKkoXaWzRgvCA/jZjSQ5PMn8oXFae2ETxxDW4t3K6c="
   },
-  "androidx/compose/runtime/runtime-annotation-android/1.12.0/runtime-annotation-android-1.12.0": {
-   "aar": "sha256-QsLyYLFs+vt9X52OX3UQWd4B/cUprT95EX/EDq0cMCw="
-  },
   "androidx/compose/runtime/runtime-retain-android/1.12.0/runtime-retain-android-1.12.0": {
    "aar": "sha256-dUy+Wz2p6ylCaEYcDz7LmkFoRgjfbJxN/kgaf3gcBTI="
-  },
-  "androidx/compose/runtime/runtime-saveable-android/1.12.0/runtime-saveable-android-1.12.0": {
-   "aar": "sha256-J37mDVvJlwrkJxb9bdToN6Wi94UXJY8MnWjCpZ1yzvo="
   },
   "androidx/compose/ui#ui-android/1.12.0": {
    "module": "sha256-8FsFcbyCtycjgbBmZfYoK+OtAMR/3UQnJ3/XJB1zNYc=",
    "pom": "sha256-qr/RpTPC3pEv2jSd0GKokUjm0C3K9iyJvvxioT8J4Zk="
   },
   "androidx/compose/ui#ui-geometry-android/1.12.0": {
-   "module": "sha256-eK7eN+7ra5k3CNcEVNFJqqzrIxtQ7zugoWeWRIrKKl8=",
    "pom": "sha256-aqss291CO7yaPsK8INBk4hjJX8Ax1Iv6foBwFhtfb4M="
   },
   "androidx/compose/ui#ui-geometry/1.12.0": {
@@ -282,17 +256,9 @@
    "module": "sha256-NcZRW5WRsnDZOVQwJO2Ewp/t9OVCmVRkibf2vyIpjP0=",
    "pom": "sha256-qzXpaWvO4BejkeKyYxrolhON1WdXgCBMVybAg4hHjvY="
   },
-  "androidx/compose/ui#ui-unit-android/1.12.0": {
-   "module": "sha256-Lo81wcPnF3SaK7J3emOdxqCtnomPSbH055P7ROVh2is=",
-   "pom": "sha256-RILBWxQXigk3XdJkKQKAFEdLsgBuL3LGKyp2+OHykvg="
-  },
   "androidx/compose/ui#ui-unit/1.12.0": {
    "module": "sha256-emtfcGnd0KfTBLJnmhDDPfYgX3aOjIn2Ki/HfO2Z/n8=",
    "pom": "sha256-LYUSwm1uisspPgSlZwOmkP/bF4uJMRORsaee709bOn0="
-  },
-  "androidx/compose/ui#ui-util-android/1.12.0": {
-   "module": "sha256-HIwbdwV6KfDjYWhPQMzOve8l84Iq1wyjGPUriOznYWY=",
-   "pom": "sha256-xYQiiygy+9DdyqxZu0dQjTn35vR8Y5NQGsNk48C0GGs="
   },
   "androidx/compose/ui#ui-util/1.12.0": {
    "module": "sha256-ICkooe3nd+PURMejIXpbiDcwGWRc0KiS5BwUF+WWBMo=",
@@ -302,44 +268,13 @@
    "module": "sha256-Kgv+sSDA1W5h10KfDlb2/6h5whRzOvfUw/EzLjNb8mM=",
    "pom": "sha256-P2R48BJ1lvOzrYt4LJbdVt/VkkbTyFtMGk0hcO76Hgg="
   },
-  "androidx/compose/ui/ui-android/1.12.0/ui-android-1.12.0": {
-   "aar": "sha256-PS2DyWVGw4DLxYIyns4Np0pPkmfVLG3q1pwicr/OAxM="
-  },
-  "androidx/compose/ui/ui-geometry-android/1.12.0/ui-geometry-android-1.12.0": {
-   "aar": "sha256-28/wAm2gSs4YcbXb65f9g+Fd4xC9C7sLCuoDH+KcTHo="
-  },
-  "androidx/compose/ui/ui-graphics-android/1.12.0/ui-graphics-android-1.12.0": {
-   "aar": "sha256-h+eoBXeXIL8TpvRqWnWtgFJtAwDb06y/SNKmifcaHEE="
-  },
-  "androidx/compose/ui/ui-test-android/1.12.0/ui-test-android-1.12.0": {
-   "aar": "sha256-2JQe6AkZpQ+03MJtNHsmtFEcUMOuCvABd8CeNDkdQyc="
-  },
-  "androidx/compose/ui/ui-test-junit4-android/1.12.0/ui-test-junit4-android-1.12.0": {
-   "aar": "sha256-rU4ybsf3vyAMAKE9hSc4SMMBygvIeoc48BP90AQQ0hM="
-  },
-  "androidx/compose/ui/ui-test-manifest/1.12.0/ui-test-manifest-1.12.0": {
-   "aar": "sha256-BwuJYvZudT30MmJQ8OjpUpgHu5WWVWF1zLtwNBZs6jI="
-  },
   "androidx/compose/ui/ui-text-android/1.12.0/ui-text-android-1.12.0": {
    "aar": "sha256-aSi/rYvEu0SgFATupE5PsOgmoTq+XSksLBZximJla8U="
   },
   "androidx/compose/ui/ui-tooling-android/1.12.0/ui-tooling-android-1.12.0": {
    "aar": "sha256-NnI93GIGiidkjbFR6pO4CcK6BAYIRoyTbmCNBVaFcbo="
   },
-  "androidx/compose/ui/ui-tooling-data-android/1.12.0/ui-tooling-data-android-1.12.0": {
-   "aar": "sha256-ERiX1KW08JclA8VkVVcziZWJqbi5C3va2hW9VEWwBlQ="
-  },
-  "androidx/compose/ui/ui-tooling-preview-android/1.12.0/ui-tooling-preview-android-1.12.0": {
-   "aar": "sha256-uUv2gI4QOpmzirWKlwzxX3s/kh3JNrD4Z7CkLbUXwIY="
-  },
-  "androidx/compose/ui/ui-unit-android/1.12.0/ui-unit-android-1.12.0": {
-   "aar": "sha256-ky0iwZPKoPcSHnBavowdRey2UFzBqZgZVtpMH71QMO4="
-  },
-  "androidx/compose/ui/ui-util-android/1.12.0/ui-util-android-1.12.0": {
-   "aar": "sha256-577EhBG6jYlL/NpONZCwe0r/VwKo5ns6bkjrqOXlMaU="
-  },
   "androidx/concurrent#concurrent-futures-ktx/1.2.0": {
-   "jar": "sha256-4fPhe7Q1jM1sd8pF9wY1yauiNyYfGeqk9koCGMAOKj4=",
    "module": "sha256-gj9Gms2YSt/TCz0KV36093lqA3QqUm73DBWDtZS0O4A=",
    "pom": "sha256-eGnTmqendUpPMRdxq/2dlcy9f/sn6XD4yxX99bU1W20="
   },
@@ -352,7 +287,6 @@
    "pom": "sha256-dIo0610T0Z0Yet7K6oJmf97V8bC5imVeE+0uSos9iuY="
   },
   "androidx/concurrent#concurrent-futures/1.2.0": {
-   "jar": "sha256-SBAxWnmGkLXTu0DJK81BwEX9LDa7/FCyfLrD1qDtoZA=",
    "module": "sha256-r9cJTToHQivi6ZG8hwSFQq6XJKXEK9VLXK4wKceXCh0=",
    "pom": "sha256-a+mpjWzXWnh+6uKhoKNEDr4atGOXQN+ewCgJSrWbYi8="
   },
@@ -367,9 +301,6 @@
   "androidx/core#core/1.19.0": {
    "module": "sha256-VKTkVvP3EQ6Ro9MBlsrdmKdHhpFnn11j8sQCOkjS7GE=",
    "pom": "sha256-Gpn+aQd17Q6EeI1YlfSlVmRHkXZzfKCYYzYxns/OhTg="
-  },
-  "androidx/core/core-ktx/1.19.0/core-ktx-1.19.0": {
-   "aar": "sha256-2xriSxXDY1itRkl9VhsZwyVkJWVDLVZHnr5H7juqDX4="
   },
   "androidx/core/core-viewtree/1.0.0/core-viewtree-1.0.0": {
    "aar": "sha256-3BtnjVjrzyv6FYe+aP+CZpTOPSISUbnvMNTUs2KX5t4="
@@ -393,7 +324,6 @@
    "pom": "sha256-XdU+cUa9vNPmsMl+XlNKUG9JTsPvTT3FhZqKJaMJ6GY="
   },
   "androidx/emoji2#emoji2/1.2.0": {
-   "module": "sha256-nRmWzKA3d7qh8nzRVTHbmDpjPa43uQ+FvVNQGstWaZ0=",
    "pom": "sha256-+vWVXSybCbupLlFWnyuShBne0FtclknARTySXH2mI2A="
   },
   "androidx/emoji2#emoji2/1.3.0": {
@@ -426,7 +356,6 @@
    "pom": "sha256-PQL0CviNuhYdS+QH7QdyPXExrEZBk//gXJa8nLcukDQ="
   },
   "androidx/lifecycle#lifecycle-common-jvm/2.11.0": {
-   "jar": "sha256-5qZuZ7n2Og+2NE8WXB2HI3bl/m0jW/+xOK9FEiz0Uqk=",
    "module": "sha256-yUd9Z4TI3LmS8aF3Tdld8x8+EB5dHpy3sBqv85JKGUI=",
    "pom": "sha256-QhkY4B3YUIsMN2IHqemBWe93/tEesdkJgpQ0TtZ3UMc="
   },
@@ -455,7 +384,6 @@
    "pom": "sha256-DjoMh5jSb0kjhVCj3E1r1GXUm4K8t1nKPEY6MWAOchw="
   },
   "androidx/lifecycle#lifecycle-livedata-core/2.11.0": {
-   "module": "sha256-0cFBDIzpzxRjYWwZyn2K/KY7y7rJ2r0p2jEh1hvUE0M=",
    "pom": "sha256-vtvowiMPIHx7J8FaZ/qFr/ffaBsUWkX9T9nWzO2vstQ="
   },
   "androidx/lifecycle#lifecycle-process/2.11.0": {
@@ -469,10 +397,6 @@
   "androidx/lifecycle#lifecycle-runtime-android/2.9.4": {
    "module": "sha256-x4iOhQxA/QWfssHsW/RuiDE+m11RUhM8OFoar7hDP0c=",
    "pom": "sha256-Jx5UAJ/fOizVq0FOignmr0JRtj1ISkLFMKuGiXSl6h8="
-  },
-  "androidx/lifecycle#lifecycle-runtime-compose-android/2.11.0": {
-   "module": "sha256-UM7jgRLjFA4JNeh4Zztselo9FTLxwMr42r+NlbHzJSU=",
-   "pom": "sha256-AGhysT6XmiYsFbQOFCLq686QurJAsaCKyf1/YCD8yo4="
   },
   "androidx/lifecycle#lifecycle-runtime-compose-android/2.9.4": {
    "module": "sha256-4Ieiwr3+NgSXM5M1ulHbzdFQPAp8n0+ChdtwI+BClDk=",
@@ -507,7 +431,6 @@
    "pom": "sha256-gXUlVUbipfUQhl+ErOaAZglUcwJAsZBdkXW0NFvtqXc="
   },
   "androidx/lifecycle#lifecycle-runtime/2.9.4": {
-   "module": "sha256-3LxbW1BmboQlinS/2OUUkYxZOk/87wwDWFYqAvvYDFg=",
    "pom": "sha256-1helGd2zajCCE/W5r5kWOwo6NznOA4G2yND6aBRhOgg="
   },
   "androidx/lifecycle#lifecycle-viewmodel-android/2.11.0": {
@@ -542,20 +465,8 @@
    "module": "sha256-lk1p1rh3KW6Lead7uCbvX7GGrsqnoaf/d2+yJQyZMAY=",
    "pom": "sha256-BU22+S2SMBA7OsqLDavMDWPeJuRA/5jrWxmiVV0+sDc="
   },
-  "androidx/lifecycle/lifecycle-livedata-core/2.11.0/lifecycle-livedata-core-2.11.0": {
-   "aar": "sha256-ObJu8eCB/IjXBU/xpj0KXXGHY3PDOnEat4nIIo0CWtE="
-  },
   "androidx/lifecycle/lifecycle-process/2.11.0/lifecycle-process-2.11.0": {
    "aar": "sha256-l0Pwx7ryfTRJe36aHNSX2CYCUbAxJFB5Y6v6rWbD9VI="
-  },
-  "androidx/lifecycle/lifecycle-runtime-android/2.11.0/lifecycle-runtime-android-2.11.0": {
-   "aar": "sha256-hxGGX402A7wF3swDu0Kqsvqo2LxVs7EqCo5Ra1YrYMo="
-  },
-  "androidx/lifecycle/lifecycle-runtime-compose-android/2.11.0/lifecycle-runtime-compose-android-2.11.0": {
-   "aar": "sha256-ezFInm4WIUPEgfFOGuWk3AifjsWOZZdqBQK5EMZBmH8="
-  },
-  "androidx/lifecycle/lifecycle-runtime-ktx-android/2.11.0/lifecycle-runtime-ktx-android-2.11.0": {
-   "aar": "sha256-H+rZZgf4tOvSvFhAxvzwiwn8R86xZl5LOB3OgLGfMqA="
   },
   "androidx/lifecycle/lifecycle-viewmodel-android/2.11.0/lifecycle-viewmodel-android-2.11.0": {
    "aar": "sha256-UJqlwHEeYaFXECS0+EMdyaoglg0jy62wHyGjP9hkNSo="
@@ -581,9 +492,6 @@
   "androidx/navigationevent#navigationevent/1.0.0": {
    "module": "sha256-8z8eAwoKfRCqtgilpdP/cNJd8yXOglyiBKoZwOBXi1M=",
    "pom": "sha256-3n+uQrQjT2/tx3YlELy125hgGHvlbzv+w0tz225KIqI="
-  },
-  "androidx/navigationevent/navigationevent-android/1.0.0/navigationevent-android-1.0.0": {
-   "aar": "sha256-zaS7g9HIkqIIcy6ZwtWeTyR6tcI6HSUk/ABNsuTpp4A="
   },
   "androidx/navigationevent/navigationevent-compose-android/1.0.0/navigationevent-compose-android-1.0.0": {
    "aar": "sha256-XO4Bjb4TC1ONLEPMbzg6EJqY8ZupyNem3ajKkKIDRnE="
@@ -643,12 +551,6 @@
    "module": "sha256-oPKsWgdgY/DIE891pG37eAvVpaLIZ3JAvKhVFVTaj9I=",
    "pom": "sha256-0raKLQzHbyPOvG1Oqbvy1j+1Nv/ZTgVRStnabF9TBJI="
   },
-  "androidx/savedstate/savedstate-android/1.4.0/savedstate-android-1.4.0": {
-   "aar": "sha256-FlbOYs0jPUiL271C5TO4CyJDW3ppCsrm2+cwI5JRLBQ="
-  },
-  "androidx/savedstate/savedstate-compose-android/1.4.0/savedstate-compose-android-1.4.0": {
-   "aar": "sha256-DwrjAy1sbuqDTuIheciXYWDQnYQdMOR/U/VrGzQ4d0s="
-  },
   "androidx/savedstate/savedstate-ktx/1.4.0/savedstate-ktx-1.4.0": {
    "aar": "sha256-I1k5OURrxaFUoeNf3dh7gvGeKt8HIgfxFb8pqLQxwdM="
   },
@@ -668,17 +570,11 @@
   "androidx/test#runner/1.7.0": {
    "pom": "sha256-YigxxtMWZvs0OMsNLuH7u8eMq81JcXaZV42SVQBiIH8="
   },
-  "androidx/test/core/1.7.0/core-1.7.0": {
-   "aar": "sha256-9NrNjtzu7Ejgx27PKDObKPS09rdPjjTp5ZtHLCfZ64E="
-  },
   "androidx/test/espresso#espresso-core/3.7.0": {
    "pom": "sha256-tuf0PLOWuJpM4ymn5azvedN1IDqHoRp2OdGMDm3lC1Y="
   },
   "androidx/test/espresso#espresso-idling-resource/3.7.0": {
    "pom": "sha256-csXz3/ITvRQ836LrQW0b3hztZlbZxUtp78qPdKLMgx0="
-  },
-  "androidx/test/espresso/espresso-core/3.7.0/espresso-core-3.7.0": {
-   "aar": "sha256-XdkONmg4vwRMtS6uBkdN69KF3xinp3xARBrI6JUbsA8="
   },
   "androidx/test/espresso/espresso-idling-resource/3.7.0/espresso-idling-resource-3.7.0": {
    "aar": "sha256-X/YjJrScMIwdBgRmrjz0qg496vkpXwd6aIYEjdo+mxQ="
@@ -686,20 +582,8 @@
   "androidx/test/ext#junit/1.3.0": {
    "pom": "sha256-kq9/JT5eq+LK7FxW8wgxJlPRIwQrInVNb/Zk4XUtzz8="
   },
-  "androidx/test/ext/junit/1.3.0/junit-1.3.0": {
-   "aar": "sha256-M2PfhNpFQLqNr/AsP3zWVHEDempTcFkafm3ro3ezbn8="
-  },
-  "androidx/test/monitor/1.8.0/monitor-1.8.0": {
-   "aar": "sha256-Vst0lqBtny3KfT/3bFCoowvRjgCiSjsmfVoxQ3snjmc="
-  },
-  "androidx/test/runner/1.7.0/runner-1.7.0": {
-   "aar": "sha256-lwMRxHEZkoouQGqIiSo9JwOHzFpJoYGhxEUREFtBuBg="
-  },
   "androidx/test/services#storage/1.6.0": {
    "pom": "sha256-jl1y4rzu9u+Ae8OINNvHqlMXf9INo0n1Pc5aTyoCi78="
-  },
-  "androidx/test/services/storage/1.6.0/storage-1.6.0": {
-   "aar": "sha256-+X489qr04/uX7yGdN6nAoHIBg8H224ezdkJSHib7bTA="
   },
   "androidx/tracing#tracing/1.0.0": {
    "module": "sha256-/Ish6+X6OnyW7gmLzc0A8HfrznPyQ/qFjisGcWFfddg=",
@@ -713,17 +597,11 @@
    "module": "sha256-0NjUhra9MyBtvz8abRZ+m0PCaOpjwzIciGsVQ60F7OM=",
    "pom": "sha256-80vsTrWIcdMQApATdxCKqh6/53+m2IK4uGIAsVjibqE="
   },
-  "androidx/tracing/tracing/1.1.0/tracing-1.1.0": {
-   "aar": "sha256-W3jixhj8ELPRTezAHfdhWPFZVK10aqzwYHdmch2ggfY="
-  },
   "androidx/tracing/tracing/1.2.0/tracing-1.2.0": {
    "aar": "sha256-b6qQOQ0f2/Ctuamb+Z3me5TGxvNa6pUQWTqdF5c3NqI="
   },
   "androidx/versionedparcelable#versionedparcelable/1.1.1": {
    "pom": "sha256-X1HmWHPKYS3jg4+pDS7pW40EDv0xucOQoZv5TWFc2y8="
-  },
-  "androidx/versionedparcelable/versionedparcelable/1.1.1/versionedparcelable-1.1.1": {
-   "aar": "sha256-V+jZMmDRjVuQB8nu08ZK0VnekMhgnr/HSjR8vVFFNaQ="
   },
   "androidx/window#window-core-android/1.5.0": {
    "module": "sha256-W9gYaGgDvzwDf2Gg6Wr0RB6ISqik2RBi0q1Xh2+Re1A=",
@@ -995,7 +873,6 @@
    "pom": "sha256-PtzmtxG6No7+Frm3qssCFPvWSEFMublllTouftiagZo="
   },
   "com/google/errorprone#error_prone_annotations/2.30.0": {
-   "jar": "sha256-FE86771uJ9rsVdN1OyxrE8Gv2vDPBIFs21ZFiO2S8b0=",
    "pom": "sha256-9xOEnCOzSVPoVFZdzoqnlcrgwUFmEbcgwhRhMix5X4Y="
   },
   "com/google/errorprone#error_prone_annotations/2.36.0": {
@@ -1037,7 +914,6 @@
    "pom": "sha256-+pTbQAIt38d1r57PsTDM5RW5b3QNr4LyCvhG2VBUE0s="
   },
   "com/google/guava#listenablefuture/1.0": {
-   "jar": "sha256-5K12B+XAR3xviQ7yaknLjRu03/tlC6tFAq/uZGROMGk=",
    "pom": "sha256-U4c8rya8HtilZ+psk5qyqqP0el4y1creld31CA0jI4o="
   },
   "com/google/guava#listenablefuture/9999.0-empty-to-avoid-conflict-with-guava": {
@@ -1141,7 +1017,6 @@
    "pom": "sha256-lD4SsQBieARjj6KFgFoKt4imgCZlMeZQkh6/5GIai/o="
   },
   "junit#junit/4.13.2": {
-   "jar": "sha256-jklbY0Rp1k+4rPo0laBly6zIoP/1XOHjEAe+TBbcV9M=",
    "pom": "sha256-Vptpd+5GA8llwcRsMFj6bpaSkbAWDraWTdCSzYnq3ZQ="
   },
   "net/java/dev/jna#jna-platform/5.6.0": {
@@ -1280,11 +1155,9 @@
    "pom": "sha256-p53QAvsDgYP/KGomNb4uaMEDuH4OZHF9jUS/0Bf9M+o="
   },
   "org/hamcrest#hamcrest-core/1.3": {
-   "jar": "sha256-Zv3vkelzk0jfeglqo4SlaF9Oh1WEzOiThqekclHE2Ok=",
    "pom": "sha256-/eOGp5BRc6GxA95quCBydYS1DQ4yKC4nl3h8IKZP+pM="
   },
   "org/hamcrest#hamcrest-library/1.3": {
-   "jar": "sha256-cR1kUi+exBCYO9MQk0KW2hNL5CVKElCAoEFuwXjfrRw=",
    "pom": "sha256-HOtL+w8JiuKbk1BEsjY+ETIzE/4+0gVd+LeXN9UFYnc="
   },
   "org/hamcrest#hamcrest-parent/1.3": {
@@ -1479,7 +1352,6 @@
    "pom": "sha256-gZT/eanuJKf6P3SmsXnAShhZ3ouYek8JgwVuWUUXId4="
   },
   "org/jetbrains/kotlin#kotlin-stdlib/2.4.20": {
-   "jar": "sha256-IibeRj0wnUpVAKSBMgs96lFaaYHcrh3vUx+8FYiE4l8=",
    "module": "sha256-r7KAUqxsPWBcD2YYFuplPgc+sDloL+01v6bNxwTAkRw=",
    "pom": "sha256-vWmzgtuo4reuOEY3XrLxOJAX65CJhydwUa5OOs7IyTg="
   },
@@ -1503,7 +1375,6 @@
    "pom": "sha256-ntGwSpnTgkOhWkKzfU3EuoTKd/Ndd8CBp8IgjUOeEiA="
   },
   "org/jetbrains/kotlinx#kotlinx-coroutines-android/1.9.0": {
-   "jar": "sha256-vXg6zS+XOIRdWDgPRvRbXN6V0MsDAn1WclM4smv8TXI=",
    "module": "sha256-ffHgTXfwzEEYkNmZqUSbDjvNTxWaRsMGCxECBMpgfUM=",
    "pom": "sha256-voYCDNW5O4poykMYWgSbmwuqNF/Rvh/aoBT9rvktbnw="
   },
@@ -1534,29 +1405,7 @@
    "module": "sha256-rVNANKlTtOEsvuuHTGat+LHKFN8V/g0uZUeqNOht/so=",
    "pom": "sha256-dw8nk9BeKwJ7nHmZOOwdLU7xQc5YGceAwyw5lcrbCkc="
   },
-  "org/jetbrains/kotlinx#kotlinx-coroutines-test-jvm/1.9.0": {
-   "jar": "sha256-aLh/qQ2z2rHnlP9geDZAh8B/h+XkpNDI0ycqIi7o/n4=",
-   "module": "sha256-4jZL61QHILPBF5V4UzedSuIiBYrYj3OirHMCbINvg58=",
-   "pom": "sha256-6AjygQsda5Tejk3JcY31vTPuva2j/b8vfuz6/VaYK/0="
-  },
-  "org/jetbrains/kotlinx#kotlinx-coroutines-test/1.9.0": {
-   "module": "sha256-Ol84cAsqTrKQ41B6Dj5PnMC9Y+cMyn8V6RHb83xPRMo=",
-   "pom": "sha256-5rSq4UN1DLG2TgOX1LltxhNbpqssM3OG31TfDZjN8SE="
-  },
-  "org/jetbrains/kotlinx#kotlinx-serialization-bom/1.7.3": {
-   "pom": "sha256-QiakkcW1nOkJ9ztlqpiUQZHI3Kw4JWN8a+EGnmtYmkY="
-  },
-  "org/jetbrains/kotlinx#kotlinx-serialization-core-jvm/1.7.3": {
-   "jar": "sha256-8K3eRYZBREdThc9Kp+C3/rJ/Yfz5RyZl7ZjMlxsGses=",
-   "module": "sha256-c7tMAnk/h8Ke9kvqS6AlgHb01Mlj/NpjPRJI7yS0tO8=",
-   "pom": "sha256-c09fdJII3QvvPZjKpZTPkiKv3w/uW2hDNHqP5k4kBCc="
-  },
-  "org/jetbrains/kotlinx#kotlinx-serialization-core/1.7.3": {
-   "module": "sha256-OdCabgLfKzJVhECmTGKPnGBfroxPYJAyF5gzTIIXfmQ=",
-   "pom": "sha256-MdERd2ua93fKFnED8tYfvuqjLa5t1mNZBrdtgni6VzA="
-  },
   "org/jspecify#jspecify/1.0.0": {
-   "jar": "sha256-H61ua+dVd4Hk0zcp1Jrhzcj92m/kd7sMxozjUer9+6s=",
    "module": "sha256-0wfKd6VOGKwe8artTlu+AUvS9J8p4dL4E+R8J4KDGVs=",
    "pom": "sha256-zauSmjuVIR9D0gkMXi0N/oRllg43i8MrNYQdqzJEM6Y="
   },
