@@ -11,19 +11,21 @@ locals {
 }
 
 resource "routeros_ip_firewall_filter" "rules" {
-  for_each             = local.rule-map
-  chain                = each.value.chain
   action               = each.value.action
+  chain                = each.value.chain
   comment              = each.value.comment
-  disabled             = each.value.disabled
-  connection_state     = each.value.connection_state
   connection_nat_state = each.value.connection_nat_state
-  in_interface_list    = each.value.in_interface_list
-  src_address          = each.value.src_address
+  connection_state     = each.value.connection_state
+  disabled             = each.value.disabled
   dst_address          = each.value.dst_address
   dst_port             = each.value.dst_port
-  protocol             = each.value.protocol
+  for_each             = local.rule-map
+  in_interface         = each.value.in_interface
+  in_interface_list    = each.value.in_interface_list
   out_interface        = each.value.out_interface
+  protocol             = each.value.protocol
+  src_address          = each.value.src_address
+  packet_mark          = each.value.packet_mark
 }
 
 resource "routeros_move_items" "firewall-filter" {

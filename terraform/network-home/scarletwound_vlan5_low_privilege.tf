@@ -10,7 +10,7 @@ module "scarletwound-vlan5" {
   interface = routeros_interface_bridge.scarletwound-bridge0.name
   tagged_ports = [
     routeros_interface_bridge.scarletwound-bridge0.name,
-    "ether4",
+    routeros_interface_ethernet.scarletwound-ether[3].name,
   ]
   untagged_ports = [
     routeros_interface_wireless.scarletwound-wlan1-low-privilege.name,
@@ -22,6 +22,18 @@ resource "routeros_interface_list_member" "scarletwound-lan-vlan5" {
   provider  = routeros.router-scarletwound
   interface = module.scarletwound-vlan5.vlan_interface
   list      = routeros_interface_list.scarletwound-lan.name
+}
+
+resource "routeros_interface_list_member" "scarletwound-all-clients-vlan5" {
+  provider  = routeros.router-scarletwound
+  interface = module.scarletwound-vlan5.vlan_interface
+  list      = routeros_interface_list.scarletwound-all-clients.name
+}
+
+resource "routeros_interface_list_member" "scarletwound-internet-access-vlan5" {
+  provider  = routeros.router-scarletwound
+  interface = module.scarletwound-vlan5.vlan_interface
+  list      = routeros_interface_list.scarletwound-internet-access.name
 }
 
 moved {

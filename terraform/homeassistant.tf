@@ -60,7 +60,6 @@ resource "authentik_application" "home-assistant" {
   name              = "home-assistant"
   slug              = "home-assistant"
   protocol_provider = authentik_provider_oauth2.home-assistant.id
-  meta_hide         = true
   meta_launch_url   = "https://assistant.home.ramona.fun/"
 }
 

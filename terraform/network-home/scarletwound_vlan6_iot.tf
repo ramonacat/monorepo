@@ -10,8 +10,8 @@ module "scarletwound-vlan6" {
   interface = routeros_interface_bridge.scarletwound-bridge0.name
   tagged_ports = [
     routeros_interface_bridge.scarletwound-bridge0.name,
-    "ether5",
-    "ether3",
+    routeros_interface_ethernet.scarletwound-ether[4].name,
+    routeros_interface_ethernet.scarletwound-ether[2].name,
   ]
   untagged_ports = [
     routeros_interface_wireless.scarletwound-wlan1-iot.name,

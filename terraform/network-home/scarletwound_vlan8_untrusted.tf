@@ -10,7 +10,7 @@ module "scarletwound-vlan8" {
   interface = routeros_interface_bridge.scarletwound-bridge0.name
   tagged_ports = [
     routeros_interface_bridge.scarletwound-bridge0.name,
-    "ether5"
+    routeros_interface_ethernet.scarletwound-ether[4].name
   ]
   untagged_ports = []
 }
