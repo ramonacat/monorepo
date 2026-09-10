@@ -1,7 +1,5 @@
 when:
   - event: pull_request
-  - event: push
-    branch: main
 steps:
   - name: check
     image: code.ramona.fun/ramona/monorepo/ci:1788899663
