@@ -10,9 +10,11 @@ module "scarletwound-vlan2" {
   interface = routeros_interface_bridge.scarletwound-bridge0.name
   tagged_ports = [
     routeros_interface_bridge.scarletwound-bridge0.name,
-    "ether5"
+    routeros_interface_ethernet.scarletwound-ether[4].name
   ]
-  untagged_ports = ["ether1"]
+  untagged_ports = [
+    routeros_interface_ethernet.scarletwound-ether[0].name
+  ]
 }
 
 resource "routeros_interface_list_member" "scarletwound-lan-vlan2" {

@@ -8,7 +8,7 @@ resource "routeros_interface_bridge" "scarletwound-bridge0" {
 
 resource "routeros_interface_bridge_port" "scarletwound-ether1" {
   provider    = routeros.router-scarletwound
-  interface   = "ether1"
+  interface   = routeros_interface_ethernet.scarletwound-ether[0].name
   bridge      = routeros_interface_bridge.scarletwound-bridge0.name
   frame_types = "admit-only-untagged-and-priority-tagged"
   pvid        = 2
@@ -16,7 +16,7 @@ resource "routeros_interface_bridge_port" "scarletwound-ether1" {
 
 resource "routeros_interface_bridge_port" "scarletwound-ether2" {
   provider    = routeros.router-scarletwound
-  interface   = "ether2"
+  interface   = routeros_interface_ethernet.scarletwound-ether[1].name
   bridge      = routeros_interface_bridge.scarletwound-bridge0.name
   frame_types = "admit-only-untagged-and-priority-tagged"
   pvid        = 4
@@ -24,7 +24,7 @@ resource "routeros_interface_bridge_port" "scarletwound-ether2" {
 
 resource "routeros_interface_bridge_port" "scarletwound-ether3" {
   provider    = routeros.router-scarletwound
-  interface   = "ether3"
+  interface   = routeros_interface_ethernet.scarletwound-ether[2].name
   bridge      = routeros_interface_bridge.scarletwound-bridge0.name
   frame_types = "admit-only-vlan-tagged"
   pvid        = 3
@@ -32,7 +32,7 @@ resource "routeros_interface_bridge_port" "scarletwound-ether3" {
 
 resource "routeros_interface_bridge_port" "scarletwound-ether4" {
   provider    = routeros.router-scarletwound
-  interface   = "ether4"
+  interface   = routeros_interface_ethernet.scarletwound-ether[3].name
   bridge      = routeros_interface_bridge.scarletwound-bridge0.name
   frame_types = "admit-only-vlan-tagged"
   pvid        = 3
@@ -40,7 +40,7 @@ resource "routeros_interface_bridge_port" "scarletwound-ether4" {
 
 resource "routeros_interface_bridge_port" "scarletwound-ether5" {
   provider    = routeros.router-scarletwound
-  interface   = "ether5"
+  interface   = routeros_interface_ethernet.scarletwound-ether[4].name
   bridge      = routeros_interface_bridge.scarletwound-bridge0.name
   frame_types = "admit-all"
   pvid        = 2
