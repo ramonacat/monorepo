@@ -17,7 +17,7 @@ _: {
     ./autounrar-dls.nix
     ./bcachefs.nix
     ./caddy.nix
-    ./github-runner.nix
+    ./docker.nix
     ./hardware.nix
     ./navidrome.nix
     ./networking.nix
@@ -28,14 +28,5 @@ _: {
   ];
   config = {
     ramona.machine.location = "home";
-    virtualisation.docker = {
-      autoPrune = {
-        enable = true;
-        dates = "daily";
-      };
-      daemon.settings = {
-        "data-root" = "/mnt/nas3/docker/";
-      };
-    };
   };
 }
