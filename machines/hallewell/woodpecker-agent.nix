@@ -32,7 +32,7 @@ _: {
           WOODPECKER_SERVER = "woodpecker-grpc.ramona.fun";
           WOODPECKER_GRPC_SECURE = "true";
           WOODPECKER_BACKEND = "docker";
-          WOODPECKER_MAX_WORKFLOWS = "4";
+          WOODPECKER_MAX_WORKFLOWS = "1";
           WOODPECKER_KEEPALIVE_TIMEOUT = "30m";
           WOODPECKER_RETRY_TIMEOUT = "30m";
         };
