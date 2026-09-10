@@ -24,6 +24,12 @@ resource "routeros_interface_list_member" "scarletwound-lan-vlan4" {
   list      = routeros_interface_list.scarletwound-lan.name
 }
 
+resource "routeros_interface_list_member" "scarletwound-internet-access-vlan4" {
+  provider  = routeros.router-scarletwound
+  interface = module.scarletwound-vlan4.vlan_interface
+  list      = routeros_interface_list.scarletwound-internet-access.name
+}
+
 resource "routeros_ip_dhcp_server_lease" "scarletwound-hallewell" {
   provider    = routeros.router-scarletwound
   mac_address = "70:85:C2:A8:65:04"

@@ -24,6 +24,18 @@ resource "routeros_interface_list_member" "scarletwound-lan-vlan5" {
   list      = routeros_interface_list.scarletwound-lan.name
 }
 
+resource "routeros_interface_list_member" "scarletwound-all-clients-vlan5" {
+  provider  = routeros.router-scarletwound
+  interface = module.scarletwound-vlan5.vlan_interface
+  list      = routeros_interface_list.scarletwound-all-clients.name
+}
+
+resource "routeros_interface_list_member" "scarletwound-internet-access-vlan5" {
+  provider  = routeros.router-scarletwound
+  interface = module.scarletwound-vlan5.vlan_interface
+  list      = routeros_interface_list.scarletwound-internet-access.name
+}
+
 moved {
   from = routeros_ip_pool.scarletwound-low-privilege
   to   = module.scarletwound-vlan5.routeros_ip_pool.main

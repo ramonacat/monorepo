@@ -60,6 +60,12 @@ resource "routeros_ip_service" "scarletwound-api-ssl" {
   certificate = routeros_system_certificate.scarletwound-ssl.name
 }
 
+resource "routeros_interface_list" "scarletwound-internet-access" {
+  provider = routeros.router-scarletwound
+
+  name = "internet-access"
+}
+
 resource "routeros_interface_list" "scarletwound-lan" {
   provider = routeros.router-scarletwound
   name     = "LAN"

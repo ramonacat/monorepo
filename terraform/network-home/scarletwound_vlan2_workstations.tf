@@ -23,6 +23,18 @@ resource "routeros_interface_list_member" "scarletwound-lan-vlan2" {
   list      = routeros_interface_list.scarletwound-lan.name
 }
 
+resource "routeros_interface_list_member" "scarletwound-all-clients-vlan2" {
+  provider  = routeros.router-scarletwound
+  interface = module.scarletwound-vlan2.vlan_interface
+  list      = routeros_interface_list.scarletwound-all-clients.name
+}
+
+resource "routeros_interface_list_member" "scarletwound-internet-access-vlan2" {
+  provider  = routeros.router-scarletwound
+  interface = module.scarletwound-vlan2.vlan_interface
+  list      = routeros_interface_list.scarletwound-internet-access.name
+}
+
 moved {
   from = routeros_ip_pool.scarletwound-workstations
   to   = module.scarletwound-vlan2.routeros_ip_pool.main

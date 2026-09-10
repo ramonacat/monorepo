@@ -14,8 +14,90 @@ module "scarletwound-firewall" {
     { chain = "forward", action = "drop", connection_state = "invalid" },
     { chain = "forward", action = "drop", connection_nat_state = "!dstnat", connection_state = "new", in_interface_list = routeros_interface_list.scarletwound-wan.name },
     { chain = "forward", action = "accept", in_interface = module.scarletwound-vlan2.vlan_interface, out_interface = routeros_interface_vlan.scarletwound-vlan3.name },
-    { chain = "forward", action = "drop", disabled = true, comment = "drop forwarding that is not explicitly allowed" }
+    {
+      chain             = "forward",
+      action            = "accept",
+      in_interface_list = routeros_interface_list.scarletwound-all-clients.name,
+      dst_address       = routeros_ip_dhcp_server_lease.scarletwound-printer.address,
+      dst_port          = "80,443,631,54921",
+      protocol          = "tcp",
+      comment           = "printer access"
+    },
+    {
+      chain             = "forward",
+      action            = "accept",
+      in_interface_list = routeros_interface_list.scarletwound-lan.name,
+      dst_address       = routeros_ip_dhcp_server_lease.scarletwound-hallewell.address,
+      dst_port          = "80,443",
+      protocol          = "tcp",
+      comment           = "front proxy for home services access for allowed vlans"
+    },
+    {
+      chain             = "forward",
+      action            = "accept",
+      in_interface_list = "${routeros_interface_list.scarletwound-internet-access.name}",
+      out_interface     = routeros_interface_vlan.scarletwound-vlan7.name,
+      comment           = "internet access"
+    },
+    {
+      chain       = "forward",
+      action      = "accept",
+      src_address = routeros_ip_dhcp_server_lease.scarletwound-vlan6-homeassistant.address,
+      dst_address = routeros_ip_dhcp_server_lease.scarletwound-tv.address,
+      comment     = "homeassistant -> tv"
+    },
+    {
+      chain       = "forward",
+      action      = "accept",
+      src_address = routeros_ip_dhcp_server_lease.scarletwound-vlan6-homeassistant.address,
+      dst_address = routeros_ip_dhcp_server_lease.scarletwound-printer.address,
+      comment     = "homeassistant -> printer"
+    },
+    {
+      chain       = "forward",
+      action      = "accept",
+      src_address = routeros_ip_dhcp_server_lease.scarletwound-vlan6-homeassistant.address,
+      dst_address = routeros_ip_dhcp_server_lease.scarletwound-hallewell.address,
+      dst_port    = "111,2049"
+      protocol    = "udp"
+      comment     = "homeassistant -> hallewell (nfs/udp)"
+    },
+    {
+      chain       = "forward",
+      action      = "accept",
+      src_address = routeros_ip_dhcp_server_lease.scarletwound-vlan6-homeassistant.address,
+      dst_address = routeros_ip_dhcp_server_lease.scarletwound-hallewell.address,
+      dst_port    = "111,2049"
+      protocol    = "tcp"
+      comment     = "homeassistant -> hallewell (nfs/tcp)"
+    },
+    {
+      chain         = "forward",
+      action        = "accept",
+      src_address   = routeros_ip_dhcp_server_lease.scarletwound-vlan6-homeassistant.address,
+      out_interface = routeros_interface_vlan.scarletwound-vlan7.name,
+      comment       = "internet access for homeassistant"
+    },
+    {
+      chain    = "forward",
+      action   = "accept",
+      protocol = "udp",
+      dst_port = 41641,
+      comment  = "tailscale"
+    },
+    {
+      chain    = "forward",
+      action   = "drop",
+      disabled = false,
+      comment  = "drop forwarding that is not explicitly allowed"
+    }
   ]
+}
+
+resource "routeros_interface_list" "scarletwound-all-clients" {
+  provider = routeros.router-scarletwound
+
+  name = "all-clients"
 }
 
 resource "routeros_ip_firewall_nat" "scarletwound-masquerade-list-vlan7" {
