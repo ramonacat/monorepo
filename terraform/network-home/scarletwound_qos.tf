@@ -10,6 +10,17 @@ resource "routeros_queue_simple" "scarletwound-high-priority" {
   queue        = "pcq-upload-default/pcq-download-default"
 }
 
+resource "routeros_queue_simple" "scarletwound-local" {
+  provider = routeros.router-scarletwound
+
+  name         = "local"
+  target       = ["10.32.0.0/14"]
+  limit_at     = "900M/900M"
+  max_limit    = "1G/1G"
+  queue        = "pcq-upload-default/pcq-download-default"
+  packet_marks = ["no-mark"]
+}
+
 resource "routeros_queue_simple" "scarletwound-vlan4" {
   provider = routeros.router-scarletwound
 
@@ -49,6 +60,7 @@ resource "routeros_move_items" "scarletwound-queue-simple" {
 
   sequence = [
     routeros_queue_simple.scarletwound-high-priority.id,
+    routeros_queue_simple.scarletwound-local.id,
     routeros_queue_simple.scarletwound-vlan4.id,
     routeros_queue_simple.scarletwound-vlan2.id,
     routeros_queue_simple.scarletwound-vlan5.id,
