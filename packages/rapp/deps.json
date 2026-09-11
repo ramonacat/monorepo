@@ -119,6 +119,9 @@
   "androidx/compose/animation/animation-android/1.12.0/animation-android-1.12.0": {
    "aar": "sha256-W+JPnUKDKkHk5bZfR3osuyZPZcaFM8GvszOpQsuP8TI="
   },
+  "androidx/compose/animation/animation-core-android/1.12.0/animation-core-android-1.12.0": {
+   "aar": "sha256-A/JskOZe3XSmzTg2HuMSUz1JDKSZGlyDh0Wr2oR5j3U="
+  },
   "androidx/compose/foundation#foundation-android/1.12.0": {
    "module": "sha256-CtKGq1FZngOOO6i4/rVGf5KW15AyubL//SqVxsuhvso=",
    "pom": "sha256-v48ljwZX7qIkpmPcRj9Dym98YYlzQvsHBmqYwSHhQdo="
@@ -299,8 +302,17 @@
    "module": "sha256-Kgv+sSDA1W5h10KfDlb2/6h5whRzOvfUw/EzLjNb8mM=",
    "pom": "sha256-P2R48BJ1lvOzrYt4LJbdVt/VkkbTyFtMGk0hcO76Hgg="
   },
+  "androidx/compose/ui/ui-android/1.12.0/ui-android-1.12.0": {
+   "aar": "sha256-PS2DyWVGw4DLxYIyns4Np0pPkmfVLG3q1pwicr/OAxM="
+  },
+  "androidx/compose/ui/ui-geometry-android/1.12.0/ui-geometry-android-1.12.0": {
+   "aar": "sha256-28/wAm2gSs4YcbXb65f9g+Fd4xC9C7sLCuoDH+KcTHo="
+  },
   "androidx/compose/ui/ui-graphics-android/1.12.0/ui-graphics-android-1.12.0": {
    "aar": "sha256-h+eoBXeXIL8TpvRqWnWtgFJtAwDb06y/SNKmifcaHEE="
+  },
+  "androidx/compose/ui/ui-test-android/1.12.0/ui-test-android-1.12.0": {
+   "aar": "sha256-2JQe6AkZpQ+03MJtNHsmtFEcUMOuCvABd8CeNDkdQyc="
   },
   "androidx/compose/ui/ui-test-junit4-android/1.12.0/ui-test-junit4-android-1.12.0": {
    "aar": "sha256-rU4ybsf3vyAMAKE9hSc4SMMBygvIeoc48BP90AQQ0hM="
@@ -314,11 +326,17 @@
   "androidx/compose/ui/ui-tooling-android/1.12.0/ui-tooling-android-1.12.0": {
    "aar": "sha256-NnI93GIGiidkjbFR6pO4CcK6BAYIRoyTbmCNBVaFcbo="
   },
+  "androidx/compose/ui/ui-tooling-data-android/1.12.0/ui-tooling-data-android-1.12.0": {
+   "aar": "sha256-ERiX1KW08JclA8VkVVcziZWJqbi5C3va2hW9VEWwBlQ="
+  },
   "androidx/compose/ui/ui-tooling-preview-android/1.12.0/ui-tooling-preview-android-1.12.0": {
    "aar": "sha256-uUv2gI4QOpmzirWKlwzxX3s/kh3JNrD4Z7CkLbUXwIY="
   },
   "androidx/compose/ui/ui-unit-android/1.12.0/ui-unit-android-1.12.0": {
    "aar": "sha256-ky0iwZPKoPcSHnBavowdRey2UFzBqZgZVtpMH71QMO4="
+  },
+  "androidx/compose/ui/ui-util-android/1.12.0/ui-util-android-1.12.0": {
+   "aar": "sha256-577EhBG6jYlL/NpONZCwe0r/VwKo5ns6bkjrqOXlMaU="
   },
   "androidx/concurrent#concurrent-futures-ktx/1.2.0": {
    "jar": "sha256-4fPhe7Q1jM1sd8pF9wY1yauiNyYfGeqk9koCGMAOKj4=",
@@ -1315,6 +1333,7 @@
    "pom": "sha256-6M2f/X0IhroaF5XL9KNKBmgfGEqlDyVobv/u+zwfVvU="
   },
   "org/jetbrains/kotlin#kotlin-build-tools-compat/2.4.20": {
+   "jar": "sha256-k30pYfwLlXpQw9haFPzBvQWF8iKRZBNolbYjaRZgybQ=",
    "pom": "sha256-+On2R6AL+8I3493/OJGy1OSpR2EblJKBZY+Dbe8wQAI="
   },
   "org/jetbrains/kotlin#kotlin-build-tools-cri-impl/2.4.0": {
@@ -1362,6 +1381,7 @@
    "pom": "sha256-N8/2auNMkk8Pc4EG7rcjTnrOiA8ZneM2Lpk/SYcCWtw="
   },
   "org/jetbrains/kotlin#kotlin-daemon-embeddable/2.4.0": {
+   "jar": "sha256-ODCTr14HhDW2AEPRm/qD62GRvg9NE6KPscig86sk/mY=",
    "pom": "sha256-yzbngPyznuCaq245j5vV6if5grtuGTKXQqIOsuvcKTY="
   },
   "org/jetbrains/kotlin#kotlin-daemon-embeddable/2.4.20": {
@@ -1416,10 +1436,10 @@
    "pom": "sha256-RTugcciRZcvfyHfKczpPOMAfwvSJTpolnXZR8Rds2Aw="
   },
   "org/jetbrains/kotlin#kotlin-reflect/1.6.10": {
+   "jar": "sha256-MnesECrheq0QpVq+x1/1aWyNEJeQOWQ0tJbnUIeFQgM=",
    "pom": "sha256-V5BVJCdKAK4CiqzMJyg/a8WSWpNKBGwcxdBsjuTW1ak="
   },
   "org/jetbrains/kotlin#kotlin-reflect/2.2.10": {
-   "jar": "sha256-xI20+M0b/Wf3LVklUGX7Qb/aQ8opQtrE2d64l6oSa6Q=",
    "pom": "sha256-rkZhSQZBRATO/EGkZ0NSBdbe5nojkFmDKKY5rSusvRE="
   },
   "org/jetbrains/kotlin#kotlin-reflect/2.4.0": {
@@ -1427,6 +1447,7 @@
    "pom": "sha256-nhge5PIdScXIVQw8/KcZnBdZCo3z0eopPjlnmOTxCEI="
   },
   "org/jetbrains/kotlin#kotlin-script-runtime/2.4.0": {
+   "jar": "sha256-GW6Oy/Y9r0d+NOZ8L4ce4jKue/izd0Mth20bv50nPeM=",
    "pom": "sha256-znBcUOfgr7IimKz/Cpg8226g9/4tG0c87kKzhAW8NX8="
   },
   "org/jetbrains/kotlin#kotlin-script-runtime/2.4.20": {
@@ -1495,6 +1516,7 @@
    "pom": "sha256-vqVRHpAB8sWTq1CA3xMbIZq14ghcxZec5YPqzUlG/Xg="
   },
   "org/jetbrains/kotlinx#kotlinx-coroutines-core-jvm/1.8.0": {
+   "jar": "sha256-mGCQahk3SQv187BtLw4Q70UeZblbJp8i2vaKPR9QZcU=",
    "module": "sha256-/2oi2kAECTh1HbCuIRd+dlF9vxJqdnlvVCZye/dsEig=",
    "pom": "sha256-pWM6vVNGfOuRYi2B8umCCAh3FF4LduG3V4hxVDSIXQs="
   },
