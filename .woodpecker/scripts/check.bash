@@ -14,6 +14,7 @@ main() {
 	ci cache pull terraform
 
 	attic watch-store main &
+	{ attic watch-store --ignore-upstream-cache-filter home:home || true; } &
 	ATTIC_PID=$!
 	trap cleanup EXIT
 

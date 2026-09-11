@@ -21,7 +21,7 @@
         trusted-public-keys = [
           "nix-serve--hallewell:U/8IASkklbxXoFqzevYNdIle1xm3G54u9vUSHzmNaik="
           "main:Ijh1gpf5zuqCEsdfP6nBeGLg+/v+9SW7T3+cS81TqW4="
-          "main:3C+LexoJwRwF2lN6ZHHQsYsObdBt5wjPxyLZhySIyEE="
+          "home:sK/KHiB+1j3ZPr36O+9S7pKb1bD3YN95kjFWPz3Fgek="
         ];
         substituters = [ "https://attic.infrastructure.ramona.fun/main" ];
         fallback = true;

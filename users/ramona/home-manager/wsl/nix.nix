@@ -30,12 +30,12 @@
           "nix-serve--hallewell:U/8IASkklbxXoFqzevYNdIle1xm3G54u9vUSHzmNaik="
           "cache.nixos.org-1:6NCHdD59X431o0gWypbMrAURkbJ16ZPMQFGspcDShjY="
           "main:Ijh1gpf5zuqCEsdfP6nBeGLg+/v+9SW7T3+cS81TqW4="
-          "main:3C+LexoJwRwF2lN6ZHHQsYsObdBt5wjPxyLZhySIyEE="
+          "home:sK/KHiB+1j3ZPr36O+9S7pKb1bD3YN95kjFWPz3Fgek="
         ];
         substituters = [
           "https://cache.nixos.org/"
           "https://attic.infrastructure.ramona.fun/main"
-          "https://attic.home.ramona.fun/main"
+          "https://attic.home.ramona.fun/home"
         ];
         fallback = true;
       };
