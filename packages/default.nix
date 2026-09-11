@@ -8,6 +8,7 @@ inputs: {
     rapp = import ./rapp inputs;
     ras = import ./ras.nix inputs;
     sawin-gallery = import ./sawin-gallery.nix inputs;
+    auth-proxy = import ./auth-proxy.nix inputs;
   };
   libs = {
     js = {
