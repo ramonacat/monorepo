@@ -1,0 +1,6 @@
+CREATE TABLE tokens (
+    id UUID PRIMARY KEY,
+    name TEXT NOT NULL,
+    value TEXT NOT NULL,
+    expiration TIMESTAMP WITH TIME ZONE NOT NULL
+);
