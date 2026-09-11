@@ -21,12 +21,16 @@ in
   timerConfig = {
     Persistent = true;
   };
-  pruneOpts = [
-    "--keep-hourly 24"
-    "--keep-daily 7"
-    "--keep-weekly 4"
-    "--keep-monthly 3"
-    "--keep-yearly 3"
-  ];
+  pruneOpts =
+    if config.ramona.machine.location == "hetzner" then
+      [
+        "--keep-hourly 24"
+        "--keep-daily 7"
+        "--keep-weekly 4"
+        "--keep-monthly 3"
+        "--keep-yearly 3"
+      ]
+    else
+      [ ];
 }
 // options
