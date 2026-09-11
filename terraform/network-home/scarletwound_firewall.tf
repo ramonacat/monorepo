@@ -6,7 +6,7 @@ module "scarletwound-firewall" {
   rules_v4 = [
     { chain = "forward", action = "accept", connection_state = "established,related", packet_mark = "internet" },
     { chain = "forward", action = "accept", connection_state = "established,related", packet_mark = "high-priority" },
-    { chain = "forward", action = "fasttrack-connection", connection_state = "established,related" },
+    { chain = "forward", action = "fasttrack-connection", connection_state = "established,related", in_interface_list = routeros_interface_list.scarletwound-lan.name, out_interface_list = routeros_interface_list.scarletwound-lan.name },
     { chain = "forward", action = "accept", connection_state = "established,related,untracked" },
     { chain = "input", action = "accept", connection_state = "established,related,untracked" },
     { chain = "input", action = "drop", connection_state = "invalid", },
@@ -224,6 +224,24 @@ resource "routeros_ip_firewall_mangle" "scarletwound-mark-to-internet-forward" {
   action           = "mark-packet"
   src_address_list = "!${routeros_firewall_addr_list.scarletwound-lan-private1.list}"
   new_packet_mark  = "internet"
+}
+
+resource "routeros_ip_firewall_mangle" "scarletwound-mark-from-internet-forward-byvlan" {
+  provider = routeros.router-scarletwound
+
+  chain           = "prerouting"
+  action          = "mark-packet"
+  in_interface    = routeros_interface_vlan.scarletwound-vlan7.name
+  new_packet_mark = "internet"
+}
+
+resource "routeros_ip_firewall_mangle" "scarletwound-mark-to-internet-forward-byvlan" {
+  provider = routeros.router-scarletwound
+
+  chain           = "forward"
+  action          = "mark-packet"
+  out_interface   = routeros_interface_vlan.scarletwound-vlan7.name
+  new_packet_mark = "internet"
 }
 
 resource "routeros_ip_firewall_mangle" "scarletwound-mark-dns-udp-prerouting" {

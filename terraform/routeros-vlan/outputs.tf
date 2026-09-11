@@ -5,3 +5,7 @@ output "vlan_interface" {
 output "vlan_id" {
   value = var.vlan_id
 }
+
+output "cidr" {
+  value = var.cidr
+}

@@ -25,6 +25,7 @@ resource "routeros_ip_firewall_filter" "rules" {
   in_interface         = each.value.in_interface
   in_interface_list    = each.value.in_interface_list
   out_interface        = each.value.out_interface
+  out_interface_list   = each.value.out_interface_list
   protocol             = each.value.protocol
   src_address          = each.value.src_address
   packet_mark          = each.value.packet_mark
@@ -39,19 +40,20 @@ resource "routeros_move_items" "firewall-filter" {
 resource "routeros_ipv6_firewall_filter" "rules" {
   for_each = local.rule-map-v6
 
-  action            = each.value.action
-  chain             = each.value.chain
-  comment           = each.value.comment
-  connection_state  = each.value.connection_state
-  disabled          = each.value.disabled
-  dst_address       = each.value.dst_address
-  dst_port          = each.value.dst_port
-  in_interface      = each.value.in_interface
-  in_interface_list = each.value.in_interface_list
-  out_interface     = each.value.out_interface
-  protocol          = each.value.protocol
-  src_address       = each.value.src_address
-  packet_mark       = each.value.packet_mark
+  action             = each.value.action
+  chain              = each.value.chain
+  comment            = each.value.comment
+  connection_state   = each.value.connection_state
+  disabled           = each.value.disabled
+  dst_address        = each.value.dst_address
+  dst_port           = each.value.dst_port
+  in_interface       = each.value.in_interface
+  in_interface_list  = each.value.in_interface_list
+  out_interface      = each.value.out_interface
+  out_interface_list = each.value.out_interface_list
+  protocol           = each.value.protocol
+  src_address        = each.value.src_address
+  packet_mark        = each.value.packet_mark
 }
 
 resource "routeros_move_items" "firewall-filter-v6" {

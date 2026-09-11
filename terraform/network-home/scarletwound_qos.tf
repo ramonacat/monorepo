@@ -14,9 +14,9 @@ resource "routeros_queue_simple" "scarletwound-vlan4" {
   provider = routeros.router-scarletwound
 
   name      = "vlan4"
-  target    = [module.scarletwound-vlan4.vlan_interface]
-  limit_at  = "8M/60M"
-  max_limit = "15M/70M"
+  target    = [module.scarletwound-vlan4.cidr]
+  limit_at  = "3M/40M"
+  max_limit = "4M/55M"
   priority  = "4/4"
   queue     = "pcq-upload-default/pcq-download-default"
 }
@@ -28,7 +28,7 @@ resource "routeros_queue_simple" "scarletwound-vlan2" {
   limit_at  = "8M/60M"
   max_limit = "15M/70M"
   priority  = "6/6"
-  target    = [module.scarletwound-vlan2.vlan_interface]
+  target    = [module.scarletwound-vlan2.cidr]
   queue     = "pcq-upload-default/pcq-download-default"
 }
 
@@ -39,7 +39,7 @@ resource "routeros_queue_simple" "scarletwound-vlan5" {
   limit_at  = "8M/60M"
   max_limit = "15M/70M"
   priority  = "6/6"
-  target    = [module.scarletwound-vlan5.vlan_interface]
+  target    = [module.scarletwound-vlan5.cidr]
   queue     = "pcq-upload-default/pcq-download-default"
 }
 
