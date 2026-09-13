@@ -4,7 +4,8 @@ module "scarletwound-firewall" {
     routeros = routeros.router-scarletwound
   }
   rules_v4 = [
-    { chain = "forward", action = "accept", connection_state = "established,related", packet_mark = "internet" },
+    { chain = "forward", action = "accept", connection_state = "established,related", packet_mark = "internet-in" },
+    { chain = "forward", action = "accept", connection_state = "established,related", packet_mark = "internet-out" },
     { chain = "forward", action = "accept", connection_state = "established,related", packet_mark = "high-priority" },
     { chain = "forward", action = "fasttrack-connection", connection_state = "established,related", in_interface_list = routeros_interface_list.scarletwound-lan.name, out_interface_list = routeros_interface_list.scarletwound-lan.name },
     { chain = "forward", action = "accept", connection_state = "established,related,untracked" },
@@ -190,22 +191,13 @@ resource "routeros_ip_firewall_nat" "scarletwound-masquerade-list-vlan7" {
   out_interface     = routeros_interface_vlan.scarletwound-vlan7.name
 }
 
-resource "routeros_ip_firewall_mangle" "scarletwound-mark-from-internet-prerouting" {
-  provider = routeros.router-scarletwound
-
-  chain            = "prerouting"
-  action           = "mark-packet"
-  dst_address_list = "!${routeros_firewall_addr_list.scarletwound-lan-private1.list}"
-  new_packet_mark  = "internet"
-}
-
 resource "routeros_ip_firewall_mangle" "scarletwound-mark-to-internet-prerouting" {
   provider = routeros.router-scarletwound
 
   chain            = "prerouting"
   action           = "mark-packet"
-  src_address_list = "!${routeros_firewall_addr_list.scarletwound-lan-private1.list}"
-  new_packet_mark  = "internet"
+  dst_address_list = "!${routeros_firewall_addr_list.scarletwound-lan-private1.list}"
+  new_packet_mark  = "internet-out"
 }
 
 resource "routeros_ip_firewall_mangle" "scarletwound-mark-from-internet-forward" {
@@ -213,35 +205,8 @@ resource "routeros_ip_firewall_mangle" "scarletwound-mark-from-internet-forward"
 
   chain            = "forward"
   action           = "mark-packet"
-  dst_address_list = "!${routeros_firewall_addr_list.scarletwound-lan-private1.list}"
-  new_packet_mark  = "internet"
-}
-
-resource "routeros_ip_firewall_mangle" "scarletwound-mark-to-internet-forward" {
-  provider = routeros.router-scarletwound
-
-  chain            = "forward"
-  action           = "mark-packet"
   src_address_list = "!${routeros_firewall_addr_list.scarletwound-lan-private1.list}"
-  new_packet_mark  = "internet"
-}
-
-resource "routeros_ip_firewall_mangle" "scarletwound-mark-from-internet-forward-byvlan" {
-  provider = routeros.router-scarletwound
-
-  chain           = "prerouting"
-  action          = "mark-packet"
-  in_interface    = routeros_interface_vlan.scarletwound-vlan7.name
-  new_packet_mark = "internet"
-}
-
-resource "routeros_ip_firewall_mangle" "scarletwound-mark-to-internet-forward-byvlan" {
-  provider = routeros.router-scarletwound
-
-  chain           = "forward"
-  action          = "mark-packet"
-  out_interface   = routeros_interface_vlan.scarletwound-vlan7.name
-  new_packet_mark = "internet"
+  new_packet_mark  = "internet-in"
 }
 
 resource "routeros_ip_firewall_mangle" "scarletwound-mark-dns-udp-prerouting" {
@@ -254,10 +219,10 @@ resource "routeros_ip_firewall_mangle" "scarletwound-mark-dns-udp-prerouting" {
   new_packet_mark = "high-priority"
 }
 
-resource "routeros_ip_firewall_mangle" "scarletwound-mark-dns-udp-forward" {
+resource "routeros_ip_firewall_mangle" "scarletwound-mark-dns-udp-output" {
   provider = routeros.router-scarletwound
 
-  chain           = "forward"
+  chain           = "output"
   action          = "mark-packet"
   protocol        = "udp"
   port            = "53,5353"
@@ -270,11 +235,9 @@ resource "routeros_move_items" "scarletwound-firewall-mangle" {
 
   sequence = [
     routeros_ip_firewall_mangle.scarletwound-mark-dns-udp-prerouting.id,
-    routeros_ip_firewall_mangle.scarletwound-mark-dns-udp-forward.id,
-    routeros_ip_firewall_mangle.scarletwound-mark-from-internet-prerouting.id,
-    routeros_ip_firewall_mangle.scarletwound-mark-to-internet-prerouting.id,
+    routeros_ip_firewall_mangle.scarletwound-mark-dns-udp-output.id,
     routeros_ip_firewall_mangle.scarletwound-mark-from-internet-forward.id,
-    routeros_ip_firewall_mangle.scarletwound-mark-to-internet-forward.id,
+    routeros_ip_firewall_mangle.scarletwound-mark-to-internet-prerouting.id,
   ]
 }
 
