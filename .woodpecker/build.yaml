@@ -4,7 +4,7 @@ when:
     branch: main
 steps:
   - name: build
-    image: code.ramona.fun/ramona/monorepo/ci:1788899663
+    image: code.ramona.fun/ramona/monorepo/ci:1789295002
     commands:
       - ./.woodpecker/scripts/build.bash
     environment:
