@@ -35,6 +35,12 @@ resource "routeros_interface_list_member" "scarletwound-internet-access-vlan2" {
   list      = routeros_interface_list.scarletwound-internet-access.name
 }
 
+resource "routeros_ip_dhcp_server_lease" "scarletwound-moonfall" {
+  provider    = routeros.router-scarletwound
+  mac_address = "A0:36:BC:09:59:25"
+  address     = "10.32.1.246"
+}
+
 moved {
   from = routeros_ip_pool.scarletwound-workstations
   to   = module.scarletwound-vlan2.routeros_ip_pool.main

@@ -125,6 +125,15 @@ module "scarletwound-firewall" {
     {
       chain       = "forward",
       action      = "accept",
+      src_address = routeros_ip_dhcp_server_lease.scarletwound-vlan6-homeassistant.address,
+      dst_address = routeros_ip_dhcp_server_lease.scarletwound-moonfall.address,
+      dst_port    = "56955"
+      protocol    = "tcp"
+      comment     = "homeassistant -> moonfall (unsleeper)"
+    },
+    {
+      chain       = "forward",
+      action      = "accept",
       src_address = routeros_ip_dhcp_server_lease.scarletwound-tv.address,
       dst_address = routeros_ip_dhcp_server_lease.scarletwound-hallewell.address,
       dst_port    = "8096"
