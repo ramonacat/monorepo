@@ -81,8 +81,8 @@ resource "routeros_queue_tree" "scarletwound-internet-out" {
   parent      = routeros_interface_vlan.scarletwound-vlan7.name
   queue       = routeros_queue_type.scarletwound-cake.name
   packet_mark = ["internet-out"]
-  limit_at    = "6M"
-  max_limit   = "8M"
+  limit_at    = "15M"
+  max_limit   = "22M"
 }
 
 resource "routeros_queue_tree" "scarletwound-internet-in" {
