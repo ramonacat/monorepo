@@ -139,7 +139,7 @@ metadata:
   namespace: kgateway-system
   annotations: 
     # TODO https://github.com/kubernetes-sigs/external-dns/issues/6507
-    "external-dns.alpha.kubernetes.io/target": "100.119.189.53"
+    "external-dns.kubernetes.io/target": "100.119.189.53"
     cert-manager.io/cluster-issuer: cert-manager-webhook-dnsimple-production
 spec: 
   gatewayClassName: 'kgateway'
@@ -227,7 +227,7 @@ metadata:
   namespace: kgateway-system
   annotations: 
     # TODO https://github.com/kubernetes-sigs/external-dns/issues/6507
-    "external-dns.alpha.kubernetes.io/target": "100.86.28.137"
+    "external-dns.kubernetes.io/target": "100.86.28.137"
 spec: 
   gatewayClassName: 'kgateway'
   infrastructure:
