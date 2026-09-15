@@ -4,7 +4,7 @@ kind: ConfigMap
 metadata:
   name: config
 data:
-  red-proxy.json: |-
+  auth-proxy.json: |-
     {
       "hostname": "auth-proxy.ramona.fun",
       "base_url": "https://auth-proxy.ramona.fun",
