@@ -1,0 +1,147 @@
+# https://kubernetes.io/docs/concepts/workloads/controllers/deployment/
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: auth-proxy
+  labels:
+    app: auth-proxy
+spec:
+  selector:
+    matchLabels:
+      app: auth-proxy
+  replicas: 2
+  strategy:
+    rollingUpdate:
+      maxUnavailable: 50%
+    type: RollingUpdate
+  template:
+    metadata:
+      labels:
+        app: auth-proxy
+    spec:
+      containers:
+      - name: auth-proxy
+        image: code.ramona.fun/ramona/monorepo/auth-proxy:1789308988
+        imagePullPolicy: IfNotPresent
+        resources:
+          requests:
+            cpu: 50m
+            memory: 64Mi
+          limits:
+            cpu: 100m
+            memory: 128Mi
+        livenessProbe:
+          httpGet:
+            port: 3000
+            # TODO add a real health-check, that talks to the db, etc.
+            path: /
+            httpHeaders:
+              - name: Host
+                value: auth-proxy.ramona.fun
+        env:
+          - name: RAMONA_CONFIG_PATH
+            value: /etc/ramona/auth-proxy/auth-proxy.json
+          - name: RUST_LOG
+            value: info
+        envFrom:
+          - secretRef:
+              name: db
+          - secretRef:
+              name: oauth
+          - secretRef:
+              name: session-key
+        volumeMounts:
+          - mountPath: /etc/ramona/auth-proxy
+            name: config
+        ports:
+        - containerPort: 3000
+          name: auth-proxy
+      volumes:
+        - name: config
+          configMap:
+            name: config
+      restartPolicy: Always
+      imagePullSecrets:
+        - name: forgejo-container-credentials
+---
+apiVersion: external-secrets.io/v1
+kind: ExternalSecret
+metadata:
+  name: db
+spec:
+  refreshInterval: 1m
+  target:
+    name: db
+    creationPolicy: Owner
+    template:
+      data:
+        DATABASE_URL: 'postgres://{{ .username }}:{{ .password }}@cloudnative-pg-database-cluster-pooler-rw.cloudnative-pg-database/red-proxy'
+  dataFrom:
+    - sourceRef:
+        storeRef:
+          kind: ClusterSecretStore
+          name: vault
+      extract:
+        key: postgres/red-proxy
+---
+apiVersion: external-secrets.io/v1
+kind: ExternalSecret
+metadata:
+  name: oauth
+spec:
+  refreshInterval: 1m
+  target:
+    name: oauth
+    creationPolicy: Owner
+    template:
+      data:
+        RAMONA_OAUTH_CLIENT_ID: "{{ .OAUTH_CLIENT_ID }}"
+        RAMONA_OAUTH_CLIENT_SECRET: "{{ .OAUTH_CLIENT_SECRET }}"
+        RAMONA_OIDC_ISSUER_URL: "{{ .OIDC_ISSUER_URL }}"
+  dataFrom:
+    - sourceRef:
+        storeRef:
+          kind: ClusterSecretStore
+          name: vault
+      extract:
+        key: api-public/oauth
+---
+apiVersion: external-secrets.io/v1
+kind: ExternalSecret
+metadata:
+  name: session-key
+spec:
+  refreshInterval: 1m
+  target:
+    name: session-key
+    creationPolicy: Owner
+    template:
+      data:
+        RAMONA_SESSION_KEY: "{{ .SESSION_KEY }}"
+  dataFrom:
+    - sourceRef:
+        storeRef:
+          kind: ClusterSecretStore
+          name: vault
+      extract:
+        key: red-proxy/session-key
+---
+apiVersion: external-secrets.io/v1
+kind: ExternalSecret
+metadata:
+  name: forgejo-container-credentials
+spec:
+  target:
+    name: forgejo-container-credentials
+    creationPolicy: Owner
+    template:
+      type: kubernetes.io/dockerconfigjson
+      data:
+        .dockerconfigjson: '{{ index . "docker-config-json" | toString }}'
+  dataFrom:
+    - sourceRef:
+        storeRef:
+          kind: ClusterSecretStore
+          name: vault
+      extract:
+        key: forgejo-container-registry-config

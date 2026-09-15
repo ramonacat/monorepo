@@ -1,0 +1,41 @@
+# https://kubernetes.io/docs/concepts/configuration/configmap/
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: config
+data:
+  red-proxy.json: |-
+    {
+      "hostname": "auth-proxy.ramona.fun",
+      "base_url": "https://auth-proxy.ramona.fun",
+      "session_key": "$RAMONA_SESSION_KEY",
+      "cookie_domain": "ramona.fun",
+      "apps": {
+        "red-docs.ramona.fun": {
+          "base_url": "https://red-docs.ramona.fun",
+          "backend": "http://red-docs.red-docs:8080",
+          "auth_methods": [
+            {"type": "Token"},
+            {"type": "OAuth", "config": {"required_entitlement": "red-docs"}}
+          ]
+        },
+        "admin-secret.ramona.fun": {
+          "base_url": "https://admin-secret.ramona.fun",
+          "backend": "http://admin-secret.admin-secret:8080",
+          "auth_methods": [
+            {"type": "OAuth", "config": {"required_entitlement": "admin"}}
+          ]
+        }
+      },
+      "api": {
+        "oauth": {
+          "client_id": "$RAMONA_OAUTH_CLIENT_ID",
+          "client_secret": "$RAMONA_OAUTH_CLIENT_SECRET",
+          "oidc_issuer_url": "$RAMONA_OIDC_ISSUER_URL"
+        },
+        "oauth_config": {
+          "required_entitlement": "admin"
+        }
+      }
+    }
+
