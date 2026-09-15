@@ -39,7 +39,7 @@ spec:
               - name: Host
                 value: auth-proxy.ramona.fun
         env:
-          - name: RAMONA_CONFIG_PATH
+          - name: RAMONA_RED_CONFIG_PATH
             value: /etc/ramona/auth-proxy/auth-proxy.json
           - name: RUST_LOG
             value: info
