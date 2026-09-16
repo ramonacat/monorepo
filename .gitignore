@@ -5,11 +5,12 @@
 *.log
 *.tar
 *.tfplan
+.env
 .s.PGSQL.*.lock
+apps/auth-proxy/config.json
 infection.log
 
 .direnv/
-.env
 .idea/
 .phpunit.cache/
 .postgres_data/

@@ -2,12 +2,13 @@ mod api;
 mod config;
 mod infra;
 mod models;
+mod mtls;
 mod oauth;
 mod schema;
 mod sessions;
 mod tokens;
 
-use std::{collections::HashMap, env, str::FromStr};
+use std::{collections::HashMap, env, net::SocketAddr, str::FromStr, sync::Arc};
 
 use axum::{
     Extension, Router,
@@ -16,6 +17,7 @@ use axum::{
     http::{Response, StatusCode, header::LOCATION},
     routing::{any, get},
 };
+use axum_server::tls_rustls::RustlsConfig;
 use diesel::{Connection as _, PgConnection};
 use diesel_migrations::{EmbeddedMigrations, MigrationHarness as _, embed_migrations};
 use dotenvy::dotenv;
@@ -36,6 +38,12 @@ use openidconnect::{
     reqwest,
 };
 use serde::{Deserialize, Serialize};
+use tokio::task::JoinSet;
+use tokio_rustls::rustls::{
+    RootCertStore, ServerConfig,
+    pki_types::{CertificateDer, PrivateKeyDer, pem::PemObject},
+    server::WebPkiClientVerifier,
+};
 use tower::ServiceExt as _;
 use tower_http::{
     cors::CorsLayer,
@@ -46,6 +54,7 @@ use tracing::{Level, info};
 use crate::{
     config::{AppDefinition, Config, OAuthConfiguration},
     infra::DatabaseConnector,
+    mtls::MtlsExtension,
     oauth::{OAuthSessionData, User},
     sessions::{SessionHandle, SessionLayer},
 };
@@ -330,6 +339,9 @@ async fn make_oauth_client(
 async fn main() {
     tracing_subscriber::fmt().init();
     let _ = dotenv();
+    rustls::crypto::aws_lc_rs::default_provider()
+        .install_default()
+        .unwrap();
 
     let config = config::load().unwrap();
     let database_url = env::var("DATABASE_URL").expect("DATABASE_URL must be set");
@@ -393,7 +405,7 @@ async fn main() {
                     )
                     .await,
                 ),
-                required_entitlement: config.api.oauth.required_entitlement.clone(),
+                required_entitlement: config.api.oauth_config.required_entitlement.clone(),
             }],
             base_url: config.base_url.clone(),
             definition: None,
@@ -403,7 +415,7 @@ async fn main() {
     let cookie_domain = config.cookie_domain.clone();
 
     let state = AppState {
-        config,
+        config: config.clone(),
         oidc_http_client: auth_http_client,
         providers,
         backend_http_client,
@@ -434,7 +446,51 @@ async fn main() {
         // TODO only allow *.ramona.fun
         .layer(CorsLayer::very_permissive());
 
-    let listener = tokio::net::TcpListener::bind("0.0.0.0:3000").await.unwrap();
+    let mut servers = JoinSet::new();
+    let http_server = axum_server::bind(SocketAddr::from(([0, 0, 0, 0], 3000))).serve(
+        router
+            .clone()
+            .layer(Extension(MtlsExtension::NotAuthenticated))
+            .into_make_service(),
+    );
+    servers.spawn(http_server);
 
-    axum::serve(listener, router).await.unwrap();
+    if let Some(ref mtls_config) = config.mtls {
+        let mut client_root_cert_store = RootCertStore::empty();
+        for root in &mtls_config.client_roots {
+            client_root_cert_store
+                .add(CertificateDer::from_pem_file(root).unwrap())
+                .unwrap();
+        }
+        let client_cert_verifier_builder =
+            WebPkiClientVerifier::builder(Arc::new(client_root_cert_store));
+
+        let tls_config = ServerConfig::builder()
+            .with_client_cert_verifier(client_cert_verifier_builder.build().unwrap())
+            .with_single_cert(
+                mtls_config
+                    .server_chain
+                    .iter()
+                    .map(|x| CertificateDer::from_pem_file(x).unwrap())
+                    .collect(),
+                PrivateKeyDer::from_pem_file(&mtls_config.server_key).unwrap(),
+            )
+            .unwrap();
+
+        let mtls_server = axum_server::bind_rustls(
+            SocketAddr::from(([0, 0, 0, 0], 3001)),
+            RustlsConfig::from_config(Arc::new(tls_config)),
+        )
+        .serve(
+            router
+                .layer(Extension(MtlsExtension::Authenticated))
+                .into_make_service(),
+        );
+
+        servers.spawn(mtls_server);
+    }
+
+    for result in servers.join_all().await {
+        result.unwrap();
+    }
 }
