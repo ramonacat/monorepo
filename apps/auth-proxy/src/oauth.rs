@@ -1,4 +1,3 @@
-use crate::OAuth2IdToken;
 use crate::auth::Account;
 use crate::auth::AuthenticationError;
 use crate::auth::User;
@@ -14,15 +13,6 @@ use serde::Serialize;
 use tracing::error;
 
 use crate::Hostname;
-
-#[derive(Debug, Serialize, Deserialize, Clone)]
-pub struct OAuthSessionData {
-    pub csrf_token: CsrfToken,
-    pub pkce_verifier: String,
-    pub nonce: Nonce,
-    pub return_url: String,
-    pub id_token: Option<OAuth2IdToken>,
-}
 
 #[derive(Debug, Serialize, Deserialize, Clone)]
 pub struct RamonaTokenSessionData {
@@ -98,10 +88,3 @@ impl FromRequestParts<()> for User {
         Err(response)
     }
 }
-
-#[derive(Debug, Serialize, Deserialize, Clone)]
-pub struct AdditionalClaims {
-    pub entitlements: Vec<String>,
-}
-
-impl openidconnect::AdditionalClaims for AdditionalClaims {}

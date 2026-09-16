@@ -1,19 +1,81 @@
+use std::str::FromStr as _;
+
 use async_trait::async_trait;
 use axum::extract::{self, FromRequestParts as _};
 use http::Uri;
 use openidconnect::{
-    AuthorizationCode, CsrfToken, Nonce, PkceCodeChallenge, PkceCodeVerifier, Scope,
-    core::CoreAuthenticationFlow,
+    AuthorizationCode, ClientId, ClientSecret, CsrfToken, IssuerUrl, Nonce, PkceCodeChallenge,
+    PkceCodeVerifier, RedirectUrl, Scope,
+    core::{CoreAuthenticationFlow, CoreProviderMetadata},
 };
-use serde::Deserialize;
+use serde::{Deserialize, Serialize};
 use tracing::info;
 
 use crate::{
-    OAuth2Client,
     auth::{AuthenticateRedirectedError, AuthenticationError, AuthenticationMethod, User},
-    oauth::OAuthSessionData,
+    config::OAuthConfiguration,
     sessions::SessionHandle,
 };
+use openidconnect::{
+    EmptyExtraTokenFields, EndpointMaybeSet, EndpointNotSet, EndpointSet, IdToken, IdTokenFields,
+    StandardErrorResponse, StandardTokenResponse,
+    core::{
+        CoreAuthDisplay, CoreAuthPrompt, CoreErrorResponseType, CoreGenderClaim, CoreJsonWebKey,
+        CoreJweContentEncryptionAlgorithm, CoreJwsSigningAlgorithm, CoreRevocableToken,
+        CoreRevocationErrorResponse, CoreTokenIntrospectionResponse, CoreTokenType,
+    },
+};
+
+#[derive(Debug, Serialize, Deserialize, Clone)]
+pub struct OAuthSessionData {
+    csrf_token: CsrfToken,
+    pkce_verifier: String,
+    nonce: Nonce,
+    return_url: String,
+    id_token: Option<OAuth2IdToken>,
+}
+
+#[derive(Debug, Serialize, Deserialize, Clone)]
+struct AdditionalClaims {
+    pub entitlements: Vec<String>,
+}
+
+impl openidconnect::AdditionalClaims for AdditionalClaims {}
+
+type OAuth2IdToken = IdToken<
+    AdditionalClaims,
+    CoreGenderClaim,
+    CoreJweContentEncryptionAlgorithm,
+    CoreJwsSigningAlgorithm,
+>;
+type OAuth2IdTokenFields = IdTokenFields<
+    AdditionalClaims,
+    EmptyExtraTokenFields,
+    CoreGenderClaim,
+    CoreJweContentEncryptionAlgorithm,
+    CoreJwsSigningAlgorithm,
+>;
+type OAuth2TokenResponse = StandardTokenResponse<OAuth2IdTokenFields, CoreTokenType>;
+
+type OAuth2Client = openidconnect::Client<
+    AdditionalClaims,
+    CoreAuthDisplay,
+    CoreGenderClaim,
+    CoreJweContentEncryptionAlgorithm,
+    CoreJsonWebKey,
+    CoreAuthPrompt,
+    StandardErrorResponse<CoreErrorResponseType>,
+    OAuth2TokenResponse,
+    CoreTokenIntrospectionResponse,
+    CoreRevocableToken,
+    CoreRevocationErrorResponse,
+    EndpointSet,
+    EndpointNotSet,
+    EndpointNotSet,
+    EndpointNotSet,
+    EndpointMaybeSet,
+    EndpointMaybeSet,
+>;
 
 #[derive(Debug, Deserialize)]
 struct AuthenticateRedirectedQuery {
@@ -141,12 +203,31 @@ impl AuthenticationMethod for OAuth {
 }
 
 impl OAuth {
-    pub fn new(
+    pub async fn new(
         required_entitlement: Option<String>,
-        oidc_http_client: openidconnect::reqwest::Client,
-        client: OAuth2Client,
         app_base_url: Uri,
+        oauth_config: OAuthConfiguration,
     ) -> Self {
+        let oidc_http_client = openidconnect::reqwest::ClientBuilder::new()
+            .redirect(openidconnect::reqwest::redirect::Policy::none())
+            .build()
+            .unwrap();
+
+        let provider_metadata = CoreProviderMetadata::discover_async(
+            IssuerUrl::new(oauth_config.oidc_issuer_url.clone()).unwrap(),
+            &oidc_http_client,
+        )
+        .await
+        .unwrap();
+
+        let redirect_uri = http::Uri::from_str(&format!("{}/authorize", app_base_url)).unwrap();
+
+        let client = OAuth2Client::from_provider_metadata(
+            provider_metadata.clone(),
+            ClientId::new(oauth_config.client_id.clone()),
+            Some(ClientSecret::new(oauth_config.client_secret.clone())),
+        )
+        .set_redirect_uri(RedirectUrl::new(redirect_uri.to_string()).unwrap());
         Self {
             required_entitlement,
             oidc_http_client,

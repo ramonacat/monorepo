@@ -25,17 +25,6 @@ use http::{
     HeaderMap, HeaderName, HeaderValue,
     header::{CACHE_CONTROL, CONNECTION, COOKIE, HOST, TRANSFER_ENCODING, USER_AGENT},
 };
-use openidconnect::{
-    ClientId, ClientSecret, EmptyExtraTokenFields, EndpointMaybeSet, EndpointNotSet, EndpointSet,
-    IdToken, IdTokenFields, IssuerUrl, RedirectUrl, StandardErrorResponse, StandardTokenResponse,
-    core::{
-        CoreAuthDisplay, CoreAuthPrompt, CoreErrorResponseType, CoreGenderClaim, CoreJsonWebKey,
-        CoreJweContentEncryptionAlgorithm, CoreJwsSigningAlgorithm, CoreProviderMetadata,
-        CoreRevocableToken, CoreRevocationErrorResponse, CoreTokenIntrospectionResponse,
-        CoreTokenType,
-    },
-    reqwest,
-};
 use tokio::task::JoinSet;
 use tokio_rustls::rustls::{
     RootCertStore, ServerConfig,
@@ -51,46 +40,11 @@ use tracing::{Level, info};
 
 use crate::{
     auth::{AuthenticationMethod, User},
-    config::{AppDefinition, Config, OAuthConfiguration},
+    config::{AppDefinition, Config},
     infra::DatabaseConnector,
     mtls::MtlsExtension,
     sessions::{SessionHandle, SessionLayer},
 };
-
-type OAuth2IdToken = IdToken<
-    oauth::AdditionalClaims,
-    CoreGenderClaim,
-    CoreJweContentEncryptionAlgorithm,
-    CoreJwsSigningAlgorithm,
->;
-type OAuth2IdTokenFields = IdTokenFields<
-    oauth::AdditionalClaims,
-    EmptyExtraTokenFields,
-    CoreGenderClaim,
-    CoreJweContentEncryptionAlgorithm,
-    CoreJwsSigningAlgorithm,
->;
-type OAuth2TokenResponse = StandardTokenResponse<OAuth2IdTokenFields, CoreTokenType>;
-
-type OAuth2Client = openidconnect::Client<
-    oauth::AdditionalClaims,
-    CoreAuthDisplay,
-    CoreGenderClaim,
-    CoreJweContentEncryptionAlgorithm,
-    CoreJsonWebKey,
-    CoreAuthPrompt,
-    StandardErrorResponse<CoreErrorResponseType>,
-    OAuth2TokenResponse,
-    CoreTokenIntrospectionResponse,
-    CoreRevocableToken,
-    CoreRevocationErrorResponse,
-    EndpointSet,
-    EndpointNotSet,
-    EndpointNotSet,
-    EndpointNotSet,
-    EndpointMaybeSet,
-    EndpointMaybeSet,
->;
 
 #[derive(Debug, Clone)]
 struct BackendState {
@@ -264,29 +218,6 @@ async fn get_authorize(
 
 pub const MIGRATIONS: EmbeddedMigrations = embed_migrations!("migrations/");
 
-// TODO this should be happening in crate::auth::oauth
-async fn make_oauth_client(
-    configuration: &OAuthConfiguration,
-    http_client: &reqwest::Client,
-    base_url: String,
-) -> OAuth2Client {
-    let provider_metadata = CoreProviderMetadata::discover_async(
-        IssuerUrl::new(configuration.oidc_issuer_url.clone()).unwrap(),
-        http_client,
-    )
-    .await
-    .unwrap();
-
-    let redirect_uri = http::Uri::from_str(&format!("{}/authorize", base_url)).unwrap();
-
-    OAuth2Client::from_provider_metadata(
-        provider_metadata.clone(),
-        ClientId::new(configuration.client_id.clone()),
-        Some(ClientSecret::new(configuration.client_secret.clone())),
-    )
-    .set_redirect_uri(RedirectUrl::new(redirect_uri.to_string()).unwrap())
-}
-
 #[tokio::main]
 async fn main() {
     tracing_subscriber::fmt().init();
@@ -302,11 +233,6 @@ async fn main() {
         .run_pending_migrations(MIGRATIONS)
         .unwrap();
 
-    let auth_http_client = reqwest::ClientBuilder::new()
-        .redirect(reqwest::redirect::Policy::none())
-        .build()
-        .unwrap();
-
     let backend_http_client = ::reqwest::ClientBuilder::new()
         .redirect(::reqwest::redirect::Policy::none())
         .build()
@@ -318,20 +244,14 @@ async fn main() {
         for authentication_method in &app_definition.auth_methods {
             let authentication_method: Arc<dyn AuthenticationMethod + Send + Sync> =
                 match authentication_method {
-                    config::AuthMethod::OAuth(oauth_configuration) => {
-                        let client = make_oauth_client(
-                            &config.api.oauth,
-                            &auth_http_client,
-                            config.base_url.clone(),
-                        )
-                        .await;
-                        Arc::new(auth::oauth::OAuth::new(
+                    config::AuthMethod::OAuth(oauth_configuration) => Arc::new(
+                        auth::oauth::OAuth::new(
                             oauth_configuration.required_entitlement.clone(),
-                            auth_http_client.clone(),
-                            client,
                             config.base_url.parse().unwrap(),
-                        ))
-                    }
+                            config.api.oauth.clone(),
+                        )
+                        .await,
+                    ),
                     config::AuthMethod::Token => Arc::new(auth::token::Token::new(
                         DatabaseConnector::new(database_url.clone()),
                     )),
@@ -349,22 +269,17 @@ async fn main() {
         );
     }
 
-    let client = make_oauth_client(
-        &config.api.oauth,
-        &auth_http_client,
-        config.base_url.clone(),
-    )
-    .await;
-
     providers.insert(
         config.hostname.clone(),
         BackendState {
-            authentication_methods: vec![Arc::new(auth::oauth::OAuth::new(
-                config.api.oauth_config.required_entitlement.clone(),
-                auth_http_client.clone(),
-                client,
-                config.base_url.parse().unwrap(),
-            ))],
+            authentication_methods: vec![Arc::new(
+                auth::oauth::OAuth::new(
+                    config.api.oauth_config.required_entitlement.clone(),
+                    config.base_url.parse().unwrap(),
+                    config.api.oauth.clone(),
+                )
+                .await,
+            )],
             definition: None,
         },
     );

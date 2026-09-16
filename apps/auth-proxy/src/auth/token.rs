@@ -14,8 +14,7 @@ use diesel::{
     BoolExpressionMethods as _, ExpressionMethods as _, OptionalExtension as _, QueryDsl as _,
 };
 use diesel_async::RunQueryDsl as _;
-use http::{Uri, request};
-use openidconnect::{AuthorizationCode, PkceCodeVerifier};
+use http::Uri;
 use tracing::info;
 
 use crate::auth::AuthenticationMethod;

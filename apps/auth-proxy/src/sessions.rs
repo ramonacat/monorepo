@@ -15,8 +15,9 @@ use serde::{Deserialize, Serialize};
 use tower::{Layer, Service};
 use uuid::Uuid;
 
+use crate::auth::oauth::OAuthSessionData;
 use crate::infra::DatabaseConnector;
-use crate::oauth::{OAuthSessionData, RamonaTokenSessionData};
+use crate::oauth::RamonaTokenSessionData;
 
 const COOKIE_NAME_SESSION_ID: &str = "ramona-session-id";
 

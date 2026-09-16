@@ -19,8 +19,7 @@ pub struct User {
 }
 
 impl User {
-    #[deprecated]
-    pub fn new(
+    fn new(
         id: String,
         name: Option<String>,
         entitlements: HashSet<String>,
