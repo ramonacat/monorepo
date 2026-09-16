@@ -1,4 +1,5 @@
 mod api;
+mod auth;
 mod config;
 mod infra;
 mod models;
@@ -6,7 +7,6 @@ mod mtls;
 mod oauth;
 mod schema;
 mod sessions;
-mod tokens;
 
 use std::{collections::HashMap, env, net::SocketAddr, str::FromStr, sync::Arc};
 
@@ -22,13 +22,12 @@ use diesel::{Connection as _, PgConnection};
 use diesel_migrations::{EmbeddedMigrations, MigrationHarness as _, embed_migrations};
 use dotenvy::dotenv;
 use http::{
-    HeaderMap, HeaderName, HeaderValue, Uri,
+    HeaderMap, HeaderName, HeaderValue,
     header::{CACHE_CONTROL, CONNECTION, COOKIE, HOST, TRANSFER_ENCODING, USER_AGENT},
 };
 use openidconnect::{
-    AuthorizationCode, ClientId, ClientSecret, EmptyExtraTokenFields, EndpointMaybeSet,
-    EndpointNotSet, EndpointSet, IdToken, IdTokenFields, IssuerUrl, PkceCodeVerifier, RedirectUrl,
-    StandardErrorResponse, StandardTokenResponse,
+    ClientId, ClientSecret, EmptyExtraTokenFields, EndpointMaybeSet, EndpointNotSet, EndpointSet,
+    IdToken, IdTokenFields, IssuerUrl, RedirectUrl, StandardErrorResponse, StandardTokenResponse,
     core::{
         CoreAuthDisplay, CoreAuthPrompt, CoreErrorResponseType, CoreGenderClaim, CoreJsonWebKey,
         CoreJweContentEncryptionAlgorithm, CoreJwsSigningAlgorithm, CoreProviderMetadata,
@@ -37,7 +36,6 @@ use openidconnect::{
     },
     reqwest,
 };
-use serde::{Deserialize, Serialize};
 use tokio::task::JoinSet;
 use tokio_rustls::rustls::{
     RootCertStore, ServerConfig,
@@ -52,10 +50,10 @@ use tower_http::{
 use tracing::{Level, info};
 
 use crate::{
+    auth::{AuthenticationMethod, User},
     config::{AppDefinition, Config, OAuthConfiguration},
     infra::DatabaseConnector,
     mtls::MtlsExtension,
-    oauth::{OAuthSessionData, User},
     sessions::{SessionHandle, SessionLayer},
 };
 
@@ -95,19 +93,9 @@ type OAuth2Client = openidconnect::Client<
 >;
 
 #[derive(Debug, Clone)]
-enum AuthenticationMethodState {
-    OAuth {
-        client: Box<OAuth2Client>,
-        required_entitlement: Option<String>,
-    },
-    Token,
-}
-
-#[derive(Debug, Clone)]
-struct ProviderState {
+struct BackendState {
     definition: Option<AppDefinition>,
-    authentication_methods: Vec<AuthenticationMethodState>,
-    base_url: String,
+    authentication_methods: Vec<Arc<dyn AuthenticationMethod + Send + Sync>>,
 }
 
 #[derive(Clone)]
@@ -120,8 +108,7 @@ struct OuterState {
 struct AppState {
     config: Config,
     database: DatabaseConnector,
-    providers: HashMap<String, ProviderState>,
-    oidc_http_client: reqwest::Client,
+    providers: HashMap<String, BackendState>,
     backend_http_client: ::reqwest::Client,
 }
 
@@ -186,7 +173,7 @@ async fn root_route(
         proxy_headers.insert("X-User-Id", HeaderValue::from_str(user.id()).unwrap());
         proxy_headers.insert(
             "X-Auth-Method",
-            HeaderValue::from_str(&user.auth_method().to_string()).unwrap(),
+            HeaderValue::from_str(user.auth_method()).unwrap(),
         );
 
         if let Some(user_name) = user.name() {
@@ -241,78 +228,43 @@ async fn root_route(
     }
 }
 
-#[derive(Debug, Serialize, Deserialize)]
-struct AuthroizeQuery {
-    code: String,
-    state: String,
-}
-
 #[axum::debug_handler]
 async fn get_authorize(
     extract::Extension(state): extract::Extension<AppState>,
-    extract::Query(query): extract::Query<AuthroizeQuery>,
     session: extract::Extension<SessionHandle>,
+    request: extract::Request,
 ) -> (StatusCode, HeaderMap, String) {
-    let mut oauth_session_state: OAuthSessionData = session.data().await.oauth.unwrap();
-
-    if &query.state != oauth_session_state.csrf_token.secret() {
-        return (
-            StatusCode::BAD_REQUEST,
-            HeaderMap::new(),
-            "invalid csrf_token".into(),
-        );
-    }
-
-    let return_url: Uri = oauth_session_state.return_url.parse().unwrap();
+    let session_data = session.data().await;
 
     // TODO 404 if it's missing
     let provider = state
         .providers
-        .get(return_url.authority().unwrap().host())
+        .get(&session_data.in_progress_provider.unwrap())
         .unwrap();
 
-    let client = provider
-        .authentication_methods
-        .iter()
-        .filter_map(|x| {
-            if let AuthenticationMethodState::OAuth {
-                client,
-                required_entitlement: _,
-            } = x
-            {
-                Some(client)
-            } else {
-                None
+    let (mut request_parts, _request_body) = request.into_parts();
+    for method in &provider.authentication_methods {
+        match method.authenticate_redirected(&mut request_parts).await {
+            Ok(uri) => {
+                let mut headers = HeaderMap::new();
+                headers.insert(LOCATION, HeaderValue::from_str(&uri.to_string()).unwrap());
+
+                return (StatusCode::FOUND, headers, String::new());
             }
-        })
-        .next()
-        .unwrap();
+            Err(_) => todo!(),
+        }
+    }
 
-    let pkce_verifier = PkceCodeVerifier::new(oauth_session_state.pkce_verifier.clone());
-    let token_response = client
-        .exchange_code(AuthorizationCode::new(query.code))
-        .unwrap()
-        .set_pkce_verifier(pkce_verifier)
-        .request_async(&state.oidc_http_client)
-        .await
-        .unwrap();
-
-    oauth_session_state.id_token = Some(token_response.extra_fields().id_token().unwrap().clone());
-    session
-        .update(|s| s.oauth = Some(oauth_session_state))
-        .await;
-
-    let mut headers = HeaderMap::new();
-    headers.insert(
-        LOCATION,
-        HeaderValue::from_str(&return_url.to_string()).unwrap(),
-    );
-
-    (StatusCode::FOUND, headers, String::new())
+    (
+        StatusCode::BAD_REQUEST,
+        HeaderMap::new(),
+        "no matching provider found".to_string(),
+    )
 }
 
 pub const MIGRATIONS: EmbeddedMigrations = embed_migrations!("migrations/");
 
+// TODO this should be happening in crate::auth::oauth
 async fn make_oauth_client(
     configuration: &OAuthConfiguration,
     http_client: &reqwest::Client,
@@ -364,50 +316,55 @@ async fn main() {
     for (host, app_definition) in &config.apps {
         let mut authentication_methods = vec![];
         for authentication_method in &app_definition.auth_methods {
-            let authentication_method = match authentication_method {
-                config::AuthMethod::OAuth(oauth_configuration) => {
-                    AuthenticationMethodState::OAuth {
-                        client: Box::new(
-                            make_oauth_client(
-                                &config.api.oauth,
-                                &auth_http_client,
-                                config.base_url.clone(),
-                            )
-                            .await,
-                        ),
-                        required_entitlement: oauth_configuration.required_entitlement.clone(),
+            let authentication_method: Arc<dyn AuthenticationMethod + Send + Sync> =
+                match authentication_method {
+                    config::AuthMethod::OAuth(oauth_configuration) => {
+                        let client = make_oauth_client(
+                            &config.api.oauth,
+                            &auth_http_client,
+                            config.base_url.clone(),
+                        )
+                        .await;
+                        Arc::new(auth::oauth::OAuth::new(
+                            oauth_configuration.required_entitlement.clone(),
+                            auth_http_client.clone(),
+                            client,
+                            config.base_url.parse().unwrap(),
+                        ))
                     }
-                }
-                config::AuthMethod::Token => AuthenticationMethodState::Token,
-            };
+                    config::AuthMethod::Token => Arc::new(auth::token::Token::new(
+                        DatabaseConnector::new(database_url.clone()),
+                    )),
+                };
+
             authentication_methods.push(authentication_method);
         }
 
         providers.insert(
             host.to_string(),
-            ProviderState {
+            BackendState {
                 authentication_methods,
-                base_url: app_definition.base_url.clone(),
                 definition: Some(app_definition.clone()),
             },
         );
     }
 
+    let client = make_oauth_client(
+        &config.api.oauth,
+        &auth_http_client,
+        config.base_url.clone(),
+    )
+    .await;
+
     providers.insert(
         config.hostname.clone(),
-        ProviderState {
-            authentication_methods: vec![AuthenticationMethodState::OAuth {
-                client: Box::new(
-                    make_oauth_client(
-                        &config.api.oauth,
-                        &auth_http_client,
-                        config.base_url.clone(),
-                    )
-                    .await,
-                ),
-                required_entitlement: config.api.oauth_config.required_entitlement.clone(),
-            }],
-            base_url: config.base_url.clone(),
+        BackendState {
+            authentication_methods: vec![Arc::new(auth::oauth::OAuth::new(
+                config.api.oauth_config.required_entitlement.clone(),
+                auth_http_client.clone(),
+                client,
+                config.base_url.parse().unwrap(),
+            ))],
             definition: None,
         },
     );
@@ -416,7 +373,6 @@ async fn main() {
 
     let state = AppState {
         config: config.clone(),
-        oidc_http_client: auth_http_client,
         providers,
         backend_http_client,
         database: DatabaseConnector::new(database_url),

@@ -11,7 +11,7 @@ use serde::{Deserialize, Serialize};
 use thiserror::Error;
 use uuid::Uuid;
 
-use crate::{AppState, oauth::User, sessions::SessionHandle};
+use crate::{AppState, auth::User, sessions::SessionHandle};
 
 #[derive(Debug, Serialize)]
 struct Token {
@@ -38,7 +38,7 @@ async fn get_tokens(
     extract::Extension(state): extract::Extension<AppState>,
     user: User,
 ) -> Result<Json<GetTokensResponse>, (StatusCode, Json<ApiError>)> {
-    if !user.is_admin() {
+    if !user.has_entitlement("admin") {
         return Err((StatusCode::UNAUTHORIZED, Json(ApiError::NotAnAdmin)));
     }
 
@@ -66,7 +66,7 @@ async fn get_single_token(
     extract::Path((_, token_id)): extract::Path<(String, Uuid)>,
     user: User,
 ) -> Result<Json<Token>, (StatusCode, Json<ApiError>)> {
-    if !user.is_admin() {
+    if !user.has_entitlement("admin") {
         return Err((StatusCode::UNAUTHORIZED, Json(ApiError::NotAnAdmin)));
     }
     use crate::schema::tokens::dsl::*;
@@ -112,7 +112,7 @@ async fn post_tokens_create(
     user: User,
     extract::Json(request): extract::Json<PostTokensCreateRequest>,
 ) -> Result<Json<PostTokensCreateResponse>, (StatusCode, Json<ApiError>)> {
-    if !user.is_admin() {
+    if !user.has_entitlement("admin") {
         return Err((StatusCode::UNAUTHORIZED, Json(ApiError::NotAnAdmin)));
     }
     use crate::schema::tokens::dsl::*;
@@ -151,7 +151,7 @@ async fn post_tokens_revoke(
     user: User,
     extract::Json(request): extract::Json<PostTokensRevokeRequest>,
 ) -> Result<(), (StatusCode, Json<ApiError>)> {
-    if !user.is_admin() {
+    if !user.has_entitlement("admin") {
         return Err((StatusCode::UNAUTHORIZED, Json(ApiError::NotAnAdmin)));
     }
     use crate::schema::tokens::dsl::*;
