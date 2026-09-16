@@ -4,7 +4,7 @@ helmCharts:
   - name: polaris
     repo: https://charts.fairwinds.com/stable
     releaseName: polaris
-    version: "6.0.0"
+    version: "6.0.1"
     namespace: polaris
 resources:
   - http-route.yaml
