@@ -9,7 +9,7 @@ helmCharts:
     valuesInline:
       existingSecret: 'renovate'
       cronjob:
-        schedule: '0/15 * * * *'
+        schedule: '12 */3 * * *'
         concurrencyPolicy: Replace
       env:
         LOG_LEVEL: "debug"
