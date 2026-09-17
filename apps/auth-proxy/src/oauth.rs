@@ -1,13 +1,11 @@
 use crate::auth::Account;
 use crate::auth::AuthenticationError;
-use crate::auth::User;
 
 use crate::AppState;
 use axum::extract;
 use axum::{body::Body, extract::FromRequestParts};
 use http::header::LOCATION;
 use http::{Response, StatusCode};
-use openidconnect::{CsrfToken, Nonce};
 use serde::Deserialize;
 use serde::Serialize;
 use tracing::error;
@@ -29,7 +27,7 @@ impl RamonaTokenSessionData {
     }
 }
 
-impl FromRequestParts<()> for User {
+impl FromRequestParts<()> for Account {
     type Rejection = Response<Body>;
 
     async fn from_request_parts(
@@ -48,10 +46,7 @@ impl FromRequestParts<()> for User {
             let response = authentication_method.authenticate(parts).await;
 
             match response {
-                Ok(account) => match account {
-                    Account::User(user) => return Ok(user),
-                    Account::Machine(_machine) => todo!(),
-                },
+                Ok(account) => return Ok(account),
                 Err(error) => match error {
                     AuthenticationError::NotAuthenticated { redirect } => {
                         let mut response = Response::new(Body::default());

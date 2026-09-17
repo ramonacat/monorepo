@@ -150,6 +150,8 @@ impl AuthenticationMethod for OAuth {
                             .path_and_query()
                             .map(|x| x.to_string())
                             .unwrap_or_default()
+                            .strip_prefix('/')
+                            .unwrap_or_default()
                     ),
                     id_token: None,
                 })
@@ -220,7 +222,7 @@ impl OAuth {
         .await
         .unwrap();
 
-        let redirect_uri = http::Uri::from_str(&format!("{}/authorize", app_base_url)).unwrap();
+        let redirect_uri = http::Uri::from_str(&format!("{}authorize", app_base_url)).unwrap();
 
         let client = OAuth2Client::from_provider_metadata(
             provider_metadata.clone(),

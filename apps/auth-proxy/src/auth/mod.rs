@@ -1,3 +1,4 @@
+pub mod mtls;
 pub mod oauth;
 pub mod token;
 
@@ -58,13 +59,33 @@ impl User {
 
 #[derive(Debug)]
 pub struct Machine {
-    name: String,
+    hostname: String,
+    auth_method: String,
+}
+
+impl Machine {
+    pub fn hostname(&self) -> &str {
+        &self.hostname
+    }
+
+    pub fn auth_method(&self) -> &str {
+        &self.auth_method
+    }
 }
 
 #[derive(Debug)]
 pub enum Account {
     User(User),
     Machine(Machine),
+}
+
+impl Account {
+    pub fn has_entitlement(&self, entitlement: &str) -> bool {
+        match self {
+            Account::User(user) => user.has_entitlement(entitlement),
+            Account::Machine(_machine) => false,
+        }
+    }
 }
 
 #[derive(Debug, Error)]
@@ -82,6 +103,7 @@ pub enum AuthenticationError {
 pub enum AuthenticateRedirectedError {
     NoMatch,
     BadRequest,
+    #[allow(unused, reason = "TODO improve error handling")]
     Failed(Box<dyn Error>),
 }
 

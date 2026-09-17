@@ -39,7 +39,7 @@ use tower_http::{
 use tracing::{Level, info};
 
 use crate::{
-    auth::{AuthenticationMethod, User},
+    auth::{Account, AuthenticationMethod},
     config::{AppDefinition, Config},
     infra::DatabaseConnector,
     mtls::MtlsExtension,
@@ -98,7 +98,7 @@ async fn root_route(
     } else {
         let (mut parts, body) = request.into_parts();
 
-        let user = match User::from_request_parts(&mut parts, &()).await {
+        let account = match Account::from_request_parts(&mut parts, &()).await {
             Ok(u) => u,
             Err(e) => return e,
         };
@@ -124,25 +124,39 @@ async fn root_route(
             proxy_headers.insert(USER_AGENT, ua.clone());
         }
         proxy_headers.insert(HOST, HeaderValue::from_str(target_uri.authority()).unwrap());
-        proxy_headers.insert("X-User-Id", HeaderValue::from_str(user.id()).unwrap());
-        proxy_headers.insert(
-            "X-Auth-Method",
-            HeaderValue::from_str(user.auth_method()).unwrap(),
-        );
+        match account {
+            Account::User(user) => {
+                proxy_headers.insert("X-User-Id", HeaderValue::from_str(user.id()).unwrap());
+                proxy_headers.insert(
+                    "X-Auth-Method",
+                    HeaderValue::from_str(user.auth_method()).unwrap(),
+                );
 
-        if let Some(user_name) = user.name() {
-            proxy_headers.insert("X-User-Name", HeaderValue::from_str(user_name).unwrap());
-        }
+                if let Some(user_name) = user.name() {
+                    proxy_headers.insert("X-User-Name", HeaderValue::from_str(user_name).unwrap());
+                }
 
-        if let Some(expiration) = user.expiration() {
-            proxy_headers.insert(
-                "X-User-Expiration",
-                HeaderValue::from_str(&expiration.to_rfc3339()).unwrap(),
-            );
-        }
+                if let Some(expiration) = user.expiration() {
+                    proxy_headers.insert(
+                        "X-User-Expiration",
+                        HeaderValue::from_str(&expiration.to_rfc3339()).unwrap(),
+                    );
+                }
 
-        if let Some(cookie) = parts.headers.get(COOKIE) {
-            proxy_headers.insert(COOKIE, cookie.clone());
+                if let Some(cookie) = parts.headers.get(COOKIE) {
+                    proxy_headers.insert(COOKIE, cookie.clone());
+                }
+            }
+            Account::Machine(machine) => {
+                proxy_headers.insert(
+                    "X-Auth-Method",
+                    HeaderValue::from_str(machine.auth_method()).unwrap(),
+                );
+                proxy_headers.insert(
+                    "X-Ramona-Hostname",
+                    HeaderValue::from_str(machine.hostname()).unwrap(),
+                );
+            }
         }
 
         let mut proxy_request = ::reqwest::Request::new(parts.method.clone(), target_uri.clone());
@@ -247,7 +261,7 @@ async fn main() {
                     config::AuthMethod::OAuth(oauth_configuration) => Arc::new(
                         auth::oauth::OAuth::new(
                             oauth_configuration.required_entitlement.clone(),
-                            config.base_url.parse().unwrap(),
+                            app_definition.base_url.parse().unwrap(),
                             config.api.oauth.clone(),
                         )
                         .await,
@@ -255,6 +269,7 @@ async fn main() {
                     config::AuthMethod::Token => Arc::new(auth::token::Token::new(
                         DatabaseConnector::new(database_url.clone()),
                     )),
+                    config::AuthMethod::MTls => Arc::new(auth::mtls::MTls::new()),
                 };
 
             authentication_methods.push(authentication_method);

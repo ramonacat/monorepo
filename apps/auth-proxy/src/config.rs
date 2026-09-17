@@ -25,6 +25,7 @@ pub struct AuthMethodOAuth {
 pub enum AuthMethod {
     OAuth(AuthMethodOAuth),
     Token,
+    MTls,
 }
 
 #[derive(Debug, Serialize, Deserialize, Clone)]
