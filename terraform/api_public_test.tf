@@ -39,7 +39,7 @@ resource "authentik_provider_oauth2" "api-public-test" {
   allowed_redirect_uris = [
     {
       matching_mode     = "strict",
-      url               = "http://test.ramona.fun:3000/authorize"
+      url               = "http://test.internal.ramona.fun:3000/authorize"
       redirect_uri_type = "authorization"
     },
   ]

@@ -140,6 +140,7 @@ pkgs.mkShell {
       openssl_4_0.dev
       pkg-config
       postgresql_18
+      postgresql_18.dev
       python3Packages.python
       python3Packages.uv
       shellcheck

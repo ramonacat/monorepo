@@ -2,6 +2,7 @@ use std::{
     collections::HashMap,
     env::{self, VarError},
     fs, io,
+    path::PathBuf,
 };
 
 use serde::{Deserialize, Serialize};
@@ -12,7 +13,6 @@ pub struct OAuthConfiguration {
     pub client_id: String,
     pub client_secret: String,
     pub oidc_issuer_url: String,
-    pub required_entitlement: Option<String>,
 }
 
 #[derive(Debug, Serialize, Deserialize, Clone)]
@@ -25,6 +25,7 @@ pub struct AuthMethodOAuth {
 pub enum AuthMethod {
     OAuth(AuthMethodOAuth),
     Token,
+    MTls,
 }
 
 #[derive(Debug, Serialize, Deserialize, Clone)]
@@ -52,6 +53,14 @@ pub struct Config {
     pub session_key: String,
     pub apps: HashMap<String, AppDefinition>,
     pub api: ApiConfig,
+    pub mtls: Option<MtlsConfig>,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct MtlsConfig {
+    pub client_roots: Vec<PathBuf>,
+    pub server_chain: Vec<PathBuf>,
+    pub server_key: PathBuf,
 }
 
 #[derive(Debug, Error)]

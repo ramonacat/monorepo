@@ -11,7 +11,7 @@ use serde::{Deserialize, Serialize};
 use thiserror::Error;
 use uuid::Uuid;
 
-use crate::{AppState, oauth::User, sessions::SessionHandle};
+use crate::{AppState, auth::Account, sessions::SessionHandle};
 
 #[derive(Debug, Serialize)]
 struct Token {
@@ -36,9 +36,9 @@ enum ApiError {
 #[axum::debug_handler]
 async fn get_tokens(
     extract::Extension(state): extract::Extension<AppState>,
-    user: User,
+    user: Account,
 ) -> Result<Json<GetTokensResponse>, (StatusCode, Json<ApiError>)> {
-    if !user.is_admin() {
+    if !user.has_entitlement("admin") {
         return Err((StatusCode::UNAUTHORIZED, Json(ApiError::NotAnAdmin)));
     }
 
@@ -64,9 +64,9 @@ fn map_token(token: &crate::models::Token) -> Token {
 async fn get_single_token(
     extract::Extension(state): extract::Extension<AppState>,
     extract::Path((_, token_id)): extract::Path<(String, Uuid)>,
-    user: User,
+    user: Account,
 ) -> Result<Json<Token>, (StatusCode, Json<ApiError>)> {
-    if !user.is_admin() {
+    if !user.has_entitlement("admin") {
         return Err((StatusCode::UNAUTHORIZED, Json(ApiError::NotAnAdmin)));
     }
     use crate::schema::tokens::dsl::*;
@@ -109,10 +109,10 @@ const TOKEN_ALPHABET: [&str; 12] = [
 #[axum::debug_handler]
 async fn post_tokens_create(
     extract::Extension(state): extract::Extension<AppState>,
-    user: User,
+    user: Account,
     extract::Json(request): extract::Json<PostTokensCreateRequest>,
 ) -> Result<Json<PostTokensCreateResponse>, (StatusCode, Json<ApiError>)> {
-    if !user.is_admin() {
+    if !user.has_entitlement("admin") {
         return Err((StatusCode::UNAUTHORIZED, Json(ApiError::NotAnAdmin)));
     }
     use crate::schema::tokens::dsl::*;
@@ -148,10 +148,10 @@ struct PostTokensRevokeRequest {
 
 async fn post_tokens_revoke(
     extract::Extension(state): extract::Extension<AppState>,
-    user: User,
+    user: Account,
     extract::Json(request): extract::Json<PostTokensRevokeRequest>,
 ) -> Result<(), (StatusCode, Json<ApiError>)> {
-    if !user.is_admin() {
+    if !user.has_entitlement("admin") {
         return Err((StatusCode::UNAUTHORIZED, Json(ApiError::NotAnAdmin)));
     }
     use crate::schema::tokens::dsl::*;

@@ -1,13 +1,14 @@
 mod api;
+mod auth;
 mod config;
 mod infra;
 mod models;
+mod mtls;
 mod oauth;
 mod schema;
 mod sessions;
-mod tokens;
 
-use std::{collections::HashMap, env, str::FromStr};
+use std::{collections::HashMap, env, net::SocketAddr, str::FromStr, sync::Arc};
 
 use axum::{
     Extension, Router,
@@ -16,26 +17,20 @@ use axum::{
     http::{Response, StatusCode, header::LOCATION},
     routing::{any, get},
 };
+use axum_server::tls_rustls::RustlsConfig;
 use diesel::{Connection as _, PgConnection};
 use diesel_migrations::{EmbeddedMigrations, MigrationHarness as _, embed_migrations};
 use dotenvy::dotenv;
 use http::{
-    HeaderMap, HeaderName, HeaderValue, Uri,
+    HeaderMap, HeaderName, HeaderValue,
     header::{CACHE_CONTROL, CONNECTION, COOKIE, HOST, TRANSFER_ENCODING, USER_AGENT},
 };
-use openidconnect::{
-    AuthorizationCode, ClientId, ClientSecret, EmptyExtraTokenFields, EndpointMaybeSet,
-    EndpointNotSet, EndpointSet, IdToken, IdTokenFields, IssuerUrl, PkceCodeVerifier, RedirectUrl,
-    StandardErrorResponse, StandardTokenResponse,
-    core::{
-        CoreAuthDisplay, CoreAuthPrompt, CoreErrorResponseType, CoreGenderClaim, CoreJsonWebKey,
-        CoreJweContentEncryptionAlgorithm, CoreJwsSigningAlgorithm, CoreProviderMetadata,
-        CoreRevocableToken, CoreRevocationErrorResponse, CoreTokenIntrospectionResponse,
-        CoreTokenType,
-    },
-    reqwest,
+use tokio::task::JoinSet;
+use tokio_rustls::rustls::{
+    RootCertStore, ServerConfig,
+    pki_types::{CertificateDer, PrivateKeyDer, pem::PemObject},
+    server::WebPkiClientVerifier,
 };
-use serde::{Deserialize, Serialize};
 use tower::ServiceExt as _;
 use tower_http::{
     cors::CorsLayer,
@@ -44,61 +39,17 @@ use tower_http::{
 use tracing::{Level, info};
 
 use crate::{
-    config::{AppDefinition, Config, OAuthConfiguration},
+    auth::{Account, AuthenticationMethod},
+    config::{AppDefinition, Config},
     infra::DatabaseConnector,
-    oauth::{OAuthSessionData, User},
+    mtls::MtlsExtension,
     sessions::{SessionHandle, SessionLayer},
 };
 
-type OAuth2IdToken = IdToken<
-    oauth::AdditionalClaims,
-    CoreGenderClaim,
-    CoreJweContentEncryptionAlgorithm,
-    CoreJwsSigningAlgorithm,
->;
-type OAuth2IdTokenFields = IdTokenFields<
-    oauth::AdditionalClaims,
-    EmptyExtraTokenFields,
-    CoreGenderClaim,
-    CoreJweContentEncryptionAlgorithm,
-    CoreJwsSigningAlgorithm,
->;
-type OAuth2TokenResponse = StandardTokenResponse<OAuth2IdTokenFields, CoreTokenType>;
-
-type OAuth2Client = openidconnect::Client<
-    oauth::AdditionalClaims,
-    CoreAuthDisplay,
-    CoreGenderClaim,
-    CoreJweContentEncryptionAlgorithm,
-    CoreJsonWebKey,
-    CoreAuthPrompt,
-    StandardErrorResponse<CoreErrorResponseType>,
-    OAuth2TokenResponse,
-    CoreTokenIntrospectionResponse,
-    CoreRevocableToken,
-    CoreRevocationErrorResponse,
-    EndpointSet,
-    EndpointNotSet,
-    EndpointNotSet,
-    EndpointNotSet,
-    EndpointMaybeSet,
-    EndpointMaybeSet,
->;
-
 #[derive(Debug, Clone)]
-enum AuthenticationMethodState {
-    OAuth {
-        client: Box<OAuth2Client>,
-        required_entitlement: Option<String>,
-    },
-    Token,
-}
-
-#[derive(Debug, Clone)]
-struct ProviderState {
+struct BackendState {
     definition: Option<AppDefinition>,
-    authentication_methods: Vec<AuthenticationMethodState>,
-    base_url: String,
+    authentication_methods: Vec<Arc<dyn AuthenticationMethod + Send + Sync>>,
 }
 
 #[derive(Clone)]
@@ -111,8 +62,7 @@ struct OuterState {
 struct AppState {
     config: Config,
     database: DatabaseConnector,
-    providers: HashMap<String, ProviderState>,
-    oidc_http_client: reqwest::Client,
+    providers: HashMap<String, BackendState>,
     backend_http_client: ::reqwest::Client,
 }
 
@@ -148,7 +98,7 @@ async fn root_route(
     } else {
         let (mut parts, body) = request.into_parts();
 
-        let user = match User::from_request_parts(&mut parts, &()).await {
+        let account = match Account::from_request_parts(&mut parts, &()).await {
             Ok(u) => u,
             Err(e) => return e,
         };
@@ -174,25 +124,39 @@ async fn root_route(
             proxy_headers.insert(USER_AGENT, ua.clone());
         }
         proxy_headers.insert(HOST, HeaderValue::from_str(target_uri.authority()).unwrap());
-        proxy_headers.insert("X-User-Id", HeaderValue::from_str(user.id()).unwrap());
-        proxy_headers.insert(
-            "X-Auth-Method",
-            HeaderValue::from_str(&user.auth_method().to_string()).unwrap(),
-        );
+        match account {
+            Account::User(user) => {
+                proxy_headers.insert("X-User-Id", HeaderValue::from_str(user.id()).unwrap());
+                proxy_headers.insert(
+                    "X-Auth-Method",
+                    HeaderValue::from_str(user.auth_method()).unwrap(),
+                );
 
-        if let Some(user_name) = user.name() {
-            proxy_headers.insert("X-User-Name", HeaderValue::from_str(user_name).unwrap());
-        }
+                if let Some(user_name) = user.name() {
+                    proxy_headers.insert("X-User-Name", HeaderValue::from_str(user_name).unwrap());
+                }
 
-        if let Some(expiration) = user.expiration() {
-            proxy_headers.insert(
-                "X-User-Expiration",
-                HeaderValue::from_str(&expiration.to_rfc3339()).unwrap(),
-            );
-        }
+                if let Some(expiration) = user.expiration() {
+                    proxy_headers.insert(
+                        "X-User-Expiration",
+                        HeaderValue::from_str(&expiration.to_rfc3339()).unwrap(),
+                    );
+                }
 
-        if let Some(cookie) = parts.headers.get(COOKIE) {
-            proxy_headers.insert(COOKIE, cookie.clone());
+                if let Some(cookie) = parts.headers.get(COOKIE) {
+                    proxy_headers.insert(COOKIE, cookie.clone());
+                }
+            }
+            Account::Machine(machine) => {
+                proxy_headers.insert(
+                    "X-Auth-Method",
+                    HeaderValue::from_str(machine.auth_method()).unwrap(),
+                );
+                proxy_headers.insert(
+                    "X-Ramona-Hostname",
+                    HeaderValue::from_str(machine.hostname()).unwrap(),
+                );
+            }
         }
 
         let mut proxy_request = ::reqwest::Request::new(parts.method.clone(), target_uri.clone());
@@ -232,115 +196,55 @@ async fn root_route(
     }
 }
 
-#[derive(Debug, Serialize, Deserialize)]
-struct AuthroizeQuery {
-    code: String,
-    state: String,
-}
-
 #[axum::debug_handler]
 async fn get_authorize(
     extract::Extension(state): extract::Extension<AppState>,
-    extract::Query(query): extract::Query<AuthroizeQuery>,
     session: extract::Extension<SessionHandle>,
+    request: extract::Request,
 ) -> (StatusCode, HeaderMap, String) {
-    let mut oauth_session_state: OAuthSessionData = session.data().await.oauth.unwrap();
-
-    if &query.state != oauth_session_state.csrf_token.secret() {
-        return (
-            StatusCode::BAD_REQUEST,
-            HeaderMap::new(),
-            "invalid csrf_token".into(),
-        );
-    }
-
-    let return_url: Uri = oauth_session_state.return_url.parse().unwrap();
+    let session_data = session.data().await;
 
     // TODO 404 if it's missing
     let provider = state
         .providers
-        .get(return_url.authority().unwrap().host())
+        .get(&session_data.in_progress_provider.unwrap())
         .unwrap();
 
-    let client = provider
-        .authentication_methods
-        .iter()
-        .filter_map(|x| {
-            if let AuthenticationMethodState::OAuth {
-                client,
-                required_entitlement: _,
-            } = x
-            {
-                Some(client)
-            } else {
-                None
+    let (mut request_parts, _request_body) = request.into_parts();
+    for method in &provider.authentication_methods {
+        match method.authenticate_redirected(&mut request_parts).await {
+            Ok(uri) => {
+                let mut headers = HeaderMap::new();
+                headers.insert(LOCATION, HeaderValue::from_str(&uri.to_string()).unwrap());
+
+                return (StatusCode::FOUND, headers, String::new());
             }
-        })
-        .next()
-        .unwrap();
+            Err(_) => todo!(),
+        }
+    }
 
-    let pkce_verifier = PkceCodeVerifier::new(oauth_session_state.pkce_verifier.clone());
-    let token_response = client
-        .exchange_code(AuthorizationCode::new(query.code))
-        .unwrap()
-        .set_pkce_verifier(pkce_verifier)
-        .request_async(&state.oidc_http_client)
-        .await
-        .unwrap();
-
-    oauth_session_state.id_token = Some(token_response.extra_fields().id_token().unwrap().clone());
-    session
-        .update(|s| s.oauth = Some(oauth_session_state))
-        .await;
-
-    let mut headers = HeaderMap::new();
-    headers.insert(
-        LOCATION,
-        HeaderValue::from_str(&return_url.to_string()).unwrap(),
-    );
-
-    (StatusCode::FOUND, headers, String::new())
+    (
+        StatusCode::BAD_REQUEST,
+        HeaderMap::new(),
+        "no matching provider found".to_string(),
+    )
 }
 
 pub const MIGRATIONS: EmbeddedMigrations = embed_migrations!("migrations/");
-
-async fn make_oauth_client(
-    configuration: &OAuthConfiguration,
-    http_client: &reqwest::Client,
-    base_url: String,
-) -> OAuth2Client {
-    let provider_metadata = CoreProviderMetadata::discover_async(
-        IssuerUrl::new(configuration.oidc_issuer_url.clone()).unwrap(),
-        http_client,
-    )
-    .await
-    .unwrap();
-
-    let redirect_uri = http::Uri::from_str(&format!("{}/authorize", base_url)).unwrap();
-
-    OAuth2Client::from_provider_metadata(
-        provider_metadata.clone(),
-        ClientId::new(configuration.client_id.clone()),
-        Some(ClientSecret::new(configuration.client_secret.clone())),
-    )
-    .set_redirect_uri(RedirectUrl::new(redirect_uri.to_string()).unwrap())
-}
 
 #[tokio::main]
 async fn main() {
     tracing_subscriber::fmt().init();
     let _ = dotenv();
+    rustls::crypto::aws_lc_rs::default_provider()
+        .install_default()
+        .unwrap();
 
     let config = config::load().unwrap();
     let database_url = env::var("DATABASE_URL").expect("DATABASE_URL must be set");
     PgConnection::establish(&database_url)
         .expect("failed to connect to the database")
         .run_pending_migrations(MIGRATIONS)
-        .unwrap();
-
-    let auth_http_client = reqwest::ClientBuilder::new()
-        .redirect(reqwest::redirect::Policy::none())
-        .build()
         .unwrap();
 
     let backend_http_client = ::reqwest::ClientBuilder::new()
@@ -352,30 +256,29 @@ async fn main() {
     for (host, app_definition) in &config.apps {
         let mut authentication_methods = vec![];
         for authentication_method in &app_definition.auth_methods {
-            let authentication_method = match authentication_method {
-                config::AuthMethod::OAuth(oauth_configuration) => {
-                    AuthenticationMethodState::OAuth {
-                        client: Box::new(
-                            make_oauth_client(
-                                &config.api.oauth,
-                                &auth_http_client,
-                                config.base_url.clone(),
-                            )
-                            .await,
-                        ),
-                        required_entitlement: oauth_configuration.required_entitlement.clone(),
-                    }
-                }
-                config::AuthMethod::Token => AuthenticationMethodState::Token,
-            };
+            let authentication_method: Arc<dyn AuthenticationMethod + Send + Sync> =
+                match authentication_method {
+                    config::AuthMethod::OAuth(oauth_configuration) => Arc::new(
+                        auth::oauth::OAuth::new(
+                            oauth_configuration.required_entitlement.clone(),
+                            app_definition.base_url.parse().unwrap(),
+                            config.api.oauth.clone(),
+                        )
+                        .await,
+                    ),
+                    config::AuthMethod::Token => Arc::new(auth::token::Token::new(
+                        DatabaseConnector::new(database_url.clone()),
+                    )),
+                    config::AuthMethod::MTls => Arc::new(auth::mtls::MTls::new()),
+                };
+
             authentication_methods.push(authentication_method);
         }
 
         providers.insert(
             host.to_string(),
-            ProviderState {
+            BackendState {
                 authentication_methods,
-                base_url: app_definition.base_url.clone(),
                 definition: Some(app_definition.clone()),
             },
         );
@@ -383,19 +286,15 @@ async fn main() {
 
     providers.insert(
         config.hostname.clone(),
-        ProviderState {
-            authentication_methods: vec![AuthenticationMethodState::OAuth {
-                client: Box::new(
-                    make_oauth_client(
-                        &config.api.oauth,
-                        &auth_http_client,
-                        config.base_url.clone(),
-                    )
-                    .await,
-                ),
-                required_entitlement: config.api.oauth.required_entitlement.clone(),
-            }],
-            base_url: config.base_url.clone(),
+        BackendState {
+            authentication_methods: vec![Arc::new(
+                auth::oauth::OAuth::new(
+                    config.api.oauth_config.required_entitlement.clone(),
+                    config.base_url.parse().unwrap(),
+                    config.api.oauth.clone(),
+                )
+                .await,
+            )],
             definition: None,
         },
     );
@@ -403,8 +302,7 @@ async fn main() {
     let cookie_domain = config.cookie_domain.clone();
 
     let state = AppState {
-        config,
-        oidc_http_client: auth_http_client,
+        config: config.clone(),
         providers,
         backend_http_client,
         database: DatabaseConnector::new(database_url),
@@ -434,7 +332,51 @@ async fn main() {
         // TODO only allow *.ramona.fun
         .layer(CorsLayer::very_permissive());
 
-    let listener = tokio::net::TcpListener::bind("0.0.0.0:3000").await.unwrap();
+    let mut servers = JoinSet::new();
+    let http_server = axum_server::bind(SocketAddr::from(([0, 0, 0, 0], 3000))).serve(
+        router
+            .clone()
+            .layer(Extension(MtlsExtension::NotAuthenticated))
+            .into_make_service(),
+    );
+    servers.spawn(http_server);
 
-    axum::serve(listener, router).await.unwrap();
+    if let Some(ref mtls_config) = config.mtls {
+        let mut client_root_cert_store = RootCertStore::empty();
+        for root in &mtls_config.client_roots {
+            client_root_cert_store
+                .add(CertificateDer::from_pem_file(root).unwrap())
+                .unwrap();
+        }
+        let client_cert_verifier_builder =
+            WebPkiClientVerifier::builder(Arc::new(client_root_cert_store));
+
+        let tls_config = ServerConfig::builder()
+            .with_client_cert_verifier(client_cert_verifier_builder.build().unwrap())
+            .with_single_cert(
+                mtls_config
+                    .server_chain
+                    .iter()
+                    .map(|x| CertificateDer::from_pem_file(x).unwrap())
+                    .collect(),
+                PrivateKeyDer::from_pem_file(&mtls_config.server_key).unwrap(),
+            )
+            .unwrap();
+
+        let mtls_server = axum_server::bind_rustls(
+            SocketAddr::from(([0, 0, 0, 0], 3001)),
+            RustlsConfig::from_config(Arc::new(tls_config)),
+        )
+        .serve(
+            router
+                .layer(Extension(MtlsExtension::Authenticated))
+                .into_make_service(),
+        );
+
+        servers.spawn(mtls_server);
+    }
+
+    for result in servers.join_all().await {
+        result.unwrap();
+    }
 }
