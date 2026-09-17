@@ -262,6 +262,7 @@ async fn main() {
                         auth::oauth::OAuth::new(
                             oauth_configuration.required_entitlement.clone(),
                             app_definition.base_url.parse().unwrap(),
+                            config.base_url.parse().unwrap(),
                             config.api.oauth.clone(),
                         )
                         .await,
@@ -290,6 +291,7 @@ async fn main() {
             authentication_methods: vec![Arc::new(
                 auth::oauth::OAuth::new(
                     config.api.oauth_config.required_entitlement.clone(),
+                    config.base_url.parse().unwrap(),
                     config.base_url.parse().unwrap(),
                     config.api.oauth.clone(),
                 )

@@ -90,6 +90,7 @@ pub struct OAuth {
     client: OAuth2Client,
     oidc_http_client: openidconnect::reqwest::Client,
     app_base_url: Uri,
+    base_url: Uri,
 }
 
 #[async_trait]
@@ -145,7 +146,7 @@ impl AuthenticationMethod for OAuth {
                     nonce,
                     return_url: format!(
                         "{}{}",
-                        self.app_base_url,
+                        self.base_url,
                         original_uri
                             .path_and_query()
                             .map(|x| x.to_string())
@@ -208,6 +209,7 @@ impl OAuth {
     pub async fn new(
         required_entitlement: Option<String>,
         app_base_url: Uri,
+        base_url: Uri,
         oauth_config: OAuthConfiguration,
     ) -> Self {
         let oidc_http_client = openidconnect::reqwest::ClientBuilder::new()
@@ -235,6 +237,7 @@ impl OAuth {
             oidc_http_client,
             client,
             app_base_url,
+            base_url,
         }
     }
 
