@@ -4,5 +4,5 @@ resources:
   - jellyfin.yaml
   - gateways.yaml
   - gateway-public.yaml
-  - tls-passthrough-listener.yaml
+  - tls-passthrough-listener-set.yaml
 
