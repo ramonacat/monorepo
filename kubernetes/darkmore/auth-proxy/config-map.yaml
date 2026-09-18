@@ -46,7 +46,10 @@ data:
       },
       "mtls": {
         "client_roots": ["/etc/ramona/auth-proxy/ca-hosts.crt"],
-        "server_chain": ["/var/ramona/certificates/tls.crt"],
+        "server_chain": [
+          "/var/ramona/certificates/tls.crt",
+          "/var/ramona/certificates/ca.crt"
+        ],
         "server_key": "/var/ramona/certificates/tls.key"
       }
     }
