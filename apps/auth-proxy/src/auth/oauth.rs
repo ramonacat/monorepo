@@ -90,7 +90,6 @@ pub struct OAuth {
     client: OAuth2Client,
     oidc_http_client: openidconnect::reqwest::Client,
     app_base_url: Uri,
-    base_url: Uri,
 }
 
 #[async_trait]
@@ -146,7 +145,7 @@ impl AuthenticationMethod for OAuth {
                     nonce,
                     return_url: format!(
                         "{}{}",
-                        self.base_url,
+                        self.app_base_url,
                         original_uri
                             .path_and_query()
                             .map(|x| x.to_string())
@@ -224,7 +223,7 @@ impl OAuth {
         .await
         .unwrap();
 
-        let redirect_uri = http::Uri::from_str(&format!("{}authorize", app_base_url)).unwrap();
+        let redirect_uri = http::Uri::from_str(&format!("{}authorize", base_url)).unwrap();
 
         let client = OAuth2Client::from_provider_metadata(
             provider_metadata.clone(),
@@ -237,7 +236,6 @@ impl OAuth {
             oidc_http_client,
             client,
             app_base_url,
-            base_url,
         }
     }
 
