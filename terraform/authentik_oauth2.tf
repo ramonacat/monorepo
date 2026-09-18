@@ -28,16 +28,19 @@ resource "authentik_property_mapping_provider_scope" "profile" {
   description = "General Profile Information"
   scope_name  = "profile"
   expression  = <<-EOT
-  return {
-      # Because authentik only saves the user's full name, and has no concept of first and last names,
-      # the full name is used as given name.
-      # You can override this behaviour in custom mappings, i.e. `request.user.name.split(" ")`
+  avatar = request.user.avatar
+  return delete_none_values({
       "name": request.user.name,
-      "given_name": request.user.name,
+      "given_name": ak_obj_attr(request.user, "given_name", "name"),
+      "family_name": ak_obj_attr(request.user, "family_name"),
       "preferred_username": request.user.username,
       "nickname": request.user.username,
       "groups": [group.name for group in request.user.groups.all()],
-  }
+      # Only expose URL-based avatars: generated avatars are inline base64
+      # SVG data URIs, which would bloat the ID/access token for every
+      # user without a real avatar URL (OIDC expects a URL here).
+      "picture": avatar if avatar and not avatar.startswith("data:") else None,
+  })
   EOT
 }
 
