@@ -6,6 +6,7 @@ metadata:
 spec:
   issuerRef:
     name: vault-self-issuer
+    kind: ClusterIssuer
   secretName: vault-server
   commonName: vault.internal.ramona.fun
   dnsNames:
