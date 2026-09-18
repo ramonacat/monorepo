@@ -240,6 +240,12 @@ async fn main() {
         .install_default()
         .unwrap();
 
+    info!(
+        git_hash = env!("RAMONA_GIT_HASH"),
+        package = env!("CARGO_PKG_NAME"),
+        "initializing"
+    );
+
     let config = config::load().unwrap();
     let database_url = env::var("DATABASE_URL").expect("DATABASE_URL must be set");
     PgConnection::establish(&database_url)
