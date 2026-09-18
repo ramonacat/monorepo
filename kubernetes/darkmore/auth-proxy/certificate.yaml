@@ -7,5 +7,6 @@ spec:
     name: vault-self-issuer
     kind: ClusterIssuer
   secretName: auth-proxy-certs
+  commonName: auth-proxy.ramona.fun
   dnsNames:
     - ras.ramona.fun
