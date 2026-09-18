@@ -99,7 +99,7 @@ resource "vault_kubernetes_auth_backend_role" "cert-manager" {
   bound_service_account_names      = ["vault-issuer"]
   bound_service_account_namespaces = ["vault"]
   token_policies                   = ["default", vault_policy.cert-self-issue-any-internal.name]
-  audience                         = "vault://vault/vault-self-issuer"
+  audience                         = "vault://vault-self-issuer"
 }
 
 module "pki-kubernetes-darkmore" {
