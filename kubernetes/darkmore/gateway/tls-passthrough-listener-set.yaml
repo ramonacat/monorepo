@@ -1,0 +1,21 @@
+apiVersion: gateway.networking.k8s.io/v1
+kind: ListenerSet
+metadata:
+  name: tls-passthrough
+  namespace: kgateway-system
+spec:
+  parentRef:
+    group: gateway.networking.k8s.io
+    kind: Gateway
+    name: gateway-public
+    namespace: kgateway-system
+  listeners:
+    - name: tls-passthrough
+      port: 1443
+      protocol: TLS
+      hostname: '*.ramona.fun'
+      allowedRoutes:
+        namespaces:
+          from: All
+      tls:
+        mode: Passthrough

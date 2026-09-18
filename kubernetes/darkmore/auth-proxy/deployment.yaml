@@ -53,13 +53,20 @@ spec:
         volumeMounts:
           - mountPath: /etc/ramona/auth-proxy
             name: config
+          - mountPath: /var/ramona/certificates
+            name: certificates
         ports:
         - containerPort: 3000
           name: auth-proxy
+        - containerPort: 3001
+          name: mtls
       volumes:
         - name: config
           configMap:
             name: config
+        - name: certificates
+          secret:
+            secretName: auth-proxy-certs
       restartPolicy: Always
       imagePullSecrets:
         - name: forgejo-container-credentials

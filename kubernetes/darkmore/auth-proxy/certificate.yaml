@@ -1,0 +1,11 @@
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: auth-proxy
+spec:
+  issuerRef:
+    name: vault-self-issuer
+    kind: ClusterIssuer
+  secretName: auth-proxy-certs
+  dnsNames:
+    - ras.ramona.fun

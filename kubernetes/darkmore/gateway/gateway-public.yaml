@@ -1,0 +1,98 @@
+apiVersion: gateway.kgateway.dev/v1alpha1
+kind: ListenerPolicy
+metadata:
+  name: gateway-public
+  namespace: kgateway-system
+spec:
+  targetRefs:
+  - group: gateway.networking.k8s.io
+    kind: Gateway
+    name: gateway-public
+  default: 
+    proxyProtocol: {}
+    perConnectionBufferLimitBytes: 1024000000
+    httpSettings:
+      streamIdleTimeout: "7200s"
+      idleTimeout: "7200s"
+      upgradeConfig:
+        enabledUpgrades:
+          - websocket
+      accessLog: 
+        - fileSink:
+            path: /dev/stdout
+            jsonFormat:
+              start_time: "%START_TIME%"
+              method: "%REQ(X-ENVOY-ORIGINAL-METHOD?:METHOD)%"
+              path: "%REQ(X-ENVOY-ORIGINAL-PATH?:PATH)%"
+              protocol: "%PROTOCOL%"
+              response_code: "%RESPONSE_CODE%"
+              response_flags: "%RESPONSE_FLAGS%"
+              bytes_received: "%BYTES_RECEIVED%"
+              bytes_sent: "%BYTES_SENT%"
+              total_duration: "%DURATION%"
+              resp_backend_service_time: "%RESP(X-ENVOY-UPSTREAM-SERVICE-TIME)%"
+              req_x_forwarded_for: "%REQ(X-FORWARDED-FOR)%"
+              user_agent: "%REQ(USER-AGENT)%"
+              request_id: "%REQ(X-REQUEST-ID)%"
+              authority: "%REQ(:AUTHORITY)%"
+              backendHost: "%UPSTREAM_HOST%"
+              backendCluster: "%UPSTREAM_CLUSTER%"
+---
+apiVersion: gateway.kgateway.dev/v1alpha1
+kind: GatewayParameters
+metadata:
+  name: gateway-public
+  namespace: kgateway-system
+spec:
+  kube:
+    deployment:
+      replicas: 2
+    service:
+      type: LoadBalancer
+      extraAnnotations:
+        "load-balancer.hetzner.cloud/name": "gateway-public"
+        "load-balancer.hetzner.cloud/location": "nbg1"
+        "load-balancer.hetzner.cloud/uses-proxyprotocol": "true"
+        "load-balancer.hetzner.cloud/private-subnet-ip-range": "10.1.0.0/24"
+        "load-balancer.hetzner.cloud/disable-private-ingress": "true"
+        "load-balancer.hetzner.cloud/use-private-ip": "true"
+---
+apiVersion: gateway.networking.k8s.io/v1
+kind: Gateway
+metadata:
+  name: gateway-public
+  namespace: kgateway-system
+  annotations: 
+    cert-manager.io/cluster-issuer: cert-manager-webhook-dnsimple-production
+spec: 
+  gatewayClassName: 'kgateway'
+  infrastructure:
+    parametersRef:
+      group: gateway.kgateway.dev
+      kind: GatewayParameters
+      name: gateway-public
+
+  allowedListeners:
+    namespaces:
+      from: All
+
+  listeners:
+    - name: http
+      port: 80
+      protocol: HTTP
+      allowedRoutes:
+        namespaces:
+          # there's only one route allowed for HTTP, and it is the HTTPS redirect
+          from: Same
+    - name: https
+      port: 443
+      protocol: HTTPS
+      hostname: '*.ramona.fun'
+      allowedRoutes:
+        namespaces:
+          from: All
+      tls:
+        mode: Terminate
+        certificateRefs:
+          - kind: Secret
+            name: wildcard-ramona-fun

@@ -11,5 +11,6 @@ spec:
     protocol: TCP
     port: 3000
     targetPort: 3000
----
-
+  - name: mtls
+    port: 3001
+    targetPort: 3001

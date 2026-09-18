@@ -75,7 +75,12 @@ resource "vault_pki_secret_backend_role" "internal" {
   name       = "internal"
   issuer_ref = module.pki-internal.issuer_ref
   // localhost is disabled and added explicitly so that `vault pki health-check is happy`
-  allowed_domains  = ["internal.ramona.fun", "localhost", "cluster.local"]
+  allowed_domains = [
+    "cluster.local",
+    "internal.ramona.fun",
+    "localhost",
+    "ramona.fun",
+  ]
   allow_localhost  = false
   allow_subdomains = true
   allow_ip_sans    = true
@@ -97,7 +102,7 @@ resource "vault_kubernetes_auth_backend_role" "cert-manager" {
   backend                          = vault_auth_backend.kubernetes.path
   role_name                        = "cert-manager"
   bound_service_account_names      = ["vault-issuer"]
-  bound_service_account_namespaces = ["vault"]
+  bound_service_account_namespaces = ["vault", "cert-manager"]
   token_policies                   = ["default", vault_policy.cert-self-issue-any-internal.name]
   audience                         = "vault://vault-self-issuer"
 }

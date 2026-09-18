@@ -25,6 +25,13 @@ data:
           "auth_methods": [
             {"type": "OAuth", "config": {"required_entitlement": "admin"}}
           ]
+        },
+        "ras.ramona.fun": {
+          "base_url": "https://ras.ramona.fun",
+          "backend": "http://ras.ras",
+          "auth_methods": [
+            {"type": "MTls"}
+          ]
         }
       },
       "api": {
@@ -36,6 +43,33 @@ data:
         "oauth_config": {
           "required_entitlement": "admin"
         }
+      },
+      "mtls": {
+        "client_roots": ["/etc/ramona/auth-proxy/ca-hosts.crt"],
+        "server_chain": ["/var/ramona/certificates/tls.crt"],
+        "server_key": "/var/ramona/certificates/tls.key"
       }
     }
-
+  ca-internal.crt: |-
+    -----BEGIN CERTIFICATE-----
+    MIIDtjCCAp6gAwIBAgIUWEQrdtHb3V98Mn3h3Ys/Pm2eyxkwDQYJKoZIhvcNAQEL
+    BQAwGDEWMBQGA1UEAxMNcmFtb25hIHJvb3QgQTAeFw0yNjA3MDkwNzU3NTRaFw0z
+    MTA3MDgwNzU4MjRaMCMxITAfBgNVBAMTGHJhbW9uYSBpbnRlcm5hbCBzZXJ2aWNl
+    czCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBALvkkVbFG+INKpdny0LH
+    fcgMtW1NJoUaxJctjPOx9lF4QbKGBbPSPwMQu2ML1NcmOyIQABlk85GgCbHkbUrH
+    +pSoyRgQhX2K3OPsx0m/HhR+wUOLl6kya5iu6U97IRI6f0lb6ZNYoJJ/yR9/WNJk
+    ra38mf8o3lK258xwDXOBybMQhxyjtFRMCsq91DE1nCC5zGV1j2Enkce+06JdMERq
+    wYntYYdr12U805+ai1Snx1tvmrusQux+WWxhz1nL+7q3FmjCnS8+VZQGYfVAufW1
+    Bg6Vj2UEJ2vu5PdecbPNWTRGpkzl3Ss+FSJbk270zMoP8X70y4KJVh6AhhnmOpgq
+    rRECAwEAAaOB7DCB6TAOBgNVHQ8BAf8EBAMCAQYwDwYDVR0TAQH/BAUwAwEB/zAd
+    BgNVHQ4EFgQU2NXTC/jrdym76v8dWqzHtlH/HKIwHwYDVR0jBBgwFoAUY5DHOM7o
+    IkTiNMdpisbOijKTu/4wRwYIKwYBBQUHAQEEOzA5MDcGCCsGAQUFBzAChitodHRw
+    czovL3ZhdWx0LmludGVybmFsLnJhbW9uYS5mdW4vdjEvcGtpL2NhMD0GA1UdHwQ2
+    MDQwMqAwoC6GLGh0dHBzOi8vdmF1bHQuaW50ZXJuYWwucmFtb25hLmZ1bi92MS9w
+    a2kvY3JsMA0GCSqGSIb3DQEBCwUAA4IBAQBJG2tFGp+1poDw0nzNV5STzwt3casV
+    +N6jHalnL9PZ1IAot3CBiWRqeHEdz8Srv+BvIBcPL9mR18d6IvpzpFW/UMIiHaKr
+    537TmDSD+mhJYq9m4PY5NfAwmeFHV0nQkQuYwKPFm6L53It6pLaiPlFFGaogEuxu
+    ki+xhTtya23OM9WfzqCKhf2dXLfa+Jl/EaN4QCW/BHKgTi1zFrJLOjA4By6cK8VK
+    jopYpQbzpJX512+6zrIZG+mTzNscOpKbLmsdq0koIm06J5BL4Xf9Jm44gtqSTnLg
+    JdNsRgtpd2NzEtKB1VImSZeviHikkZo4/w14o6cH0rSx6uPUh7DESYq0
+    -----END CERTIFICATE-----
