@@ -4,6 +4,7 @@ use diesel::{
     associations::{Associations, Identifiable},
     deserialize::Queryable,
 };
+use ipnet::IpNet;
 
 #[derive(Queryable, Selectable)]
 #[diesel(
@@ -57,4 +58,20 @@ pub struct Version {
     #[allow(unused)]
     pub store_path: String,
     pub version: i64,
+}
+
+#[derive(Queryable, Selectable)]
+#[diesel(table_name = crate::schema::host_ip_address, check_for_backend(diesel::pg::Pg), primary_key(hostname))]
+pub struct HostIpAddress {
+    pub hostname: String,
+    pub address: IpNet,
+}
+
+#[derive(Queryable, Selectable)]
+#[diesel(table_name = crate::schema::wireguard_endpoint, check_for_backend(diesel::pg::Pg), primary_key(hostname))]
+pub struct WireguardEndpoint {
+    pub hostname: String,
+    pub public_key: String,
+    pub endpoint: Option<IpNet>,
+    pub port: Option<i32>,
 }

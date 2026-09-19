@@ -1,0 +1,20 @@
+[package]
+name = "rad"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+tokio = { version = "1.53.1", features = ["full"] }
+tracing = "0.1.44"
+tracing-subscriber = "0.3.23"
+rlib = { path = "../../libs/rust/rlib" }
+reqwest = { version = "0.13.5", features = ["json"] }
+dotenvy = "0.15.7"
+serde = { version = "1.0.229", features = ["derive"] }
+serde_json = "1.0.151"
+nix = { version = "0.31.3", features = ["hostname", "net"] }
+ipnet = { version = "2.12.2", features = ["serde"] }
+thiserror = "2.0.20"
+x25519-dalek = { version = "3.0.0", features = ["static_secrets"] }
+rand = "0.10.2"
+base64 = "0.23.1"

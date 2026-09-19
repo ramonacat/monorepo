@@ -28,10 +28,26 @@ diesel::table! {
 }
 
 diesel::table! {
+    host_ip_address (hostname) {
+        hostname -> Text,
+        address -> Inet,
+    }
+}
+
+diesel::table! {
     versions (versioned_item, store_path) {
         versioned_item -> Text,
         store_path -> Text,
         version -> Int8,
+    }
+}
+
+diesel::table! {
+    wireguard_endpoint (hostname) {
+        hostname -> Text,
+        public_key -> Text,
+        endpoint -> Nullable<Inet>,
+        port -> Nullable<Int4>,
     }
 }
 
@@ -41,5 +57,7 @@ diesel::allow_tables_to_appear_in_same_query!(
     home_closure,
     home_closure_state,
     host_closure_state,
+    host_ip_address,
     versions,
+    wireguard_endpoint,
 );

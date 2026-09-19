@@ -36,7 +36,10 @@ async fn main() {
         .route("/", get(async || "ok"))
         .route("/health", get(get_health))
         .route("/hosts", get(hosts::get_current_state))
-        .route("/hosts/{hostname}", delete(hosts::delete))
+        .route(
+            "/hosts/{hostname}",
+            delete(hosts::delete).post(hosts::post_host_state),
+        )
         .route(
             "/hosts/{hostname}/current_closure",
             post(hosts::post_current_closure),
@@ -66,7 +69,6 @@ async fn main() {
         .route("/versions/actions/check", post(post_version_check))
         .with_state(app_state);
 
-    // run our app with hyper, listening globally on port 3000
     let listener = tokio::net::TcpListener::bind("0.0.0.0:3000").await.unwrap();
     axum::serve(listener, app).await.unwrap();
 
