@@ -9,12 +9,12 @@ let
       path: type:
       (crane-lib.filterCargoSources path type || (builtins.match ".*/migrations/.*" path != null));
     additional-package-arguments = {
-      cargoToml = ../apps/ras/Cargo.toml;
-      cargoLock = ../apps/ras/Cargo.lock;
+      cargoToml = ../apps/rad/Cargo.toml;
+      cargoLock = ../apps/rad/Cargo.lock;
       nativeBuildInputs = [ pkgs.libpq.dev ];
       buildInputs = [ pkgs.libpq ];
       postUnpack = ''
-        cd $sourceRoot/apps/ras
+        cd $sourceRoot/apps/rad
         sourceRoot="."
       '';
     };
@@ -24,9 +24,9 @@ in
   inherit (package) coverage checks package;
 
   container = pkgs.dockerTools.buildLayeredImage {
-    name = "ras";
+    name = "rad";
     tag = "latest";
     contents = [ package.package ];
-    config.Cmd = [ "/bin/ras" ];
+    config.Cmd = [ "/bin/rad" ];
   };
 }

@@ -6,6 +6,7 @@ inputs: {
     r = import ./r.nix inputs;
     ramona-fun = import ./ramona-fun.nix inputs;
     ras = import ./ras.nix inputs;
+    rad = import ./rad.nix inputs;
     sawin-gallery = import ./sawin-gallery.nix inputs;
     auth-proxy = import ./auth-proxy.nix inputs;
   };

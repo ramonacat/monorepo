@@ -50,5 +50,9 @@
         [
           6443 # kubernetes api server (for admin access)
         ];
+
+    ramona.router.wireguard = {
+      enabled = true;
+    };
   };
 }
