@@ -92,7 +92,7 @@ async fn main() {
         let hostname = nix::unistd::gethostname().unwrap();
         let response = client
             .post(format!(
-                "https://ras.ramona.fun/hosts/{}",
+                "https://ras.ramona.fun:1443/hosts/{}",
                 hostname.to_string_lossy()
             ))
             .json(&request_body)
