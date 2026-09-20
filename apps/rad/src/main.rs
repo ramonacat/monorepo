@@ -125,6 +125,7 @@ async fn resolve_wireguard_endpoint(
     Ok(match endpoint {
         config::WireguardEndpoint::Disabled => None,
         config::WireguardEndpoint::Auto => {
+            info!(?addresses, "finding a public address for wireguard");
             let public_ip = addresses
                 .iter()
                 .filter_map(|x| {

@@ -37,7 +37,7 @@
             key = "/var/ramona/identity/certificate.key";
             wireguard =
               if !config.ramona.router.wireguard.enabled then
-                { "endpoint" = "None"; }
+                { "endpoint" = "Disabled"; }
               else
                 (
                   if config.ramona.router.wireguard.host == null then
@@ -54,6 +54,8 @@
       };
       serviceConfig = {
         ExecStart = "${pkgs.ramona.rad}/bin/rad";
+        AmbientCapabilities = "CAP_NET_RAW";
+        CapabilityBoundingSet = "CAP_NET_RAW";
       };
     };
   };
