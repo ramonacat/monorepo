@@ -79,10 +79,10 @@ resource "helm_release" "kube-prometheus-stack" {
         logFormat                               = "json"
         resources = {
           requests = {
-            memory = "1024Mi"
+            memory = "1536Mi"
           }
           limits = {
-            memory = "2048Mi"
+            memory = "2560Mi"
             cpu    = "1000m"
           }
         }
