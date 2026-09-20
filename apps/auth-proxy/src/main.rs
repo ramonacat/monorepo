@@ -23,7 +23,10 @@ use diesel_migrations::{EmbeddedMigrations, MigrationHarness as _, embed_migrati
 use dotenvy::dotenv;
 use http::{
     HeaderMap, HeaderName, HeaderValue,
-    header::{CACHE_CONTROL, CONNECTION, COOKIE, HOST, TRANSFER_ENCODING, USER_AGENT},
+    header::{
+        ACCEPT, CACHE_CONTROL, CONNECTION, CONTENT_TYPE, COOKIE, HOST, TRANSFER_ENCODING,
+        USER_AGENT,
+    },
 };
 use tokio::task::JoinSet;
 use tokio_rustls::rustls::{
@@ -120,9 +123,13 @@ async fn root_route(
         .unwrap();
 
         let mut proxy_headers = HeaderMap::new();
-        if let Some(ua) = parts.headers.get(USER_AGENT) {
-            proxy_headers.insert(USER_AGENT, ua.clone());
+
+        for header in &[USER_AGENT, ACCEPT, CONTENT_TYPE] {
+            if let Some(value) = parts.headers.get(header) {
+                proxy_headers.insert(USER_AGENT, value.clone());
+            }
         }
+
         proxy_headers.insert(HOST, HeaderValue::from_str(target_uri.authority()).unwrap());
         match account {
             Account::User(user) => {
