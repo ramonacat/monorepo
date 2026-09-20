@@ -54,6 +54,8 @@
       };
       serviceConfig = {
         ExecStart = "${pkgs.ramona.rad}/bin/rad";
+        AmbientCapabilities = "CAP_NET_RAW";
+        CapabilityBoundingSet = "CAP_NET_RAW";
       };
     };
   };
