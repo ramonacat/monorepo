@@ -126,7 +126,7 @@ async fn root_route(
 
         for header in &[USER_AGENT, ACCEPT, CONTENT_TYPE] {
             if let Some(value) = parts.headers.get(header) {
-                proxy_headers.insert(USER_AGENT, value.clone());
+                proxy_headers.insert(header, value.clone());
             }
         }
 
