@@ -6,8 +6,9 @@ use rlib::hosts::UDPEndpoint;
 use thiserror::Error;
 
 use diesel::{
-    BoolExpressionMethods, ExpressionMethods, OptionalExtension as _, QueryDsl as _, delete,
-    insert_into, query_builder::AsChangeset, update, upsert::excluded,
+    BoolExpressionMethods, ExpressionMethods, OptionalEmptyChangesetExtension,
+    OptionalExtension as _, QueryDsl as _, delete, insert_into, query_builder::AsChangeset, update,
+    upsert::excluded,
 };
 use diesel_async::{AsyncConnection, AsyncPgConnection, RunQueryDsl as _};
 
@@ -67,7 +68,8 @@ pub async fn update_closure(
                     .set(changeset)
                     .filter(dsl::hostname.eq(hostname))
                     .execute(connection)
-                    .await?;
+                    .await
+                    .optional_empty_changeset()?;
             } else {
                 insert_into(dsl::host_closure_state)
                     .values((
