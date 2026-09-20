@@ -15,6 +15,7 @@
 
     ./nix.nix
     ./prometheus-exporter.nix
+    ./rad.nix
     ./restic-home.nix
     ./ssh.nix
     ./tailscale.nix

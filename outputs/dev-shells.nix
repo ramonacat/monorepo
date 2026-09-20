@@ -133,6 +133,7 @@ pkgs.mkShell {
       argocd
       attic-client
       backblaze-b2
+      deadnix
       diesel-cli
       ktfmt
       kubeconform
@@ -146,6 +147,7 @@ pkgs.mkShell {
       shellcheck
       shfmt
       skopeo
+      statix
       tflint
       vault
       woodpecker-cli
