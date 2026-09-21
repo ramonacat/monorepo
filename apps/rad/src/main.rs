@@ -12,7 +12,7 @@ use base64::Engine;
 use ipnet::{IpNet, Ipv4Net, Ipv6Net};
 use nix::ifaddrs::getifaddrs;
 use rand::rng;
-use reqwest::Identity;
+use reqwest::{Identity, header::HeaderValue};
 use rlib::hosts::{
     ClosureUpdate, ConnectivityState, HostAddress, PostHostStateRequest, UDPEndpoint,
 };
@@ -102,6 +102,10 @@ async fn main() {
                 "https://ras.ramona.fun:1443/hosts/{}",
                 hostname.to_string_lossy()
             ))
+            .header(
+                "x-ramona-hostname",
+                HeaderValue::from_str(hostname.to_string_lossy().as_ref()).unwrap(),
+            )
             .json(&request_body)
             .send()
             .await
