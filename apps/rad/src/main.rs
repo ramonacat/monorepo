@@ -1,6 +1,7 @@
 mod config;
 
 use std::{
+    collections::HashSet,
     env, fs,
     net::{IpAddr, Ipv4Addr, Ipv6Addr, SocketAddr},
     path::PathBuf,
@@ -12,7 +13,9 @@ use ipnet::{IpNet, Ipv4Net, Ipv6Net};
 use nix::ifaddrs::getifaddrs;
 use rand::rng;
 use reqwest::Identity;
-use rlib::hosts::{ClosureUpdate, ConnectivityState, PostHostStateRequest, UDPEndpoint};
+use rlib::hosts::{
+    ClosureUpdate, ConnectivityState, HostAddress, PostHostStateRequest, UDPEndpoint,
+};
 use thiserror::Error;
 use tokio::{net::lookup_host, time::sleep};
 use tracing::{info, warn};
@@ -41,7 +44,7 @@ async fn main() {
         let current_closure = fs::canonicalize("/nix/var/nix/profiles/system").unwrap();
         let ip_addresses = getifaddrs().unwrap();
 
-        let addresses: Vec<IpNet> = ip_addresses
+        let addresses: HashSet<HostAddress> = ip_addresses
             .filter_map(|x| {
                 let address = x.address?;
 
@@ -52,9 +55,10 @@ async fn main() {
                         .map(|y| y.ip())
                         .unwrap_or(Ipv4Addr::new(255, 255, 255, 255));
 
-                    Some(IpNet::V4(
-                        Ipv4Net::with_netmask(ipv4.ip(), netmask).unwrap(),
-                    ))
+                    Some(HostAddress {
+                        address: IpNet::V4(Ipv4Net::with_netmask(ipv4.ip(), netmask).unwrap()),
+                        interface: x.interface_name.clone(),
+                    })
                 } else if let Some(ipv6) = address.as_sockaddr_in6() {
                     let netmask = x
                         .netmask
@@ -62,22 +66,25 @@ async fn main() {
                         .map(|y| y.ip())
                         .unwrap_or(Ipv6Addr::new(255, 255, 255, 255, 255, 255, 255, 255));
 
-                    Some(IpNet::V6(
-                        Ipv6Net::with_netmask(ipv6.ip(), netmask).unwrap(),
-                    ))
+                    Some(HostAddress {
+                        address: IpNet::V6(Ipv6Net::with_netmask(ipv6.ip(), netmask).unwrap()),
+                        interface: x.interface_name.clone(),
+                    })
                 } else {
                     None
                 }
             })
             .collect();
 
-        let endpoint = resolve_wireguard_endpoint(&config.wireguard, &addresses)
+        info!(?addresses, "collected host addresses");
+
+        let endpoint = resolve_wireguard_endpoint(&config.wireguard, addresses.iter())
             .await
             .unwrap();
 
         let request_body = PostHostStateRequest {
             connectivity: ConnectivityState {
-                addresses,
+                addresses: addresses.into_iter().collect(),
                 wireguard: endpoint.map(|x| rlib::hosts::WireguardEndpoint {
                     public_key: ensure_public_key(),
                     endpoint: Some(x),
@@ -120,16 +127,16 @@ const WIREGUARD_PORT_DEFAULT: u16 = 51820;
 
 async fn resolve_wireguard_endpoint(
     endpoint: &config::WireguardEndpoint,
-    addresses: &[IpNet],
+    addresses: impl Iterator<Item = &HostAddress>,
 ) -> Result<Option<UDPEndpoint>, ResolveWireguardEndpointError> {
     Ok(match endpoint {
         config::WireguardEndpoint::Disabled => None,
         config::WireguardEndpoint::Auto => {
-            info!(?addresses, "finding a public address for wireguard");
+            info!("finding a public address for wireguard");
+
             let public_ip = addresses
-                .iter()
                 .filter_map(|x| {
-                    if let IpNet::V4(v4) = x {
+                    if let IpNet::V4(v4) = x.address {
                         Some(v4)
                     } else {
                         None
@@ -138,10 +145,7 @@ async fn resolve_wireguard_endpoint(
                 .find(|x| is_global4(&x.addr()))
                 .expect("no public ipv4 found");
 
-            Some(UDPEndpoint::new(
-                (*public_ip).into(),
-                WIREGUARD_PORT_DEFAULT,
-            ))
+            Some(UDPEndpoint::new(public_ip.into(), WIREGUARD_PORT_DEFAULT))
         }
         config::WireguardEndpoint::Specified { host, port } => {
             let ip: Result<IpAddr, _> = host.parse();

@@ -12,7 +12,11 @@ start() {
 	mkdir -p "$PGDATA"
 
 	initdb --pgdata "$PGDATA" --no-data-checksums --no-sync --no-sync-data-files
-	echo "unix_socket_directories='$(pwd)'" >>"$PGDATA/postgresql.conf"
+	{
+		echo "unix_socket_directories='$(pwd)'"
+		echo "log_statement = 'all'"
+	} >>"$PGDATA/postgresql.conf"
+
 	pg_ctl -D "$PGDATA" -l postgres.log start
 	psql --dbname postgres --host="$(pwd)" -c "CREATE ROLE ras WITH LOGIN PASSWORD 'ras'"
 	psql --dbname postgres --host="$(pwd)" -c 'CREATE DATABASE ras OWNER ras'

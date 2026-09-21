@@ -5,6 +5,7 @@ use diesel::{
     deserialize::Queryable,
 };
 use ipnet::IpNet;
+use uuid::Uuid;
 
 #[derive(Queryable, Selectable)]
 #[diesel(
@@ -63,8 +64,10 @@ pub struct Version {
 #[derive(Queryable, Selectable)]
 #[diesel(table_name = crate::schema::host_ip_address, check_for_backend(diesel::pg::Pg), primary_key(hostname))]
 pub struct HostIpAddress {
-    pub hostname: String,
+    pub id: Uuid,
     pub address: IpNet,
+    pub hostname: String,
+    pub interface: String,
 }
 
 #[derive(Queryable, Selectable)]

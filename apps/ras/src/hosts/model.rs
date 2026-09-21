@@ -1,18 +1,19 @@
 use std::collections::HashSet;
 
 use chrono::{DateTime, Utc};
-use ipnet::IpNet;
-use rlib::hosts::UDPEndpoint;
+use rlib::hosts::{HostAddress, UDPEndpoint};
 use thiserror::Error;
 
 use diesel::{
-    BoolExpressionMethods, ExpressionMethods, OptionalEmptyChangesetExtension,
-    OptionalExtension as _, QueryDsl as _, delete, insert_into, query_builder::AsChangeset, update,
+    ExpressionMethods, OptionalEmptyChangesetExtension, OptionalExtension as _, QueryDsl as _,
+    delete, insert_into,
+    query_builder::{AsChangeset, QueryFragment},
+    sql_query,
+    sql_types::{Inet, Text},
+    update,
     upsert::excluded,
 };
 use diesel_async::{AsyncConnection, AsyncPgConnection, RunQueryDsl as _};
-
-use crate::models::HostIpAddress;
 
 #[derive(Debug, Error)]
 pub enum UpdateClosureError {
@@ -97,39 +98,34 @@ pub enum UpdateAddressesError {
 pub async fn update_addresses(
     connection: &mut AsyncPgConnection,
     hostname: &str,
-    addresses: Vec<IpNet>,
+    addresses: HashSet<HostAddress>,
 ) -> Result<(), UpdateAddressesError> {
     connection
         .transaction(async |connection| {
-            use crate::schema::host_ip_address::dsl;
+            sql_query("CREATE TEMPORARY TABLE new_addresses(
+                address INET NOT NULL,
+                hostname TEXT NOT NULL,
+                interface TEXT NOT NULL
+            ) ON COMMIT DROP").execute(connection).await.unwrap();
 
-            delete(dsl::host_ip_address)
-                .filter(
-                    dsl::hostname
-                        .eq(&hostname)
-                        .and(dsl::address.ne_all(&addresses)),
-                )
-                .execute(connection)
-                .await
-                .unwrap();
+            for address in &addresses {
+                sql_query(r###"INSERT INTO new_addresses("address", "hostname", "interface") VALUES($1, $2, $3)"###)
+                    .bind::<Inet, _>(address.address)
+                    .bind::<Text, _>(hostname)
+                    .bind::<Text, _>(&address.interface)
+                    .execute(connection).await.unwrap();
+            }
 
-            let current_ips: HashSet<_> = dsl::host_ip_address
-                .filter(dsl::hostname.eq(&hostname))
-                .load(connection)
-                .await?
-                .into_iter()
-                .map(|x: HostIpAddress| x.address)
-                .collect();
-            let records: Vec<_> = addresses
-                .into_iter()
-                .filter(|x| !current_ips.contains(x))
-                .map(|x| (dsl::hostname.eq(&hostname), dsl::address.eq(x)))
-                .collect();
+            sql_query("
+                MERGE INTO host_ip_address AS tgt
+                    USING new_addresses AS src ON tgt.hostname = src.hostname AND tgt.interface = src.interface AND tgt.address = src.address
+                    WHEN MATCHED THEN DO NOTHING
+                    WHEN NOT MATCHED BY SOURCE AND hostname = $1 THEN DELETE
+                    WHEN NOT MATCHED BY TARGET AND hostname = $1 THEN INSERT (id,hostname,interface,address) VALUES (uuidv7(),src.hostname,src.interface,src.address)
+            ")
+                .bind::<Text, _>(hostname)
+                .execute(connection).await.unwrap();
 
-            insert_into(dsl::host_ip_address)
-                .values(records)
-                .execute(connection)
-                .await?;
             Ok(())
         })
         .await
