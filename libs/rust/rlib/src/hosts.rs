@@ -25,9 +25,15 @@ pub struct WireguardEndpoint {
     pub endpoint: Option<UDPEndpoint>,
 }
 
+#[derive(Debug, Serialize, Deserialize, Hash, PartialEq, Eq)]
+pub struct HostAddress {
+    pub address: IpNet,
+    pub interface: String,
+}
+
 #[derive(Debug, Serialize, Deserialize)]
 pub struct ConnectivityState {
-    pub addresses: Vec<IpNet>,
+    pub addresses: Vec<HostAddress>,
     pub wireguard: Option<WireguardEndpoint>,
 }
 

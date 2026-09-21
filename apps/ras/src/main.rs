@@ -8,7 +8,7 @@ use diesel::{Connection, PgConnection};
 use diesel_async::{AsyncConnection as _, AsyncPgConnection};
 use diesel_migrations::{EmbeddedMigrations, MigrationHarness, embed_migrations};
 use dotenvy::dotenv;
-use tracing::instrument;
+use tracing::{Level, instrument};
 
 use crate::versions::{post_version, post_version_check};
 
@@ -22,7 +22,9 @@ pub const MIGRATIONS: EmbeddedMigrations = embed_migrations!("migrations/");
 
 #[tokio::main]
 async fn main() {
-    tracing_subscriber::fmt().init();
+    tracing_subscriber::fmt()
+        .with_max_level(Level::TRACE)
+        .init();
     dotenv().ok();
 
     let database_url = env::var("DATABASE_URL").expect("DATABASE_URL must be set");

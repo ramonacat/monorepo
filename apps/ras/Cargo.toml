@@ -6,7 +6,7 @@ edition = "2024"
 [dependencies]
 axum = { version = "0.8.9", features = ["macros"] }
 chrono = { version = "0.4.45", features = ["serde"] }
-diesel = { version = "2.3.10", features = ["chrono", "ipnet-address", "postgres"] }
+diesel = { version = "2.3.10", features = ["chrono", "ipnet-address", "postgres", "uuid"] }
 diesel-async = { version = "0.9.2", features = ["postgres"] }
 diesel_migrations = "2.3.2"
 dotenvy = "0.15.7"
@@ -17,3 +17,4 @@ tracing-subscriber = "0.3.23"
 rlib = { path = "../../libs/rust/rlib" }
 ipnet = { version = "2.12.2", features = ["serde"] }
 thiserror = "2.0.20"
+uuid = { version = "1.26.1", features = ["serde", "v7", "v8"] }

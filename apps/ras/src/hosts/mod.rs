@@ -6,7 +6,7 @@ use axum::{Json, extract, http::StatusCode};
 use diesel::{ExpressionMethods as _, query_dsl::methods::FilterDsl};
 use diesel_async::RunQueryDsl as _;
 use rlib::hosts::{
-    ConnectivityState, HostState, NixClosureState, PostHostStateRequest, UDPEndpoint,
+    ConnectivityState, HostAddress, HostState, NixClosureState, PostHostStateRequest, UDPEndpoint,
     WireguardEndpoint,
 };
 use serde::{Deserialize, Serialize};
@@ -65,7 +65,10 @@ pub async fn get_current_state(
             addresses_per_host
                 .entry(an_address.hostname)
                 .or_insert_with(Vec::new)
-                .push(an_address.address);
+                .push(HostAddress {
+                    address: an_address.address,
+                    interface: an_address.interface,
+                });
         }
 
         addresses_per_host
@@ -154,9 +157,13 @@ pub async fn post_host_state(
         .unwrap();
     }
 
-    update_addresses(&mut connection, &hostname, request.connectivity.addresses)
-        .await
-        .unwrap();
+    update_addresses(
+        &mut connection,
+        &hostname,
+        request.connectivity.addresses.into_iter().collect(),
+    )
+    .await
+    .unwrap();
 
     if let Some(wireguard) = request.connectivity.wireguard.as_ref() {
         update_wireguard_endpoint(

@@ -28,9 +28,11 @@ diesel::table! {
 }
 
 diesel::table! {
-    host_ip_address (hostname) {
-        hostname -> Text,
+    host_ip_address (id) {
+        id -> Uuid,
         address -> Inet,
+        hostname -> Text,
+        interface -> Text,
     }
 }
 
