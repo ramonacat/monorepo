@@ -18,3 +18,4 @@ thiserror = "2.0.20"
 x25519-dalek = { version = "3.0.0", features = ["static_secrets"] }
 rand = "0.10.2"
 base64 = "0.23.1"
+anyhow = "1.0.104"

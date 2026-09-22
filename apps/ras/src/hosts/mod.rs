@@ -1,12 +1,15 @@
 mod model;
 
-use std::collections::{HashMap, HashSet};
+use std::{
+    collections::{HashMap, HashSet},
+    net::SocketAddr,
+};
 
 use axum::{Json, extract, http::StatusCode};
 use diesel::{ExpressionMethods as _, query_dsl::methods::FilterDsl};
 use diesel_async::RunQueryDsl as _;
 use rlib::hosts::{
-    ConnectivityState, HostAddress, HostState, NixClosureState, PostHostStateRequest, UDPEndpoint,
+    ConnectivityState, HostAddress, HostState, NixClosureState, PostHostStateRequest,
     WireguardEndpoint,
 };
 use serde::{Deserialize, Serialize};
@@ -85,7 +88,7 @@ pub async fn get_current_state(
             .map(|x| {
                 let udp_endpoint = x
                     .endpoint
-                    .map(|y| UDPEndpoint::new(y, x.port.unwrap().try_into().unwrap()));
+                    .map(|y| SocketAddr::new(y.addr(), x.port.unwrap().try_into().unwrap()));
                 (
                     x.hostname,
                     WireguardEndpoint {

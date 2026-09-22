@@ -1,31 +1,16 @@
+use std::net::SocketAddr;
+
 use chrono::{DateTime, Utc};
 use ipnet::IpNet;
 use serde::{Deserialize, Serialize};
 
 #[derive(Debug, Serialize, Deserialize)]
-pub struct UDPEndpoint(IpNet, u16);
-
-impl UDPEndpoint {
-    pub fn new(address: IpNet, port: u16) -> Self {
-        Self(address, port)
-    }
-
-    pub fn adddress(&self) -> IpNet {
-        self.0
-    }
-
-    pub fn port(&self) -> u16 {
-        self.1
-    }
-}
-
-#[derive(Debug, Serialize, Deserialize)]
 pub struct WireguardEndpoint {
     pub public_key: String,
-    pub endpoint: Option<UDPEndpoint>,
+    pub endpoint: Option<SocketAddr>,
 }
 
-#[derive(Debug, Serialize, Deserialize, Hash, PartialEq, Eq)]
+#[derive(Debug, Clone, Serialize, Deserialize, Hash, PartialEq, Eq)]
 pub struct HostAddress {
     pub address: IpNet,
     pub interface: String,
