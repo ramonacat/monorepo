@@ -2,48 +2,98 @@ mod config;
 mod env;
 mod host;
 mod ras_client;
+mod sensitive;
+mod task;
 
-use std::time::Duration;
+use std::{
+    ops::Add,
+    time::{Duration, SystemTime},
+};
 
-use rlib::hosts::{ClosureUpdate, ConnectivityState, PostHostStateRequest};
 use tokio::time::sleep;
-use tracing::info;
+use tracing::{error, info, warn};
 
-use crate::ras_client::RasClient;
+use crate::task::{Task, host_state_update::HostStateUpdate};
+
+const MAX_BACKOFF_STEPS: u32 = 8;
+
+#[derive(Debug)]
+struct TaskState {
+    next_run_at: Option<SystemTime>,
+    backoff_step: Option<u32>,
+    task: Box<dyn Task>,
+}
+
+impl TaskState {
+    fn new<T: Task + 'static>(task: T) -> Self {
+        Self {
+            next_run_at: Some(SystemTime::now()),
+            backoff_step: None,
+            task: Box::new(task),
+        }
+    }
+}
 
 #[tokio::main]
 async fn main() {
     dotenvy::dotenv().ok();
     tracing_subscriber::fmt().init();
 
+    let mut tasks = vec![TaskState::new(HostStateUpdate::new())];
+
     loop {
-        let config = config::read().unwrap();
-        let host_identity = host::identity::read(&config).unwrap();
-        let ras_client = RasClient::new(host_identity).unwrap();
+        let config = config::read().expect("failed to read configuration file");
+        let host_identity =
+            host::identity::read(&config).expect("failed to retrieve the host's identity");
+        let now = SystemTime::now();
 
-        let host_network_info = host::networking::read(&config).await.unwrap();
-        info!(?host_network_info, "collected host network information");
+        for task in &mut tasks {
+            if let Some(next_run_at) = task.next_run_at
+                && next_run_at <= now
+            {
+                let result = task.task.execute(&config, &host_identity).await;
 
-        let host_nixos_info = host::nixos::read().unwrap();
+                match result {
+                    Ok(t) => {
+                        task.backoff_step = None;
 
-        let request_body = PostHostStateRequest {
-            connectivity: ConnectivityState {
-                addresses: host_network_info.addresses().cloned().collect(),
-                wireguard: host_network_info
-                    .wireguard()
-                    .map(|x| rlib::hosts::WireguardEndpoint {
-                        public_key: x.key().to_public_base64(),
-                        endpoint: x.endpoint(),
-                    }),
-            },
-            closure: Some(ClosureUpdate {
-                latest_closure: None,
-                current_closure: Some(host_nixos_info.current_closure().to_string_lossy().into()),
-            }),
-        };
+                        match t {
+                            task::TaskResult::Done => {
+                                info!(?task, "task done");
+                                task.next_run_at = None;
+                            }
+                            task::TaskResult::ScheduleAgainIn(duration) => {
+                                info!(?task, "task scheduled again");
 
-        ras_client.update_host_state(&request_body).await.unwrap();
+                                task.next_run_at = Some(now.add(duration));
+                            }
+                        }
+                    }
+                    Err(e) => {
+                        warn!(?task, error=?e, "task failed");
 
-        sleep(Duration::from_secs(60)).await;
+                        let backoff_step = task.backoff_step.unwrap_or(0);
+                        if backoff_step < MAX_BACKOFF_STEPS {
+                            let delay = Duration::from_secs(2u64.pow(backoff_step));
+                            task.next_run_at = Some(now.add(delay));
+                            task.backoff_step = Some(backoff_step + 1);
+                        } else {
+                            error!(?task, "backoff limit reached");
+
+                            panic!("backoff limit reached");
+                        }
+                    }
+                }
+            }
+        }
+
+        let done_tasks = tasks.extract_if(.., |x| x.next_run_at.is_none());
+
+        for task in done_tasks {
+            info!(?task, "task garbage collected");
+        }
+
+        // TODO it'd probably make sense to have some scheduling algorithm that sleeps for as long as needed, instead of rechecking the tasks every 10s
+        sleep(Duration::from_secs(10)).await;
     }
 }
