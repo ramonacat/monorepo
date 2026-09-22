@@ -64,6 +64,7 @@ pub struct Version {
 #[derive(Queryable, Selectable)]
 #[diesel(table_name = crate::schema::host_ip_address, check_for_backend(diesel::pg::Pg), primary_key(hostname))]
 pub struct HostIpAddress {
+    #[allow(unused, reason = "a non-compound primary key makes the code simpler")]
     pub id: Uuid,
     pub address: IpNet,
     pub hostname: String,

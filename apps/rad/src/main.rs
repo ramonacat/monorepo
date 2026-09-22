@@ -1,10 +1,9 @@
 mod config;
 mod env;
-mod host_identity;
-mod host_networking;
+mod host;
 mod ras_client;
 
-use std::{fs, time::Duration};
+use std::time::Duration;
 
 use rlib::hosts::{ClosureUpdate, ConnectivityState, PostHostStateRequest};
 use tokio::time::sleep;
@@ -19,31 +18,27 @@ async fn main() {
 
     loop {
         let config = config::read().unwrap();
-        let host_identity = host_identity::read(&config).unwrap();
+        let host_identity = host::identity::read(&config).unwrap();
         let ras_client = RasClient::new(host_identity).unwrap();
 
-        let host_network_info = host_networking::read().unwrap();
-
-        let current_closure = fs::canonicalize("/run/current-system").unwrap();
+        let host_network_info = host::networking::read(&config).await.unwrap();
         info!(?host_network_info, "collected host network information");
 
-        let endpoint = host_network_info
-            .resolve_wireguard_endpoint(&config.wireguard.endpoint)
-            .await
-            .unwrap();
-        let wireguard_key = host_networking::wireguard::Key::load(&config.wireguard).unwrap();
+        let host_nixos_info = host::nixos::read().unwrap();
 
         let request_body = PostHostStateRequest {
             connectivity: ConnectivityState {
                 addresses: host_network_info.addresses().cloned().collect(),
-                wireguard: endpoint.map(|x| rlib::hosts::WireguardEndpoint {
-                    public_key: wireguard_key.to_public_base64(),
-                    endpoint: Some(x),
-                }),
+                wireguard: host_network_info
+                    .wireguard()
+                    .map(|x| rlib::hosts::WireguardEndpoint {
+                        public_key: x.key().to_public_base64(),
+                        endpoint: x.endpoint(),
+                    }),
             },
             closure: Some(ClosureUpdate {
                 latest_closure: None,
-                current_closure: Some(current_closure.to_string_lossy().into()),
+                current_closure: Some(host_nixos_info.current_closure().to_string_lossy().into()),
             }),
         };
 

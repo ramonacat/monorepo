@@ -7,21 +7,15 @@ use serde::Deserialize;
 #[derive(Debug, Deserialize)]
 #[serde(tag = "endpoint")]
 pub enum WireguardEndpoint {
-    Disabled,
+    InitiatorOnly,
     Auto,
     Specified { host: String, port: u16 },
-}
-
-fn default_key_path() -> PathBuf {
-    "/var/ramona/wireguard.key".parse().unwrap()
 }
 
 #[derive(Debug, Deserialize)]
 pub struct Wireguard {
     #[serde(flatten)]
     pub endpoint: WireguardEndpoint,
-    // TODO remove the default and put this in the configs explicitly
-    #[serde(default = "default_key_path")]
     pub key_path: PathBuf,
 }
 
@@ -29,7 +23,7 @@ pub struct Wireguard {
 pub struct Configuration {
     pub certificate: PathBuf,
     pub key: PathBuf,
-    pub wireguard: Wireguard,
+    pub wireguard: Option<Wireguard>,
 }
 
 pub fn read() -> Result<Configuration, anyhow::Error> {

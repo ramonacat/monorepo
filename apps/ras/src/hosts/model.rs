@@ -1,13 +1,14 @@
-use std::collections::HashSet;
+use std::{collections::HashSet, net::SocketAddr};
 
 use chrono::{DateTime, Utc};
-use rlib::hosts::{HostAddress, UDPEndpoint};
+use ipnet::IpNet;
+use rlib::hosts::HostAddress;
 use thiserror::Error;
 
 use diesel::{
     ExpressionMethods, OptionalEmptyChangesetExtension, OptionalExtension as _, QueryDsl as _,
     delete, insert_into,
-    query_builder::{AsChangeset, QueryFragment},
+    query_builder::AsChangeset,
     sql_query,
     sql_types::{Inet, Text},
     update,
@@ -141,14 +142,14 @@ pub async fn update_wireguard_endpoint(
     connection: &mut AsyncPgConnection,
     hostname: String,
     public_key: &str,
-    endpoint: Option<&UDPEndpoint>,
+    endpoint: Option<&SocketAddr>,
 ) -> Result<(), UpdateWireguardEndpointError> {
     use crate::schema::wireguard_endpoint::dsl;
 
     insert_into(dsl::wireguard_endpoint)
         .values((
             dsl::hostname.eq(hostname),
-            dsl::endpoint.eq(endpoint.as_ref().map(|x| x.adddress())),
+            dsl::endpoint.eq(endpoint.as_ref().map(|x| IpNet::from((x).ip()))),
             dsl::port.eq(endpoint.as_ref().map(|x| x.port() as i32)),
             dsl::public_key.eq(public_key),
         ))

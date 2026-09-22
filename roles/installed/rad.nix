@@ -32,24 +32,33 @@
       wantedBy = [ "multi-user.target" ];
       environment = {
         RAMONA_CONFIG_PATH = pkgs.writeText "rad.config.json" (
-          builtins.toJSON {
-            certificate = "/var/ramona/identity/certificate.crt";
-            key = "/var/ramona/identity/certificate.key";
-            wireguard =
+          builtins.toJSON (
+            {
+              certificate = "/var/ramona/identity/certificate.crt";
+              key = "/var/ramona/identity/certificate.key";
+            }
+            // (
               if !config.ramona.router.wireguard.enabled then
-                { "endpoint" = "Disabled"; }
+                { }
               else
-                (
-                  if config.ramona.router.wireguard.host == null then
-                    { endpoint = "Auto"; }
-                  else
-                    {
-                      endpoint = "Specified";
-                      host = config.ramona.router.wireguard.host;
-                      port = config.ramona.router.wireguard.port;
-                    }
-                );
-          }
+                {
+                  wireguard =
+                    (
+                      if config.ramona.router.wireguard.host == null then
+                        { endpoint = "Auto"; }
+                      else
+                        {
+                          endpoint = "Specified";
+                          host = config.ramona.router.wireguard.host;
+                          port = config.ramona.router.wireguard.port;
+                        }
+                    )
+                    // {
+                      key_file = "/var/ramona/wireguard.key";
+                    };
+                }
+            )
+          )
         );
       };
       unitConfig = {

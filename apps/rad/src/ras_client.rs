@@ -8,7 +8,7 @@ use reqwest::{
 use rlib::hosts::PostHostStateRequest;
 use tracing::info;
 
-use crate::host_identity::HostIdentity;
+use crate::host::identity::HostIdentity;
 
 pub struct RasClient {
     reqwest: reqwest::Client,
