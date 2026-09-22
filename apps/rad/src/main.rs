@@ -24,7 +24,7 @@ async fn main() {
 
         let host_network_info = host_networking::read().unwrap();
 
-        let current_closure = fs::canonicalize("/nix/var/nix/profiles/system").unwrap();
+        let current_closure = fs::canonicalize("/run/current-system").unwrap();
         info!(?host_network_info, "collected host network information");
 
         let endpoint = host_network_info
