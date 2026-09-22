@@ -1,3 +1,5 @@
+use std::net::SocketAddr;
+
 use chrono::{DateTime, Utc};
 use ipnet::IpNet;
 use serde::{Deserialize, Serialize};
@@ -22,10 +24,10 @@ impl UDPEndpoint {
 #[derive(Debug, Serialize, Deserialize)]
 pub struct WireguardEndpoint {
     pub public_key: String,
-    pub endpoint: Option<UDPEndpoint>,
+    pub endpoint: Option<SocketAddr>,
 }
 
-#[derive(Debug, Serialize, Deserialize, Hash, PartialEq, Eq)]
+#[derive(Debug, Clone, Serialize, Deserialize, Hash, PartialEq, Eq)]
 pub struct HostAddress {
     pub address: IpNet,
     pub interface: String,
