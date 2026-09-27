@@ -17,6 +17,7 @@
         phpactor.enable = true;
         terraformls.enable = true;
         ts_ls.enable = true;
+        openscad_lsp.enable = true;
         twiggy_language_server = {
           enable = true;
           package = pkgs.writeShellScriptBin "twiggy-language-server" ''
