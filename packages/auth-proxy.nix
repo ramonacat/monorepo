@@ -4,13 +4,19 @@ let
     inherit pkgs;
     inherit crane-lib;
 
-    src-path = ../apps/auth-proxy;
+    src-path = ../.;
     source-filter =
       path: type:
       (crane-lib.filterCargoSources path type || (builtins.match ".*/migrations/.*" path != null));
     additional-package-arguments = {
+      cargoToml = ../apps/auth-proxy/Cargo.toml;
+      cargoLock = ../apps/auth-proxy/Cargo.lock;
       nativeBuildInputs = [ pkgs.libpq.dev ];
       buildInputs = [ pkgs.libpq ];
+      postUnpack = ''
+        cd $sourceRoot/apps/auth-proxy
+        sourceRoot="."
+      '';
     };
   };
 in

@@ -10,7 +10,10 @@ use diesel_migrations::{EmbeddedMigrations, MigrationHarness, embed_migrations};
 use dotenvy::dotenv;
 use tracing::{Level, instrument};
 
-use crate::versions::{post_version, post_version_check};
+use crate::{
+    hosts::get_wireguard_endpoints,
+    versions::{post_version, post_version_check},
+};
 
 mod homes;
 mod hosts;
@@ -37,6 +40,7 @@ async fn main() {
     let app = Router::new()
         .route("/", get(async || "ok"))
         .route("/health", get(get_health))
+        .route("/wireguard/endpoints", get(get_wireguard_endpoints))
         .route("/hosts", get(hosts::get_current_state))
         .route(
             "/hosts/{hostname}",

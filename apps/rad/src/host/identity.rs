@@ -1,8 +1,9 @@
 use std::{ffi::OsString, fs};
 
-use crate::{config::Configuration, sensitive::Sensitive};
+use crate::config::Configuration;
 use anyhow::Context;
 use nix::unistd::gethostname;
+use rlib::sensitive::Sensitive;
 use thiserror::Error;
 
 #[derive(Debug, Clone)]

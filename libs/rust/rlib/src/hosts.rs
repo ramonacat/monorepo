@@ -1,14 +1,8 @@
-use std::net::SocketAddr;
-
 use chrono::{DateTime, Utc};
 use ipnet::IpNet;
 use serde::{Deserialize, Serialize};
 
-#[derive(Debug, Serialize, Deserialize)]
-pub struct WireguardEndpoint {
-    pub public_key: String,
-    pub endpoint: Option<SocketAddr>,
-}
+use crate::wireguard::WireguardEndpoint;
 
 #[derive(Debug, Clone, Serialize, Deserialize, Hash, PartialEq, Eq)]
 pub struct HostAddress {

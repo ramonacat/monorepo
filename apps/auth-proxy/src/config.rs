@@ -1,12 +1,6 @@
-use std::{
-    collections::HashMap,
-    env::{self, VarError},
-    fs, io,
-    path::PathBuf,
-};
+use std::{collections::HashMap, path::PathBuf};
 
 use serde::{Deserialize, Serialize};
-use thiserror::Error;
 
 #[derive(Debug, Serialize, Deserialize, Clone)]
 pub struct OAuthConfiguration {
@@ -61,25 +55,4 @@ pub struct MtlsConfig {
     pub client_roots: Vec<PathBuf>,
     pub server_chain: Vec<PathBuf>,
     pub server_key: PathBuf,
-}
-
-#[derive(Debug, Error)]
-pub enum Error {
-    #[error("env var: {0}")]
-    Var(#[from] VarError),
-
-    #[error("io: {0}")]
-    Io(#[from] io::Error),
-
-    #[error("subst json: {0}")]
-    Subst(#[from] subst::json::Error),
-}
-
-pub fn load() -> Result<Config, Error> {
-    let config_path = env::var("RAMONA_RED_CONFIG_PATH")?;
-
-    Ok(subst::json::from_slice(
-        &fs::read(config_path)?,
-        &subst::Env,
-    )?)
 }

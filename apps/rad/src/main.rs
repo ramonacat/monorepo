@@ -1,8 +1,8 @@
 mod config;
 mod env;
 mod host;
+mod mikrotik;
 mod ras_client;
-mod sensitive;
 mod task;
 
 use std::{
@@ -13,7 +13,10 @@ use std::{
 use tokio::time::sleep;
 use tracing::{error, info, warn};
 
-use crate::task::{Task, host_state_update::HostStateUpdate};
+use crate::task::{
+    Task, host_state_update::HostStateUpdate,
+    mikrotik_wireguard_peer_update::MikrotikWireguardPeerUpdate,
+};
 
 const MAX_BACKOFF_STEPS: u32 = 8;
 
@@ -39,7 +42,10 @@ async fn main() {
     dotenvy::dotenv().ok();
     tracing_subscriber::fmt().init();
 
-    let mut tasks = vec![TaskState::new(HostStateUpdate::new())];
+    let mut tasks = vec![
+        TaskState::new(HostStateUpdate::new()),
+        TaskState::new(MikrotikWireguardPeerUpdate::new()),
+    ];
 
     loop {
         let config = config::read().expect("failed to read configuration file");
@@ -48,40 +54,52 @@ async fn main() {
         let now = SystemTime::now();
 
         for task in &mut tasks {
-            if let Some(next_run_at) = task.next_run_at
-                && next_run_at <= now
-            {
-                let result = task.task.execute(&config, &host_identity).await;
+            info!(?task, "processing task");
 
-                match result {
-                    Ok(t) => {
-                        task.backoff_step = None;
+            let Some(next_run_at) = task.next_run_at else {
+                info!(?task, "not scheduled to run");
 
-                        match t {
-                            task::TaskResult::Done => {
-                                info!(?task, "task done");
-                                task.next_run_at = None;
-                            }
-                            task::TaskResult::ScheduleAgainIn(duration) => {
-                                info!(?task, "task scheduled again");
+                continue;
+            };
 
-                                task.next_run_at = Some(now.add(duration));
-                            }
+            if next_run_at > now {
+                info!(?task, ?now, "not scheduled to run yet");
+
+                continue;
+            }
+
+            info!(?task, "executing");
+            let result = task.task.execute(&config, &host_identity).await;
+            info!(?task, ?result, "executed");
+
+            match result {
+                Ok(t) => {
+                    task.backoff_step = None;
+
+                    match t {
+                        task::TaskResult::Done => {
+                            info!(?task, "task done");
+                            task.next_run_at = None;
+                        }
+                        task::TaskResult::ScheduleAgainIn(duration) => {
+                            info!(?task, "task scheduled again");
+
+                            task.next_run_at = Some(now.add(duration));
                         }
                     }
-                    Err(e) => {
-                        warn!(?task, error=?e, "task failed");
+                }
+                Err(e) => {
+                    warn!(?task, error=?e, "task failed");
 
-                        let backoff_step = task.backoff_step.unwrap_or(0);
-                        if backoff_step < MAX_BACKOFF_STEPS {
-                            let delay = Duration::from_secs(2u64.pow(backoff_step));
-                            task.next_run_at = Some(now.add(delay));
-                            task.backoff_step = Some(backoff_step + 1);
-                        } else {
-                            error!(?task, "backoff limit reached");
+                    let backoff_step = task.backoff_step.unwrap_or(0);
+                    if backoff_step < MAX_BACKOFF_STEPS {
+                        let delay = Duration::from_secs(2u64.pow(backoff_step));
+                        task.next_run_at = Some(now.add(delay));
+                        task.backoff_step = Some(backoff_step + 1);
+                    } else {
+                        error!(?task, "backoff limit reached");
 
-                            panic!("backoff limit reached");
-                        }
+                        panic!("backoff limit reached");
                     }
                 }
             }

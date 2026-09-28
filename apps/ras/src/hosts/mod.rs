@@ -8,9 +8,9 @@ use std::{
 use axum::{Json, extract, http::StatusCode};
 use diesel::{ExpressionMethods as _, query_dsl::methods::FilterDsl};
 use diesel_async::RunQueryDsl as _;
-use rlib::hosts::{
-    ConnectivityState, HostAddress, HostState, NixClosureState, PostHostStateRequest,
-    WireguardEndpoint,
+use rlib::{
+    hosts::{ConnectivityState, HostAddress, HostState, NixClosureState, PostHostStateRequest},
+    wireguard::{GetWireguardEndpointsResponse, WIREGUARD_PORT_DEFAULT, WireguardEndpoint},
 };
 use serde::{Deserialize, Serialize};
 use tracing::instrument;
@@ -26,6 +26,36 @@ use crate::{
 #[derive(Debug, Serialize, Deserialize)]
 pub struct CurrentStateResponse {
     hosts: Vec<HostState>,
+}
+
+pub async fn get_wireguard_endpoints(
+    extract::State(app_state): extract::State<AppState>,
+) -> Json<GetWireguardEndpointsResponse> {
+    use crate::schema::wireguard_endpoint::dsl;
+    let mut connection = app_state.db_connect().await;
+
+    let endpoints: Vec<crate::models::WireguardEndpoint> =
+        dsl::wireguard_endpoint.load(&mut connection).await.unwrap();
+
+    let endpoints = endpoints
+        .into_iter()
+        .map(|x| {
+            (
+                x.hostname,
+                WireguardEndpoint {
+                    public_key: x.public_key,
+                    endpoint: x.endpoint.map(|y| {
+                        SocketAddr::new(
+                            y.addr(),
+                            x.port.map(|y| y as u16).unwrap_or(WIREGUARD_PORT_DEFAULT),
+                        )
+                    }),
+                },
+            )
+        })
+        .collect();
+
+    Json(GetWireguardEndpointsResponse { endpoints })
 }
 
 #[axum::debug_handler]

@@ -247,7 +247,8 @@ async fn main() {
         .install_default()
         .unwrap();
 
-    let config = config::load().unwrap();
+    let config: config::Config = rlib::config::load().unwrap();
+    // TODO move database_url into the config
     let database_url = env::var("DATABASE_URL").expect("DATABASE_URL must be set");
     PgConnection::establish(&database_url)
         .expect("failed to connect to the database")
