@@ -1,5 +1,7 @@
 use anyhow::Context;
+use rlib::config::SecretValue;
 use std::fs;
+use std::net::SocketAddr;
 use std::path::PathBuf;
 
 use serde::Deserialize;
@@ -20,10 +22,18 @@ pub struct Wireguard {
 }
 
 #[derive(Debug, Deserialize)]
+pub struct Mikrotik {
+    pub endpoint: SocketAddr,
+    pub username: String,
+    pub password: SecretValue<String>,
+}
+
+#[derive(Debug, Deserialize)]
 pub struct Configuration {
     pub certificate: PathBuf,
     pub key: PathBuf,
     pub wireguard: Option<Wireguard>,
+    pub mikrotik: Option<Mikrotik>,
 }
 
 pub fn read() -> Result<Configuration, anyhow::Error> {

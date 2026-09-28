@@ -6,18 +6,6 @@ resource "routeros_queue_type" "scarletwound-cake" {
   cake_nat = true
 }
 
-resource "routeros_queue_simple" "scarletwound-high-priority" {
-  provider = routeros.router-scarletwound
-
-  name         = "high-priority"
-  target       = ["0.0.0.0/0"]
-  limit_at     = "20M/70M"
-  max_limit    = "1G/1G"
-  priority     = "8/8"
-  packet_marks = ["high-priority"]
-  queue        = "pcq-upload-default/pcq-download-default"
-}
-
 resource "routeros_queue_simple" "scarletwound-local" {
   provider = routeros.router-scarletwound
 
@@ -35,7 +23,7 @@ resource "routeros_queue_simple" "scarletwound-vlan4" {
   name      = "vlan4"
   target    = [module.scarletwound-vlan4.cidr]
   limit_at  = "6M/40M"
-  max_limit = "10M/60M"
+  max_limit = "20M/60M"
   priority  = "4/4"
   queue     = "${routeros_queue_type.scarletwound-cake.name}/${routeros_queue_type.scarletwound-cake.name}"
 }
@@ -45,7 +33,7 @@ resource "routeros_queue_simple" "scarletwound-vlan2" {
 
   name      = "vlan2"
   limit_at  = "10M/40M"
-  max_limit = "15M/60M"
+  max_limit = "20M/60M"
   priority  = "6/6"
   target    = [module.scarletwound-vlan2.cidr]
   queue     = "${routeros_queue_type.scarletwound-cake.name}/${routeros_queue_type.scarletwound-cake.name}"
@@ -56,7 +44,7 @@ resource "routeros_queue_simple" "scarletwound-vlan5" {
 
   name      = "vlan5"
   limit_at  = "10M/40M"
-  max_limit = "15M/60M"
+  max_limit = "20M/60M"
   priority  = "6/6"
   target    = [module.scarletwound-vlan5.cidr]
   queue     = "${routeros_queue_type.scarletwound-cake.name}/${routeros_queue_type.scarletwound-cake.name}"
@@ -67,7 +55,6 @@ resource "routeros_move_items" "scarletwound-queue-simple" {
   resource_path = "/queue/simple"
 
   sequence = [
-    routeros_queue_simple.scarletwound-high-priority.id,
     routeros_queue_simple.scarletwound-local.id,
     routeros_queue_simple.scarletwound-vlan2.id,
     routeros_queue_simple.scarletwound-vlan5.id,
@@ -83,6 +70,7 @@ resource "routeros_queue_tree" "scarletwound-internet-out" {
   packet_mark = ["internet-out"]
   limit_at    = "15M"
   max_limit   = "22M"
+  priority    = "7"
 }
 
 resource "routeros_queue_tree" "scarletwound-internet-in" {
@@ -91,6 +79,17 @@ resource "routeros_queue_tree" "scarletwound-internet-in" {
   parent      = "global"
   queue       = routeros_queue_type.scarletwound-cake.name
   packet_mark = ["internet-in"]
+  limit_at    = "50M"
+  max_limit   = "60M"
+  priority    = "7"
+}
+
+resource "routeros_queue_tree" "scarletwound-high-priority" {
+  provider    = routeros.router-scarletwound
+  name        = "high-priority"
+  parent      = "global"
+  queue       = routeros_queue_type.scarletwound-cake.name
+  packet_mark = ["high-priority"]
   limit_at    = "50M"
   max_limit   = "60M"
 }

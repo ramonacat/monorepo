@@ -47,6 +47,12 @@ dependencies = [
 ]
 
 [[package]]
+name = "anyhow"
+version = "1.0.104"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "330a5ed07fa54e4702c9d6c4174f74427fc0ef6e214bbd677ae50a5099946470"
+
+[[package]]
 name = "arc-swap"
 version = "1.9.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -90,6 +96,7 @@ dependencies = [
  "openidconnect",
  "rand 0.10.3",
  "reqwest 0.13.5",
+ "rlib",
  "rustls",
  "serde",
  "serde_json",
@@ -1430,9 +1437,12 @@ dependencies = [
 
 [[package]]
 name = "ipnet"
-version = "2.12.0"
+version = "2.12.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "d98f6fed1fde3f8c21bc40a1abb88dd75e67924f9cffc3ef95607bad8017f8e2"
+checksum = "791930b43c0d5973160d90a8f3894509f2b273430f5c5c73b668636d0287c5c0"
+dependencies = [
+ "serde",
+]
 
 [[package]]
 name = "itertools"
@@ -2258,6 +2268,17 @@ dependencies = [
  "libc",
  "untrusted",
  "windows-sys 0.52.0",
+]
+
+[[package]]
+name = "rlib"
+version = "0.1.0"
+dependencies = [
+ "anyhow",
+ "chrono",
+ "ipnet",
+ "serde",
+ "subst",
 ]
 
 [[package]]

@@ -7,15 +7,13 @@ use anyhow::Context;
 use base64::Engine as _;
 use ipnet::IpNet;
 use rand::rng;
-use rlib::hosts::HostAddress;
+use rlib::{hosts::HostAddress, wireguard::WIREGUARD_PORT_DEFAULT};
 use thiserror::Error;
 use tokio::net::lookup_host;
 use tracing::info;
 use x25519_dalek::{PublicKey, StaticSecret};
 
 use crate::config;
-
-const WIREGUARD_PORT_DEFAULT: u16 = 51820;
 
 #[derive(Debug)]
 pub struct Key {

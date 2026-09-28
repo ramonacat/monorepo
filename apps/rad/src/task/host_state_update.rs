@@ -35,12 +35,12 @@ impl Task for HostStateUpdate {
         let request_body = PostHostStateRequest {
             connectivity: ConnectivityState {
                 addresses: host_network_info.addresses().cloned().collect(),
-                wireguard: host_network_info
-                    .wireguard()
-                    .map(|x| rlib::hosts::WireguardEndpoint {
+                wireguard: host_network_info.wireguard().map(|x| {
+                    rlib::wireguard::WireguardEndpoint {
                         public_key: x.key().to_public_base64(),
                         endpoint: x.endpoint(),
-                    }),
+                    }
+                }),
             },
             closure: Some(ClosureUpdate {
                 latest_closure: None,

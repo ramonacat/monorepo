@@ -41,6 +41,15 @@ module "scarletwound-firewall" {
       comment     = "allow homeassistant api access"
     },
     {
+      chain       = "input",
+      action      = "accept",
+      dst_address = local.scarletwound_vlan3_ip,
+      protocol    = "tcp",
+      dst_port    = "8729",
+      src_address = routeros_ip_dhcp_server_lease.scarletwound-hallewell.address,
+      comment     = "allow hallewell api access (for rad)"
+    },
+    {
       chain    = "input",
       action   = "accept",
       protocol = "tcp",
@@ -139,6 +148,14 @@ module "scarletwound-firewall" {
       dst_port    = "8096"
       protocol    = "tcp"
       comment     = "tv -> hallewell (jellyfin)"
+    },
+    {
+      chain         = "forward",
+      action        = "accept",
+      src_address   = routeros_ip_dhcp_server_lease.scarletwound-tv.address,
+      out_interface = routeros_interface_vlan.scarletwound-vlan7.name,
+      disabled      = true,
+      comment       = "tv -> internet (enable for updates)"
     },
     {
       chain         = "forward",
