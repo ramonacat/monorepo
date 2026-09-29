@@ -39,10 +39,10 @@ use tower_http::{
     cors::CorsLayer,
     trace::{DefaultMakeSpan, TraceLayer},
 };
-use tracing::{Level, info};
+use tracing::{Level, error, info};
 
 use crate::{
-    auth::{Account, AuthenticationMethod},
+    auth::{Account, AuthenticateRedirectedError, AuthenticationMethod},
     config::{AppDefinition, Config},
     infra::DatabaseConnector,
     mtls::MtlsExtension,
@@ -226,7 +226,19 @@ async fn get_authorize(
 
                 return (StatusCode::FOUND, headers, String::new());
             }
-            Err(_) => todo!(),
+            Err(AuthenticateRedirectedError::NoMatch) => {}
+            Err(AuthenticateRedirectedError::BadRequest) => {
+                return (StatusCode::BAD_REQUEST, HeaderMap::new(), String::new());
+            }
+            Err(AuthenticateRedirectedError::Failed(e)) => {
+                error!(error=?e, "authentication failed");
+
+                return (
+                    StatusCode::INTERNAL_SERVER_ERROR,
+                    HeaderMap::new(),
+                    String::new(),
+                );
+            }
         }
     }
 
