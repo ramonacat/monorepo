@@ -4,7 +4,7 @@ resource "helm_release" "grafana" {
   repository       = "https://grafana-community.github.io/helm-charts"
   namespace        = "grafana"
   create_namespace = true
-  version          = "13.2.6"
+  version          = "13.2.7"
 
   values = [yamlencode({
     replicas = 2
