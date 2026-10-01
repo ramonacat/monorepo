@@ -2,6 +2,7 @@ mod config;
 mod env;
 mod host;
 mod mikrotik;
+mod networking;
 mod ras_client;
 mod task;
 
@@ -11,7 +12,7 @@ use std::{
 };
 
 use tokio::time::sleep;
-use tracing::{error, info, warn};
+use tracing::{debug, error, info, warn};
 
 use crate::task::{
     Task, host_state_update::HostStateUpdate,
@@ -57,13 +58,13 @@ async fn main() {
             info!(?task, "processing task");
 
             let Some(next_run_at) = task.next_run_at else {
-                info!(?task, "not scheduled to run");
+                debug!(?task, "not scheduled to run");
 
                 continue;
             };
 
             if next_run_at > now {
-                info!(?task, ?now, "not scheduled to run yet");
+                debug!(?task, ?now, "not scheduled to run yet");
 
                 continue;
             }

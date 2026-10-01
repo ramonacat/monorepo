@@ -6,6 +6,64 @@
 }:
 {
   options = {
+    ramona.mikrotik = lib.mkOption {
+      type =
+        with lib.types;
+        submodule {
+          options = {
+            enabled = lib.mkOption {
+              type = bool;
+              default = false;
+            };
+            endpoint = lib.mkOption { type = str; };
+            username = lib.mkOption {
+              type = str;
+            };
+            password = lib.mkOption {
+              type = oneOf [
+                str
+                /*
+                  TODO with two submodlues in oneOf nix just tries the first one so this is fucked (submodule {
+                    options = {
+                      path = lib.mkOption {
+                        type = str;
+                      };
+                    };
+                  })
+                */
+                (submodule {
+                  options = {
+                    env = lib.mkOption {
+                      type = str;
+                    };
+                  };
+                })
+              ];
+            };
+            wireguard = lib.mkOption {
+              type = submodule {
+                options = {
+                  endpoint = lib.mkOption {
+                    type = enum [
+                      "Specified"
+                      "Auto"
+                      "InitiatorOnly"
+                    ];
+                  };
+                  host = lib.mkOption {
+                    type = str;
+                    default = "";
+                  };
+                  port = lib.mkOption {
+                    type = port;
+                    default = 0;
+                  };
+                };
+              };
+            };
+          };
+        };
+    };
     ramona.router.wireguard = lib.mkOption {
       type =
         with lib.types;
@@ -55,6 +113,25 @@
                     )
                     // {
                       key_file = "/var/ramona/wireguard.key";
+                    };
+                }
+            )
+            // (
+              if !config.ramona.mikrotik.enabled then
+                { }
+              else
+                {
+                  mikrotik =
+                    let
+                      c = config.ramona.mikrotik;
+                    in
+                    {
+                      inherit (c)
+                        endpoint
+                        username
+                        password
+                        wireguard
+                        ;
                     };
                 }
             )

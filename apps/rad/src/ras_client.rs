@@ -5,14 +5,13 @@ use reqwest::{
     Identity, Url,
     header::{HeaderMap, HeaderName, HeaderValue},
 };
-use rlib::hosts::PostHostStateRequest;
+use rlib::{hosts::PostHostStateRequest, wireguard::GetWireguardEndpointsResponse};
 use tracing::info;
 
 use crate::host::identity::HostIdentity;
 
 pub struct RasClient {
     reqwest: reqwest::Client,
-    host_identity: HostIdentity,
 }
 
 impl RasClient {
@@ -31,15 +30,14 @@ impl RasClient {
             .default_headers(headers)
             .build()?;
 
-        Ok(Self {
-            reqwest: client,
-            host_identity,
-        })
+        Ok(Self { reqwest: client })
     }
 
-    pub async fn update_host_state(&self, state: &PostHostStateRequest) -> anyhow::Result<()> {
-        let hostname = self.host_identity.hostname();
-
+    pub async fn update_host_state(
+        &self,
+        hostname: &str,
+        state: &PostHostStateRequest,
+    ) -> anyhow::Result<()> {
         let response = self
             .reqwest
             .post(self.make_url(&format!("/hosts/{hostname}"))?)
@@ -52,6 +50,18 @@ impl RasClient {
         info!(?response, ?state, "updated host state");
 
         Ok(())
+    }
+
+    pub async fn get_wireguard_endpoints(&self) -> anyhow::Result<GetWireguardEndpointsResponse> {
+        let response = self
+            .reqwest
+            .get(self.make_url("/wireguard/endpoints")?)
+            .send()
+            .await?
+            .error_for_status()
+            .with_context(|| "failed to get wireguard endpoints")?;
+
+        Ok(response.json().await?)
     }
 
     fn make_url(&self, path: &str) -> anyhow::Result<Url> {
