@@ -31,4 +31,13 @@ resource "hcloud_firewall" "fw" {
     source_ips  = ["0.0.0.0/0"]
     description = "ssh"
   }
+
+  # wireguard
+  rule {
+    direction   = "in"
+    protocol    = "udp"
+    port        = "51820"
+    source_ips  = ["0.0.0.0/0"]
+    description = "wireguard"
+  }
 }

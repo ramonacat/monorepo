@@ -1,6 +1,8 @@
 use std::{
-    fs,
+    fs::{self, OpenOptions, Permissions},
+    io::Write as _,
     net::{IpAddr, SocketAddr},
+    os::unix::fs::{OpenOptionsExt, PermissionsExt},
 };
 
 use anyhow::Context;
@@ -22,14 +24,14 @@ pub struct Key {
 
 impl Key {
     pub fn load(config: &config::Wireguard) -> anyhow::Result<Key> {
-        let private = match fs::read_to_string(&config.key_path) {
+        let private = match fs::read_to_string(&config.key_file) {
             Ok(contents) => {
                 let bytes: [u8; 32] = base64::engine::general_purpose::STANDARD
                     .decode(contents)
                     .with_context(|| {
                         format!(
                             "failed to decode private wireguard key at {:?}",
-                            config.key_path
+                            config.key_file
                         )
                     })?
                     .try_into()
@@ -40,22 +42,31 @@ impl Key {
             Err(e) if e.kind() == std::io::ErrorKind::NotFound => {
                 let secret = StaticSecret::random_from_rng(&mut rng());
 
-                fs::write(
-                    &config.key_path,
-                    base64::engine::general_purpose::STANDARD.encode(secret.as_bytes()),
-                )
-                .with_context(|| {
-                    format!(
-                        "failed to write a new wireguard key at {:?}",
-                        config.key_path
+                let mut key_file = OpenOptions::new()
+                    .write(true)
+                    .create(true)
+                    .truncate(true)
+                    .mode(0o600)
+                    .open(&config.key_file)?;
+
+                key_file
+                    .write_all(
+                        base64::engine::general_purpose::STANDARD
+                            .encode(secret.as_bytes())
+                            .as_bytes(),
                     )
-                })?;
+                    .with_context(|| {
+                        format!(
+                            "failed to write a new wireguard key at {:?}",
+                            config.key_file
+                        )
+                    })?;
 
                 secret
             }
             Err(e) => {
                 return Err(e).with_context(|| {
-                    format!("failed to read wireguard key at {:?}", config.key_path)
+                    format!("failed to read wireguard key at {:?}", config.key_file)
                 });
             }
         };
