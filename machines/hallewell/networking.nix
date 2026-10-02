@@ -36,5 +36,8 @@ _: {
           };
         };
       };
+      systemd.services.rad.serviceConfig = {
+        EnvironmentFile = secrets-path;
+      };
     };
 }
