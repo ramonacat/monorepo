@@ -31,7 +31,8 @@ _: {
             env = "MIKROTIK_SCARLETWOUND_PASSWORD";
           };
           wireguard = {
-            "endpoint" = "InitiatorOnly";
+            endpoint = "InitiatorOnly";
+            interface = "global mesh";
           };
         };
       };
