@@ -13,16 +13,15 @@ use tokio_rustls::{
     client::TlsStream,
     rustls::{ClientConfig, pki_types::ServerName},
 };
+use tracing::info;
 
 use crate::mikrotik::protocol::{MikrotikStream, Sentence};
 
 #[derive(Debug, PartialEq, Eq)]
 pub enum ResponseLine {
     Done,
-    Trap(String),
     Data(HashMap<String, String>),
     Empty,
-    Fatal(String),
 }
 
 #[derive(Debug, Error)]
@@ -57,7 +56,15 @@ pub enum ResponseLineError {
     InvalidDataLine(#[from] ParseAttirbuteWordsError),
 }
 
-impl TryFrom<Sentence> for ResponseLine {
+#[derive(Debug, Error, PartialEq, Eq)]
+pub enum ResponseError {
+    #[error("trap: {0}")]
+    Trap(String),
+    #[error("fatal: {0}")]
+    Fatal(String),
+}
+
+impl TryFrom<Sentence> for Result<ResponseLine, ResponseError> {
     type Error = ResponseLineError;
 
     fn try_from(value: Sentence) -> Result<Self, Self::Error> {
@@ -66,15 +73,15 @@ impl TryFrom<Sentence> for ResponseLine {
         };
 
         match kind.as_str() {
-            "!done" => Ok(Self::Done),
-            "!trap" => Ok(Self::Trap(
+            "!done" => Ok(Ok(ResponseLine::Done)),
+            "!trap" => Ok(Err(ResponseError::Trap(
                 value.words().iter().fold(String::new(), |a, x| a + " " + x),
-            )),
-            "!re" => Ok(Self::Data(parse_attribute_words(rest)?)),
-            "!empty" => Ok(Self::Empty),
-            "!fatal" => Ok(Self::Fatal(
+            ))),
+            "!re" => Ok(Ok(ResponseLine::Data(parse_attribute_words(rest)?))),
+            "!empty" => Ok(Ok(ResponseLine::Empty)),
+            "!fatal" => Ok(Err(ResponseError::Fatal(
                 value.words().iter().fold(String::new(), |a, x| a + " " + x),
-            )),
+            ))),
 
             _ => Err(ResponseLineError::UnknownReplyWord),
         }
@@ -140,6 +147,7 @@ impl<T: Unpin + AsyncWrite + AsyncRead> Connection<T> {
 
         let sentence = Sentence::new(words);
 
+        info!(?sentence, "sending command");
         self.0.write(sentence).await?;
 
         let mut result = vec![];
@@ -147,15 +155,15 @@ impl<T: Unpin + AsyncWrite + AsyncRead> Connection<T> {
         loop {
             let sentence = self.0.read().await?;
 
-            let response_line: ResponseLine = sentence.try_into()?;
+            let response_line: Result<ResponseLine, _> = sentence.try_into()?;
 
-            if ResponseLine::Done == response_line {
+            if Ok(ResponseLine::Done) == response_line {
                 break;
             }
 
             result.push(response_line);
         }
 
-        Ok(result)
+        Ok(result.into_iter().collect::<Result<Vec<_>, _>>()?)
     }
 }

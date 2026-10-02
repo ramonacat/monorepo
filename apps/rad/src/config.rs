@@ -22,10 +22,18 @@ pub struct Wireguard {
 }
 
 #[derive(Debug, Deserialize)]
+pub struct MikrotikWireguard {
+    #[serde(flatten)]
+    pub endpoint: WireguardEndpoint,
+    pub interface: String,
+}
+
+#[derive(Debug, Deserialize)]
 pub struct Mikrotik {
     pub endpoint: SocketAddr,
     pub username: String,
     pub password: SecretValue<String>,
+    pub wireguard: MikrotikWireguard,
 }
 
 #[derive(Debug, Deserialize)]

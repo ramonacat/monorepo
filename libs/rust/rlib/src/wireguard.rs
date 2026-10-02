@@ -10,7 +10,7 @@ pub struct WireguardEndpoint {
     pub endpoint: Option<SocketAddr>,
 }
 
-#[derive(Debug, Serialize)]
+#[derive(Debug, Serialize, Deserialize)]
 pub struct GetWireguardEndpointsResponse {
     // TODO add a `Hostname` type and replace the string here with it
     pub endpoints: HashMap<String, WireguardEndpoint>,

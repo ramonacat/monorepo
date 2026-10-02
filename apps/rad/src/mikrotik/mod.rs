@@ -1,4 +1,4 @@
 mod connection;
 mod protocol;
 
-pub use connection::Connection;
+pub use connection::{Connection, ResponseLine};
