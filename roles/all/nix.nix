@@ -10,10 +10,10 @@ in
         trusted-users = [ "@wheel" ];
         experimental-features = [ "nix-command flakes" ];
         fallback = true;
+        nix-path = [
+          "nixpkgs=${nixpkgsPath}"
+        ];
       };
-      nixPath = [
-        "nixpkgs=${nixpkgsPath}"
-      ];
     };
 
     systemd.tmpfiles.rules = [
