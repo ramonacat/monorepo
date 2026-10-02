@@ -18,7 +18,7 @@ pub enum WireguardEndpoint {
 pub struct Wireguard {
     #[serde(flatten)]
     pub endpoint: WireguardEndpoint,
-    pub key_path: PathBuf,
+    pub key_file: PathBuf,
 }
 
 #[derive(Debug, Deserialize)]

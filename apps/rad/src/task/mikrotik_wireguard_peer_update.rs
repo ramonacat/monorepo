@@ -27,8 +27,6 @@ use crate::{
 #[derive(Debug)]
 pub struct MikrotikWireguardPeerUpdate {}
 
-impl MikrotikWireguardPeerUpdate {}
-
 impl MikrotikWireguardPeerUpdate {
     pub fn new() -> Self {
         Self {}
@@ -46,7 +44,7 @@ fn endpoint_to_attributes(
         ("allowed-address".to_string(), "0.0.0.0/0,::/0".to_string()),
         ("public-key".to_string(), endpoint.public_key.clone()),
         // TODO: make this configurable
-        ("persistent-keepalive".to_string(), "50s".to_string()),
+        ("persistent-keepalive".to_string(), "25s".to_string()),
     ]
     .into();
 
@@ -83,8 +81,6 @@ impl Task for MikrotikWireguardPeerUpdate {
             return Ok(TaskResult::ScheduleAgainIn(Duration::from_mins(1)));
         };
 
-        // TODO actually get the endpoints from ras, compare with what the router knows and update
-        // as necessary
         let ras_client = RasClient::new(host_identity.clone())?;
         let mut endpoints = ras_client.get_wireguard_endpoints().await?.endpoints;
 

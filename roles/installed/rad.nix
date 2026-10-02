@@ -153,5 +153,8 @@
         CapabilityBoundingSet = "CAP_NET_RAW CAP_NET_ADMIN";
       };
     };
+    networking.firewall.allowedUDPPorts = lib.mkIf config.ramona.router.wireguard.enabled [
+      config.ramona.router.wireguard.port
+    ];
   };
 }
