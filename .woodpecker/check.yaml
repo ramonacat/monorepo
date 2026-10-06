@@ -2,7 +2,7 @@ when:
   - event: pull_request
 steps:
   - name: check
-    image: code.ramona.fun/ramona/monorepo/ci:1790608040
+    image: code.ramona.fun/ramona/monorepo/ci:1791274365
     commands:
       - ./.woodpecker/scripts/check.bash
     environment:
