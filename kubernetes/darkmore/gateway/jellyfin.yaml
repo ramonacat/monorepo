@@ -33,6 +33,9 @@ spec:
         - path:
             type: PathPrefix
             value: /
+      timeouts:
+        backendRequest: "3600s"
+        request: "3600s"
 ---
 apiVersion: v1
 kind: Service
