@@ -7,7 +7,7 @@ use ipnet::{IpNet, Ipv4Net, Ipv6Net};
 use nix::ifaddrs::getifaddrs;
 use rlib::hosts::HostAddress;
 
-use crate::{config::Configuration, host::networking::wireguard::resolve_endpoint};
+use crate::{config::Configuration, networking::wireguard::resolve_endpoint};
 
 #[derive(Debug)]
 pub struct WireguardInfo {
@@ -74,7 +74,8 @@ pub async fn read(config: &Configuration) -> anyhow::Result<HostNetworkInfo> {
     let wireguard = if let Some(wireguard) = config.wireguard.as_ref() {
         Some(WireguardInfo {
             key: wireguard::Key::load(wireguard)?,
-            endpoint: resolve_endpoint(&wireguard.endpoint, ip_addresses.iter()).await?,
+            endpoint: resolve_endpoint(&wireguard.endpoint, ip_addresses.clone().into_iter())
+                .await?,
         })
     } else {
         None

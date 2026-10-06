@@ -1,9 +1,4 @@
-use std::{
-    collections::HashMap,
-    net::{IpAddr, SocketAddr},
-    str::FromStr,
-    time::Duration,
-};
+use std::{collections::HashMap, str::FromStr, time::Duration};
 
 use async_trait::async_trait;
 use ipnet::IpNet;
@@ -12,14 +7,13 @@ use rlib::{
     wireguard::WireguardEndpoint,
 };
 use thiserror::Error;
-use tokio::net::lookup_host;
 use tracing::info;
 
 use crate::{
     config::Configuration,
     host::identity::HostIdentity,
     mikrotik::{Connection, ResponseLine},
-    networking::is_global4,
+    networking::wireguard::resolve_endpoint,
     ras_client::RasClient,
     task::{Task, TaskResult},
 };
@@ -65,8 +59,6 @@ fn endpoint_to_attributes(
 pub enum PeerUpdateError {
     #[error("name not known for: {0:?}")]
     NameNotKnown(HashMap<String, String>),
-    #[error("the device does not have a public ip")]
-    NoPublicIp,
 }
 
 #[async_trait]
@@ -132,7 +124,6 @@ impl Task for MikrotikWireguardPeerUpdate {
         let ip_addresses = connection.send("ip/address/print", [], []).await?;
         let ips = ip_addresses.iter().filter_map(|x| {
             if let ResponseLine::Data(data) = x {
-                dbg!(data);
                 Some(HostAddress {
                     address: <IpNet as FromStr>::from_str(data.get("address").unwrap())
                         .unwrap()
@@ -145,47 +136,7 @@ impl Task for MikrotikWireguardPeerUpdate {
             }
         });
 
-        // TODO this is very similar to the way it's done in the host update task, probably abstract
-        // it out, so it's not copy-pasted?
-        let wireguard_endpoint = match &config.wireguard.endpoint {
-            crate::config::WireguardEndpoint::InitiatorOnly => None,
-            crate::config::WireguardEndpoint::Auto => {
-                let ip = ips
-                    .clone()
-                    .filter_map(|x| {
-                        if let IpAddr::V4(v4) = x.address.addr()
-                            && is_global4(&v4)
-                        {
-                            Some(x)
-                        } else {
-                            None
-                        }
-                    })
-                    .nth(0)
-                    .ok_or(PeerUpdateError::NoPublicIp)?;
-
-                Some(SocketAddr::new(
-                    ip.address.addr(),
-                    wireguard_interaface_description.0,
-                ))
-            }
-            crate::config::WireguardEndpoint::Specified { host, port } => {
-                let address = lookup_host(format!("{host}:{port}"))
-                    .await?
-                    .filter_map(|x| {
-                        // TODO support ipv6 probably
-                        if let SocketAddr::V4(v4) = x {
-                            Some(v4)
-                        } else {
-                            None
-                        }
-                    })
-                    .next()
-                    .unwrap();
-
-                Some(address.into())
-            }
-        };
+        let wireguard_endpoint = resolve_endpoint(&config.wireguard.endpoint, ips.clone()).await?;
 
         ras_client
             .update_host_state(

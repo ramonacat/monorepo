@@ -1,3 +1,5 @@
+pub mod wireguard;
+
 use std::net::Ipv4Addr;
 
 // this is basically a copy of Ipv4Addr::is_global from the standard library (it's unstable, but
