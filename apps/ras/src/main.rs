@@ -11,12 +11,13 @@ use dotenvy::dotenv;
 use tracing::{Level, instrument};
 
 use crate::{
-    hosts::get_wireguard_endpoints,
+    hosts::{get_wireguard_endpoints, post_wireguard_tunnels},
     versions::{post_version, post_version_check},
 };
 
 mod homes;
 mod hosts;
+mod ipam;
 mod models;
 mod schema;
 mod versions;
@@ -30,6 +31,7 @@ async fn main() {
         .init();
     dotenv().ok();
 
+    // TODO make DATABASE_URL a part of the config file
     let database_url = env::var("DATABASE_URL").expect("DATABASE_URL must be set");
     PgConnection::establish(&database_url)
         .expect("failed to connect to the database")
@@ -41,6 +43,10 @@ async fn main() {
         .route("/", get(async || "ok"))
         .route("/health", get(get_health))
         .route("/wireguard/endpoints", get(get_wireguard_endpoints))
+        .route(
+            "/wireguard/tunnels/{initiator}/{responder}",
+            post(post_wireguard_tunnels),
+        )
         .route("/hosts", get(hosts::get_current_state))
         .route(
             "/hosts/{hostname}",

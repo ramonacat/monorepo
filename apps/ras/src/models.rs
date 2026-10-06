@@ -3,6 +3,7 @@ use diesel::{
     Selectable,
     associations::{Associations, Identifiable},
     deserialize::Queryable,
+    prelude::Insertable,
 };
 use ipnet::IpNet;
 use uuid::Uuid;
@@ -78,4 +79,34 @@ pub struct WireguardEndpoint {
     pub public_key: String,
     pub endpoint: Option<IpNet>,
     pub port: Option<i32>,
+}
+
+#[derive(Identifiable, Queryable, Selectable, Insertable)]
+#[diesel(table_name = crate::schema::address_allocation, check_for_backend(diesel::pg::Pg), primary_key(id))]
+pub struct AddressAllocation {
+    pub id: Uuid,
+    pub name: String,
+    pub parent_id: Option<Uuid>,
+    pub cidr: ipnet::IpNet,
+}
+
+#[derive(Identifiable, Queryable, Selectable)]
+#[diesel(table_name = crate::schema::wireguard_tunnel, check_for_backend(diesel::pg::Pg), primary_key(id))]
+pub struct WireguardTunnel {
+    pub id: Uuid,
+    pub initiator_hostname: String,
+    pub listener_hostname: String,
+}
+
+#[derive(Identifiable, Queryable, Selectable, Associations, Insertable)]
+#[diesel(
+    table_name = crate::schema::wireguard_tunnel_to_address_allocation,
+    check_for_backend(diesel::pg::Pg),
+    primary_key(wireguard_tunnel_id, address_allocation_id),
+    belongs_to(WireguardTunnel),
+    belongs_to(AddressAllocation)
+)]
+pub struct WireguardTunnelAddressAllocation {
+    pub wireguard_tunnel_id: Uuid,
+    pub address_allocation_id: Uuid,
 }

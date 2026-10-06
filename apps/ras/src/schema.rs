@@ -1,6 +1,15 @@
 // @generated automatically by Diesel CLI.
 
 diesel::table! {
+    address_allocation (id) {
+        id -> Uuid,
+        name -> Text,
+        parent_id -> Nullable<Uuid>,
+        cidr -> Cidr,
+    }
+}
+
+diesel::table! {
     home_closure (name) {
         name -> Text,
         current_closure -> Text,
@@ -53,13 +62,33 @@ diesel::table! {
     }
 }
 
+diesel::table! {
+    wireguard_tunnel (id) {
+        id -> Uuid,
+        initiator_hostname -> Text,
+        listener_hostname -> Text,
+    }
+}
+
+diesel::table! {
+    wireguard_tunnel_to_address_allocation (wireguard_tunnel_id, address_allocation_id) {
+        wireguard_tunnel_id -> Uuid,
+        address_allocation_id -> Uuid,
+    }
+}
+
 diesel::joinable!(home_closure_state -> home_closure (closure_name));
+diesel::joinable!(wireguard_tunnel_to_address_allocation -> address_allocation (address_allocation_id));
+diesel::joinable!(wireguard_tunnel_to_address_allocation -> wireguard_tunnel (wireguard_tunnel_id));
 
 diesel::allow_tables_to_appear_in_same_query!(
+    address_allocation,
     home_closure,
     home_closure_state,
     host_closure_state,
     host_ip_address,
     versions,
     wireguard_endpoint,
+    wireguard_tunnel,
+    wireguard_tunnel_to_address_allocation,
 );

@@ -1,3 +1,4 @@
+use anyhow::Context;
 mod model;
 
 use std::{
@@ -6,20 +7,26 @@ use std::{
 };
 
 use axum::{Json, extract, http::StatusCode};
-use diesel::{ExpressionMethods as _, query_dsl::methods::FilterDsl};
-use diesel_async::RunQueryDsl as _;
+use diesel::{
+    BelongingToDsl as _, BoolExpressionMethods, ExpressionMethods as _, QueryDsl, SelectableHelper,
+    insert_into,
+};
+use diesel_async::{AsyncConnection, RunQueryDsl as _};
+use ipnet::IpNet;
 use rlib::{
     hosts::{ConnectivityState, HostAddress, HostState, NixClosureState, PostHostStateRequest},
     wireguard::{GetWireguardEndpointsResponse, WIREGUARD_PORT_DEFAULT, WireguardEndpoint},
 };
 use serde::{Deserialize, Serialize};
 use tracing::instrument;
+use uuid::Uuid;
 
 use crate::{
     AppState,
     hosts::model::{
         delete_wireguard_endpoint, update_addresses, update_closure, update_wireguard_endpoint,
     },
+    ipam::allocate_cidr,
     models::{HostClosureState, HostIpAddress},
 };
 
@@ -56,6 +63,102 @@ pub async fn get_wireguard_endpoints(
         .collect();
 
     Json(GetWireguardEndpointsResponse { endpoints })
+}
+
+#[derive(Debug, Clone, Serialize)]
+pub struct PostWireguardTunnelsResponse {
+    id: Uuid,
+    cidr: IpNet,
+}
+
+#[axum::debug_handler]
+pub async fn post_wireguard_tunnels(
+    extract::State(app_state): extract::State<AppState>,
+    extract::Path((initiator_hostname, listener_hostname)): extract::Path<(String, String)>,
+) -> Json<PostWireguardTunnelsResponse> {
+    use crate::schema::wireguard_tunnel::dsl;
+
+    let mut connection = app_state.db_connect().await;
+
+    connection
+        .transaction::<_, anyhow::Error, _>(async |connection| {
+            insert_into(dsl::wireguard_tunnel)
+                .values((
+                    dsl::id.eq(Uuid::now_v7()),
+                    dsl::initiator_hostname.eq(&initiator_hostname),
+                    dsl::listener_hostname.eq(&listener_hostname),
+                ))
+                .on_conflict_do_nothing()
+                .execute(connection)
+                .await
+                .context("inserting the tunnel")?;
+
+            use crate::schema::address_allocation::dsl as dsl_address;
+            let tunnel: crate::models::WireguardTunnel = dsl::wireguard_tunnel
+                .filter(
+                    dsl::initiator_hostname
+                        .eq(&initiator_hostname)
+                        .and(dsl::listener_hostname.eq(&listener_hostname)),
+                )
+                .first(connection)
+                .await
+                .context("fetching existing tunnel")?;
+            let address_allocations =
+                crate::models::WireguardTunnelAddressAllocation::belonging_to(&tunnel)
+                    .inner_join(dsl_address::address_allocation)
+                    .select(crate::models::AddressAllocation::as_select())
+                    .load(connection)
+                    .await
+                    .context("fetching tunnel allocations")?;
+
+            let ipv4_allocation: Option<crate::models::AddressAllocation> = address_allocations
+                .into_iter()
+                .find(|x| matches!(x.cidr, IpNet::V4(_)));
+
+            if let Some(allocation) = ipv4_allocation {
+                let response = Json(PostWireguardTunnelsResponse {
+                    id: tunnel.id,
+                    cidr: allocation.cidr,
+                });
+                return Ok(response);
+            }
+
+            let parent_allocation: crate::models::AddressAllocation =
+                dsl_address::address_allocation
+                    .filter(dsl_address::name.eq("tunnels"))
+                    .first(connection)
+                    .await
+                    .context("fetching parent allocation")?;
+
+            let allocation = allocate_cidr(
+                connection,
+                &parent_allocation,
+                format!("{initiator_hostname}/{listener_hostname}"),
+                31,
+            )
+            .await
+            .context("allocating cidr")?;
+
+            use crate::schema::wireguard_tunnel_to_address_allocation::dsl as dsl_rel;
+
+            insert_into(dsl_rel::wireguard_tunnel_to_address_allocation)
+                .values(crate::models::WireguardTunnelAddressAllocation {
+                    wireguard_tunnel_id: tunnel.id,
+                    address_allocation_id: allocation.id,
+                })
+                .execute(connection)
+                .await
+                .context("inserting the relationship between address allocation and tunnel")?;
+
+            let response = Json(PostWireguardTunnelsResponse {
+                id: tunnel.id,
+                cidr: allocation.cidr,
+            });
+
+            Ok(response)
+        })
+        .await
+        .unwrap()
 }
 
 #[axum::debug_handler]

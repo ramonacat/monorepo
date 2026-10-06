@@ -18,3 +18,4 @@ rlib = { path = "../../libs/rust/rlib" }
 ipnet = { version = "2.12.2", features = ["serde"] }
 thiserror = "2.0.20"
 uuid = { version = "1.26.1", features = ["serde", "v7", "v8"] }
+anyhow = "1.0.104"

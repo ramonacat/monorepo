@@ -1,2 +1,4 @@
 kubernetes-darkmore: 10.0.0.0/11
 home: 10.32.0.0/14
+global-routers: 10.255.0.0/16
+    tunnels: 10.255.240.0/20
