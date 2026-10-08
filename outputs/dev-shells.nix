@@ -134,7 +134,6 @@ pkgs.mkShell {
       attic-client
       backblaze-b2
       deadnix
-      diesel-cli
       ktfmt
       kubeconform
       kubectl-cnpg
@@ -147,6 +146,7 @@ pkgs.mkShell {
       shellcheck
       shfmt
       skopeo
+      sqlx-cli
       statix
       tflint
       vault

@@ -1,0 +1,12 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "UPDATE ipam_live_ip AS ili SET allocation_id=(SELECT iaa.id FROM ipam_address_allocation iaa WHERE ili.address && iaa.cidr ORDER BY masklen(iaa.cidr) DESC LIMIT 1)",
+  "describe": {
+    "columns": [],
+    "parameters": {
+      "Left": []
+    },
+    "nullable": []
+  },
+  "hash": "6db8028e7f12c5f218e74fb22e9feebe84ff4aca71e0e3fbe084408fd7cdc5d8"
+}

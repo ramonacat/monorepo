@@ -1,0 +1,15 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "UPDATE host SET nixos_closure_state_id=$1 WHERE name=$2",
+  "describe": {
+    "columns": [],
+    "parameters": {
+      "Left": [
+        "Uuid",
+        "Text"
+      ]
+    },
+    "nullable": []
+  },
+  "hash": "8b008a7ca13948cc95835c9840b6e24b41467f5e483c2bdf69b28c1372df3c35"
+}

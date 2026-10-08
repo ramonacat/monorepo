@@ -32,7 +32,6 @@ _: {
           };
           wireguard = {
             endpoint = "InitiatorOnly";
-            interface = "global mesh";
           };
         };
       };

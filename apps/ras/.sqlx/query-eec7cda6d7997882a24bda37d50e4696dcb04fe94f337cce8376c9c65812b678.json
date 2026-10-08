@@ -1,0 +1,24 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "SELECT EXISTS(SELECT 1 FROM ipam_address_allocation WHERE parent_id=$1 AND cidr && $2) AS \"exists!\"",
+  "describe": {
+    "columns": [
+      {
+        "ordinal": 0,
+        "name": "exists!",
+        "type_info": "Bool",
+        "origin": "Expression"
+      }
+    ],
+    "parameters": {
+      "Left": [
+        "Uuid",
+        "Inet"
+      ]
+    },
+    "nullable": [
+      null
+    ]
+  },
+  "hash": "eec7cda6d7997882a24bda37d50e4696dcb04fe94f337cce8376c9c65812b678"
+}

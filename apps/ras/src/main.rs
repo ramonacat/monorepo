@@ -4,25 +4,19 @@ use axum::{
     Router, extract,
     routing::{delete, get, post},
 };
-use diesel::{Connection, PgConnection};
-use diesel_async::{AsyncConnection as _, AsyncPgConnection};
-use diesel_migrations::{EmbeddedMigrations, MigrationHarness, embed_migrations};
 use dotenvy::dotenv;
+use sqlx::{Connection, PgConnection, migrate::Migrator};
 use tracing::{Level, instrument};
 
-use crate::{
-    hosts::{get_wireguard_endpoints, post_wireguard_tunnels},
-    versions::{post_version, post_version_check},
-};
+use crate::versions::{post_version, post_version_check};
 
 mod homes;
 mod hosts;
-mod ipam;
-mod models;
-mod schema;
+mod services;
 mod versions;
+mod wireguard;
 
-pub const MIGRATIONS: EmbeddedMigrations = embed_migrations!("migrations/");
+pub const MIGRATOR: Migrator = sqlx::migrate!();
 
 #[tokio::main]
 async fn main() {
@@ -33,45 +27,35 @@ async fn main() {
 
     // TODO make DATABASE_URL a part of the config file
     let database_url = env::var("DATABASE_URL").expect("DATABASE_URL must be set");
-    PgConnection::establish(&database_url)
-        .expect("failed to connect to the database")
-        .run_pending_migrations(MIGRATIONS)
-        .unwrap();
+
+    let mut connection = sqlx::postgres::PgConnection::connect(&database_url)
+        .await
+        .expect("failed to connect to the database");
+    MIGRATOR.run(&mut connection).await.unwrap();
+
     let app_state = AppState { database_url };
 
     let app = Router::new()
         .route("/", get(async || "ok"))
         .route("/health", get(get_health))
-        .route("/wireguard/endpoints", get(get_wireguard_endpoints))
-        .route(
-            "/wireguard/tunnels/{initiator}/{responder}",
-            post(post_wireguard_tunnels),
-        )
         .route("/hosts", get(hosts::get_current_state))
         .route(
             "/hosts/{hostname}",
             delete(hosts::delete).post(hosts::post_host_state),
         )
+        .route("/hosts/{hostname}/tunnels", get(wireguard::get_tunnels))
         .route(
             "/hosts/{hostname}/current_closure",
             post(hosts::post_current_closure),
         )
         .route(
             "/hosts/{hostname}/latest_closure",
-            post(hosts::post_latest_closure),
-        )
-        .route(
-            "/hosts/{hostname}/latest_closure",
-            get(hosts::get_latest_closure),
+            post(hosts::post_latest_closure).get(hosts::get_latest_closure),
         )
         .route("/homes", get(homes::get_current_state))
         .route(
             "/homes/{name}/latest_closure",
-            post(homes::post_latest_closure),
-        )
-        .route(
-            "/homes/{name}/latest_closure",
-            get(homes::get_latest_closure),
+            post(homes::post_latest_closure).get(homes::get_latest_closure),
         )
         .route(
             "/homes/{name}/current_closure/{hostname}",
@@ -93,8 +77,8 @@ struct AppState {
 }
 
 impl AppState {
-    async fn db_connect(&self) -> AsyncPgConnection {
-        AsyncPgConnection::establish(&self.database_url)
+    async fn db_connect(&self) -> PgConnection {
+        PgConnection::connect(&self.database_url)
             .await
             .expect("database connection did not succeed")
     }

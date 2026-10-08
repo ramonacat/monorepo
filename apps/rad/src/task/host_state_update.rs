@@ -1,7 +1,7 @@
 use std::time::Duration;
 
 use async_trait::async_trait;
-use rlib::hosts::{ClosureUpdate, ConnectivityState, PostHostStateRequest};
+use rlib::hosts::{NetworkingState, NixosState, PostHostStateRequest, WireguardState};
 use tracing::info;
 
 use crate::{
@@ -33,18 +33,16 @@ impl Task for HostStateUpdate {
         let host_nixos_info = crate::host::nixos::read().unwrap();
 
         let request_body = PostHostStateRequest {
-            connectivity: ConnectivityState {
+            closure: Some(NixosState {
+                current_closure: host_nixos_info.current_closure().to_string_lossy().into(),
+            }),
+            networking: Some(NetworkingState {
                 addresses: host_network_info.addresses().cloned().collect(),
-                wireguard: host_network_info.wireguard().map(|x| {
-                    rlib::wireguard::WireguardEndpoint {
-                        public_key: x.key().to_public_base64(),
-                        endpoint: x.endpoint(),
-                    }
+                wireguard: host_network_info.wireguard().map(|x| WireguardState {
+                    listen_addresses: x.addresses().iter().map(|y| y.addr()).collect(),
+                    available_ports: x.available_ports().to_vec(),
+                    public_key: x.key().to_public_base64(),
                 }),
-            },
-            closure: Some(ClosureUpdate {
-                latest_closure: None,
-                current_closure: Some(host_nixos_info.current_closure().to_string_lossy().into()),
             }),
         };
 

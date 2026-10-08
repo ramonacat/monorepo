@@ -1,0 +1,74 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "SELECT * FROM wireguard_tunnel",
+  "describe": {
+    "columns": [
+      {
+        "ordinal": 0,
+        "name": "id",
+        "type_info": "Uuid",
+        "origin": {
+          "Table": {
+            "table": "wireguard_tunnel",
+            "name": "id"
+          }
+        }
+      },
+      {
+        "ordinal": 1,
+        "name": "initiator_id",
+        "type_info": "Uuid",
+        "origin": {
+          "Table": {
+            "table": "wireguard_tunnel",
+            "name": "initiator_id"
+          }
+        }
+      },
+      {
+        "ordinal": 2,
+        "name": "responder_id",
+        "type_info": "Uuid",
+        "origin": {
+          "Table": {
+            "table": "wireguard_tunnel",
+            "name": "responder_id"
+          }
+        }
+      },
+      {
+        "ordinal": 3,
+        "name": "ipam_address_allocation_id",
+        "type_info": "Uuid",
+        "origin": {
+          "Table": {
+            "table": "wireguard_tunnel",
+            "name": "ipam_address_allocation_id"
+          }
+        }
+      },
+      {
+        "ordinal": 4,
+        "name": "responder_port",
+        "type_info": "Int4",
+        "origin": {
+          "Table": {
+            "table": "wireguard_tunnel",
+            "name": "responder_port"
+          }
+        }
+      }
+    ],
+    "parameters": {
+      "Left": []
+    },
+    "nullable": [
+      false,
+      false,
+      false,
+      false,
+      false
+    ]
+  },
+  "hash": "a8a3f8c12f6ebdfa904c031e74cdc1a767cff911b101aa3346cddb5a74ac57c0"
+}

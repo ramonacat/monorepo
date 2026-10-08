@@ -1,19 +1,21 @@
+use std::net::IpAddr;
+
 use chrono::{DateTime, Utc};
 use ipnet::IpNet;
 use serde::{Deserialize, Serialize};
 
-use crate::wireguard::WireguardEndpoint;
+#[derive(Debug, Serialize, Deserialize, Eq, PartialEq, Clone)]
+#[serde(transparent)]
+pub struct Hostname(String);
 
-#[derive(Debug, Clone, Serialize, Deserialize, Hash, PartialEq, Eq)]
-pub struct HostAddress {
-    pub address: IpNet,
-    pub interface: String,
-}
+impl Hostname {
+    pub fn new(value: String) -> Self {
+        Self(value)
+    }
 
-#[derive(Debug, Serialize, Deserialize)]
-pub struct ConnectivityState {
-    pub addresses: Vec<HostAddress>,
-    pub wireguard: Option<WireguardEndpoint>,
+    pub fn first_label(&self) -> &str {
+        self.0.split_at(self.0.find('.').unwrap_or(self.0.len())).0
+    }
 }
 
 #[derive(Debug, Serialize, Deserialize)]
@@ -37,18 +39,36 @@ pub struct HostState {
     pub latest_closure_updated_at: Option<DateTime<Utc>>,
     pub outdated: bool,
 
-    pub connectivity: ConnectivityState,
     pub nix_closure_state: Option<NixClosureState>,
 }
 
+#[derive(Debug, Clone, Serialize, Deserialize, Hash, PartialEq, Eq)]
+pub struct HostAddress {
+    pub address: IpNet,
+    pub interface: String,
+}
+
 #[derive(Debug, Serialize, Deserialize)]
-pub struct ClosureUpdate {
-    pub latest_closure: Option<String>,
-    pub current_closure: Option<String>,
+pub struct WireguardState {
+    pub listen_addresses: Vec<IpAddr>,
+    pub available_ports: Vec<u16>,
+    pub public_key: String,
+}
+
+#[derive(Debug, Serialize, Deserialize)]
+pub struct NetworkingState {
+    pub addresses: Vec<HostAddress>,
+    pub wireguard: Option<WireguardState>,
+}
+
+#[derive(Debug, Serialize, Deserialize)]
+pub struct NixosState {
+    pub current_closure: String,
 }
 
 #[derive(Debug, Serialize, Deserialize)]
 pub struct PostHostStateRequest {
-    pub connectivity: ConnectivityState,
-    pub closure: Option<ClosureUpdate>,
+    // TODO rename closure -> nixos
+    pub closure: Option<NixosState>,
+    pub networking: Option<NetworkingState>,
 }

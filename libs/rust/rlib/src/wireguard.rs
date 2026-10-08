@@ -1,17 +1,26 @@
-use std::{collections::HashMap, net::SocketAddr};
-
+use crate::hosts::Hostname;
+use ipnet::IpNet;
 use serde::{Deserialize, Serialize};
-
-pub const WIREGUARD_PORT_DEFAULT: u16 = 51820;
+use uuid::Uuid;
 
 #[derive(Debug, Serialize, Deserialize)]
-pub struct WireguardEndpoint {
+pub struct TunnelHost {
+    pub id: Uuid,
+    pub name: Hostname,
     pub public_key: String,
-    pub endpoint: Option<SocketAddr>,
 }
 
 #[derive(Debug, Serialize, Deserialize)]
-pub struct GetWireguardEndpointsResponse {
-    // TODO add a `Hostname` type and replace the string here with it
-    pub endpoints: HashMap<String, WireguardEndpoint>,
+pub struct Tunnel {
+    pub id: Uuid,
+    pub initiator: TunnelHost,
+    pub responder: TunnelHost,
+    pub cidr: IpNet,
+    pub responder_port: u16,
+    pub responder_ip: IpNet,
+}
+
+#[derive(Debug, Serialize, Deserialize)]
+pub struct GetTunnelsResponse {
+    pub tunnels: Vec<Tunnel>,
 }

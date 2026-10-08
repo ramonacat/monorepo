@@ -1,0 +1,28 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "SELECT latest_store_path FROM nixos_closure WHERE name=$1",
+  "describe": {
+    "columns": [
+      {
+        "ordinal": 0,
+        "name": "latest_store_path",
+        "type_info": "Text",
+        "origin": {
+          "Table": {
+            "table": "nixos_closure",
+            "name": "latest_store_path"
+          }
+        }
+      }
+    ],
+    "parameters": {
+      "Left": [
+        "Text"
+      ]
+    },
+    "nullable": [
+      false
+    ]
+  },
+  "hash": "1f43da64b9ea916553861f3f9070eed71ed3c83f679742da9179132e4f12820e"
+}

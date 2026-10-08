@@ -1,0 +1,17 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "INSERT INTO ipam_address_allocation(id,name,parent_id,cidr) VALUES($1, $2, $3, $4)",
+  "describe": {
+    "columns": [],
+    "parameters": {
+      "Left": [
+        "Uuid",
+        "Text",
+        "Uuid",
+        "Cidr"
+      ]
+    },
+    "nullable": []
+  },
+  "hash": "20a64509dd07be61fb40cae94854368f8eb117fc96bba1cf07e53e56c8d3d247"
+}

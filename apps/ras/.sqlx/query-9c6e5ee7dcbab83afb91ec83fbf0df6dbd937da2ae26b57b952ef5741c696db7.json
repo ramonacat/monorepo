@@ -1,0 +1,15 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "UPDATE nixos_closure_state SET current_store_path=$1, updated_at=CURRENT_TIMESTAMP WHERE id=$2",
+  "describe": {
+    "columns": [],
+    "parameters": {
+      "Left": [
+        "Text",
+        "Uuid"
+      ]
+    },
+    "nullable": []
+  },
+  "hash": "9c6e5ee7dcbab83afb91ec83fbf0df6dbd937da2ae26b57b952ef5741c696db7"
+}

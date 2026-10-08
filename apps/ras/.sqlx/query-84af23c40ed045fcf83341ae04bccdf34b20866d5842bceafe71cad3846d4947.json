@@ -1,0 +1,93 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "\n        SELECT \n            h.hostname AS hostname,\n            nc.name AS closure_name,\n            ncs.current_store_path AS current_closure,\n            ncs.updated_at AS current_closure_updated_at,\n            nc.latest_store_path AS latest_closure,\n            nc.updated_at AS latest_closure_updated_at,\n            (nc.latest_store_path != ncs.current_store_path) AS \"outdated!\"\n        FROM home h\n            INNER JOIN nixos_closure_state ncs ON ncs.id = h.nixos_closure_state_id\n            INNER JOIN nixos_closure nc ON nc.id = ncs.closure_id\n    ",
+  "describe": {
+    "columns": [
+      {
+        "ordinal": 0,
+        "name": "hostname",
+        "type_info": "Text",
+        "origin": {
+          "Table": {
+            "table": "home",
+            "name": "hostname"
+          }
+        }
+      },
+      {
+        "ordinal": 1,
+        "name": "closure_name",
+        "type_info": "Text",
+        "origin": {
+          "Table": {
+            "table": "nixos_closure",
+            "name": "name"
+          }
+        }
+      },
+      {
+        "ordinal": 2,
+        "name": "current_closure",
+        "type_info": "Text",
+        "origin": {
+          "Table": {
+            "table": "nixos_closure_state",
+            "name": "current_store_path"
+          }
+        }
+      },
+      {
+        "ordinal": 3,
+        "name": "current_closure_updated_at",
+        "type_info": "Timestamptz",
+        "origin": {
+          "Table": {
+            "table": "nixos_closure_state",
+            "name": "updated_at"
+          }
+        }
+      },
+      {
+        "ordinal": 4,
+        "name": "latest_closure",
+        "type_info": "Text",
+        "origin": {
+          "Table": {
+            "table": "nixos_closure",
+            "name": "latest_store_path"
+          }
+        }
+      },
+      {
+        "ordinal": 5,
+        "name": "latest_closure_updated_at",
+        "type_info": "Timestamptz",
+        "origin": {
+          "Table": {
+            "table": "nixos_closure",
+            "name": "updated_at"
+          }
+        }
+      },
+      {
+        "ordinal": 6,
+        "name": "outdated!",
+        "type_info": "Bool",
+        "origin": "Expression"
+      }
+    ],
+    "parameters": {
+      "Left": []
+    },
+    "nullable": [
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      null
+    ]
+  },
+  "hash": "84af23c40ed045fcf83341ae04bccdf34b20866d5842bceafe71cad3846d4947"
+}

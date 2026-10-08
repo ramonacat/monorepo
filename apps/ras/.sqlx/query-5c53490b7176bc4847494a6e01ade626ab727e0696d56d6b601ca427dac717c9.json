@@ -1,0 +1,50 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "\n        SELECT \n            nc.name AS name,\n            ncs.current_store_path as current_closure,\n            ncs.updated_at as current_closure_updated_at\n        FROM nixos_closure_state ncs\n        INNER JOIN nixos_closure nc ON nc.id = ncs.closure_id\n        WHERE nc.name LIKE 'home:%'\n    ",
+  "describe": {
+    "columns": [
+      {
+        "ordinal": 0,
+        "name": "name",
+        "type_info": "Text",
+        "origin": {
+          "Table": {
+            "table": "nixos_closure",
+            "name": "name"
+          }
+        }
+      },
+      {
+        "ordinal": 1,
+        "name": "current_closure",
+        "type_info": "Text",
+        "origin": {
+          "Table": {
+            "table": "nixos_closure_state",
+            "name": "current_store_path"
+          }
+        }
+      },
+      {
+        "ordinal": 2,
+        "name": "current_closure_updated_at",
+        "type_info": "Timestamptz",
+        "origin": {
+          "Table": {
+            "table": "nixos_closure_state",
+            "name": "updated_at"
+          }
+        }
+      }
+    ],
+    "parameters": {
+      "Left": []
+    },
+    "nullable": [
+      false,
+      false,
+      false
+    ]
+  },
+  "hash": "5c53490b7176bc4847494a6e01ade626ab727e0696d56d6b601ca427dac717c9"
+}

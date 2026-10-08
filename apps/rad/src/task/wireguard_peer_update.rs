@@ -1,6 +1,7 @@
 use crate::ras_client::RasClient;
 use std::{
-    fs,
+    collections::HashMap,
+    fs::{self},
     io::{Read, Seek, SeekFrom, Write},
     path::Path,
     process::{Command, Stdio},
@@ -8,7 +9,6 @@ use std::{
 };
 
 use async_trait::async_trait;
-use rlib::wireguard::WIREGUARD_PORT_DEFAULT;
 use tracing::{debug, info};
 
 use crate::{
@@ -39,57 +39,107 @@ impl Task for WireguardPeerUpdate {
             return Ok(TaskResult::ScheduleAgainIn(Duration::from_mins(1)));
         };
         let ras_client = RasClient::new(host_identity.clone())?;
-        let mut endpoints = ras_client.get_wireguard_endpoints().await?.endpoints;
-        endpoints.remove(host_identity.hostname());
+        let tunnels = ras_client
+            .get_wireguard_tunnels_for_host(host_identity.hostname())
+            .await?
+            .tunnels;
 
-        let peers = endpoints
+        let units: HashMap<String, String> = tunnels
             .into_iter()
-            .map(|(name, description)| {
-                format!(
-                    "[WireGuardPeer]
-# {name}
-PublicKey={peer_public_key}
-AllowedIPs=0.0.0.0/0,::/0
-{endpoint_line}
-PersistentKeepalive=25",
-                    peer_public_key = description.public_key,
-                    endpoint_line = description
-                        .endpoint
-                        .map_or_else(String::new, |x| format!("Endpoint={x}\n"))
-                )
+            .flat_map(|x| {
+                let is_responder = &x.responder.name == host_identity.hostname();
+                let peer = if is_responder {
+                    &x.initiator
+                } else {
+                    &x.responder
+                };
+
+                let netdev = (
+                    format!("22-ramona-{}.netdev", peer.name.first_label()),
+                    format!(
+                        "
+                        [NetDev]
+                        Name=wg-{peer_name}
+                        Kind=wireguard
+                        [WireGuard]
+                        PrivateKeyFile={private_key_file}
+                        {listen_port}
+                        [WireGuardPeer]
+                        PublicKey={peer_public_key}
+                        AllowedIPs=0.0.0.0/0,::/0
+                        {endpoint}
+                        PersistentKeepalive=25
+                    ",
+                        peer_name = peer.name.first_label(),
+                        private_key_file = wireguard_config.key_file.to_string_lossy(),
+                        listen_port = if is_responder {
+                            format!("ListenPort={}", x.responder_port)
+                        } else {
+                            String::new()
+                        },
+                        peer_public_key = peer.public_key,
+                        endpoint = if is_responder {
+                            String::new()
+                        } else {
+                            format!("Endpoint={}:{}", x.responder_ip, x.responder_port)
+                        },
+                    ),
+                );
+
+                let network = (
+                    format!("22-ramona-{}.network", peer.name.first_label()),
+                    format!(
+                        "
+                [Match]
+                Name=wg-{peer_name}
+                [LINK]
+                ActivationPolicy=always-up
+                Address={address}/{prefix_length}
+                ",
+                        peer_name = peer.name.first_label(),
+                        address = (x
+                            .cidr
+                            .hosts()
+                            .nth(if is_responder { 0 } else { 1 })
+                            .unwrap()),
+                        prefix_length = x.cidr.prefix_len()
+                    ),
+                );
+
+                [netdev, network]
             })
-            .fold(String::new(), |a, x| format!("{a}\n{x}"));
+            .collect();
 
-        let netdev_unit = format!(
-            "[NetDev]
-Name=wg-ramona0
-Kind=wireguard
-[WireGuard]
-PrivateKeyFile={private_key_file}
-ListenPort={listen_port}
-{peers}",
-            private_key_file = wireguard_config.key_file.to_string_lossy(),
-            listen_port = match wireguard_config.endpoint {
-                crate::config::WireguardEndpoint::InitiatorOnly
-                | crate::config::WireguardEndpoint::Auto => WIREGUARD_PORT_DEFAULT,
-                crate::config::WireguardEndpoint::Specified { host: _, port } => port,
+        let mut needs_reload = false;
+        for (filename, contents) in &units {
+            if update_if_changed(format!("/etc/systemd/network/{filename}"), contents)?
+                == UpdateResult::Changed
+            {
+                needs_reload = true;
             }
-        );
+        }
 
-        let network_unit = "
-[Match]
-Name=wg-ramona0
-[LINK]
-ActivationPolicy=always-up
-"
-        .to_string();
+        for existing in fs::read_dir("/etc/systemd/network/")? {
+            let existing = existing?;
 
-        let netdev_update =
-            update_if_changed("/etc/systemd/network/22-ramona-wg.netdev", netdev_unit)?;
-        let network_update =
-            update_if_changed("/etc/systemd/network/22-ramona-wg.network", network_unit)?;
+            if !existing.file_type()?.is_file() {
+                continue;
+            }
 
-        if netdev_update == UpdateResult::Changed || network_update == UpdateResult::Changed {
+            let file_name = existing.file_name();
+            let file_name = file_name.to_string_lossy();
+
+            if !file_name.starts_with("22-ramona-") {
+                continue;
+            }
+
+            if !units.contains_key(file_name.as_ref()) {
+                fs::remove_file(file_name.as_ref())?;
+                needs_reload = true;
+            }
+        }
+
+        if needs_reload {
             let reload = Command::new("networkctl")
                 .arg("reload")
                 .stdout(Stdio::piped())
@@ -110,7 +160,7 @@ enum UpdateResult {
     NotChanged,
 }
 
-fn update_if_changed(path: impl AsRef<Path>, contents: String) -> anyhow::Result<UpdateResult> {
+fn update_if_changed(path: impl AsRef<Path>, contents: &str) -> anyhow::Result<UpdateResult> {
     let mut file = fs::OpenOptions::new()
         .read(true)
         .write(true)

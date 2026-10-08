@@ -5,7 +5,10 @@ use reqwest::{
     Identity, Url,
     header::{HeaderMap, HeaderName, HeaderValue},
 };
-use rlib::{hosts::PostHostStateRequest, wireguard::GetWireguardEndpointsResponse};
+use rlib::{
+    hosts::{Hostname, PostHostStateRequest},
+    wireguard::GetTunnelsResponse,
+};
 use tracing::info;
 
 use crate::host::identity::HostIdentity;
@@ -20,8 +23,8 @@ impl RasClient {
         let mut headers = HeaderMap::new();
         headers.insert(
             HeaderName::from_static("x-ramona-hostname"),
-            HeaderValue::from_str(hostname).with_context(|| {
-                format!("failed to convert hostname {hostname} into a header value")
+            HeaderValue::from_str(hostname.first_label()).with_context(|| {
+                format!("failed to convert hostname {hostname:?} into a header value")
             })?,
         );
         let identity = Identity::from_pem(&host_identity.to_pem_bundle())?;
@@ -35,31 +38,33 @@ impl RasClient {
 
     pub async fn update_host_state(
         &self,
-        hostname: &str,
+        hostname: &Hostname,
         state: &PostHostStateRequest,
     ) -> anyhow::Result<()> {
         let response = self
             .reqwest
-            .post(self.make_url(&format!("/hosts/{hostname}"))?)
+            .post(self.make_url(&format!("/hosts/{}", hostname.first_label()))?)
             .json(state)
             .send()
             .await?
             .error_for_status()
-            .with_context(|| format!("failed to update host {hostname}"))?;
+            .with_context(|| format!("failed to update host {hostname:?}"))?;
 
         info!(?response, ?state, "updated host state");
 
         Ok(())
     }
 
-    pub async fn get_wireguard_endpoints(&self) -> anyhow::Result<GetWireguardEndpointsResponse> {
+    pub async fn get_wireguard_tunnels_for_host(
+        &self,
+        hostname: &Hostname,
+    ) -> anyhow::Result<GetTunnelsResponse> {
         let response = self
             .reqwest
-            .get(self.make_url("/wireguard/endpoints")?)
+            .get(self.make_url(&format!("/hosts/{}/tunnels", hostname.first_label()))?)
             .send()
             .await?
-            .error_for_status()
-            .with_context(|| "failed to get wireguard endpoints")?;
+            .error_for_status()?;
 
         Ok(response.json().await?)
     }
