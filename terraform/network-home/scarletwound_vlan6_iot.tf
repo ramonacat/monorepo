@@ -38,6 +38,12 @@ resource "routeros_ip_dhcp_server_lease" "scarletwound-vlan6-homeassistant" {
   address     = "10.32.5.251"
 }
 
+resource "routeros_ip_dhcp_server_lease" "scarletwound-vlan6-church" {
+  provider    = routeros.router-scarletwound
+  mac_address = "E2:0D:2C:FA:63:43"
+  address     = "10.32.5.250"
+}
+
 moved {
   from = routeros_ip_pool.scarletwound-iot
   to   = module.scarletwound-vlan6.routeros_ip_pool.main

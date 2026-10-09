@@ -165,6 +165,13 @@ module "scarletwound-firewall" {
       comment       = "internet access for homeassistant"
     },
     {
+      chain         = "forward",
+      action        = "accept",
+      src_address   = routeros_ip_dhcp_server_lease.scarletwound-vlan6-church.address,
+      out_interface = routeros_interface_vlan.scarletwound-vlan7.name,
+      comment       = "internet access for church on iot vlan"
+    },
+    {
       chain    = "forward",
       action   = "accept",
       protocol = "udp",
