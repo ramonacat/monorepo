@@ -7,7 +7,11 @@ let
     src-path = ../.;
     source-filter =
       path: type:
-      (crane-lib.filterCargoSources path type || (builtins.match ".*/migrations/.*" path != null));
+      (
+        crane-lib.filterCargoSources path type
+        || (builtins.match ".*/migrations/.*" path != null)
+        || (builtins.match ".*/.sqlx/.*" path != null)
+      );
     additional-package-arguments = {
       cargoToml = ../apps/rad/Cargo.toml;
       cargoLock = ../apps/rad/Cargo.lock;

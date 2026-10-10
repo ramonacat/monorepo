@@ -3,18 +3,18 @@ use std::{ffi::OsString, fs};
 use crate::config::Configuration;
 use anyhow::Context;
 use nix::unistd::gethostname;
-use rlib::sensitive::Sensitive;
+use rlib::{hosts::Hostname, sensitive::Sensitive};
 use thiserror::Error;
 
 #[derive(Debug, Clone)]
 pub struct HostIdentity {
-    hostname: String,
+    hostname: Hostname,
     certificate: Vec<u8>,
     certificate_key: Sensitive<Vec<u8>>,
 }
 
 impl HostIdentity {
-    pub fn hostname(&self) -> &str {
+    pub fn hostname(&self) -> &Hostname {
         &self.hostname
     }
 
@@ -45,7 +45,7 @@ pub fn read(config: &Configuration) -> anyhow::Result<HostIdentity> {
         .with_context(|| format!("failed to read private key at {:?}", config.key))?;
 
     Ok(HostIdentity {
-        hostname,
+        hostname: Hostname::new(hostname),
         certificate,
         certificate_key: Sensitive::new(certificate_key),
     })

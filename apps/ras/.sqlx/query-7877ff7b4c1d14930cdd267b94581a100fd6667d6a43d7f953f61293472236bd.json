@@ -1,0 +1,16 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "\n            INSERT INTO nixos_closure_state (id, closure_id, current_store_path, updated_at)\n                VALUES ($1, $2, $3, CURRENT_TIMESTAMP)\n        ",
+  "describe": {
+    "columns": [],
+    "parameters": {
+      "Left": [
+        "Uuid",
+        "Uuid",
+        "Text"
+      ]
+    },
+    "nullable": []
+  },
+  "hash": "7877ff7b4c1d14930cdd267b94581a100fd6667d6a43d7f953f61293472236bd"
+}

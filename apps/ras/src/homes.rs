@@ -1,16 +1,13 @@
 use axum::{Json, extract, http::StatusCode};
 use chrono::{DateTime, Utc};
-use diesel::{
-    BelongingToDsl, ExpressionMethods, GroupedBy, QueryDsl, SelectableHelper, insert_into,
-    upsert::excluded,
-};
-use diesel_async::RunQueryDsl as _;
+use rlib::hosts::Hostname;
 use serde::{Deserialize, Serialize};
+use sqlx::Connection;
 use tracing::instrument;
 
 use crate::{
     AppState,
-    models::{HomeClosure, HomeClosureState},
+    services::nixos::{ClosureName, StorePath, update_current_home_closure, update_latest_closure},
 };
 
 #[derive(Debug, Serialize, Deserialize)]
@@ -39,44 +36,46 @@ pub struct Homes {
 
 #[instrument]
 #[axum::debug_handler]
+// TODO this is a bit messy, it's only used for grafana, probably we need to have a big think about
+// how to actually do monitoring correctly
 pub async fn get_current_state(extract::State(app_state): extract::State<AppState>) -> Json<Homes> {
-    use crate::schema::home_closure::dsl as hc;
-
     let mut connection = app_state.db_connect().await;
-    let raw_closures: Vec<HomeClosure> = hc::home_closure.load(&mut connection).await.unwrap();
 
-    let closures = raw_closures
-        .iter()
-        .map(|x| HomeClosureDescription {
-            name: x.name.clone(),
-            current_closure: x.current_closure.clone(),
-            current_closure_updated_at: x.current_closure_updated_at,
-        })
-        .collect();
+    let closures = sqlx::query_as!(
+        HomeClosureDescription,
+        "
+        SELECT 
+            nc.name AS name,
+            ncs.current_store_path as current_closure,
+            ncs.updated_at as current_closure_updated_at
+        FROM nixos_closure_state ncs
+        INNER JOIN nixos_closure nc ON nc.id = ncs.closure_id
+        WHERE nc.name LIKE 'home:%'
+    "
+    )
+    .fetch_all(&mut connection)
+    .await
+    .unwrap();
 
-    let hosts = HomeClosureState::belonging_to(&raw_closures)
-        .select(HomeClosureState::as_select())
-        .load(&mut connection)
-        .await
-        .unwrap()
-        .grouped_by(&raw_closures)
-        .into_iter()
-        .zip(raw_closures)
-        .flat_map(|(states, closure)| {
-            states
-                .into_iter()
-                .map(|state| HomeHost {
-                    outdated: state.current_closure != closure.current_closure,
-                    hostname: state.hostname,
-                    closure_name: state.closure_name,
-                    current_closure: state.current_closure,
-                    current_closure_updated_at: state.current_closure_updated_at,
-                    latest_closure: closure.current_closure.clone(),
-                    latest_closure_updated_at: closure.current_closure_updated_at,
-                })
-                .collect::<Vec<_>>()
-        })
-        .collect();
+    let hosts = sqlx::query_as!(
+        HomeHost,
+        "
+        SELECT 
+            h.hostname AS hostname,
+            nc.name AS closure_name,
+            ncs.current_store_path AS current_closure,
+            ncs.updated_at AS current_closure_updated_at,
+            nc.latest_store_path AS latest_closure,
+            nc.updated_at AS latest_closure_updated_at,
+            (nc.latest_store_path != ncs.current_store_path) AS \"outdated!\"
+        FROM home h
+            INNER JOIN nixos_closure_state ncs ON ncs.id = h.nixos_closure_state_id
+            INNER JOIN nixos_closure nc ON nc.id = ncs.closure_id
+    "
+    )
+    .fetch_all(&mut connection)
+    .await
+    .unwrap();
 
     Json(Homes { closures, hosts })
 }
@@ -90,26 +89,24 @@ pub struct PostLatestClosureRequest {
 #[axum::debug_handler]
 pub async fn post_latest_closure(
     extract::State(app_state): extract::State<AppState>,
-    extract::Path(name_value): extract::Path<String>,
+    extract::Path(name): extract::Path<String>,
     extract::Json(request): extract::Json<PostLatestClosureRequest>,
 ) {
-    use crate::schema::home_closure::dsl::*;
-
     let mut connection = app_state.db_connect().await;
 
-    insert_into(home_closure)
-        .values((
-            name.eq(name_value),
-            current_closure.eq(request.latest_closure),
-            current_closure_updated_at.eq(Utc::now()),
-        ))
-        .on_conflict(name)
-        .do_update()
-        .set((
-            current_closure.eq(excluded(current_closure)),
-            current_closure_updated_at.eq(excluded(current_closure_updated_at)),
-        ))
-        .execute(&mut connection)
+    connection
+        .transaction(|tx| {
+            Box::pin(async move {
+                update_latest_closure(
+                    tx,
+                    ClosureName::from_home(&name),
+                    StorePath::new(request.latest_closure),
+                )
+                .await?;
+
+                Ok::<(), sqlx::Error>(())
+            })
+        })
         .await
         .unwrap();
 }
@@ -118,24 +115,20 @@ pub async fn post_latest_closure(
 #[axum::debug_handler]
 pub async fn get_latest_closure(
     extract::State(app_state): extract::State<AppState>,
-    extract::Path(name_value): extract::Path<String>,
+    extract::Path(name): extract::Path<String>,
 ) -> (StatusCode, String) {
-    use crate::schema::home_closure::dsl::*;
-
     let mut connection = app_state.db_connect().await;
 
-    let latest = home_closure
-        .filter(name.eq(name_value))
-        .first::<HomeClosure>(&mut connection)
-        .await;
+    let home = connection
+        .transaction(|tx| {
+            Box::pin(async move {
+                crate::services::nixos::get_latest_closure(tx, ClosureName::from_home(&name)).await
+            })
+        })
+        .await
+        .unwrap();
 
-    match latest {
-        Ok(latest) => (StatusCode::OK, latest.current_closure),
-        Err(e) => match e {
-            diesel::NotFound => (StatusCode::NOT_FOUND, String::new()),
-            _ => panic!("failed to retrieve the latest closure: {e:?}"),
-        },
-    }
+    (StatusCode::OK, home.raw().to_string())
 }
 
 #[derive(Debug, Serialize, Deserialize)]
@@ -147,28 +140,26 @@ pub struct PostCurrentClosureRequest {
 #[axum::debug_handler]
 pub async fn post_current_closure(
     extract::State(app_state): extract::State<AppState>,
-    extract::Path((name_value, hostname_value)): extract::Path<(String, String)>,
+    extract::Path((name, hostname)): extract::Path<(String, String)>,
     extract::Json(request): extract::Json<PostCurrentClosureRequest>,
 ) {
-    use crate::schema::home_closure_state::dsl::*;
-
     let mut connection = app_state.db_connect().await;
+    let home_name = ClosureName::from_home(&name);
+    let hostname = Hostname::new(hostname);
 
-    insert_into(home_closure_state)
-        .values((
-            hostname.eq(hostname_value),
-            closure_name.eq(name_value),
-            current_closure.eq(request.current_closure),
-            current_closure_updated_at.eq(Utc::now()),
-        ))
-        .on_conflict(hostname)
-        .do_update()
-        .set((
-            closure_name.eq(excluded(closure_name)),
-            current_closure.eq(excluded(current_closure)),
-            current_closure_updated_at.eq(excluded(current_closure_updated_at)),
-        ))
-        .execute(&mut connection)
+    connection
+        .transaction(|tx| {
+            Box::pin(async move {
+                update_current_home_closure(
+                    tx,
+                    &home_name,
+                    &hostname,
+                    StorePath::new(request.current_closure),
+                )
+                .await?;
+                Ok::<(), sqlx::Error>(())
+            })
+        })
         .await
         .unwrap();
 }

@@ -1,0 +1,136 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "\n            SELECT\n                wt.id,\n                i.id AS initiator_id,\n                i.name AS initiator_name,\n                iwh.public_key AS initiator_public_key,\n                r.id AS responder_id,\n                r.name AS responder_name,\n                rwh.public_key AS responder_public_key,\n                wt.responder_port,\n                iaa.cidr,\n                rwh.addresses AS responder_ips\n            FROM wireguard_tunnel wt\n            INNER JOIN host i ON i.id=wt.initiator_id\n            INNER JOIN host r ON r.id=wt.responder_id\n            INNER JOIN wireguard_host iwh ON i.id=iwh.host_id\n            INNER JOIN wireguard_host rwh ON r.id=rwh.host_id\n            INNER JOIN ipam_address_allocation iaa ON wt.ipam_address_allocation_id=iaa.id\n            WHERE $1 IN (i.name, r.name)\n        ",
+  "describe": {
+    "columns": [
+      {
+        "ordinal": 0,
+        "name": "id",
+        "type_info": "Uuid",
+        "origin": {
+          "Table": {
+            "table": "wireguard_tunnel",
+            "name": "id"
+          }
+        }
+      },
+      {
+        "ordinal": 1,
+        "name": "initiator_id",
+        "type_info": "Uuid",
+        "origin": {
+          "Table": {
+            "table": "host",
+            "name": "id"
+          }
+        }
+      },
+      {
+        "ordinal": 2,
+        "name": "initiator_name",
+        "type_info": "Text",
+        "origin": {
+          "Table": {
+            "table": "host",
+            "name": "name"
+          }
+        }
+      },
+      {
+        "ordinal": 3,
+        "name": "initiator_public_key",
+        "type_info": "Text",
+        "origin": {
+          "Table": {
+            "table": "wireguard_host",
+            "name": "public_key"
+          }
+        }
+      },
+      {
+        "ordinal": 4,
+        "name": "responder_id",
+        "type_info": "Uuid",
+        "origin": {
+          "Table": {
+            "table": "host",
+            "name": "id"
+          }
+        }
+      },
+      {
+        "ordinal": 5,
+        "name": "responder_name",
+        "type_info": "Text",
+        "origin": {
+          "Table": {
+            "table": "host",
+            "name": "name"
+          }
+        }
+      },
+      {
+        "ordinal": 6,
+        "name": "responder_public_key",
+        "type_info": "Text",
+        "origin": {
+          "Table": {
+            "table": "wireguard_host",
+            "name": "public_key"
+          }
+        }
+      },
+      {
+        "ordinal": 7,
+        "name": "responder_port",
+        "type_info": "Int4",
+        "origin": {
+          "Table": {
+            "table": "wireguard_tunnel",
+            "name": "responder_port"
+          }
+        }
+      },
+      {
+        "ordinal": 8,
+        "name": "cidr",
+        "type_info": "Cidr",
+        "origin": {
+          "Table": {
+            "table": "ipam_address_allocation",
+            "name": "cidr"
+          }
+        }
+      },
+      {
+        "ordinal": 9,
+        "name": "responder_ips",
+        "type_info": "InetArray",
+        "origin": {
+          "Table": {
+            "table": "wireguard_host",
+            "name": "addresses"
+          }
+        }
+      }
+    ],
+    "parameters": {
+      "Left": [
+        "Text"
+      ]
+    },
+    "nullable": [
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false
+    ]
+  },
+  "hash": "33af08e81a70de9a3fc49e5653dc255d7d20dbc2da06ec91a508134a055dfd69"
+}

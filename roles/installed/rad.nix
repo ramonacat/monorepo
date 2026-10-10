@@ -58,10 +58,6 @@
                     type = port;
                     default = 0;
                   };
-                  interface = lib.mkOption {
-                    type = str;
-                    default = "";
-                  };
                 };
               };
             };

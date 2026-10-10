@@ -1,0 +1,16 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "\n                INSERT INTO \n                    ipam_live_ip(id, host_id, address, interface_name, allocation_id) \n                VALUES(\n                    uuidv7(),\n                    $1,\n                    $2,\n                    $3,\n                    NULL\n                )\n            ",
+  "describe": {
+    "columns": [],
+    "parameters": {
+      "Left": [
+        "Uuid",
+        "Inet",
+        "Text"
+      ]
+    },
+    "nullable": []
+  },
+  "hash": "c379deb014267d22bad1a4925ba50be85832a3c26c5943ede5bdde1a5e133694"
+}

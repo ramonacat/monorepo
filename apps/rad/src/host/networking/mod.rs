@@ -1,18 +1,24 @@
 pub mod wireguard;
 
-use std::net::{Ipv4Addr, Ipv6Addr, SocketAddr};
+use std::net::{Ipv4Addr, Ipv6Addr};
 
 use anyhow::Context as _;
 use ipnet::{IpNet, Ipv4Net, Ipv6Net};
 use nix::ifaddrs::getifaddrs;
-use rlib::hosts::HostAddress;
+use rlib::{hosts::HostAddress, networking::is_global4};
+use tokio::net::lookup_host;
 
-use crate::{config::Configuration, host::networking::wireguard::resolve_endpoint};
+use crate::config::Configuration;
+
+const DEFAULT_WIREGUARD_PORTS: [u16; 10] = [
+    51820, 51821, 51822, 51823, 51824, 51825, 51826, 51827, 51828, 51829,
+];
 
 #[derive(Debug)]
 pub struct WireguardInfo {
     key: wireguard::Key,
-    endpoint: Option<SocketAddr>,
+    addresses: Vec<IpNet>,
+    available_ports: Vec<u16>,
 }
 
 impl WireguardInfo {
@@ -20,8 +26,12 @@ impl WireguardInfo {
         &self.key
     }
 
-    pub fn endpoint(&self) -> Option<SocketAddr> {
-        self.endpoint
+    pub fn addresses(&self) -> &[IpNet] {
+        &self.addresses
+    }
+
+    pub fn available_ports(&self) -> &[u16] {
+        &self.available_ports
     }
 }
 
@@ -72,9 +82,47 @@ pub async fn read(config: &Configuration) -> anyhow::Result<HostNetworkInfo> {
     }
 
     let wireguard = if let Some(wireguard) = config.wireguard.as_ref() {
+        let (addresses, ports) = match &wireguard.endpoint {
+            crate::config::WireguardEndpoint::InitiatorOnly => (vec![], vec![]),
+            crate::config::WireguardEndpoint::Auto { available_ports } => {
+                (
+                    ip_addresses
+                        .iter()
+                        .filter_map(|x| match x.address {
+                            IpNet::V4(ipv4_net) => {
+                                if is_global4(&ipv4_net.addr()) {
+                                    Some(ipv4_net.into())
+                                } else {
+                                    None
+                                }
+                            }
+                            // TODO support IPv6
+                            IpNet::V6(_) => None,
+                        })
+                        .collect(),
+                    available_ports
+                        .clone()
+                        .unwrap_or(DEFAULT_WIREGUARD_PORTS.to_vec()),
+                )
+            }
+            crate::config::WireguardEndpoint::Specified {
+                host,
+                available_ports,
+            } => (
+                lookup_host(format!("{host}:80"))
+                    .await?
+                    .map(|x| x.ip().into())
+                    .collect(),
+                available_ports
+                    .clone()
+                    .unwrap_or_else(|| DEFAULT_WIREGUARD_PORTS.to_vec()),
+            ),
+        };
+
         Some(WireguardInfo {
-            key: wireguard::Key::load(wireguard)?,
-            endpoint: resolve_endpoint(&wireguard.endpoint, ip_addresses.iter()).await?,
+            key: wireguard::Key::load(&wireguard.key_file)?,
+            addresses,
+            available_ports: ports,
         })
     } else {
         None

@@ -1,25 +1,13 @@
-use std::{
-    collections::HashMap,
-    net::{IpAddr, SocketAddr},
-    str::FromStr,
-    time::Duration,
-};
+use std::time::Duration;
 
 use async_trait::async_trait;
-use ipnet::IpNet;
-use rlib::{
-    hosts::{ConnectivityState, HostAddress, PostHostStateRequest},
-    wireguard::WireguardEndpoint,
-};
-use thiserror::Error;
-use tokio::net::lookup_host;
+use rlib::hosts::{HostAddress, NetworkingState, PostHostStateRequest, WireguardState};
 use tracing::info;
 
 use crate::{
     config::Configuration,
     host::identity::HostIdentity,
-    mikrotik::{Connection, ResponseLine},
-    networking::is_global4,
+    mikrotik::Connection,
     ras_client::RasClient,
     task::{Task, TaskResult},
 };
@@ -31,42 +19,6 @@ impl MikrotikWireguardPeerUpdate {
     pub fn new() -> Self {
         Self {}
     }
-}
-
-fn endpoint_to_attributes(
-    interface: String,
-    hostname: String,
-    endpoint: &WireguardEndpoint,
-) -> HashMap<String, String> {
-    let mut attributes: HashMap<String, String> = [
-        ("name".to_string(), hostname),
-        ("interface".to_string(), interface),
-        ("allowed-address".to_string(), "0.0.0.0/0,::/0".to_string()),
-        ("public-key".to_string(), endpoint.public_key.clone()),
-        // TODO: make this configurable
-        ("persistent-keepalive".to_string(), "25s".to_string()),
-    ]
-    .into();
-
-    if let Some(address) = endpoint.endpoint {
-        let ip = address.ip().to_string();
-        let port = address.port().to_string();
-
-        attributes.insert("endpoint-address".to_string(), ip);
-        attributes.insert("endpoint-port".to_string(), port);
-    } else {
-        attributes.insert("responder".to_string(), "true".to_string());
-    }
-
-    attributes
-}
-
-#[derive(Debug, Error)]
-pub enum PeerUpdateError {
-    #[error("name not known for: {0:?}")]
-    NameNotKnown(HashMap<String, String>),
-    #[error("the device does not have a public ip")]
-    NoPublicIp,
 }
 
 #[async_trait]
@@ -82,207 +34,120 @@ impl Task for MikrotikWireguardPeerUpdate {
         };
 
         let ras_client = RasClient::new(host_identity.clone())?;
-        let mut endpoints = ras_client.get_wireguard_endpoints().await?.endpoints;
+        let key = crate::host::networking::wireguard::Key::load(&config.wireguard.key_path)?;
 
-        let mut connection = Connection::connect(
+        let connection = Connection::connect(
             config.endpoint,
             &config.username,
             config.password.read()?.as_ref().map(|x| x.as_str()),
         )
         .await?;
-        let interface = &config.wireguard.interface;
+        let mut api = crate::mikrotik::api::Api::new(connection);
 
-        let hostname = connection
-            .send("system/identity/print", [], [])
+        let hostname = api.system_identity_get().await?.name;
+
+        let ips: Vec<_> = api
+            .ip_address_find([])
             .await?
             .into_iter()
-            .filter_map(|x| match x {
-                ResponseLine::Done | ResponseLine::Empty => None,
-                ResponseLine::Data(hash_map) => Some(
-                    hash_map
-                        .get("name")
-                        .unwrap()
-                        .split(".")
-                        .nth(0)
-                        .unwrap()
-                        .to_string(),
-                ),
+            .map(|x| HostAddress {
+                address: x.address,
+                interface: x.interface,
             })
-            .nth(0)
-            .unwrap();
-        endpoints.remove(&hostname);
-        let wireguard_interaface_description = connection
-            .send(
-                "interface/wireguard/print",
-                [],
-                [format!("name={interface}").as_str()],
-            )
-            .await?
-            .into_iter()
-            .filter_map(|x| match x {
-                ResponseLine::Empty | ResponseLine::Done => None,
-                ResponseLine::Data(hash_map) => Some((
-                    u16::from_str(hash_map.get("listen-port").unwrap().as_str()).unwrap(),
-                    hash_map.get("public-key").unwrap().to_string(),
-                )),
-            })
-            .nth(0)
-            .unwrap();
-        // TODO support IPv6
-        let ip_addresses = connection.send("ip/address/print", [], []).await?;
-        let ips = ip_addresses.iter().filter_map(|x| {
-            if let ResponseLine::Data(data) = x {
-                dbg!(data);
-                Some(HostAddress {
-                    address: <IpNet as FromStr>::from_str(data.get("address").unwrap())
-                        .unwrap()
-                        .addr()
-                        .into(),
-                    interface: data.get("interface").unwrap().to_string(),
-                })
-            } else {
-                None
-            }
-        });
-
-        // TODO this is very similar to the way it's done in the host update task, probably abstract
-        // it out, so it's not copy-pasted?
-        let wireguard_endpoint = match &config.wireguard.endpoint {
-            crate::config::WireguardEndpoint::InitiatorOnly => None,
-            crate::config::WireguardEndpoint::Auto => {
-                let ip = ips
-                    .clone()
-                    .filter_map(|x| {
-                        if let IpAddr::V4(v4) = x.address.addr()
-                            && is_global4(&v4)
-                        {
-                            Some(x)
-                        } else {
-                            None
-                        }
-                    })
-                    .nth(0)
-                    .ok_or(PeerUpdateError::NoPublicIp)?;
-
-                Some(SocketAddr::new(
-                    ip.address.addr(),
-                    wireguard_interaface_description.0,
-                ))
-            }
-            crate::config::WireguardEndpoint::Specified { host, port } => {
-                let address = lookup_host(format!("{host}:{port}"))
-                    .await?
-                    .filter_map(|x| {
-                        // TODO support ipv6 probably
-                        if let SocketAddr::V4(v4) = x {
-                            Some(v4)
-                        } else {
-                            None
-                        }
-                    })
-                    .next()
-                    .unwrap();
-
-                Some(address.into())
-            }
-        };
+            .collect();
 
         ras_client
             .update_host_state(
                 &hostname,
                 &PostHostStateRequest {
-                    connectivity: ConnectivityState {
-                        addresses: ips.collect(),
-                        wireguard: Some(rlib::wireguard::WireguardEndpoint {
-                            public_key: wireguard_interaface_description.1,
-                            endpoint: wireguard_endpoint,
-                        }),
-                    },
                     closure: None,
+                    networking: Some(NetworkingState {
+                        addresses: ips,
+                        wireguard: Some(WireguardState {
+                            listen_addresses: vec![],
+                            available_ports: vec![],
+                            public_key: key.to_public_base64(),
+                        }),
+                    }),
                 },
             )
             .await?;
+        let tunnels = ras_client
+            .get_wireguard_tunnels_for_host(&hostname)
+            .await?
+            .tunnels;
 
-        let peers = connection
-            .send(
-                "interface/wireguard/peers/print",
-                [],
-                [format!("interface={interface}").as_str()],
-            )
-            .await?;
-        info!(current=?peers, new=?endpoints, "updating wireguard endpoints");
+        for tunnel in tunnels {
+            let interface_name = if tunnel.initiator.name == hostname {
+                tunnel.responder.name.first_label()
+            } else {
+                tunnel.initiator.name.first_label()
+            };
 
-        for peer in peers {
-            match peer {
-                ResponseLine::Done | ResponseLine::Empty => {}
-                ResponseLine::Data(attributes) => {
-                    let Some(hostname) = attributes.get("name") else {
-                        return Err(PeerUpdateError::NameNotKnown(attributes).into());
-                    };
+            let current_interface = api
+                .interface_wireguard_find([format!("name={interface_name}").as_str()])
+                .await?
+                .pop();
 
-                    if let Some(current_definition) = endpoints.remove(hostname) {
-                        let expected_attributes = endpoint_to_attributes(
-                            interface.to_string(),
-                            hostname.to_string(),
-                            &current_definition,
-                        );
-
-                        let mut needs_update = false;
-                        for (name, value) in &expected_attributes {
-                            let actual_value = attributes.get(name);
-                            if actual_value != Some(value) {
-                                info!(
-                                    ?hostname,
-                                    ?name,
-                                    ?value,
-                                    ?actual_value,
-                                    "mismatched attirbute"
-                                );
-                                needs_update = true;
-                                break;
-                            }
-                        }
-
-                        if needs_update {
-                            info!(new=?expected_attributes, old=?attributes, "updating peer");
-                            connection
-                                .send(
-                                    "interface/wireguard/peers/set",
-                                    expected_attributes
-                                        .iter()
-                                        .map(|(k, v)| (k.as_str(), v.as_str()))
-                                        .chain([(".id", attributes.get(".id").unwrap().as_str())]),
-                                    [],
-                                )
-                                .await?;
-                        }
-                    } else {
-                        info!(?attributes, "removing peer");
-
-                        connection
-                            .send(
-                                "interface/wireguard/peers/remove",
-                                [(".id", attributes.get(".id").unwrap().as_str())],
-                                [],
-                            )
-                            .await?;
-                    }
+            if let Some(current_interface) = current_interface {
+                if (tunnel.responder.name == hostname
+                    && (current_interface.listen_port != tunnel.responder_port
+                        || current_interface.public_key != tunnel.responder.public_key))
+                    || (tunnel.initiator.name == hostname
+                        && current_interface.public_key != tunnel.initiator.public_key)
+                {
+                    info!(
+                        ?current_interface,
+                        ?tunnel,
+                        ?key,
+                        "updating wireguard interface"
+                    );
+                    api.interface_wireguard_set(&current_interface.id, tunnel.responder_port, &key)
+                        .await?;
                 }
+            } else {
+                api.interface_wireguard_add(interface_name, tunnel.responder_port, &key)
+                    .await?;
+            }
+
+            let current_peer = api
+                .interface_wireguard_peers_find([format!("interface={interface_name}").as_str()])
+                .await?
+                .pop();
+
+            let peer = if tunnel.initiator.name == hostname {
+                &tunnel.responder
+            } else {
+                &tunnel.initiator
+            };
+            if let Some(current_peer) = current_peer {
+                if peer.public_key != current_peer.public_key
+                    || tunnel.responder_ip != current_peer.endpoint_address.parse().unwrap()
+                {
+                    api.interface_wireguard_peers_set(
+                        &current_peer.id,
+                        &peer.public_key,
+                        tunnel.responder_ip.addr(),
+                        tunnel.responder_port,
+                        "0.0.0.0/0,::/0",
+                        "25s",
+                    )
+                    .await?;
+                }
+            } else {
+                api.interface_wireguard_peers_add(
+                    interface_name,
+                    &peer.public_key,
+                    tunnel.responder_ip.addr(),
+                    tunnel.responder_port,
+                    "0.0.0.0/0,::/0",
+                    "25s",
+                )
+                .await?;
             }
         }
 
-        for (hostname, endpoint) in endpoints {
-            let attributes = endpoint_to_attributes(interface.to_string(), hostname, &endpoint);
-            info!(?attributes, "adding peer");
-
-            connection
-                .send(
-                    "interface/wireguard/peers/add",
-                    attributes.iter().map(|(k, v)| (k.as_str(), v.as_str())),
-                    [],
-                )
-                .await?;
-        }
+        // TODO cleanup removed tunnels
 
         Ok(TaskResult::ScheduleAgainIn(Duration::from_mins(1)))
     }

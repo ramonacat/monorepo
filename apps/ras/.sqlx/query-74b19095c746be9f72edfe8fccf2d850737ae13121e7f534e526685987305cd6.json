@@ -1,0 +1,14 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "DELETE FROM wireguard_host WHERE host_id=(SELECT id FROM host WHERE name=$1)",
+  "describe": {
+    "columns": [],
+    "parameters": {
+      "Left": [
+        "Text"
+      ]
+    },
+    "nullable": []
+  },
+  "hash": "74b19095c746be9f72edfe8fccf2d850737ae13121e7f534e526685987305cd6"
+}

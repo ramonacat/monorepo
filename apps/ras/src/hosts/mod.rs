@@ -1,26 +1,13 @@
-mod model;
-
-use std::{
-    collections::{HashMap, HashSet},
-    net::SocketAddr,
-};
-
+use crate::services::{ipam::update_live_ips, wireguard::update_wireguard};
 use axum::{Json, extract, http::StatusCode};
-use diesel::{ExpressionMethods as _, query_dsl::methods::FilterDsl};
-use diesel_async::RunQueryDsl as _;
-use rlib::{
-    hosts::{ConnectivityState, HostAddress, HostState, NixClosureState, PostHostStateRequest},
-    wireguard::{GetWireguardEndpointsResponse, WIREGUARD_PORT_DEFAULT, WireguardEndpoint},
-};
+use rlib::hosts::{HostState, Hostname, NixClosureState, PostHostStateRequest};
 use serde::{Deserialize, Serialize};
+use sqlx::{Connection, query};
 use tracing::instrument;
 
 use crate::{
     AppState,
-    hosts::model::{
-        delete_wireguard_endpoint, update_addresses, update_closure, update_wireguard_endpoint,
-    },
-    models::{HostClosureState, HostIpAddress},
+    services::nixos::{ClosureName, StorePath, update_current_host_closure, update_latest_closure},
 };
 
 #[derive(Debug, Serialize, Deserialize)]
@@ -28,145 +15,51 @@ pub struct CurrentStateResponse {
     hosts: Vec<HostState>,
 }
 
-pub async fn get_wireguard_endpoints(
-    extract::State(app_state): extract::State<AppState>,
-) -> Json<GetWireguardEndpointsResponse> {
-    use crate::schema::wireguard_endpoint::dsl;
-    let mut connection = app_state.db_connect().await;
-
-    let endpoints: Vec<crate::models::WireguardEndpoint> =
-        dsl::wireguard_endpoint.load(&mut connection).await.unwrap();
-
-    let endpoints = endpoints
-        .into_iter()
-        .map(|x| {
-            (
-                x.hostname,
-                WireguardEndpoint {
-                    public_key: x.public_key,
-                    endpoint: x.endpoint.map(|y| {
-                        SocketAddr::new(
-                            y.addr(),
-                            x.port.map(|y| y as u16).unwrap_or(WIREGUARD_PORT_DEFAULT),
-                        )
-                    }),
-                },
-            )
-        })
-        .collect();
-
-    Json(GetWireguardEndpointsResponse { endpoints })
-}
-
 #[axum::debug_handler]
+// TODO this is a bit messy, it's only used for grafana, probably we need to have a big think about
+// how to actually do monitoring correctly
 pub async fn get_current_state(
     extract::State(app_state): extract::State<AppState>,
 ) -> Json<CurrentStateResponse> {
     let mut connection = app_state.db_connect().await;
 
-    let mut closures: HashMap<_, _> = {
-        use crate::schema::host_closure_state::dsl::*;
+    let hosts = query!(
+        "SELECT 
+            h.name AS hostname,
+            ncs.current_store_path AS current_closure,
+            ncs.updated_at AS current_closure_updated_at,
+            nc.latest_store_path AS latest_closure,
+            nc.updated_at AS latest_closure_updated_at,
+            (CASE WHEN nc.latest_store_path != ncs.current_store_path THEN 1 ELSE 0 END)::bool AS \"outdated!\"
+        FROM host h
+            LEFT JOIN nixos_closure_state ncs ON ncs.id=nixos_closure_state_id
+            LEFT JOIN nixos_closure nc ON nc.id=ncs.closure_id
+        "
+    ).fetch_all(&mut connection).await.unwrap();
 
-        let states: Vec<HostClosureState> = host_closure_state.load(&mut connection).await.unwrap();
-
-        states
-            .into_iter()
-            .map(|x| {
-                (
-                    x.hostname,
-                    NixClosureState {
-                        outdated: x.latest_closure != x.current_closure,
-
-                        current_closure: x.current_closure,
-                        current_closure_updated_at: x.current_closure_updated_at,
-                        latest_closure: x.latest_closure,
-                        latest_closure_updated_at: x.latest_closure_updated_at,
-                    },
-                )
-            })
-            .collect()
-    };
-
-    let mut addresses: HashMap<_, _> = {
-        use crate::schema::host_ip_address::dsl::*;
-
-        let all_addresses: Vec<HostIpAddress> =
-            host_ip_address.load(&mut connection).await.unwrap();
-
-        let mut addresses_per_host = HashMap::new();
-        for an_address in all_addresses {
-            addresses_per_host
-                .entry(an_address.hostname)
-                .or_insert_with(Vec::new)
-                .push(HostAddress {
-                    address: an_address.address,
-                    interface: an_address.interface,
-                });
-        }
-
-        addresses_per_host
-    };
-
-    let mut wireguard_endpoints: HashMap<_, _> = {
-        use crate::schema::wireguard_endpoint::dsl::*;
-
-        let all_endpoints: Vec<crate::models::WireguardEndpoint> =
-            wireguard_endpoint.load(&mut connection).await.unwrap();
-
-        all_endpoints
-            .into_iter()
-            .map(|x| {
-                let udp_endpoint = x
-                    .endpoint
-                    .map(|y| SocketAddr::new(y.addr(), x.port.unwrap().try_into().unwrap()));
-                (
-                    x.hostname,
-                    WireguardEndpoint {
-                        public_key: x.public_key,
-                        endpoint: udp_endpoint,
-                    },
-                )
-            })
-            .collect()
-    };
-
-    // TODO there should be a table listing all the hosts
-    let hostnames: HashSet<String> = closures
-        .keys()
-        .chain(wireguard_endpoints.keys())
-        .chain(addresses.keys())
-        .cloned()
-        .collect();
-    let hosts = hostnames
+    // mapping manually as the nested structure is difficult/impossible to get right with `query_as!`
+    let hosts = hosts
         .into_iter()
-        .map(|hostname| {
-            let closure_state = closures.remove(&hostname);
-            let connectivity = ConnectivityState {
-                addresses: addresses.remove(&hostname).unwrap_or_default(),
-                wireguard: wireguard_endpoints.remove(&hostname),
-            };
-
-            HostState {
-                hostname,
-                current_closure: closure_state
-                    .as_ref()
-                    .and_then(|x| x.current_closure.clone()),
-                current_closure_updated_at: closure_state
-                    .as_ref()
-                    .and_then(|x| x.current_closure_updated_at),
-                latest_closure: closure_state
-                    .as_ref()
-                    .and_then(|x| x.latest_closure.clone()),
-                latest_closure_updated_at: closure_state
-                    .as_ref()
-                    .and_then(|x| x.latest_closure_updated_at),
-                outdated: closure_state.as_ref().map(|x| x.outdated).unwrap_or(false),
-                connectivity,
-                nix_closure_state: closure_state,
-            }
+        .map(|x| HostState {
+            hostname: x.hostname,
+            current_closure: x.current_closure.clone(),
+            current_closure_updated_at: x.current_closure_updated_at,
+            latest_closure: x.latest_closure.clone(),
+            latest_closure_updated_at: x.latest_closure_updated_at,
+            outdated: x.outdated,
+            nix_closure_state: if x.current_closure.is_some() || x.latest_closure.is_some() {
+                Some(NixClosureState {
+                    current_closure: x.current_closure,
+                    current_closure_updated_at: x.current_closure_updated_at,
+                    latest_closure: x.latest_closure,
+                    latest_closure_updated_at: x.latest_closure_updated_at,
+                    outdated: x.outdated,
+                })
+            } else {
+                None
+            },
         })
         .collect();
-
     Json(CurrentStateResponse { hosts })
 }
 
@@ -178,40 +71,30 @@ pub async fn post_host_state(
     extract::Json(request): extract::Json<PostHostStateRequest>,
 ) {
     let mut connection = app_state.db_connect().await;
+    let hostname = Hostname::new(hostname);
 
-    if let Some(closure_update) = request.closure {
-        update_closure(
-            &mut connection,
-            &hostname,
-            closure_update.current_closure,
-            closure_update.latest_closure,
-        )
+    connection
+        .transaction(|tx| {
+            Box::pin(async move {
+                if let Some(closure_update) = request.closure {
+                    update_current_host_closure(
+                        tx,
+                        &hostname,
+                        StorePath::new(closure_update.current_closure),
+                    )
+                    .await?;
+                }
+
+                if let Some(networking) = request.networking {
+                    update_live_ips(tx, &hostname, networking.addresses).await?;
+                    update_wireguard(tx, &hostname, networking.wireguard).await?;
+                }
+
+                Ok::<(), anyhow::Error>(())
+            })
+        })
         .await
         .unwrap();
-    }
-
-    update_addresses(
-        &mut connection,
-        &hostname,
-        request.connectivity.addresses.into_iter().collect(),
-    )
-    .await
-    .unwrap();
-
-    if let Some(wireguard) = request.connectivity.wireguard.as_ref() {
-        update_wireguard_endpoint(
-            &mut connection,
-            hostname,
-            &wireguard.public_key,
-            wireguard.endpoint.as_ref(),
-        )
-        .await
-        .unwrap();
-    } else {
-        delete_wireguard_endpoint(&mut connection, &hostname)
-            .await
-            .unwrap();
-    }
 }
 
 #[derive(Debug, Serialize, Deserialize)]
@@ -227,15 +110,23 @@ pub async fn post_current_closure(
     extract::Json(request): extract::Json<PostCurrentClosureRequest>,
 ) {
     let mut connection = app_state.db_connect().await;
+    let hostname = Hostname::new(hostname);
 
-    update_closure(
-        &mut connection,
-        &hostname,
-        Some(request.current_closure),
-        None,
-    )
-    .await
-    .unwrap();
+    connection
+        .transaction(|tx| {
+            Box::pin(async move {
+                update_latest_closure(
+                    tx,
+                    ClosureName::from_host(&hostname),
+                    StorePath::new(request.current_closure),
+                )
+                .await?;
+
+                Ok::<(), sqlx::Error>(())
+            })
+        })
+        .await
+        .unwrap();
 }
 
 #[derive(Debug, Serialize, Deserialize)]
@@ -251,42 +142,45 @@ pub async fn post_latest_closure(
     extract::Json(request): extract::Json<PostLatestClosureRequest>,
 ) {
     let mut connection = app_state.db_connect().await;
+    let hostname = Hostname::new(hostname);
 
-    update_closure(
-        &mut connection,
-        &hostname,
-        None,
-        Some(request.latest_closure),
-    )
-    .await
-    .unwrap();
+    connection
+        .transaction(|tx| {
+            Box::pin(async move {
+                update_latest_closure(
+                    tx,
+                    ClosureName::from_host(&hostname),
+                    StorePath::new(request.latest_closure),
+                )
+                .await?;
+
+                Ok::<(), sqlx::Error>(())
+            })
+        })
+        .await
+        .unwrap();
 }
 
 #[instrument]
 #[axum::debug_handler]
 pub async fn get_latest_closure(
     extract::State(app_state): extract::State<AppState>,
-    extract::Path(hostname_value): extract::Path<String>,
+    extract::Path(hostname): extract::Path<String>,
 ) -> (StatusCode, String) {
-    use crate::schema::host_closure_state::dsl::*;
-
     let mut connection = app_state.db_connect().await;
+    let hostname = Hostname::new(hostname);
 
-    let latest = host_closure_state
-        .filter(hostname.eq(hostname_value))
-        .first::<HostClosureState>(&mut connection)
-        .await;
+    let store_path = connection
+        .transaction(|tx| {
+            Box::pin(async move {
+                crate::services::nixos::get_latest_closure(tx, ClosureName::from_host(&hostname))
+                    .await
+            })
+        })
+        .await
+        .unwrap();
 
-    match latest {
-        Ok(latest) => latest.latest_closure.map_or_else(
-            || (StatusCode::NOT_FOUND, String::new()),
-            |ok| (StatusCode::OK, ok),
-        ),
-        Err(e) => match e {
-            diesel::NotFound => (StatusCode::NOT_FOUND, String::new()),
-            _ => panic!("failed to retrieve the latest closure: {e:?}"),
-        },
-    }
+    (StatusCode::OK, store_path.raw().to_string())
 }
 
 #[instrument]
@@ -295,11 +189,4 @@ pub async fn delete(
     extract::State(app_state): extract::State<AppState>,
     extract::Path(hostname_value): extract::Path<String>,
 ) {
-    use crate::schema::host_closure_state::dsl::*;
-
-    let mut connection = app_state.db_connect().await;
-    diesel::delete(host_closure_state.filter(hostname.eq(hostname_value)))
-        .execute(&mut connection)
-        .await
-        .unwrap();
 }

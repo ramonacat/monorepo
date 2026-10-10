@@ -1,0 +1,28 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "SELECT h.nixos_closure_state_id FROM home h WHERE h.hostname=$1",
+  "describe": {
+    "columns": [
+      {
+        "ordinal": 0,
+        "name": "nixos_closure_state_id",
+        "type_info": "Uuid",
+        "origin": {
+          "Table": {
+            "table": "home",
+            "name": "nixos_closure_state_id"
+          }
+        }
+      }
+    ],
+    "parameters": {
+      "Left": [
+        "Text"
+      ]
+    },
+    "nullable": [
+      true
+    ]
+  },
+  "hash": "836a3dee3fdbce2ced8fa26ffa66fc62e6d566621f8ec0ec53445af124c12d4c"
+}

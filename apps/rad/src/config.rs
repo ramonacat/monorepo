@@ -10,8 +10,13 @@ use serde::Deserialize;
 #[serde(tag = "endpoint")]
 pub enum WireguardEndpoint {
     InitiatorOnly,
-    Auto,
-    Specified { host: String, port: u16 },
+    Auto {
+        available_ports: Option<Vec<u16>>,
+    },
+    Specified {
+        host: String,
+        available_ports: Option<Vec<u16>>,
+    },
 }
 
 #[derive(Debug, Deserialize)]
@@ -24,8 +29,12 @@ pub struct Wireguard {
 #[derive(Debug, Deserialize)]
 pub struct MikrotikWireguard {
     #[serde(flatten)]
+    #[allow(
+        unused,
+        reason = "TODO this needs to actually be used to allow mikrotik to be a responder"
+    )]
     pub endpoint: WireguardEndpoint,
-    pub interface: String,
+    pub key_path: PathBuf,
 }
 
 #[derive(Debug, Deserialize)]

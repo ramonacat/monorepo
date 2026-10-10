@@ -1,0 +1,17 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "\n                    INSERT INTO wireguard_host (host_id, ports, addresses, public_key) \n                    VALUES ((SELECT id FROM host where name=$1), $2, $3, $4)\n                    ON CONFLICT (host_id)\n                        DO UPDATE SET ports=EXCLUDED.ports, addresses=EXCLUDED.addresses\n                ",
+  "describe": {
+    "columns": [],
+    "parameters": {
+      "Left": [
+        "Text",
+        "Int4Array",
+        "InetArray",
+        "Text"
+      ]
+    },
+    "nullable": []
+  },
+  "hash": "a3b36f9b6a746be76bfb6372d8388357ef97a04ceddbf260116492d6f028b5e8"
+}
