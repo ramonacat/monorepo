@@ -58,6 +58,10 @@
                     type = port;
                     default = 0;
                   };
+                  key_path = lib.mkOption {
+                    type = str;
+                    default = "/var/ramona/rad/wireguard.key";
+                  };
                 };
               };
             };
