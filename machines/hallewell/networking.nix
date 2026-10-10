@@ -25,7 +25,7 @@ _: {
         ];
         mikrotik = {
           enabled = true;
-          endpoint = "10.23.2.1:8729";
+          endpoint = "10.32.2.1:8729";
           username = "rad";
           password = {
             env = "MIKROTIK_SCARLETWOUND_PASSWORD";
