@@ -63,7 +63,7 @@ impl<T: Unpin + AsyncWrite + AsyncRead> Api<T> {
     ) -> anyhow::Result<Vec<InterfaceWireguard>> {
         let interfaces = self
             .connection
-            .send("/interace/wireguard/print", [], query)
+            .send("interace/wireguard/print", [], query)
             .await?
             .into_iter()
             .filter_map(|x| match x {
@@ -86,7 +86,7 @@ impl<T: Unpin + AsyncWrite + AsyncRead> Api<T> {
     ) -> anyhow::Result<()> {
         self.connection
             .send(
-                "/interface/wireguard/set",
+                "interface/wireguard/set",
                 [
                     (".id", id),
                     ("listen-port", &listen_port.to_string()),
@@ -107,7 +107,7 @@ impl<T: Unpin + AsyncWrite + AsyncRead> Api<T> {
     ) -> anyhow::Result<()> {
         self.connection
             .send(
-                "/interface/wireguard/add",
+                "interface/wireguard/add",
                 [
                     ("name", name),
                     ("listen-port", &listen_port.to_string()),
@@ -126,7 +126,7 @@ impl<T: Unpin + AsyncWrite + AsyncRead> Api<T> {
     ) -> anyhow::Result<Vec<InterfaceWireguardPeer>> {
         let peers = self
             .connection
-            .send("/interace/wireguard/peers/print", [], query)
+            .send("interace/wireguard/peers/print", [], query)
             .await?
             .into_iter()
             .filter_map(|x| match x {
@@ -179,7 +179,7 @@ impl<T: Unpin + AsyncWrite + AsyncRead> Api<T> {
     ) -> anyhow::Result<()> {
         self.connection
             .send(
-                "/interface/wireguard/peers/add",
+                "interface/wireguard/peers/add",
                 [
                     ("interface", interface),
                     ("public-key", public_key),
@@ -201,7 +201,7 @@ impl<T: Unpin + AsyncWrite + AsyncRead> Api<T> {
     ) -> anyhow::Result<Vec<IpAddress>> {
         let addresses = self
             .connection
-            .send("/ip/address/print", [], query)
+            .send("ip/address/print", [], query)
             .await?
             .into_iter()
             .filter_map(|x| match x {
