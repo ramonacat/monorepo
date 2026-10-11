@@ -115,12 +115,8 @@ pub async fn post_current_closure(
     connection
         .transaction(|tx| {
             Box::pin(async move {
-                update_latest_closure(
-                    tx,
-                    ClosureName::from_host(&hostname),
-                    StorePath::new(request.current_closure),
-                )
-                .await?;
+                update_current_host_closure(tx, &hostname, StorePath::new(request.current_closure))
+                    .await?;
 
                 Ok::<(), sqlx::Error>(())
             })
