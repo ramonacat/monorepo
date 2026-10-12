@@ -147,8 +147,8 @@ async fn reconcile_tunnels<'tx>(tx: &mut Transaction<'tx, Postgres>) -> anyhow::
                         (host_b, host_a)
                     }
                 }
-                (true, false) => (host_a, host_b),
-                (false, true) => (host_b, host_a),
+                (true, false) => (host_b, host_a),
+                (false, true) => (host_a, host_b),
             };
 
         let Some(responder_port) = responder.ports.first() else {
