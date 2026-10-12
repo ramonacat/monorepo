@@ -169,7 +169,13 @@ enum UpdateResult {
 fn update_if_changed(path: impl AsRef<Path>, contents: &str) -> anyhow::Result<UpdateResult> {
     let path: &Path = path.as_ref();
 
-    fs::create_dir_all(path)?;
+    match fs::create_dir_all(path.parent().unwrap()) {
+        Ok(()) => {}
+        Err(e) if e.kind() == std::io::ErrorKind::AlreadyExists => {}
+        Err(e) => {
+            return Err(e).with_context(|| format!("creating {:?} for {path:?}", path.parent()));
+        }
+    }
 
     let mut file = fs::OpenOptions::new()
         .read(true)
