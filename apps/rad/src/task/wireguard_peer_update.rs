@@ -8,6 +8,7 @@ use std::{
     time::Duration,
 };
 
+use anyhow::Context;
 use async_trait::async_trait;
 use tracing::{debug, info};
 
@@ -122,7 +123,11 @@ impl Task for WireguardPeerUpdate {
         for existing in fs::read_dir("/etc/systemd/network/")? {
             let existing = existing?;
 
-            if !existing.file_type()?.is_file() {
+            if !existing
+                .file_type()
+                .with_context(|| format!("getting the type for {existing:?}"))?
+                .is_file()
+            {
                 continue;
             }
 
@@ -134,7 +139,8 @@ impl Task for WireguardPeerUpdate {
             }
 
             if !units.contains_key(file_name.as_ref()) {
-                fs::remove_file(file_name.as_ref())?;
+                fs::remove_file(existing.path())
+                    .with_context(|| format!("trying to remove {file_name:?}"))?;
                 needs_reload = true;
             }
         }
@@ -161,12 +167,17 @@ enum UpdateResult {
 }
 
 fn update_if_changed(path: impl AsRef<Path>, contents: &str) -> anyhow::Result<UpdateResult> {
+    let path: &Path = path.as_ref();
+
+    fs::create_dir_all(path)?;
+
     let mut file = fs::OpenOptions::new()
         .read(true)
         .write(true)
         .create(true)
         .truncate(false)
-        .open(path)?;
+        .open(path)
+        .with_context(|| format!("creating {path:?}"))?;
     let mut current_contents = String::new();
     file.read_to_string(&mut current_contents)?;
 
