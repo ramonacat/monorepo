@@ -15,7 +15,7 @@ resource "helm_release" "hcloud-cloud-controller-manager" {
   chart      = "hcloud-cloud-controller-manager"
   repository = "https://charts.hetzner.cloud"
   namespace  = "kube-system"
-  version    = "1.37.0"
+  version    = "1.39.0"
 
   values = [yamlencode({
     replicaCount = 2
@@ -31,7 +31,7 @@ resource "helm_release" "hcloud-csi" {
   chart      = "hcloud-csi"
   repository = "https://charts.hetzner.cloud"
   namespace  = "kube-system"
-  version    = "2.23.0"
+  version    = "2.24.0"
 
   values = [yamlencode({
     storageClasses = [
