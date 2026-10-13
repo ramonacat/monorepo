@@ -1,4 +1,4 @@
-_: {
+{ config, ... }: {
   config =
     let
       secrets-path = "/var/ramona/secrets/woodpecker-agent/env";
@@ -19,7 +19,7 @@ _: {
               command = [
                 "/run/current-system/sw/bin/systemctl"
                 "restart"
-                "woodpecker-agent-main"
+                "woodpecker-agent-${config.networking.hostName}"
               ];
             }
           ];

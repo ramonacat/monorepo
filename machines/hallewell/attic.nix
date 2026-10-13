@@ -17,7 +17,7 @@ _: {
               command = [
                 "/run/current-system/sw/bin/systemctl"
                 "restart"
-                "woodpecker-agent-main"
+                "atticd"
               ];
             }
           ];

@@ -63,13 +63,13 @@ impl<T: Unpin + AsyncWrite + AsyncRead> Api<T> {
     ) -> anyhow::Result<Vec<InterfaceWireguard>> {
         let interfaces = self
             .connection
-            .send("interace/wireguard/print", [], query)
+            .send("interface/wireguard/print", [], query)
             .await?
             .into_iter()
             .filter_map(|x| match x {
                 super::ResponseLine::Done | super::ResponseLine::Empty => None,
                 super::ResponseLine::Data(hash_map) => Some(InterfaceWireguard {
-                    id: hash_map.get("*id").unwrap().clone(),
+                    id: hash_map.get(".id").unwrap().clone(),
                     listen_port: hash_map.get("listen-port").unwrap().parse().unwrap(),
                     public_key: hash_map.get("public-key").unwrap().clone(),
                 }),
@@ -126,13 +126,13 @@ impl<T: Unpin + AsyncWrite + AsyncRead> Api<T> {
     ) -> anyhow::Result<Vec<InterfaceWireguardPeer>> {
         let peers = self
             .connection
-            .send("interace/wireguard/peers/print", [], query)
+            .send("interface/wireguard/peers/print", [], query)
             .await?
             .into_iter()
             .filter_map(|x| match x {
                 super::ResponseLine::Done | super::ResponseLine::Empty => None,
                 super::ResponseLine::Data(hash_map) => Some(InterfaceWireguardPeer {
-                    id: hash_map.get("*id").unwrap().clone(),
+                    id: hash_map.get(".id").unwrap().clone(),
                     public_key: hash_map.get("public-key").unwrap().clone(),
                     endpoint_address: hash_map.get("endpoint-address").unwrap().clone(),
                 }),
@@ -152,7 +152,7 @@ impl<T: Unpin + AsyncWrite + AsyncRead> Api<T> {
     ) -> anyhow::Result<()> {
         self.connection
             .send(
-                "/interface/wireguard/peers/set",
+                "interface/wireguard/peers/set",
                 [
                     (".id", id),
                     ("public-key", public_key),

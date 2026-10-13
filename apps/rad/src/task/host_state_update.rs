@@ -48,8 +48,7 @@ impl Task for HostStateUpdate {
 
         ras_client
             .update_host_state(host_identity.hostname(), &request_body)
-            .await
-            .unwrap();
+            .await?;
 
         Ok(TaskResult::ScheduleAgainIn(Duration::from_mins(1)))
     }
