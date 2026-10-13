@@ -10,6 +10,7 @@ use std::{
 
 use anyhow::Context;
 use async_trait::async_trait;
+use nix::libc::IF_NAMESIZE;
 use tracing::{debug, info};
 
 use crate::{
@@ -56,12 +57,18 @@ impl Task for WireguardPeerUpdate {
                     &x.responder
                 };
 
+                let interface_name = format!(
+                    "wg-{}",
+                    &peer.name.first_label()
+                        [..(IF_NAMESIZE - ("wg-".len() + 1/* for null terminator */))]
+                );
+
                 let netdev = (
                     format!("22-ramona-{}.netdev", peer.name.first_label()),
                     format!(
                         "
                         [NetDev]
-                        Name=wg-{peer_name}
+                        Name={interface_name}
                         Kind=wireguard
                         [WireGuard]
                         PrivateKeyFile={private_key_file}
@@ -72,7 +79,6 @@ impl Task for WireguardPeerUpdate {
                         {endpoint}
                         PersistentKeepalive=25
                     ",
-                        peer_name = peer.name.first_label(),
                         private_key_file = wireguard_config.key_file.to_string_lossy(),
                         listen_port = if is_responder {
                             format!("ListenPort={}", x.responder_port)
@@ -93,12 +99,11 @@ impl Task for WireguardPeerUpdate {
                     format!(
                         "
                 [Match]
-                Name=wg-{peer_name}
-                [LINK]
+                Name={interface_name}
+                [Link]
                 ActivationPolicy=always-up
                 Address={address}/{prefix_length}
                 ",
-                        peer_name = peer.name.first_label(),
                         address = (x
                             .cidr
                             .hosts()
