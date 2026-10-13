@@ -54,9 +54,9 @@
                     type = str;
                     default = "";
                   };
-                  port = lib.mkOption {
-                    type = port;
-                    default = 0;
+                  available_ports = lib.mkOption {
+                    type = listOf port;
+                    default = [ ];
                   };
                   key_path = lib.mkOption {
                     type = str;
@@ -153,8 +153,6 @@
         CapabilityBoundingSet = "CAP_NET_RAW CAP_NET_ADMIN";
       };
     };
-    networking.firewall.allowedUDPPorts = lib.mkIf config.ramona.router.wireguard.enabled [
-      config.ramona.router.wireguard.port
-    ];
+    networking.firewall.allowedUDPPorts = lib.mkIf config.ramona.router.wireguard.enabled config.ramona.router.wireguard.available_ports;
   };
 }

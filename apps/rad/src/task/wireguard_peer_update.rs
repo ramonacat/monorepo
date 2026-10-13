@@ -48,7 +48,7 @@ impl Task for WireguardPeerUpdate {
         let units: HashMap<String, String> = tunnels
             .into_iter()
             .flat_map(|x| {
-                let is_responder = &x.responder.name == host_identity.hostname();
+                let is_responder = x.responder.name.first_label() == host_identity.hostname().first_label();
                 let peer = if is_responder {
                     &x.initiator
                 } else {

@@ -48,7 +48,7 @@ _: {
     ramona.router.wireguard = {
       enabled = true;
       host = "d.rumanowski.com";
-      port = 49152;
+      available_ports = [ 49152 ];
     };
   };
 }
