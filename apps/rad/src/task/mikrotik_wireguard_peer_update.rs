@@ -81,7 +81,7 @@ impl Task for MikrotikWireguardPeerUpdate {
         for tunnel in tunnels {
             info!(?hostname, ?tunnel, "processing tunnel");
             let responder_port = rng().random_range(0xF000..0xFFFF);
-            
+
             let interface_name = if tunnel.initiator.name.first_label() == hostname.first_label() {
                 tunnel.responder.name.first_label()
             } else {
@@ -128,7 +128,10 @@ impl Task for MikrotikWireguardPeerUpdate {
                 info!(?current_peer, "found existing peer");
 
                 if peer.public_key != current_peer.public_key
-                    || tunnel.responder_ip != format!("{}/32", current_peer.endpoint_address).parse().unwrap()
+                    || tunnel.responder_ip
+                        != format!("{}/32", current_peer.endpoint_address)
+                            .parse()
+                            .unwrap()
                 {
                     api.interface_wireguard_peers_set(
                         &current_peer.id,

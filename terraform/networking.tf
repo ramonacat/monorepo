@@ -36,7 +36,7 @@ resource "hcloud_firewall" "fw" {
   rule {
     direction   = "in"
     protocol    = "udp"
-    port        = "51820"
+    port        = "51820-51829"
     source_ips  = ["0.0.0.0/0"]
     description = "wireguard"
   }

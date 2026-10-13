@@ -68,12 +68,11 @@ impl<T: Unpin + AsyncWrite + AsyncRead> Api<T> {
             .into_iter()
             .filter_map(|x| match x {
                 super::ResponseLine::Done | super::ResponseLine::Empty => None,
-                super::ResponseLine::Data(hash_map) => {
-                    Some(InterfaceWireguard {
+                super::ResponseLine::Data(hash_map) => Some(InterfaceWireguard {
                     id: hash_map.get(".id").unwrap().clone(),
                     listen_port: hash_map.get("listen-port").unwrap().parse().unwrap(),
                     public_key: hash_map.get("public-key").unwrap().clone(),
-                })},
+                }),
             });
 
         Ok(interfaces.collect())

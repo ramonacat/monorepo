@@ -81,9 +81,9 @@
               type = nullOr str;
               default = null;
             };
-            port = lib.mkOption {
-              type = port;
-              default = 51820;
+            available_ports = lib.mkOption {
+              type = nullOr (listOf port);
+              default = null;
             };
           };
         };
@@ -110,9 +110,8 @@
                         { endpoint = "Auto"; }
                       else
                         {
+                          inherit (config.ramona.router.wireguard) host available_ports;
                           endpoint = "Specified";
-                          host = config.ramona.router.wireguard.host;
-                          port = config.ramona.router.wireguard.port;
                         }
                     )
                     // {
@@ -153,6 +152,8 @@
         CapabilityBoundingSet = "CAP_NET_RAW CAP_NET_ADMIN";
       };
     };
-    networking.firewall.allowedUDPPorts = lib.mkIf config.ramona.router.wireguard.enabled config.ramona.router.wireguard.available_ports;
+    networking.firewall.allowedUDPPorts = lib.mkIf (
+      config.ramona.router.wireguard.enabled && (config.ramona.router.wireguard.available_ports != null)
+    ) config.ramona.router.wireguard.available_ports;
   };
 }
