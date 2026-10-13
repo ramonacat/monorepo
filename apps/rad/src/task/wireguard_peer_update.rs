@@ -89,7 +89,7 @@ impl Task for WireguardPeerUpdate {
                         endpoint = if is_responder {
                             String::new()
                         } else {
-                            format!("Endpoint={}:{}", x.responder_ip, x.responder_port)
+                            format!("Endpoint={}:{}", x.responder_ip.addr(), x.responder_port)
                         },
                     ),
                 );
