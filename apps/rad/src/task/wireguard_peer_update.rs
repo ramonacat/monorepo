@@ -57,16 +57,12 @@ impl Task for WireguardPeerUpdate {
                     &x.responder
                 };
 
-                let peer_name_first_label = peer.name.first_label();
+                let peer_id_str = peer.id.simple().to_string();
                 let interface_name = format!(
                     "wg-{}",
-                    &peer_name_first_label[..(IF_NAMESIZE
-                        - usize::min(
-                            peer_name_first_label.len(),
-                            peer_name_first_label.floor_char_boundary(
-                                "wg-".len() + 1 /* for null terminator */
-                            )
-                        ))]
+                    &peer_id_str[peer_id_str.floor_char_boundary(
+                        peer_id_str.len() - ("wg-".len() + 1 + IF_NAMESIZE)
+                    )..]
                 );
 
                 let netdev = (
@@ -74,7 +70,7 @@ impl Task for WireguardPeerUpdate {
                     format!(
                         "
                         [NetDev]
-                        Name={interface_name}
+                        Name={interface_name} # {peer_name:?}
                         Kind=wireguard
                         [WireGuard]
                         PrivateKeyFile={private_key_file}
@@ -85,6 +81,7 @@ impl Task for WireguardPeerUpdate {
                         {endpoint}
                         PersistentKeepalive=25
                     ",
+                        peer_name = peer.name,
                         private_key_file = wireguard_config.key_file.to_string_lossy(),
                         listen_port = if is_responder {
                             format!("ListenPort={}", x.responder_port)
@@ -108,6 +105,7 @@ impl Task for WireguardPeerUpdate {
                 Name={interface_name}
                 [Link]
                 ActivationPolicy=always-up
+                [Network]
                 Address={address}/{prefix_length}
                 ",
                         address = (x
