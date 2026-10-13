@@ -57,10 +57,16 @@ impl Task for WireguardPeerUpdate {
                     &x.responder
                 };
 
+                let peer_name_first_label = peer.name.first_label();
                 let interface_name = format!(
                     "wg-{}",
-                    &peer.name.first_label()
-                        [..(IF_NAMESIZE - ("wg-".len() + 1/* for null terminator */))]
+                    &peer_name_first_label[..(IF_NAMESIZE
+                        - usize::min(
+                            peer_name_first_label.len(),
+                            peer_name_first_label.floor_char_boundary(
+                                "wg-".len() + 1 /* for null terminator */
+                            )
+                        ))]
                 );
 
                 let netdev = (
