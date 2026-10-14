@@ -74,17 +74,18 @@ impl Task for WireguardPeerUpdate {
                     format!("22-ramona-{}.netdev", peer.name.first_label()),
                     format!(
                         "
-                        [NetDev]
-                        Name={interface_name} # {peer_name:?}
-                        Kind=wireguard
-                        [WireGuard]
-                        PrivateKeyFile={private_key_file}
-                        {listen_port}
-                        [WireGuardPeer]
-                        PublicKey={peer_public_key}
-                        AllowedIPs=0.0.0.0/0,::/0
-                        {endpoint}
-                        PersistentKeepalive=25
+[NetDev]
+# {peer_name:?}
+Name={interface_name}
+Kind=wireguard
+[WireGuard]
+PrivateKeyFile={private_key_file}
+{listen_port}
+[WireGuardPeer]
+PublicKey={peer_public_key}
+AllowedIPs=0.0.0.0/0,::/0
+{endpoint}
+PersistentKeepalive=25
                     ",
                         peer_name = peer.name,
                         private_key_file = wireguard_config.key_file.to_string_lossy(),
@@ -106,12 +107,12 @@ impl Task for WireguardPeerUpdate {
                     format!("22-ramona-{}.network", peer.name.first_label()),
                     format!(
                         "
-                        [Match]
-                        Name={interface_name}
-                        [Link]
-                        ActivationPolicy=always-up
-                        [Network]
-                        Address={address}/{prefix_length}
+[Match]
+Name={interface_name}
+[Link]
+ActivationPolicy=always-up
+[Network]
+Address={address}/{prefix_length}
                         ",
                         address = (x
                             .cidr
