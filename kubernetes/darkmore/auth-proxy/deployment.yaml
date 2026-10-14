@@ -21,7 +21,7 @@ spec:
     spec:
       containers:
       - name: auth-proxy
-        image: code.ramona.fun/ramona/monorepo/auth-proxy:1791933909
+        image: code.ramona.fun/ramona/monorepo/auth-proxy:1791983647
         imagePullPolicy: IfNotPresent
         resources:
           requests:
