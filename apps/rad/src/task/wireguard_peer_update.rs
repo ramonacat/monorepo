@@ -28,6 +28,16 @@ impl WireguardPeerUpdate {
     }
 }
 
+fn make_interface_name(full_name: &str) -> String {
+    assert!(!full_name.is_empty());
+
+    let prefix = "wg-";
+    let max_length = IF_NAMESIZE - prefix.len() - "\0".len();
+    let name_offset = full_name.len().saturating_sub(max_length);
+
+    format!("{prefix}{}", &full_name[name_offset..])
+}
+
 #[async_trait]
 impl Task for WireguardPeerUpdate {
     async fn execute(
@@ -58,12 +68,7 @@ impl Task for WireguardPeerUpdate {
                 };
 
                 let peer_id_str = peer.id.simple().to_string();
-                let interface_name = format!(
-                    "wg-{}",
-                    &peer_id_str[peer_id_str.floor_char_boundary(
-                        peer_id_str.len() - ("wg-".len() + 1 + IF_NAMESIZE)
-                    )..]
-                );
+                let interface_name = make_interface_name(&peer_id_str);
 
                 let netdev = (
                     format!("22-ramona-{}.netdev", peer.name.first_label()),
@@ -101,13 +106,13 @@ impl Task for WireguardPeerUpdate {
                     format!("22-ramona-{}.network", peer.name.first_label()),
                     format!(
                         "
-                [Match]
-                Name={interface_name}
-                [Link]
-                ActivationPolicy=always-up
-                [Network]
-                Address={address}/{prefix_length}
-                ",
+                        [Match]
+                        Name={interface_name}
+                        [Link]
+                        ActivationPolicy=always-up
+                        [Network]
+                        Address={address}/{prefix_length}
+                        ",
                         address = (x
                             .cidr
                             .hosts()
@@ -206,4 +211,24 @@ fn update_if_changed(path: impl AsRef<Path>, contents: &str) -> anyhow::Result<U
     file.write_all(contents.as_bytes())?;
 
     Ok(UpdateResult::Changed)
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use nix::libc::IF_NAMESIZE;
+
+    #[test]
+    pub fn can_make_interface_name() {
+        assert_eq!(make_interface_name("a"), "wg-a");
+
+        let long_string = "a".repeat(512);
+        let long = make_interface_name(&long_string);
+
+        assert_eq!(long.len(), IF_NAMESIZE - 1);
+        assert_eq!(long, "wg-aaaaaaaaaaaa");
+
+        let exact_match = make_interface_name("abcdefghijkl");
+        assert_eq!("wg-abcdefghijkl", exact_match)
+    }
 }
