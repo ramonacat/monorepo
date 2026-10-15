@@ -224,4 +224,51 @@ impl<T: Unpin + AsyncWrite + AsyncRead> Api<T> {
 
         Ok(addresses.collect())
     }
+
+    pub async fn ip_address_add(
+        &mut self,
+        address: IpNet,
+        interface: &str,
+    ) -> anyhow::Result<String> {
+        let address = address.to_string();
+        let response = self
+            .connection
+            .send(
+                "ip/address/add",
+                [("address", address.as_str()), ("interface", interface)],
+                [],
+            )
+            .await?;
+
+        Ok(response
+            .iter()
+            .filter_map(|x| match x {
+                super::ResponseLine::Done | super::ResponseLine::Empty => None,
+                super::ResponseLine::Data(data) => Some(data.get(".id").unwrap().clone()),
+            })
+            .next()
+            .unwrap())
+    }
+
+    pub async fn ip_address_set(
+        &mut self,
+        id: &str,
+        address: IpNet,
+        interface: &str,
+    ) -> anyhow::Result<()> {
+        let address = address.to_string();
+        self.connection
+            .send(
+                "ip/address/set",
+                [
+                    (".id", id),
+                    ("address", address.as_str()),
+                    ("interface", interface),
+                ],
+                [],
+            )
+            .await?;
+
+        Ok(())
+    }
 }

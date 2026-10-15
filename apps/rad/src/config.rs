@@ -6,6 +6,8 @@ use std::path::PathBuf;
 
 use serde::Deserialize;
 
+use crate::state::StateManager;
+
 #[derive(Debug, Deserialize)]
 #[serde(tag = "endpoint")]
 pub enum WireguardEndpoint {
@@ -51,6 +53,13 @@ pub struct Configuration {
     pub key: PathBuf,
     pub wireguard: Option<Wireguard>,
     pub mikrotik: Option<Mikrotik>,
+    pub state: PathBuf,
+}
+
+impl Configuration {
+    pub fn state(&self) -> StateManager {
+        StateManager::new(&self.state)
+    }
 }
 
 pub fn read() -> Result<Configuration, anyhow::Error> {

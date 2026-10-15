@@ -4,6 +4,7 @@ mod host;
 mod mikrotik;
 mod networking;
 mod ras_client;
+mod state;
 mod task;
 
 use std::{
@@ -16,7 +17,7 @@ use tracing::{debug, error, info, warn};
 
 use crate::task::{
     Task, host_state_update::HostStateUpdate,
-    mikrotik_wireguard_peer_update::MikrotikWireguardTunnelUpdate,
+    mikrotik_tunnel_update::MikrotikWireguardTunnelUpdate,
     wireguard_peer_update::WireguardPeerUpdate,
 };
 

@@ -145,6 +145,10 @@ impl Tunnel {
         }
     }
 
+    pub fn id(&self) -> Uuid {
+        self.id
+    }
+
     pub fn remote_endpoint<'a>(&'a self, local_hostname: &Hostname) -> RemoteEndpoint<'a> {
         let mut tunnel_ip_range = self.cidr.hosts();
 

@@ -110,6 +110,7 @@
             {
               certificate = "/var/ramona/identity/certificate.crt";
               key = "/var/ramona/identity/certificate.key";
+              state = "/var/ramona/rad/state.json";
             }
             // (
               if !config.ramona.router.wireguard.enabled then

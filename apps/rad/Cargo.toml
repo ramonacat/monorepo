@@ -22,3 +22,4 @@ anyhow = "1.0.104"
 async-trait = "0.1.92"
 tokio-rustls = "0.26.5"
 rustls-platform-verifier = "0.7.1"
+uuid = { version = "1.28.0", features = ["v7", "serde"] }

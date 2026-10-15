@@ -29,6 +29,8 @@ impl Task for MikrotikWireguardTunnelUpdate {
         config: &Configuration,
         host_identity: &HostIdentity,
     ) -> anyhow::Result<TaskResult> {
+        let state = config.state();
+
         let Some(config) = &config.mikrotik else {
             info!("no mikrotik config, not updating peers");
             return Ok(TaskResult::ScheduleAgainIn(Duration::from_mins(1)));
@@ -150,6 +152,22 @@ impl Task for MikrotikWireguardTunnelUpdate {
                 )
                 .await?;
             }
+
+            state
+                .with_async(async |state| {
+                    if let Some(id) = state.tunnel_ips.get(&tunnel.id()) {
+                        api.ip_address_set(id, local_endpoint.tunnel_ip(), &interface_name)
+                            .await?;
+                    } else {
+                        let id = api
+                            .ip_address_add(local_endpoint.tunnel_ip(), &interface_name)
+                            .await?;
+                        state.tunnel_ips.insert(tunnel.id(), id);
+                    }
+
+                    Ok::<_, anyhow::Error>(())
+                })
+                .await?;
         }
 
         // TODO cleanup removed tunnels
