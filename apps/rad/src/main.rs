@@ -16,7 +16,7 @@ use tracing::{debug, error, info, warn};
 
 use crate::task::{
     Task, host_state_update::HostStateUpdate,
-    mikrotik_wireguard_peer_update::MikrotikWireguardPeerUpdate,
+    mikrotik_wireguard_peer_update::MikrotikWireguardTunnelUpdate,
     wireguard_peer_update::WireguardPeerUpdate,
 };
 
@@ -46,7 +46,7 @@ async fn main() {
 
     let mut tasks = vec![
         TaskState::new(HostStateUpdate::new()),
-        TaskState::new(MikrotikWireguardPeerUpdate::new()),
+        TaskState::new(MikrotikWireguardTunnelUpdate::new()),
         TaskState::new(WireguardPeerUpdate::new()),
     ];
 

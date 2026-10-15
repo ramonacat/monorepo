@@ -58,20 +58,19 @@ impl Task for WireguardPeerUpdate {
 
         let units: HashMap<String, String> = tunnels
             .into_iter()
-            .flat_map(|x| {
-                let is_responder =
-                    x.responder.name.first_label() == host_identity.hostname().first_label();
-                let peer = if is_responder {
-                    &x.initiator
-                } else {
-                    &x.responder
-                };
+            .flat_map(|tunnel| {
+                // TODO let (remote, local) = tunnel.endpoints() maybe
+                let remote_endpoint = tunnel.remote_endpoint(host_identity.hostname());
+                let local_endpoint = tunnel.local_endpoint(host_identity.hostname());
 
-                let peer_id_str = peer.id.simple().to_string();
+                let peer_id_str = remote_endpoint.host_id().simple().to_string();
                 let interface_name = make_interface_name(&peer_id_str);
 
                 let netdev = (
-                    format!("22-ramona-{}.netdev", peer.name.first_label()),
+                    format!(
+                        "22-ramona-{}.netdev",
+                        remote_endpoint.hostname().first_label()
+                    ),
                     format!(
                         "
 [NetDev]
@@ -87,24 +86,29 @@ AllowedIPs=0.0.0.0/0,::/0
 {endpoint}
 PersistentKeepalive=25
                     ",
-                        peer_name = peer.name,
+                        peer_name = remote_endpoint.hostname(),
                         private_key_file = wireguard_config.key_file.to_string_lossy(),
-                        listen_port = if is_responder {
-                            format!("ListenPort={}", x.responder_port)
-                        } else {
-                            String::new()
-                        },
-                        peer_public_key = peer.public_key,
-                        endpoint = if is_responder {
-                            String::new()
-                        } else {
-                            format!("Endpoint={}:{}", x.responder_ip.addr(), x.responder_port)
-                        },
+                        listen_port = local_endpoint
+                            .as_responder()
+                            .and_then(|x| x.endpoint())
+                            .map_or_else(String::new, |x| format!("ListenPort={}", x.port())),
+                        peer_public_key = remote_endpoint.public_key(),
+                        endpoint = remote_endpoint
+                            .as_responder()
+                            .and_then(|x| x.endpoint())
+                            .map_or_else(String::new, |x| format!(
+                                "Endpoint={}:{}",
+                                x.ip(),
+                                x.port()
+                            )),
                     ),
                 );
 
                 let network = (
-                    format!("22-ramona-{}.network", peer.name.first_label()),
+                    format!(
+                        "22-ramona-{}.network",
+                        remote_endpoint.hostname().first_label()
+                    ),
                     format!(
                         "
 [Match]
@@ -112,14 +116,9 @@ Name={interface_name}
 [Link]
 ActivationPolicy=always-up
 [Network]
-Address={address}/{prefix_length}
+Address={address}
                         ",
-                        address = (x
-                            .cidr
-                            .hosts()
-                            .nth(if is_responder { 0 } else { 1 })
-                            .unwrap()),
-                        prefix_length = x.cidr.prefix_len()
+                        address = local_endpoint.tunnel_ip(),
                     ),
                 );
 

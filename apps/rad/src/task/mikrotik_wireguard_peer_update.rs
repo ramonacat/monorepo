@@ -1,4 +1,4 @@
-use std::time::Duration;
+use std::{net::IpAddr, time::Duration};
 
 use async_trait::async_trait;
 use rand::{RngExt, rng};
@@ -14,16 +14,16 @@ use crate::{
 };
 
 #[derive(Debug)]
-pub struct MikrotikWireguardPeerUpdate {}
+pub struct MikrotikWireguardTunnelUpdate {}
 
-impl MikrotikWireguardPeerUpdate {
+impl MikrotikWireguardTunnelUpdate {
     pub fn new() -> Self {
         Self {}
     }
 }
 
 #[async_trait]
-impl Task for MikrotikWireguardPeerUpdate {
+impl Task for MikrotikWireguardTunnelUpdate {
     async fn execute(
         &self,
         config: &Configuration,
@@ -80,13 +80,12 @@ impl Task for MikrotikWireguardPeerUpdate {
 
         for tunnel in tunnels {
             info!(?hostname, ?tunnel, "processing tunnel");
+
+            let remote_endpoint = tunnel.remote_endpoint(&hostname);
+            let local_endpoint = tunnel.local_endpoint(&hostname);
             let responder_port = rng().random_range(0xF000..0xFFFF);
 
-            let interface_name = if tunnel.initiator.name.first_label() == hostname.first_label() {
-                tunnel.responder.name.first_label()
-            } else {
-                tunnel.initiator.name.first_label()
-            };
+            let interface_name = remote_endpoint.hostname().to_string();
 
             let current_interface = api
                 .interface_wireguard_find([format!("name={interface_name}").as_str()])
@@ -94,11 +93,12 @@ impl Task for MikrotikWireguardPeerUpdate {
                 .pop();
 
             if let Some(current_interface) = current_interface {
-                if (tunnel.responder.name.first_label() == hostname.first_label()
-                    && (current_interface.listen_port != responder_port
-                        || current_interface.public_key != tunnel.responder.public_key))
-                    || (tunnel.initiator.name.first_label() == hostname.first_label()
-                        && current_interface.public_key != tunnel.initiator.public_key)
+                if local_endpoint
+                    .as_responder()
+                    .and_then(|x| x.endpoint())
+                    .map(|x| x.port())
+                    != current_interface.listen_port
+                    || local_endpoint.public_key() != current_interface.public_key
                 {
                     info!(
                         ?current_interface,
@@ -110,7 +110,7 @@ impl Task for MikrotikWireguardPeerUpdate {
                         .await?;
                 }
             } else {
-                api.interface_wireguard_add(interface_name, responder_port, &key)
+                api.interface_wireguard_add(&interface_name, responder_port, &key)
                     .await?;
             }
 
@@ -119,25 +119,21 @@ impl Task for MikrotikWireguardPeerUpdate {
                 .await?
                 .pop();
 
-            let peer = if tunnel.initiator.name.first_label() == hostname.first_label() {
-                &tunnel.responder
-            } else {
-                &tunnel.initiator
-            };
             if let Some(current_peer) = current_peer {
                 info!(?current_peer, "found existing peer");
 
-                if peer.public_key != current_peer.public_key
-                    || tunnel.responder_ip
-                        != format!("{}/32", current_peer.endpoint_address)
-                            .parse()
-                            .unwrap()
+                if remote_endpoint.public_key() != current_peer.public_key
+                    || remote_endpoint
+                        .as_responder()
+                        .and_then(|x| x.endpoint())
+                        .is_some_and(|x| {
+                            x.ip() != current_peer.endpoint_address.parse::<IpAddr>().unwrap()
+                        })
                 {
                     api.interface_wireguard_peers_set(
                         &current_peer.id,
-                        &peer.public_key,
-                        tunnel.responder_ip.addr(),
-                        tunnel.responder_port,
+                        remote_endpoint.public_key(),
+                        remote_endpoint.as_responder().and_then(|x| x.endpoint()),
                         "0.0.0.0/0,::/0",
                         "25s",
                     )
@@ -145,10 +141,10 @@ impl Task for MikrotikWireguardPeerUpdate {
                 }
             } else {
                 api.interface_wireguard_peers_add(
-                    interface_name,
-                    &peer.public_key,
-                    tunnel.responder_ip.addr(),
-                    tunnel.responder_port,
+                    remote_endpoint.hostname().first_label(),
+                    &interface_name,
+                    remote_endpoint.public_key(),
+                    remote_endpoint.as_responder().and_then(|x| x.endpoint()),
                     "0.0.0.0/0,::/0",
                     "25s",
                 )

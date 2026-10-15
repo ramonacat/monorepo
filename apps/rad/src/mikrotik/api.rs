@@ -1,4 +1,4 @@
-use std::net::IpAddr;
+use std::{collections::HashMap, net::SocketAddr};
 
 use ipnet::IpNet;
 use rlib::hosts::Hostname;
@@ -17,7 +17,7 @@ pub struct SystemIdentity {
 #[derive(Debug)]
 pub struct InterfaceWireguard {
     pub id: String,
-    pub listen_port: u16,
+    pub listen_port: Option<u16>,
     pub public_key: String,
 }
 
@@ -70,7 +70,7 @@ impl<T: Unpin + AsyncWrite + AsyncRead> Api<T> {
                 super::ResponseLine::Done | super::ResponseLine::Empty => None,
                 super::ResponseLine::Data(hash_map) => Some(InterfaceWireguard {
                     id: hash_map.get(".id").unwrap().clone(),
-                    listen_port: hash_map.get("listen-port").unwrap().parse().unwrap(),
+                    listen_port: hash_map.get("listen-port").map(|x| x.parse().unwrap()),
                     public_key: hash_map.get("public-key").unwrap().clone(),
                 }),
             });
@@ -145,24 +145,28 @@ impl<T: Unpin + AsyncWrite + AsyncRead> Api<T> {
         &mut self,
         id: &str,
         public_key: &str,
-        endpoint_address: IpAddr,
-        endpoint_port: u16,
+        endpoint: Option<SocketAddr>,
         allowed_addresses: &str,
         persistent_keepalive: &str,
     ) -> anyhow::Result<()> {
+        let mut attributes = HashMap::from([
+            (".id", id),
+            ("public-key", public_key),
+            ("allowed-address", allowed_addresses),
+            ("persistent-keepalive", persistent_keepalive),
+        ]);
+
+        let (ip, port);
+        if let Some(endpoint) = endpoint {
+            ip = endpoint.ip().to_string();
+            port = endpoint.port().to_string();
+
+            attributes.insert("endpoint-address", &ip);
+            attributes.insert("endpoint-port", &port);
+        }
+
         self.connection
-            .send(
-                "interface/wireguard/peers/set",
-                [
-                    (".id", id),
-                    ("public-key", public_key),
-                    ("endpoint-address", &endpoint_address.to_string()),
-                    ("endpoint-port", &endpoint_port.to_string()),
-                    ("allowed-address", allowed_addresses),
-                    ("persistent-keepalive", persistent_keepalive),
-                ],
-                [],
-            )
+            .send("interface/wireguard/peers/set", attributes, [])
             .await?;
 
         Ok(())
@@ -170,26 +174,32 @@ impl<T: Unpin + AsyncWrite + AsyncRead> Api<T> {
 
     pub async fn interface_wireguard_peers_add(
         &mut self,
+        name: &str,
         interface: &str,
         public_key: &str,
-        endpoint_address: IpAddr,
-        endpoint_port: u16,
+        endpoint: Option<SocketAddr>,
         allowed_addresses: &str,
         persistent_keepalive: &str,
     ) -> anyhow::Result<()> {
+        let mut attributes = HashMap::from([
+            ("name", name),
+            ("interface", interface),
+            ("public-key", public_key),
+            ("allowed-address", allowed_addresses),
+            ("persistent-keepalive", persistent_keepalive),
+        ]);
+
+        let (ip, port);
+        if let Some(endpoint) = endpoint {
+            ip = endpoint.ip().to_string();
+            port = endpoint.port().to_string();
+
+            attributes.insert("endpoint-address", &ip);
+            attributes.insert("endpoint-port", &port);
+        }
+
         self.connection
-            .send(
-                "interface/wireguard/peers/add",
-                [
-                    ("interface", interface),
-                    ("public-key", public_key),
-                    ("endpoint-address", &endpoint_address.to_string()),
-                    ("endpoint-port", &endpoint_port.to_string()),
-                    ("allowed-address", allowed_addresses),
-                    ("persistent-keepalive", persistent_keepalive),
-                ],
-                [],
-            )
+            .send("interface/wireguard/peers/add", attributes, [])
             .await?;
 
         Ok(())
