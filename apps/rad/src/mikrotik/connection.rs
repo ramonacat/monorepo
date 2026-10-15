@@ -164,6 +164,10 @@ impl<T: Unpin + AsyncWrite + AsyncRead> Connection<T> {
             result.push(response_line);
         }
 
-        Ok(result.into_iter().collect::<Result<Vec<_>, _>>()?)
+        let response = result.into_iter().collect::<Result<Vec<_>, _>>()?;
+
+        info!(?response, "response received");
+
+        Ok(response)
     }
 }

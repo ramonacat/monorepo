@@ -1,3 +1,4 @@
+use std::fmt::Display;
 use std::net::IpAddr;
 
 use chrono::{DateTime, Utc};
@@ -8,6 +9,11 @@ use serde::{Deserialize, Serialize};
 #[serde(transparent)]
 pub struct Hostname(String);
 
+impl Display for Hostname {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        write!(f, "{}", self.0)
+    }
+}
 impl Hostname {
     pub fn new(value: String) -> Self {
         Self(value)

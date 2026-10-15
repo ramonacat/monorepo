@@ -1,11 +1,14 @@
 use std::{
     collections::{HashMap, HashSet},
     hash::Hash,
-    net::IpAddr,
+    net::SocketAddr,
 };
 
 use ipnet::IpNet;
-use rlib::hosts::{Hostname, WireguardState};
+use rlib::{
+    hosts::{Hostname, WireguardState},
+    wireguard::{Initiator, Responder, Tunnel},
+};
 use sqlx::{Postgres, Transaction};
 use tracing::{debug, info, warn};
 use uuid::Uuid;
@@ -208,22 +211,7 @@ async fn load_host(
     ", id).fetch_one(&mut **tx).await
 }
 
-pub struct TunnelHost {
-    pub id: Uuid,
-    pub name: String,
-    pub public_key: String,
-}
-
-pub struct Tunnel {
-    pub id: Uuid,
-
-    pub initiator: TunnelHost,
-    pub responder: TunnelHost,
-
-    pub cidr: IpNet,
-    pub responder_port: u16,
-    pub responder_ips: Vec<IpAddr>,
-}
+// TODO this and Tunnel should probably just not exist and the ones from rlib should be in use
 
 pub async fn get_tunnels_for_host(
     tx: &mut Transaction<'_, Postgres>,
@@ -257,21 +245,25 @@ pub async fn get_tunnels_for_host(
 
     Ok(rows
         .into_iter()
-        .map(|x| Tunnel {
-            id: x.id,
-            initiator: TunnelHost {
-                id: x.initiator_id,
-                name: x.initiator_name,
-                public_key: x.initiator_public_key,
-            },
-            responder: TunnelHost {
-                id: x.responder_id,
-                name: x.responder_name,
-                public_key: x.responder_public_key,
-            },
-            cidr: x.cidr,
-            responder_port: x.responder_port.try_into().unwrap(),
-            responder_ips: x.responder_ips.into_iter().map(|x| x.addr()).collect(),
+        .map(|x| {
+            Tunnel::new(
+                x.id,
+                Initiator::new(
+                    x.initiator_id,
+                    Hostname::new(x.initiator_name.clone()),
+                    x.initiator_public_key,
+                ),
+                Responder::new(
+                    x.responder_id,
+                    Hostname::new(x.initiator_name),
+                    x.responder_public_key,
+                    x.responder_ips
+                        .iter()
+                        .map(|y| SocketAddr::new(y.addr(), x.responder_port.try_into().unwrap()))
+                        .collect(),
+                ),
+                x.cidr,
+            )
         })
         .collect())
 }
