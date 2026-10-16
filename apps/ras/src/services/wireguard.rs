@@ -161,7 +161,7 @@ async fn reconcile_tunnels<'tx>(tx: &mut Transaction<'tx, Postgres>) -> anyhow::
         };
 
         info!(?responder, ?initiator, ?responder_port, "creating tunnel");
-        let cidr_id = allocate_cidr(
+        let (allocation_id, _cidr) = allocate_cidr(
             tx,
             cidr_parent_id,
             format!("tunnel: {} <-> {}", initiator.name, responder.name),
@@ -169,7 +169,7 @@ async fn reconcile_tunnels<'tx>(tx: &mut Transaction<'tx, Postgres>) -> anyhow::
         )
         .await?;
 
-        sqlx::query!("INSERT INTO wireguard_tunnel(id, initiator_id, responder_id, responder_port, ipam_address_allocation_id) VALUES(uuidv7(), $1, $2, $3, $4)", initiator.id, responder.id, responder_port, cidr_id).execute(&mut **tx).await?;
+        sqlx::query!("INSERT INTO wireguard_tunnel(id, initiator_id, responder_id, responder_port, ipam_address_allocation_id) VALUES(uuidv7(), $1, $2, $3, $4)", initiator.id, responder.id, responder_port, allocation_id).execute(&mut **tx).await?;
     }
 
     for (_, tunnel) in current_tunnels {
