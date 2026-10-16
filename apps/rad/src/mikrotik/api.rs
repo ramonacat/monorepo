@@ -24,6 +24,7 @@ pub struct InterfaceWireguard {
 #[derive(Debug)]
 pub struct InterfaceWireguardPeer {
     pub id: String,
+    pub name: String,
     pub public_key: String,
     pub endpoint_address: String,
 }
@@ -85,7 +86,8 @@ impl<T: Unpin + AsyncWrite + AsyncRead> Api<T> {
         key: &crate::host::networking::wireguard::Key,
     ) -> anyhow::Result<()> {
         let key = key.to_private_base64();
-        let mut attributes = HashMap::from([(".id", id), ("private-key", &key)]);
+        let mut attributes =
+            HashMap::from([(".id", id), ("private-key", &key), ("disabled", "false")]);
         let port;
         if let Some(listen_port) = listen_port {
             port = listen_port.to_string();
@@ -105,7 +107,8 @@ impl<T: Unpin + AsyncWrite + AsyncRead> Api<T> {
         key: &crate::host::networking::wireguard::Key,
     ) -> anyhow::Result<()> {
         let key = key.to_private_base64();
-        let mut attributes = HashMap::from([("name", name), ("private-key", &key)]);
+        let mut attributes =
+            HashMap::from([("name", name), ("private-key", &key), ("disabled", "false")]);
 
         let port;
         if let Some(listen_port) = listen_port {
@@ -133,6 +136,7 @@ impl<T: Unpin + AsyncWrite + AsyncRead> Api<T> {
                 super::ResponseLine::Done | super::ResponseLine::Empty => None,
                 super::ResponseLine::Data(hash_map) => Some(InterfaceWireguardPeer {
                     id: hash_map.get(".id").unwrap().clone(),
+                    name: hash_map.get("name").unwrap().clone(),
                     public_key: hash_map.get("public-key").unwrap().clone(),
                     endpoint_address: hash_map.get("endpoint-address").unwrap().clone(),
                 }),
@@ -144,6 +148,7 @@ impl<T: Unpin + AsyncWrite + AsyncRead> Api<T> {
     pub async fn interface_wireguard_peers_set(
         &mut self,
         id: &str,
+        name: &str,
         public_key: &str,
         endpoint: Option<SocketAddr>,
         allowed_addresses: &str,
@@ -152,8 +157,10 @@ impl<T: Unpin + AsyncWrite + AsyncRead> Api<T> {
         let mut attributes = HashMap::from([
             (".id", id),
             ("public-key", public_key),
+            ("name", name),
             ("allowed-address", allowed_addresses),
             ("persistent-keepalive", persistent_keepalive),
+            ("disabled", "false"),
         ]);
 
         let (ip, port);
@@ -187,6 +194,7 @@ impl<T: Unpin + AsyncWrite + AsyncRead> Api<T> {
             ("public-key", public_key),
             ("allowed-address", allowed_addresses),
             ("persistent-keepalive", persistent_keepalive),
+            ("disabled", "false"),
         ]);
 
         let (ip, port);
@@ -234,7 +242,11 @@ impl<T: Unpin + AsyncWrite + AsyncRead> Api<T> {
         self.connection
             .send(
                 "ip/address/add",
-                [("address", address.as_str()), ("interface", interface)],
+                [
+                    ("address", address.as_str()),
+                    ("interface", interface),
+                    ("disabled", "false"),
+                ],
                 [],
             )
             .await?;
@@ -274,6 +286,7 @@ impl<T: Unpin + AsyncWrite + AsyncRead> Api<T> {
                     (".id", id),
                     ("address", address.as_str()),
                     ("interface", interface),
+                    ("disabled", "false"),
                 ],
                 [],
             )

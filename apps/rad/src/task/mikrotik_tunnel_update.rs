@@ -2,7 +2,7 @@ use std::{net::IpAddr, time::Duration};
 
 use async_trait::async_trait;
 use rlib::hosts::{HostAddress, NetworkingState, PostHostStateRequest, WireguardState};
-use tracing::info;
+use tracing::{debug, info};
 
 use crate::{
     config::Configuration,
@@ -134,9 +134,11 @@ impl Task for MikrotikWireguardTunnelUpdate {
                         .is_some_and(|x| {
                             x.ip() != current_peer.endpoint_address.parse::<IpAddr>().unwrap()
                         })
+                    || current_peer.name != interface_name
                 {
                     api.interface_wireguard_peers_set(
                         &current_peer.id,
+                        &interface_name,
                         remote_endpoint.public_key(),
                         remote_endpoint.as_responder().and_then(|x| x.endpoint()),
                         "0.0.0.0/0,::/0",
@@ -159,8 +161,18 @@ impl Task for MikrotikWireguardTunnelUpdate {
             state
                 .with_async(async |state| {
                     if let Some(id) = state.tunnel_ips.get(&tunnel.id()) {
-                        api.ip_address_set(id, local_endpoint.tunnel_ip(), &interface_name)
-                            .await?;
+                        let current_ips =
+                            api.ip_address_find([format!(".id={id}").as_str()]).await?;
+                        let current_ip = current_ips.first();
+
+                        if current_ip.is_none_or(|x| {
+                            x.address != local_endpoint.tunnel_ip() || x.interface != interface_name
+                        }) {
+                            api.ip_address_set(id, local_endpoint.tunnel_ip(), &interface_name)
+                                .await?;
+                        } else {
+                            debug!(?tunnel, "no need to update ip");
+                        }
                     } else {
                         let id = api
                             .ip_address_add(local_endpoint.tunnel_ip(), &interface_name)
