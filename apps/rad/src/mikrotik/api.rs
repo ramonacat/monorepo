@@ -81,19 +81,18 @@ impl<T: Unpin + AsyncWrite + AsyncRead> Api<T> {
     pub async fn interface_wireguard_set(
         &mut self,
         id: &str,
-        listen_port: u16,
+        listen_port: Option<u16>,
         key: &crate::host::networking::wireguard::Key,
     ) -> anyhow::Result<()> {
+        let key = key.to_private_base64();
+        let mut attributes = HashMap::from([(".id", id), ("private-key", &key)]);
+        let port;
+        if let Some(listen_port) = listen_port {
+            port = listen_port.to_string();
+            attributes.insert("listen-port", &port);
+        }
         self.connection
-            .send(
-                "interface/wireguard/set",
-                [
-                    (".id", id),
-                    ("listen-port", &listen_port.to_string()),
-                    ("private-key", &key.to_private_base64()),
-                ],
-                [],
-            )
+            .send("interface/wireguard/set", attributes, [])
             .await?;
 
         Ok(())
@@ -102,19 +101,20 @@ impl<T: Unpin + AsyncWrite + AsyncRead> Api<T> {
     pub async fn interface_wireguard_add(
         &mut self,
         name: &str,
-        listen_port: u16,
+        listen_port: Option<u16>,
         key: &crate::host::networking::wireguard::Key,
     ) -> anyhow::Result<()> {
+        let key = key.to_private_base64();
+        let mut attributes = HashMap::from([("name", name), ("private-key", &key)]);
+
+        let port;
+        if let Some(listen_port) = listen_port {
+            port = listen_port.to_string();
+            attributes.insert("listen-port", &port);
+        }
+
         self.connection
-            .send(
-                "interface/wireguard/add",
-                [
-                    ("name", name),
-                    ("listen-port", &listen_port.to_string()),
-                    ("private-key", &key.to_private_base64()),
-                ],
-                [],
-            )
+            .send("interface/wireguard/add", attributes, [])
             .await?;
 
         Ok(())
@@ -231,12 +231,22 @@ impl<T: Unpin + AsyncWrite + AsyncRead> Api<T> {
         interface: &str,
     ) -> anyhow::Result<String> {
         let address = address.to_string();
-        let response = self
-            .connection
+        self.connection
             .send(
                 "ip/address/add",
                 [("address", address.as_str()), ("interface", interface)],
                 [],
+            )
+            .await?;
+
+        let query_interface = format!("interface={interface}");
+        let query_address = format!("address={address}");
+        let response = self
+            .connection
+            .send(
+                "ip/address/print",
+                [],
+                [query_interface.as_str(), &query_address],
             )
             .await?;
 

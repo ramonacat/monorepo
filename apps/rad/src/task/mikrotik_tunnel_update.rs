@@ -1,7 +1,6 @@
 use std::{net::IpAddr, time::Duration};
 
 use async_trait::async_trait;
-use rand::{RngExt, rng};
 use rlib::hosts::{HostAddress, NetworkingState, PostHostStateRequest, WireguardState};
 use tracing::info;
 
@@ -85,7 +84,6 @@ impl Task for MikrotikWireguardTunnelUpdate {
 
             let remote_endpoint = tunnel.remote_endpoint(&hostname);
             let local_endpoint = tunnel.local_endpoint(&hostname);
-            let responder_port = rng().random_range(0xF000..0xFFFF);
 
             let interface_name = remote_endpoint.hostname().to_string();
 
@@ -93,6 +91,11 @@ impl Task for MikrotikWireguardTunnelUpdate {
                 .interface_wireguard_find([format!("name={interface_name}").as_str()])
                 .await?
                 .pop();
+
+            let responder_port = local_endpoint
+                .as_responder()
+                .and_then(|x| x.endpoint())
+                .map(|x| x.port());
 
             if let Some(current_interface) = current_interface {
                 if local_endpoint

@@ -255,7 +255,7 @@ pub async fn get_tunnels_for_host(
                 ),
                 Responder::new(
                     x.responder_id,
-                    Hostname::new(x.initiator_name),
+                    Hostname::new(x.responder_name),
                     x.responder_public_key,
                     x.responder_ips
                         .iter()

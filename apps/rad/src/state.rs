@@ -8,7 +8,7 @@ use std::{
 use serde::{Deserialize, Serialize};
 use thiserror::Error;
 
-#[derive(Debug, Deserialize, Serialize)]
+#[derive(Debug, Deserialize, Serialize, Default)]
 pub struct State {
     pub tunnel_ips: HashMap<uuid::Uuid, String>,
 }
@@ -46,7 +46,11 @@ impl StateManager {
             .open(&self.path)?;
         state_file.lock()?;
 
-        let mut state: State = serde_json::from_reader(&state_file)?;
+        let mut state: State = match serde_json::from_reader(&state_file) {
+            Ok(state) => state,
+            Err(err) if err.is_eof() && err.line() == 1 && err.column() == 0 => State::default(),
+            Err(e) => return Err(e.into()),
+        };
 
         let result = match callback(&mut state).await {
             Ok(o) => Ok(o),
