@@ -9,5 +9,7 @@
         enable = true;
       };
     };
+
+    networking.firewall.extraInputRules = "ip saddr '10.255.240.0/20' ip protocol ospfigp accept";
   };
 }

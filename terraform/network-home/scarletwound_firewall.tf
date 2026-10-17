@@ -70,6 +70,13 @@ module "scarletwound-firewall" {
       dst_port = "5351",
       comment  = "NAT PMP"
     },
+    {
+      chain       = "input"
+      action      = "accept"
+      protocol    = "ospf"
+      src_address = "10.255.240.0/20"
+      comment     = "OSPF"
+    },
     { chain = "input", action = "drop" },
     { chain = "forward", action = "drop", connection_state = "invalid" },
     { chain = "forward", action = "drop", connection_nat_state = "!dstnat", connection_state = "new", in_interface_list = routeros_interface_list.scarletwound-wan.name },

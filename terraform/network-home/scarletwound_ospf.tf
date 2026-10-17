@@ -32,4 +32,5 @@ resource "routeros_routing_ospf_interface_template" "scarletwound-tunnels" {
   cost    = 10000
   # TODO this should come from the ras ipam provider
   networks = ["10.255.240.0/20"]
+  type     = "ptp"
 }

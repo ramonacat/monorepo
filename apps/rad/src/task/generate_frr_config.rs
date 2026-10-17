@@ -2,6 +2,7 @@ use std::{
     cmp::Reverse,
     collections::{HashMap, HashSet},
     fmt::Write as _,
+    process::Command,
     time::Duration,
 };
 
@@ -12,7 +13,7 @@ use tracing::info;
 use crate::{
     config::Configuration,
     host::identity::HostIdentity,
-    io::update_if_changed,
+    io::{UpdateResult, update_if_changed},
     ras_client::RasClient,
     task::{Task, TaskResult},
 };
@@ -97,13 +98,21 @@ impl Task for GenerateFrrConfig {
 
             writeln!(
                 &mut frr_config,
-                "interface {}\n    ip ospf cost {}\n    ip ospf bfd",
+                // TODO only make the router tunnels ptp
+                "interface {}\n    ip ospf cost {}\n    ip ospf bfd\n    ip ospf network point-to-point",
                 interface, network.cost
             )?;
         }
 
-        update_if_changed(&config_routing.frr_config, &frr_config)
+        let update_result = update_if_changed(&config_routing.frr_config, &frr_config)
             .with_context(|| format!("updating {:?}", config_routing.frr_config))?;
+
+        if update_result == UpdateResult::Changed {
+            Command::new("/run/current-system/sw/bin/systemctl")
+                .args(["reload", "frr.service"])
+                .spawn()?
+                .wait()?;
+        }
 
         Ok(TaskResult::ScheduleAgainIn(Duration::from_mins(1)))
     }
