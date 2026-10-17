@@ -152,7 +152,7 @@
                     // {
                       key_file = "/var/ramona/wireguard.key";
                     };
-                  router = { inherit (config.ramona.router) networks frr_config; };
+                  routing = { inherit (config.ramona.router) networks frr_config; };
                 }
             )
             // (
