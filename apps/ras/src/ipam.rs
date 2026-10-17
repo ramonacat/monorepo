@@ -1,23 +1,8 @@
 use axum::{Json, extract};
-use ipnet::IpNet;
-use serde::{Deserialize, Serialize};
+use rlib::ipam::{PostIpamAllocateRequest, PostIpamAllocateResponse};
 use sqlx::Connection;
-use uuid::Uuid;
 
 use crate::{AppState, services::ipam::allocate_cidr};
-
-#[derive(Debug, Serialize, Deserialize)]
-pub struct PostIpamAllocateRequest {
-    parent_id: Uuid,
-    name: String,
-    prefix_length: u8,
-}
-
-#[derive(Debug, Serialize, Deserialize)]
-pub struct PostIpamAllocateResponse {
-    allocation_id: Uuid,
-    cidr: IpNet,
-}
 
 pub async fn post_allocate(
     extract::State(app_state): extract::State<AppState>,
