@@ -201,11 +201,11 @@
     },
     "nixpkgs_2": {
       "locked": {
-        "lastModified": 1792093246,
-        "narHash": "sha256-dnn3t840bj8NIgTcG9ueLuwpr1XxRGNiySXo4GkQwIM=",
-        "rev": "8d71b6f9b2c06470b95ebbfa857cc70890976d07",
+        "lastModified": 1792176968,
+        "narHash": "sha256-QY1sqcrSkb9QCISh9QzshoeHGrjLTRWNK+DOJLlq/is=",
+        "rev": "fb8c0979366e52bd4391d8781e2e666b017a6e47",
         "type": "tarball",
-        "url": "https://releases.nixos.org/nixos/unstable-small/nixos-26.11pre1093329.8d71b6f9b2c0/nixexprs.tar.zst"
+        "url": "https://releases.nixos.org/nixos/unstable-small/nixos-26.11pre1095197.fb8c0979366e/nixexprs.tar.zst"
       },
       "original": {
         "id": "nixpkgs",
@@ -222,11 +222,11 @@
         "systems": "systems_2"
       },
       "locked": {
-        "lastModified": 1792012326,
-        "narHash": "sha256-DApZIjaKdU4XzglZ56yrPYLhG/ajoyuQ4g4s8tkHqxU=",
+        "lastModified": 1792203519,
+        "narHash": "sha256-yJ072hxngo/srNdLTp4BlFeo0hedwnKicI3TGlSXLFE=",
         "owner": "nix-community",
         "repo": "nixvim",
-        "rev": "8485794923eb406ce3728af320392226608f724b",
+        "rev": "453dc9c5037e6d1bec81d2a51ddacd58a2f44e9c",
         "type": "github"
       },
       "original": {
@@ -305,11 +305,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1792087235,
-        "narHash": "sha256-vQHkG9lwSHJI3MVnyilP50hWW3TNnBWFTbLIurWgPhI=",
+        "lastModified": 1792133817,
+        "narHash": "sha256-LivT78KkZ18adR5daoXj2nlIOxuLw6B96nvW4FOl4d0=",
         "owner": "oxalica",
         "repo": "rust-overlay",
-        "rev": "87ffb7f777aef2e2647fd8fd718a5b3cbc825588",
+        "rev": "ec07af44be2e0ce4e1a17e00a97d44232607c1ec",
         "type": "github"
       },
       "original": {
@@ -360,11 +360,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1791981146,
-        "narHash": "sha256-PeENT3Fu7a7YrX5zIHjdxai8GzPcxpKn+nQsgByhwNo=",
+        "lastModified": 1792151315,
+        "narHash": "sha256-PMtgvHuGijoIAtPtrBm7kJOI6fxzX4LYPAIK+QVGY+Y=",
         "owner": "pyproject-nix",
         "repo": "uv2nix",
-        "rev": "a541fda20d6784d88789cfcb221638b7c25a23dd",
+        "rev": "7aba73a3d85454f1118f8cf9de97979b4d26bcac",
         "type": "github"
       },
       "original": {
