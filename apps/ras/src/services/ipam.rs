@@ -33,14 +33,27 @@ pub async fn get_allocation_id(
         .await
 }
 
+fn find_subnets_or_hosts(cidr: IpNet, prefix_length: u8) -> Box<dyn Iterator<Item = IpNet> + Send> {
+    if cidr.max_prefix_len() == prefix_length {
+        Box::new(
+            cidr.hosts()
+                .map(move |x| IpNet::new(x, prefix_length).unwrap()),
+        )
+    } else {
+        Box::new(cidr.subnets(prefix_length).unwrap())
+    }
+}
+
 pub async fn allocate_cidr<'tx>(
     tx: &mut Transaction<'tx, Postgres>,
     parent_id: Uuid,
     name: String,
-    width: u8,
+    prefix_length: u8,
 ) -> Result<(Uuid, IpNet), AllocateCidrError> {
     let parent = get_allocation(tx, parent_id).await?;
-    for candidate in parent.cidr.subnets(width)? {
+
+    let candidates = find_subnets_or_hosts(parent.cidr, prefix_length);
+    for candidate in candidates {
         let in_use = sqlx::query_scalar!("SELECT EXISTS(SELECT 1 FROM ipam_address_allocation WHERE parent_id=$1 AND cidr && $2) AS \"exists!\"", parent.id, candidate).fetch_one(&mut **tx).await?;
 
         if in_use {
