@@ -32,9 +32,9 @@
         rpc-whitelist = "127.0.0.1,::1,100.*.*.*";
         upload-slots-per-torrent = 50;
         utp-enabled = true;
-        speed-limit-down = 300000; # kb/s
+        speed-limit-down = 37500; # kB/s
         speed-limit-down-enabled = true;
-        speed-limit-up = 300000; # kb/s
+        speed-limit-up = 37500; # kB/s
         speed-limit-up-enabled = true;
       };
     };
