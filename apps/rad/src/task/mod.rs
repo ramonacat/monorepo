@@ -4,6 +4,7 @@ use async_trait::async_trait;
 
 use crate::{config::Configuration, host::identity::HostIdentity};
 
+pub mod generate_frr_config;
 pub mod host_state_update;
 pub mod mikrotik_tunnel_update;
 pub mod wireguard_peer_update;

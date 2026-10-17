@@ -69,37 +69,59 @@
           };
         };
     };
-    ramona.router.wireguard = lib.mkOption {
-      type =
-        with lib.types;
-        submodule {
+    ramona.router =
+      with lib.types;
+      lib.mkOption {
+        type = submodule {
           options = {
             enabled = lib.mkOption {
               type = bool;
               default = false;
             };
-            host = lib.mkOption {
-              type = nullOr str;
-              default = null;
+            networks = lib.mkOption {
+              type = listOf (submodule {
+                options = {
+                  cidr = lib.mkOption {
+                    type = str;
+                  };
+                  cost = lib.mkOption { type = int; };
+                };
+              });
             };
-            available_ports = lib.mkOption {
-              type = nullOr (listOf port);
-              default = [
-                51820
-                51821
-                51822
-                51823
-                51824
-                51825
-                51826
-                51827
-                51828
-                51829
-              ];
+            frr_config = lib.mkOption {
+              type = str;
+              default = "/var/ramona/frr.conf";
+            };
+            wireguard = lib.mkOption {
+              type =
+                with lib.types;
+                submodule {
+                  options = {
+                    host = lib.mkOption {
+                      type = nullOr str;
+                      default = null;
+                    };
+                    available_ports = lib.mkOption {
+                      type = nullOr (listOf port);
+                      default = [
+                        51820
+                        51821
+                        51822
+                        51823
+                        51824
+                        51825
+                        51826
+                        51827
+                        51828
+                        51829
+                      ];
+                    };
+                  };
+                };
             };
           };
         };
-    };
+      };
   };
   config = {
     systemd.services.rad = {
@@ -113,7 +135,7 @@
               state = "/var/ramona/rad/state.json";
             }
             // (
-              if !config.ramona.router.wireguard.enabled then
+              if !config.ramona.router.enabled then
                 { }
               else
                 {
@@ -130,6 +152,7 @@
                     // {
                       key_file = "/var/ramona/wireguard.key";
                     };
+                  router = { inherit (config.ramona.router) networks frr_config; };
                 }
             )
             // (
@@ -165,6 +188,12 @@
         CapabilityBoundingSet = "CAP_NET_RAW CAP_NET_ADMIN";
       };
     };
-    networking.firewall.allowedUDPPorts = lib.mkIf config.ramona.router.wireguard.enabled config.ramona.router.wireguard.available_ports;
+    networking.firewall.allowedUDPPorts = lib.mkIf config.ramona.router.enabled config.ramona.router.wireguard.available_ports;
+    ramona.router.networks = [
+      {
+        cidr = "10.255.240.0/20";
+        cost = 10000;
+      }
+    ];
   };
 }

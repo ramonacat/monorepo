@@ -13,6 +13,7 @@
 
     ../../modules/updates
 
+    ./frr.nix
     ./nix.nix
     ./prometheus-exporter.nix
     ./rad.nix

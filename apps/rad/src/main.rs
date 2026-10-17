@@ -1,6 +1,7 @@
 mod config;
 mod env;
 mod host;
+mod io;
 mod mikrotik;
 mod networking;
 mod ras_client;
@@ -16,7 +17,7 @@ use tokio::time::sleep;
 use tracing::{debug, error, info, warn};
 
 use crate::task::{
-    Task, host_state_update::HostStateUpdate,
+    Task, generate_frr_config::GenerateFrrConfig, host_state_update::HostStateUpdate,
     mikrotik_tunnel_update::MikrotikWireguardTunnelUpdate,
     wireguard_peer_update::WireguardPeerUpdate,
 };
@@ -49,6 +50,7 @@ async fn main() {
         TaskState::new(HostStateUpdate::new()),
         TaskState::new(MikrotikWireguardTunnelUpdate::new()),
         TaskState::new(WireguardPeerUpdate::new()),
+        TaskState::new(GenerateFrrConfig::new()),
     ];
 
     loop {

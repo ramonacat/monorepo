@@ -2,7 +2,6 @@ use std::time::Duration;
 
 use async_trait::async_trait;
 use rlib::hosts::{NetworkingState, NixosState, PostHostStateRequest, WireguardState};
-use tracing::info;
 
 use crate::{
     ras_client::RasClient,
@@ -25,12 +24,10 @@ impl Task for HostStateUpdate {
         config: &crate::config::Configuration,
         host_identity: &crate::host::identity::HostIdentity,
     ) -> anyhow::Result<TaskResult> {
-        let ras_client = RasClient::new(host_identity.clone()).unwrap();
+        let ras_client = RasClient::new(host_identity.clone())?;
 
-        let host_network_info = crate::host::networking::read(config).await.unwrap();
-        info!(?host_network_info, "collected host network information");
-
-        let host_nixos_info = crate::host::nixos::read().unwrap();
+        let host_network_info = crate::host::networking::read(config).await?;
+        let host_nixos_info = crate::host::nixos::read()?;
 
         let request_body = PostHostStateRequest {
             closure: Some(NixosState {

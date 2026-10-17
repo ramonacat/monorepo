@@ -1,4 +1,5 @@
 use anyhow::Context;
+use ipnet::IpNet;
 use rlib::config::SecretValue;
 use std::fs;
 use std::net::SocketAddr;
@@ -47,12 +48,26 @@ pub struct Mikrotik {
     pub wireguard: MikrotikWireguard,
 }
 
+#[derive(Debug, Deserialize, Clone, Copy)]
+pub struct RoutingNetwork {
+    pub cidr: IpNet,
+    pub cost: u32,
+}
+
+#[derive(Debug, Deserialize)]
+pub struct Routing {
+    pub networks: Vec<RoutingNetwork>,
+    pub frr_config: PathBuf,
+}
+
 #[derive(Debug, Deserialize)]
 pub struct Configuration {
     pub certificate: PathBuf,
     pub key: PathBuf,
     pub wireguard: Option<Wireguard>,
     pub mikrotik: Option<Mikrotik>,
+    pub routing: Option<Routing>,
+    // TODO add defaults for paths so they don't all have to be configured?
     pub state: PathBuf,
 }
 

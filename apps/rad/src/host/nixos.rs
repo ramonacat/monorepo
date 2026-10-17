@@ -4,6 +4,7 @@ use std::{
 };
 
 use anyhow::Context as _;
+use tracing::info;
 
 pub struct NixOsInfo {
     current_closure: PathBuf,
@@ -21,5 +22,6 @@ pub fn read() -> anyhow::Result<NixOsInfo> {
     let current_closure = fs::canonicalize(CURRENT_CLOSURE_PATH)
         .with_context(|| format!("failed to read currect closure at {}", CURRENT_CLOSURE_PATH))?;
 
+    info!(?current_closure, "collected nixos state");
     Ok(NixOsInfo { current_closure })
 }

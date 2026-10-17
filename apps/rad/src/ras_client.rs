@@ -7,9 +7,11 @@ use reqwest::{
 };
 use rlib::{
     hosts::{Hostname, PostHostStateRequest},
+    ipam::{PostIpamAllocateRequest, PostIpamAllocateResponse},
     wireguard::GetTunnelsResponse,
 };
 use tracing::info;
+use uuid::Uuid;
 
 use crate::host::identity::HostIdentity;
 
@@ -62,6 +64,27 @@ impl RasClient {
         let response = self
             .reqwest
             .get(self.make_url(&format!("/hosts/{}/tunnels", hostname.first_label()))?)
+            .send()
+            .await?
+            .error_for_status()?;
+
+        Ok(response.json().await?)
+    }
+
+    pub async fn ip_allocate(
+        &self,
+        parent_id: Uuid,
+        name: String,
+        prefix_length: u8,
+    ) -> anyhow::Result<PostIpamAllocateResponse> {
+        let response = self
+            .reqwest
+            .post(self.make_url("/ip/actions/allocate")?)
+            .json(&PostIpamAllocateRequest {
+                parent_id,
+                name,
+                prefix_length,
+            })
             .send()
             .await?
             .error_for_status()?;

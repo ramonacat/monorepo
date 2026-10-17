@@ -51,8 +51,18 @@
           6443 # kubernetes api server (for admin access)
         ];
 
-    ramona.router.wireguard = {
+    ramona.router = {
       enabled = true;
+      networks = [
+        {
+          cidr = config.ramona.kubernetes.host-pod-cidr;
+          cost = 1;
+        }
+        {
+          cidr = "10.0.0.0/11";
+          cost = 600;
+        }
+      ];
     };
   };
 }
