@@ -7,6 +7,7 @@ use ipnet::{IpNet, Ipv4Net, Ipv6Net};
 use nix::ifaddrs::getifaddrs;
 use rlib::{hosts::HostAddress, networking::is_global4};
 use tokio::net::lookup_host;
+use tracing::info;
 
 use crate::config::Configuration;
 
@@ -128,8 +129,12 @@ pub async fn read(config: &Configuration) -> anyhow::Result<HostNetworkInfo> {
         None
     };
 
-    Ok(HostNetworkInfo {
+    let result = HostNetworkInfo {
         addresses: ip_addresses,
         wireguard,
-    })
+    };
+
+    info!(?result, "collected host network information");
+
+    Ok(result)
 }

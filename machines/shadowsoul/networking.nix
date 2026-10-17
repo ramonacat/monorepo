@@ -45,10 +45,12 @@ _: {
         };
       };
     };
-    ramona.router.wireguard = {
+    ramona.router = {
       enabled = true;
-      host = "d.rumanowski.com";
-      available_ports = [ 49152 ];
+      wireguard = {
+        host = "d.rumanowski.com";
+        available_ports = [ 49152 ];
+      };
     };
   };
 }

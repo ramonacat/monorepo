@@ -2,6 +2,7 @@ use std::{
     collections::HashMap,
     fs,
     io::{self, Seek},
+    net::IpAddr,
     path::PathBuf,
 };
 
@@ -11,6 +12,7 @@ use thiserror::Error;
 #[derive(Debug, Deserialize, Serialize, Default)]
 pub struct State {
     pub tunnel_ips: HashMap<uuid::Uuid, String>,
+    pub router_id: Option<IpAddr>,
 }
 
 #[derive(Debug, Error)]
@@ -23,6 +25,9 @@ pub enum StateManagerError<T> {
 
     #[error("serde_json: {0}")]
     SerdeJson(#[from] serde_json::Error),
+
+    #[error("failed to open the state file ({0:?}): {1}")]
+    FailedToOpenStateFile(PathBuf, io::Error),
 }
 
 pub struct StateManager {
@@ -38,12 +43,17 @@ impl StateManager {
         &self,
         callback: impl AsyncFnOnce(&mut State) -> Result<T, E>,
     ) -> Result<T, StateManagerError<E>> {
+        if let Some(parent) = self.path.parent() {
+            fs::create_dir_all(parent)?;
+        }
+
         let mut state_file = fs::OpenOptions::new()
             .read(true)
             .write(true)
             .truncate(false)
             .create(true)
-            .open(&self.path)?;
+            .open(&self.path)
+            .map_err(|x| StateManagerError::FailedToOpenStateFile(self.path.clone(), x))?;
         state_file.lock()?;
 
         let mut state: State = match serde_json::from_reader(&state_file) {
