@@ -34,3 +34,9 @@ resource "routeros_routing_ospf_interface_template" "scarletwound-tunnels" {
   networks = ["10.255.240.0/20"]
   type     = "ptp"
 }
+
+resource "routeros_routing_bfd_configuration" "scarletwound-main" {
+  provider = routeros.router-scarletwound
+
+  disabled = false
+}

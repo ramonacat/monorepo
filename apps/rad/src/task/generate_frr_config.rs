@@ -1,17 +1,12 @@
-use std::{
-    cmp::Reverse,
-    collections::{HashMap, HashSet},
-    fmt::Write as _,
-    process::Command,
-    time::Duration,
-};
+use std::fmt::Write as _;
+use std::{process::Command, time::Duration};
 
 use anyhow::{Context, Ok};
 use async_trait::async_trait;
-use tracing::info;
+use tracing::{info, warn};
 
 use crate::{
-    config::Configuration,
+    config::{Configuration, RoutingInterface},
     host::identity::HostIdentity,
     io::{UpdateResult, update_if_changed},
     ras_client::RasClient,
@@ -70,37 +65,47 @@ impl Task for GenerateFrrConfig {
         // TODO this should probably be some sort of shared state that any task can access, as
         // host_state_update needs this as well
         let host_network_info = crate::host::networking::read(config).await?;
-        let mut networks = config_routing.networks.clone();
-        networks.sort_unstable_by_key(|x| Reverse(x.cidr.prefix_len()));
 
-        for network in &networks {
-            writeln!(&mut frr_config, "    network {} area 0.0.0.0", network.cidr)?;
+        for network in &config_routing.networks {
+            writeln!(&mut frr_config, "    network {} area 0.0.0.0", network)?;
         }
 
-        for (interface, addresses) in
-            host_network_info
-                .addresses()
-                .fold(HashMap::new(), |mut a, x| {
-                    a.entry(&x.interface)
-                        .or_insert_with(HashSet::new)
-                        .insert(x.address);
-
-                    a
-                })
-        {
-            let Some(network) = networks
+        let default_interface_definition = RoutingInterface {
+            name_regex: regex::regex!("").clone(),
+            cost: 100000,
+            is_tunnel: false,
+        };
+        let routed_interfaces = host_network_info.addresses().filter_map(|address| {
+            if !config_routing
+                .networks
                 .iter()
-                .find(|x| addresses.iter().any(|y| x.cidr.contains(y)))
-            else {
-                info!(?interface, ?addresses, "no ospf config for ip");
-                continue;
-            };
+                .any(|y| y.contains(&address.address))
+            {
+                return None;
+            }
 
+            for interface_definition in &config_routing.interfaces {
+                if interface_definition.name_regex.is_match(&address.interface) {
+                    return Some((address.interface.clone(), interface_definition));
+                }
+            }
+
+            warn!(?address, "interface in network but not defined");
+            Some((address.interface.clone(), &default_interface_definition))
+        });
+
+        for (interface, definition) in routed_interfaces {
             writeln!(
                 &mut frr_config,
                 // TODO only make the router tunnels ptp
-                "interface {}\n    ip ospf cost {}\n    ip ospf bfd\n    ip ospf network point-to-point",
-                interface, network.cost
+                "interface {}\n    ip ospf cost {}\n    ip ospf bfd\n{}",
+                interface,
+                definition.cost,
+                if definition.is_tunnel {
+                    "\n    ip ospf network point-to-point"
+                } else {
+                    ""
+                }
             )?;
         }
 

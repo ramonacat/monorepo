@@ -48,15 +48,18 @@ pub struct Mikrotik {
     pub wireguard: MikrotikWireguard,
 }
 
-#[derive(Debug, Deserialize, Clone, Copy)]
-pub struct RoutingNetwork {
-    pub cidr: IpNet,
+#[derive(Debug, Deserialize, Clone)]
+pub struct RoutingInterface {
+    #[serde(deserialize_with = "crate::regex::deserialize")]
+    pub name_regex: regex::Regex,
     pub cost: u32,
+    pub is_tunnel: bool,
 }
 
 #[derive(Debug, Deserialize)]
 pub struct Routing {
-    pub networks: Vec<RoutingNetwork>,
+    pub networks: Vec<IpNet>,
+    pub interfaces: Vec<RoutingInterface>,
     pub frr_config: PathBuf,
 }
 
