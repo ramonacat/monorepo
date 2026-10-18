@@ -77,6 +77,14 @@ module "scarletwound-firewall" {
       src_address = "10.255.240.0/20"
       comment     = "OSPF"
     },
+    {
+      chain       = "input"
+      action      = "accept"
+      protocol    = "udp"
+      src_address = "10.255.240.0/20"
+      dst_port    = "3784, 3785, 4784"
+      comment     = "BFD"
+    },
     { chain = "input", action = "drop" },
     { chain = "forward", action = "drop", connection_state = "invalid" },
     { chain = "forward", action = "drop", connection_nat_state = "!dstnat", connection_state = "new", in_interface_list = routeros_interface_list.scarletwound-wan.name },

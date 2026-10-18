@@ -53,13 +53,15 @@
 
     ramona.router = {
       enabled = true;
-      networks = [
+
+      networks = [ "10.0.0.0/11" ];
+      interfaces = [
         {
-          cidr = config.ramona.kubernetes.host-pod-cidr;
+          name_regex = "^cni\d*";
           cost = 1;
         }
         {
-          cidr = "10.0.0.0/11";
+          name_regex = "^enp\d*";
           cost = 600;
         }
       ];

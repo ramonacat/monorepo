@@ -79,12 +79,19 @@
               default = false;
             };
             networks = lib.mkOption {
+              type = listOf str;
+            };
+            interfaces = lib.mkOption {
               type = listOf (submodule {
                 options = {
-                  cidr = lib.mkOption {
+                  name_regex = lib.mkOption {
                     type = str;
                   };
                   cost = lib.mkOption { type = int; };
+                  is_tunnel = lib.mkOption {
+                    type = bool;
+                    default = false;
+                  };
                 };
               });
             };
@@ -152,7 +159,7 @@
                     // {
                       key_file = "/var/ramona/wireguard.key";
                     };
-                  routing = { inherit (config.ramona.router) networks frr_config; };
+                  routing = { inherit (config.ramona.router) interfaces networks frr_config; };
                 }
             )
             // (
@@ -189,11 +196,15 @@
       };
     };
     networking.firewall.allowedUDPPorts = lib.mkIf config.ramona.router.enabled config.ramona.router.wireguard.available_ports;
-    ramona.router.networks = [
-      {
-        cidr = "10.255.240.0/20";
-        cost = 10000;
-      }
-    ];
+    ramona.router = {
+      interfaces = [
+        {
+          name_regex = "^wg\-.*";
+          cost = 10000;
+          is_tunnel = true;
+        }
+      ];
+      networks = [ "10.255.240.0/20" ];
+    };
   };
 }

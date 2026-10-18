@@ -1,3 +1,5 @@
+// TODO add a mode where this service runs and validates the config (even just checking if it parses
+// should be helpful) and run it during nix builds to avoid deploying broken configs
 mod config;
 mod env;
 mod host;
@@ -5,6 +7,7 @@ mod io;
 mod mikrotik;
 mod networking;
 mod ras_client;
+mod regex;
 mod state;
 mod task;
 
