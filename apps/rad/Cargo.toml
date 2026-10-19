@@ -24,3 +24,4 @@ tokio-rustls = "0.26.5"
 rustls-platform-verifier = "0.7.1"
 uuid = { version = "1.28.0", features = ["v7", "serde"] }
 regex = "1.13.1"
+askama = "0.16.1"

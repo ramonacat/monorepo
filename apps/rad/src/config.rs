@@ -61,6 +61,7 @@ pub struct Routing {
     pub networks: Vec<IpNet>,
     pub interfaces: Vec<RoutingInterface>,
     pub frr_config: PathBuf,
+    pub denied: Vec<IpNet>,
 }
 
 #[derive(Debug, Deserialize)]

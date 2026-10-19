@@ -11,6 +11,7 @@ let
         crane-lib.filterCargoSources path type
         || (builtins.match ".*/migrations/.*" path != null)
         || (builtins.match ".*/.sqlx/.*" path != null)
+        || (builtins.match ".*/templates/.*" path != null)
       );
     additional-package-arguments = {
       cargoToml = ../apps/rad/Cargo.toml;
