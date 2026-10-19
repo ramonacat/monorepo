@@ -54,15 +54,18 @@
     ramona.router = {
       enabled = true;
 
-      networks = [ "10.0.0.0/11" ];
+      # do not accept local routes
+      denied = [
+        "10.0.0.0/24"
+      ];
       interfaces = [
         {
-          name_regex = "^cni\d*";
-          cost = 1;
+          name_regex = "^enp1s\d*";
+          cost = 600;
         }
         {
-          name_regex = "^enp\d*";
-          cost = 600;
+          name_regex = "^enp7s\d*";
+          cost = 500;
         }
       ];
     };

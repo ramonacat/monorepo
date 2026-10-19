@@ -78,7 +78,7 @@
               type = bool;
               default = false;
             };
-            networks = lib.mkOption {
+            denied = lib.mkOption {
               type = listOf str;
             };
             interfaces = lib.mkOption {
@@ -159,7 +159,13 @@
                     // {
                       key_file = "/var/ramona/wireguard.key";
                     };
-                  routing = { inherit (config.ramona.router) interfaces networks frr_config; };
+                  routing = {
+                    inherit (config.ramona.router)
+                      interfaces
+                      denied
+                      frr_config
+                      ;
+                  };
                 }
             )
             // (
@@ -204,7 +210,6 @@
           is_tunnel = true;
         }
       ];
-      networks = [ "10.255.240.0/20" ];
     };
   };
 }

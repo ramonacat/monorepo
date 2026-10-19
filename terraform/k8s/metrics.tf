@@ -70,7 +70,7 @@ resource "helm_release" "kube-prometheus-stack" {
         // one replica is fine, the container will just get rescheduled when it needs to, and the storage is replicated anyway
         replicas                                = 1
         cleanPrometheusOperatorObjectNames      = true
-        retentionSize                           = "18GB"
+        retentionSize                           = "4GB"
         podMonitorSelectorNilUsesHelmValues     = false
         probeSelectorNilUsesHelmValues          = false
         ruleSelectorNilUsesHelmValues           = false
@@ -79,7 +79,7 @@ resource "helm_release" "kube-prometheus-stack" {
         logFormat                               = "json"
         resources = {
           requests = {
-            memory = "2048Mi"
+            memory = "1536Mi"
           }
           limits = {
             memory = "3072Mi"

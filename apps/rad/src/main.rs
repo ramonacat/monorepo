@@ -2,6 +2,7 @@
 // should be helpful) and run it during nix builds to avoid deploying broken configs
 mod config;
 mod env;
+mod frr;
 mod host;
 mod io;
 mod mikrotik;
