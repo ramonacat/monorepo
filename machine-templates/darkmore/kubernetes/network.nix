@@ -60,10 +60,6 @@
       ];
       interfaces = [
         {
-          name_regex = "^enp1s\d*";
-          cost = 600;
-        }
-        {
           name_regex = "^enp7s\d*";
           cost = 500;
         }
