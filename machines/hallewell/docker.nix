@@ -1,4 +1,4 @@
-_: {
+{ pkgs, ... }: {
   config = {
     virtualisation.docker = {
       autoPrune = {
@@ -9,6 +9,7 @@ _: {
         "data-root" = "/mnt/nas3/docker/";
       };
       extraOptions = "--firewall-backend=nftables";
+      extraPackages = [ pkgs.nftables ];
     };
 
     # needed to keep DNS and tailscale routing in docker working predictably
