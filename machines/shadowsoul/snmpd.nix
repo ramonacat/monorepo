@@ -10,6 +10,6 @@
       '';
     };
 
-    networking.firewall.interfaces.bond0.allowedUDPPorts = [ config.services.snmpd.port ];
+    networking.firewall.interfaces.enp1s0.allowedUDPPorts = [ config.services.snmpd.port ];
   };
 }
