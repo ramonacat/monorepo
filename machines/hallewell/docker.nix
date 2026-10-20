@@ -8,6 +8,7 @@ _: {
       daemon.settings = {
         "data-root" = "/mnt/nas3/docker/";
       };
+      extraOptions = "--firewall-backend=nftables";
     };
 
     # needed to keep DNS and tailscale routing in docker working predictably
