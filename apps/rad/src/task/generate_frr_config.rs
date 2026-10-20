@@ -68,14 +68,6 @@ impl Task for GenerateFrrConfig {
         let interfaces = host_network_info
             .addresses()
             .filter_map(|address| {
-                if !config_routing
-                    .networks
-                    .iter()
-                    .any(|y| y.contains(&address.address))
-                {
-                    return None;
-                }
-
                 for interface_definition in &config_routing.interfaces {
                     if interface_definition.name_regex.is_match(&address.interface) {
                         return Some(crate::frr::Interface::new(
