@@ -3,10 +3,7 @@ use std::time::Duration;
 use async_trait::async_trait;
 use rlib::hosts::{NetworkingState, NixosState, PostHostStateRequest, WireguardState};
 
-use crate::{
-    ras_client::RasClient,
-    task::{Task, TaskResult},
-};
+use crate::task::{Task, TaskContext, TaskResult};
 
 #[derive(Debug)]
 pub struct HostStateUpdate {}
@@ -19,14 +16,10 @@ impl HostStateUpdate {
 
 #[async_trait]
 impl Task for HostStateUpdate {
-    async fn execute(
-        &self,
-        config: &crate::config::Configuration,
-        host_identity: &crate::host::identity::HostIdentity,
-    ) -> anyhow::Result<TaskResult> {
-        let ras_client = RasClient::new(host_identity.clone())?;
+    async fn execute(&self, context: TaskContext<'_>) -> anyhow::Result<TaskResult> {
+        let ras_client = context.make_ras_client()?;
 
-        let host_network_info = crate::host::networking::read(config).await?;
+        let host_network_info = crate::host::networking::read(context.config).await?;
         let host_nixos_info = crate::host::nixos::read()?;
 
         let request_body = PostHostStateRequest {
@@ -41,10 +34,11 @@ impl Task for HostStateUpdate {
                     public_key: x.key().to_public_base64(),
                 }),
             }),
+            group_name: context.config.host_group_name.clone(),
         };
 
         ras_client
-            .update_host_state(host_identity.hostname(), &request_body)
+            .update_host_state(context.host_identity.hostname(), &request_body)
             .await?;
 
         Ok(TaskResult::ScheduleAgainIn(Duration::from_mins(1)))

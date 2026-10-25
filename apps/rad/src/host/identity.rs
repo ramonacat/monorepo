@@ -3,31 +3,8 @@ use std::{ffi::OsString, fs};
 use crate::config::Configuration;
 use anyhow::Context;
 use nix::unistd::gethostname;
-use rlib::{hosts::Hostname, sensitive::Sensitive};
+use rlib::{host_identity::HostIdentity, hosts::Hostname, sensitive::Sensitive};
 use thiserror::Error;
-
-#[derive(Debug, Clone)]
-pub struct HostIdentity {
-    hostname: Hostname,
-    certificate: Vec<u8>,
-    certificate_key: Sensitive<Vec<u8>>,
-}
-
-impl HostIdentity {
-    pub fn hostname(&self) -> &Hostname {
-        &self.hostname
-    }
-
-    pub fn to_pem_bundle(&self) -> Vec<u8> {
-        Vec::from_iter(
-            self.certificate_key
-                .iter()
-                .chain(b"\n".iter())
-                .chain(self.certificate.iter())
-                .copied(),
-        )
-    }
-}
 
 #[derive(Debug, Error)]
 pub enum HostIdentityError {
@@ -44,9 +21,9 @@ pub fn read(config: &Configuration) -> anyhow::Result<HostIdentity> {
     let certificate_key = fs::read(&config.key)
         .with_context(|| format!("failed to read private key at {:?}", config.key))?;
 
-    Ok(HostIdentity {
-        hostname: Hostname::new(hostname),
+    Ok(HostIdentity::new(
+        Hostname::new(hostname),
         certificate,
-        certificate_key: Sensitive::new(certificate_key),
-    })
+        Sensitive::new(certificate_key),
+    ))
 }

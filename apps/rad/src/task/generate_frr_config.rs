@@ -6,11 +6,9 @@ use async_trait::async_trait;
 use tracing::info;
 
 use crate::frr::ConfigTemplate;
+use crate::task::TaskContext;
 use crate::{
-    config::Configuration,
-    host::identity::HostIdentity,
     io::{UpdateResult, update_if_changed},
-    ras_client::RasClient,
     task::{Task, TaskResult},
 };
 
@@ -25,19 +23,15 @@ impl GenerateFrrConfig {
 
 #[async_trait]
 impl Task for GenerateFrrConfig {
-    async fn execute(
-        &self,
-        config: &Configuration,
-        host_identity: &HostIdentity,
-    ) -> anyhow::Result<TaskResult> {
-        let state = config.state();
-        let Some(config_routing) = &config.routing else {
+    async fn execute(&self, context: TaskContext<'_>) -> anyhow::Result<TaskResult> {
+        let state = context.config.state();
+        let Some(config_routing) = &context.config.routing else {
             info!("not a router");
 
             return Ok(TaskResult::ScheduleAgainIn(Duration::from_mins(1)));
         };
 
-        let ras_client = RasClient::new(host_identity.clone())?;
+        let ras_client = context.make_ras_client()?;
         let router_id = state
             .with_async(async |x| {
                 if let Some(router_id) = x.router_id {
@@ -48,7 +42,7 @@ impl Task for GenerateFrrConfig {
                     .ip_allocate(
                         // TODO figure out how to avoid hardcoding the UUID?
                         uuid::uuid!("01a144a0-f8fb-7152-bcb0-7d1bca56042b"),
-                        host_identity.hostname().first_label().to_string(),
+                        context.host_identity.hostname().first_label().to_string(),
                         // TODO this will break for ipv6
                         32,
                     )
@@ -63,7 +57,7 @@ impl Task for GenerateFrrConfig {
 
         // TODO this should probably be some sort of shared state that any task can access, as
         // host_state_update needs this as well
-        let host_network_info = crate::host::networking::read(config).await?;
+        let host_network_info = crate::host::networking::read(context.config).await?;
 
         let interfaces = host_network_info
             .addresses()

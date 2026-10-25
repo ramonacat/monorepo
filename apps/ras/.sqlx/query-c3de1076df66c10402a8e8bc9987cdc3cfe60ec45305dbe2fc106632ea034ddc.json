@@ -1,0 +1,64 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "SELECT * FROM load_balancer WHERE id=$1",
+  "describe": {
+    "columns": [
+      {
+        "ordinal": 0,
+        "name": "id",
+        "type_info": "Uuid",
+        "origin": {
+          "Table": {
+            "table": "load_balancer",
+            "name": "id"
+          }
+        }
+      },
+      {
+        "ordinal": 1,
+        "name": "host_group_id",
+        "type_info": "Uuid",
+        "origin": {
+          "Table": {
+            "table": "load_balancer",
+            "name": "host_group_id"
+          }
+        }
+      },
+      {
+        "ordinal": 2,
+        "name": "ports",
+        "type_info": "Jsonb",
+        "origin": {
+          "Table": {
+            "table": "load_balancer",
+            "name": "ports"
+          }
+        }
+      },
+      {
+        "ordinal": 3,
+        "name": "address_allocation_id",
+        "type_info": "Uuid",
+        "origin": {
+          "Table": {
+            "table": "load_balancer",
+            "name": "address_allocation_id"
+          }
+        }
+      }
+    ],
+    "parameters": {
+      "Left": [
+        "Uuid"
+      ]
+    },
+    "nullable": [
+      false,
+      false,
+      false,
+      false
+    ]
+  },
+  "hash": "c3de1076df66c10402a8e8bc9987cdc3cfe60ec45305dbe2fc106632ea034ddc"
+}

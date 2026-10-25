@@ -1,0 +1,16 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "UPDATE load_balancer SET host_group_id=$1, ports=$2 WHERE id=$3",
+  "describe": {
+    "columns": [],
+    "parameters": {
+      "Left": [
+        "Uuid",
+        "Jsonb",
+        "Uuid"
+      ]
+    },
+    "nullable": []
+  },
+  "hash": "fe579c33391e5c704f298cc2eef7a0ccabb9ffcaefd1a1651687c523b11aba01"
+}

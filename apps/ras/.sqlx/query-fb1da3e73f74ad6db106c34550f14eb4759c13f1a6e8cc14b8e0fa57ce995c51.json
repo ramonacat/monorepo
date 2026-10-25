@@ -1,0 +1,28 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "SELECT cidr FROM ipam_address_allocation WHERE id=$1",
+  "describe": {
+    "columns": [
+      {
+        "ordinal": 0,
+        "name": "cidr",
+        "type_info": "Cidr",
+        "origin": {
+          "Table": {
+            "table": "ipam_address_allocation",
+            "name": "cidr"
+          }
+        }
+      }
+    ],
+    "parameters": {
+      "Left": [
+        "Uuid"
+      ]
+    },
+    "nullable": [
+      false
+    ]
+  },
+  "hash": "fb1da3e73f74ad6db106c34550f14eb4759c13f1a6e8cc14b8e0fa57ce995c51"
+}

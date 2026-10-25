@@ -7,7 +7,6 @@ mod host;
 mod io;
 mod mikrotik;
 mod networking;
-mod ras_client;
 mod regex;
 mod state;
 mod task;
@@ -21,7 +20,7 @@ use tokio::time::sleep;
 use tracing::{debug, error, info, warn};
 
 use crate::task::{
-    Task, generate_frr_config::GenerateFrrConfig, host_state_update::HostStateUpdate,
+    Task, TaskContext, generate_frr_config::GenerateFrrConfig, host_state_update::HostStateUpdate,
     mikrotik_tunnel_update::MikrotikWireguardTunnelUpdate,
     wireguard_peer_update::WireguardPeerUpdate,
 };
@@ -79,7 +78,8 @@ async fn main() {
             }
 
             info!(?task, "executing");
-            let result = task.task.execute(&config, &host_identity).await;
+            let context = TaskContext::new(&config, &host_identity);
+            let result = task.task.execute(context).await;
             info!(?task, ?result, "executed");
 
             match result {

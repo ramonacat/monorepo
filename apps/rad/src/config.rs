@@ -72,6 +72,7 @@ pub struct Configuration {
     pub routing: Option<Routing>,
     // TODO add defaults for paths so they don't all have to be configured?
     pub state: PathBuf,
+    pub host_group_name: Option<String>,
 }
 
 impl Configuration {

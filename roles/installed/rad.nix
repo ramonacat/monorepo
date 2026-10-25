@@ -6,129 +6,132 @@
 }:
 {
   options = {
-    ramona.mikrotik = lib.mkOption {
-      type =
-        with lib.types;
-        submodule {
-          options = {
-            enabled = lib.mkOption {
-              type = bool;
-              default = false;
-            };
-            endpoint = lib.mkOption { type = str; };
-            username = lib.mkOption {
-              type = str;
-            };
-            password = lib.mkOption {
-              type = oneOf [
-                str
-                /*
-                  TODO with two submodlues in oneOf nix just tries the first one so this is fucked (submodule {
+    ramona = {
+      mikrotik = lib.mkOption {
+        type =
+          with lib.types;
+          submodule {
+            options = {
+              enabled = lib.mkOption {
+                type = bool;
+                default = false;
+              };
+              endpoint = lib.mkOption { type = str; };
+              username = lib.mkOption {
+                type = str;
+              };
+              password = lib.mkOption {
+                type = oneOf [
+                  str
+                  /*
+                    TODO with two submodlues in oneOf nix just tries the first one so this is fucked (submodule {
+                      options = {
+                        path = lib.mkOption {
+                          type = str;
+                        };
+                      };
+                    })
+                  */
+                  (submodule {
                     options = {
-                      path = lib.mkOption {
+                      env = lib.mkOption {
                         type = str;
                       };
                     };
                   })
-                */
-                (submodule {
+                ];
+              };
+              wireguard = lib.mkOption {
+                type = submodule {
                   options = {
-                    env = lib.mkOption {
-                      type = str;
+                    endpoint = lib.mkOption {
+                      type = enum [
+                        "Specified"
+                        "Auto"
+                        "InitiatorOnly"
+                      ];
                     };
-                  };
-                })
-              ];
-            };
-            wireguard = lib.mkOption {
-              type = submodule {
-                options = {
-                  endpoint = lib.mkOption {
-                    type = enum [
-                      "Specified"
-                      "Auto"
-                      "InitiatorOnly"
-                    ];
-                  };
-                  host = lib.mkOption {
-                    type = str;
-                    default = "";
-                  };
-                  available_ports = lib.mkOption {
-                    type = listOf port;
-                    default = [
-                    ];
-                  };
-                  key_path = lib.mkOption {
-                    type = str;
-                    default = "/var/ramona/rad/wireguard.key";
+                    host = lib.mkOption {
+                      type = str;
+                      default = "";
+                    };
+                    available_ports = lib.mkOption {
+                      type = listOf port;
+                      default = [
+                      ];
+                    };
+                    key_path = lib.mkOption {
+                      type = str;
+                      default = "/var/ramona/rad/wireguard.key";
+                    };
                   };
                 };
               };
             };
           };
-        };
-    };
-    ramona.router =
-      with lib.types;
-      lib.mkOption {
-        type = submodule {
-          options = {
-            enabled = lib.mkOption {
-              type = bool;
-              default = false;
-            };
-            denied = lib.mkOption {
-              type = listOf str;
-            };
-            interfaces = lib.mkOption {
-              type = listOf (submodule {
-                options = {
-                  name_regex = lib.mkOption {
-                    type = str;
-                  };
-                  cost = lib.mkOption { type = int; };
-                  is_tunnel = lib.mkOption {
-                    type = bool;
-                    default = false;
-                  };
-                };
-              });
-            };
-            frr_config = lib.mkOption {
-              type = str;
-              default = "/var/ramona/frr.conf";
-            };
-            wireguard = lib.mkOption {
-              type =
-                with lib.types;
-                submodule {
+      };
+      router =
+        with lib.types;
+        lib.mkOption {
+          type = submodule {
+            options = {
+              enabled = lib.mkOption {
+                type = bool;
+                default = false;
+              };
+              denied = lib.mkOption {
+                type = listOf str;
+              };
+              interfaces = lib.mkOption {
+                type = listOf (submodule {
                   options = {
-                    host = lib.mkOption {
-                      type = nullOr str;
-                      default = null;
+                    name_regex = lib.mkOption {
+                      type = str;
                     };
-                    available_ports = lib.mkOption {
-                      type = nullOr (listOf port);
-                      default = [
-                        51820
-                        51821
-                        51822
-                        51823
-                        51824
-                        51825
-                        51826
-                        51827
-                        51828
-                        51829
-                      ];
+                    cost = lib.mkOption { type = int; };
+                    is_tunnel = lib.mkOption {
+                      type = bool;
+                      default = false;
                     };
                   };
-                };
+                });
+              };
+              frr_config = lib.mkOption {
+                type = str;
+                default = "/var/ramona/frr.conf";
+              };
+              wireguard = lib.mkOption {
+                type =
+                  with lib.types;
+                  submodule {
+                    options = {
+                      host = lib.mkOption {
+                        type = nullOr str;
+                        default = null;
+                      };
+                      available_ports = lib.mkOption {
+                        type = nullOr (listOf port);
+                        default = [
+                          51820
+                          51821
+                          51822
+                          51823
+                          51824
+                          51825
+                          51826
+                          51827
+                          51828
+                          51829
+                        ];
+                      };
+                    };
+                  };
+              };
             };
           };
         };
-      };
+      host-group-name = lib.mkOption { type = with lib.types; nullOr str; };
+    };
   };
   config = {
     systemd.services.rad = {
@@ -140,6 +143,7 @@
               certificate = "/var/ramona/identity/certificate.crt";
               key = "/var/ramona/identity/certificate.key";
               state = "/var/ramona/rad/state.json";
+              host_group_name = config.ramona.host-group-name;
             }
             // (
               if !config.ramona.router.enabled then

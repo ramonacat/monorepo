@@ -1,0 +1,15 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "UPDATE host SET host_group_id=(SELECT id FROM host_group WHERE name=$1) WHERE name=$2",
+  "describe": {
+    "columns": [],
+    "parameters": {
+      "Left": [
+        "Text",
+        "Text"
+      ]
+    },
+    "nullable": []
+  },
+  "hash": "91efd861c20eca315a0bc12d1d8dc12750b6eaf997b04e1b5215c65f8f5ea872"
+}

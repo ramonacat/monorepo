@@ -1230,8 +1230,10 @@ dependencies = [
  "anyhow",
  "chrono",
  "ipnet",
+ "reqwest",
  "serde",
  "subst",
+ "tracing",
  "uuid",
 ]
 

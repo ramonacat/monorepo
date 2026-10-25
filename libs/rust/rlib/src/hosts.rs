@@ -77,4 +77,5 @@ pub struct PostHostStateRequest {
     // TODO rename closure -> nixos
     pub closure: Option<NixosState>,
     pub networking: Option<NetworkingState>,
+    pub group_name: Option<String>,
 }

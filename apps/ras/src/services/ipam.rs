@@ -27,9 +27,9 @@ pub const ALLOCATION_NAME_WIREGUARD_TUNNELS: &str = "tunnels";
 pub async fn get_allocation_id(
     tx: &mut Transaction<'_, Postgres>,
     name: &str,
-) -> Result<Uuid, sqlx::Error> {
+) -> Result<Option<Uuid>, sqlx::Error> {
     sqlx::query_scalar!("SELECT id FROM ipam_address_allocation WHERE name=$1", name)
-        .fetch_one(&mut **tx)
+        .fetch_optional(&mut **tx)
         .await
 }
 

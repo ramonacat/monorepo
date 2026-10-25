@@ -5,11 +5,8 @@ use rlib::hosts::{HostAddress, NetworkingState, PostHostStateRequest, WireguardS
 use tracing::{debug, info};
 
 use crate::{
-    config::Configuration,
-    host::identity::HostIdentity,
     mikrotik::Connection,
-    ras_client::RasClient,
-    task::{Task, TaskResult},
+    task::{Task, TaskContext, TaskResult},
 };
 
 #[derive(Debug)]
@@ -23,19 +20,15 @@ impl MikrotikWireguardTunnelUpdate {
 
 #[async_trait]
 impl Task for MikrotikWireguardTunnelUpdate {
-    async fn execute(
-        &self,
-        config: &Configuration,
-        host_identity: &HostIdentity,
-    ) -> anyhow::Result<TaskResult> {
-        let state = config.state();
+    async fn execute(&self, context: TaskContext<'_>) -> anyhow::Result<TaskResult> {
+        let state = context.config.state();
 
-        let Some(config) = &config.mikrotik else {
+        let Some(config) = &context.config.mikrotik else {
             info!("no mikrotik config, not updating peers");
             return Ok(TaskResult::ScheduleAgainIn(Duration::from_mins(1)));
         };
 
-        let ras_client = RasClient::new(host_identity.clone())?;
+        let ras_client = context.make_ras_client()?;
         let key = crate::host::networking::wireguard::Key::load(&config.wireguard.key_path)?;
 
         let connection = Connection::connect(
@@ -71,6 +64,7 @@ impl Task for MikrotikWireguardTunnelUpdate {
                             public_key: key.to_public_base64(),
                         }),
                     }),
+                    group_name: None,
                 },
             )
             .await?;

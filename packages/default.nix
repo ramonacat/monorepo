@@ -1,14 +1,15 @@
 inputs: {
   apps = {
     attic = import ./attic.nix inputs;
+    auth-proxy = import ./auth-proxy.nix inputs;
     ci = import ./ci inputs;
     fup = import ./fup.nix inputs;
     r = import ./r.nix inputs;
+    rad = import ./rad.nix inputs;
     ramona-fun = import ./ramona-fun.nix inputs;
     ras = import ./ras.nix inputs;
-    rad = import ./rad.nix inputs;
+    roperator = import ./roperator.nix inputs;
     sawin-gallery = import ./sawin-gallery.nix inputs;
-    auth-proxy = import ./auth-proxy.nix inputs;
   };
   libs = {
     js = {

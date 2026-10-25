@@ -1,4 +1,6 @@
-use crate::services::{ipam::update_live_ips, wireguard::update_wireguard};
+pub mod group;
+
+use crate::services::{host::update_group, ipam::update_live_ips, wireguard::update_wireguard};
 use axum::{Json, extract, http::StatusCode};
 use rlib::hosts::{HostState, Hostname, NixClosureState, PostHostStateRequest};
 use serde::{Deserialize, Serialize};
@@ -89,6 +91,8 @@ pub async fn post_host_state(
                     update_live_ips(tx, &hostname, networking.addresses).await?;
                     update_wireguard(tx, &hostname, networking.wireguard).await?;
                 }
+
+                update_group(tx, &hostname, request.group_name.as_deref()).await?;
 
                 Ok::<(), anyhow::Error>(())
             })
