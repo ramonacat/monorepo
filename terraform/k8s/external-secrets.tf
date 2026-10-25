@@ -4,7 +4,7 @@ resource "helm_release" "external-secrets" {
   repository       = "https://charts.external-secrets.io"
   namespace        = "external-secrets"
   create_namespace = true
-  version          = "2.13.0"
+  version          = "2.14.0"
 
   values = [yamlencode({
     replicaCount        = 2
