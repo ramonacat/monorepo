@@ -80,7 +80,7 @@ resource "helm_release" "argo-cd" {
   repository       = "https://argoproj.github.io/argo-helm"
   namespace        = "argo-cd"
   create_namespace = true
-  version          = "10.10.5"
+  version          = "10.11.1"
 
   values = [yamlencode({
     global = {

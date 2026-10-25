@@ -10,8 +10,9 @@
   "maxMajorIncrement": 0,
   "packageRules": [
     {
+      "matchDatasources": ["*", "!npm"],
       "matchPackagePatterns": [
-        "*"
+        "*", "!python"
       ],
       "matchUpdateTypes": [
         "minor",
@@ -19,6 +20,18 @@
       ],
       "groupName": "all non-major dependencies",
       "groupSlug": "all-minor-patch"
+    },
+    {
+      "matchDatasources": ["npm"],
+      "matchPackagePatterns": [
+        "*"
+      ],
+      "matchUpdateTypes": [
+        "minor",
+        "patch"
+      ],
+      "groupName": "all non-major dependencies - js",
+      "groupSlug": "all-minor-patch-js"
     }
   ]
 }
