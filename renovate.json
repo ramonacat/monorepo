@@ -24,7 +24,6 @@
     {
       "matchDatasources": ["*"],
       "matchPackageNames": [
-        "*",
         "!python"
       ],
       "matchUpdateTypes": [
