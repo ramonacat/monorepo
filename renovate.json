@@ -19,7 +19,7 @@
       "groupSlug": "all-minor-patch-js"
     },
     {
-      "matchDatasources": ["!python-version"],
+      "matchPackageNames": ["!python"],
       "matchUpdateTypes": [
         "minor",
         "patch"
