@@ -161,6 +161,9 @@ async fn reconcile(service: Arc<Service>, data: Arc<Data>) -> Result<Action, Err
 #[tokio::main]
 async fn main() {
     tracing_subscriber::fmt().init();
+    rustls::crypto::aws_lc_rs::default_provider()
+        .install_default()
+        .unwrap();
 
     let ras_client = RasClient::new(RasConnectionConfig::LocalUnencrypted).unwrap();
 

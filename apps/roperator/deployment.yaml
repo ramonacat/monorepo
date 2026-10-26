@@ -1,0 +1,43 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: roperator
+  namespace: roperator
+  labels:
+    app: roperator
+spec:
+  selector:
+    matchLabels:
+      app: roperator
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: roperator
+    spec:
+      containers:
+        - name: roperator
+          image: roperator:latest
+          imagePullPolicy: Never
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: services-all
+  namespace: roperator
+rules:
+  - apiGroups: ['']
+    resources: ['services']
+    verbs: ['list', 'watch']
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata: 
+  name: roperator
+subjects:
+- kind: ServiceAccount
+  name: default
+  namespace: roperator
+roleRef:
+  kind: ClusterRole
+  name: services-all

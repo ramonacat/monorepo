@@ -1790,6 +1790,7 @@ dependencies = [
  "k8s-openapi",
  "kube",
  "rlib",
+ "rustls",
  "schemars",
  "serde",
  "thiserror",
