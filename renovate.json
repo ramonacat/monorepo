@@ -11,9 +11,6 @@
   "packageRules": [
     {
       "matchDatasources": ["npm"],
-      "matchPackagePatterns": [
-        "*"
-      ],
       "matchUpdateTypes": [
         "minor",
         "patch"
@@ -22,7 +19,6 @@
       "groupSlug": "all-minor-patch-js"
     },
     {
-      "matchDatasources": ["*"],
       "matchPackageNames": [
         "!python"
       ],
