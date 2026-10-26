@@ -26,7 +26,8 @@ pub async fn post_version(
 
     let needs_update = latest
         .as_ref()
-        .is_some_and(|x| x.store_path != request.store_path);
+        .is_some_and(|x| x.store_path != request.store_path)
+        || latest.is_none();
     let version = latest.as_ref().map_or(1, |x| x.version + 1);
 
     if needs_update {
