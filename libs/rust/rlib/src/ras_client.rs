@@ -120,7 +120,7 @@ impl RasClient {
     ) -> anyhow::Result<crate::load_balancers::PostUpsertResponse> {
         Ok(self
             .reqwest
-            .post(self.make_url(&format!("/load_balancers/{}", id))?)
+            .post(self.make_url(&format!("/load_balancer/{}", id))?)
             .json(&crate::load_balancers::PostUpsertRequest {
                 host_group_id,
                 ports,
