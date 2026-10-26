@@ -10,9 +10,9 @@
   "maxMajorIncrement": 0,
   "packageRules": [
     {
-      "matchDatasources": ["*", "!npm"],
+      "matchDatasources": ["!npm"],
       "matchPackagePatterns": [
-        "*", "!python"
+        "!python"
       ],
       "matchUpdateTypes": [
         "minor",
