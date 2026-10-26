@@ -1,6 +1,9 @@
 pub mod config;
+pub mod host_identity;
 pub mod hosts;
 pub mod ipam;
+pub mod load_balancers;
 pub mod networking;
+pub mod ras_client;
 pub mod sensitive;
 pub mod wireguard;

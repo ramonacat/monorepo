@@ -1,0 +1,17 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "\n        INSERT INTO load_balancer(id, host_group_id, ports, address_allocation_id)\n        VALUES ($1, $2, $3, $4)\n    ",
+  "describe": {
+    "columns": [],
+    "parameters": {
+      "Left": [
+        "Uuid",
+        "Uuid",
+        "Jsonb",
+        "Uuid"
+      ]
+    },
+    "nullable": []
+  },
+  "hash": "43f6b70909a24c0f55bee823d639dabfc3063ddf01ae888cb4b1c9417b781692"
+}

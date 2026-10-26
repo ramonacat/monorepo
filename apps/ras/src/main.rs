@@ -13,6 +13,7 @@ use crate::versions::{post_version, post_version_check};
 mod homes;
 mod hosts;
 mod ipam;
+mod load_balancer;
 mod services;
 mod versions;
 mod wireguard;
@@ -65,6 +66,7 @@ async fn main() {
         .route("/versions", post(post_version))
         .route("/versions/actions/check", post(post_version_check))
         .route("/ip/actions/allocate", post(ipam::post_allocate))
+        .route("/load_balancer/{id}", post(load_balancer::post_upsert))
         .with_state(app_state);
 
     let listener = tokio::net::TcpListener::bind("0.0.0.0:3000").await.unwrap();

@@ -121,7 +121,9 @@ async fn reconcile_tunnels<'tx>(tx: &mut Transaction<'tx, Postgres>) -> anyhow::
         .map(|x| (UnorderedPair(x.initiator_id, x.responder_id), x))
         .collect();
 
-    let cidr_parent_id = get_allocation_id(tx, ALLOCATION_NAME_WIREGUARD_TUNNELS).await?;
+    let cidr_parent_id = get_allocation_id(tx, ALLOCATION_NAME_WIREGUARD_TUNNELS)
+        .await?
+        .unwrap();
 
     for (host_id_a, host_id_b) in sorted_candidates {
         if current_tunnels

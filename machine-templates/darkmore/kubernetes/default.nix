@@ -104,5 +104,6 @@
       group = "kubernetes";
     };
     users.groups.kubernetes = { };
+    ramona.host-group-name = "kubernetes/darkmore";
   };
 }

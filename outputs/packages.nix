@@ -49,3 +49,6 @@ rec {
 // (pkgs.lib.mapAttrs' (
   name: v: pkgs.lib.nameValuePair (name + "-coverage") v.coverage
 ) local-packages.apps)
+// (pkgs.lib.mapAttrs' (name: v: pkgs.lib.nameValuePair (name + "-container") v.container) (
+  pkgs.lib.filterAttrs (_: v: v ? container) local-packages.apps
+))

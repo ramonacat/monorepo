@@ -2232,6 +2232,8 @@ dependencies = [
  "rustls",
  "rustls-pki-types",
  "rustls-platform-verifier",
+ "serde",
+ "serde_json",
  "sync_wrapper",
  "tokio",
  "tokio-rustls",
@@ -2277,8 +2279,10 @@ dependencies = [
  "anyhow",
  "chrono",
  "ipnet",
+ "reqwest 0.13.5",
  "serde",
  "subst",
+ "tracing",
  "uuid",
 ]
 

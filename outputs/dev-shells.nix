@@ -137,6 +137,7 @@ pkgs.mkShell {
       ktfmt
       kubeconform
       kubectl-cnpg
+      minikube
       openssl_4_0.dev
       pkg-config
       postgresql_18

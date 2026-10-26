@@ -1,6 +1,6 @@
 use crate::io::UpdateResult;
 use crate::io::update_if_changed;
-use crate::ras_client::RasClient;
+use crate::task::TaskContext;
 use std::{
     collections::HashMap,
     fs::{self},
@@ -13,11 +13,7 @@ use async_trait::async_trait;
 use nix::libc::IF_NAMESIZE;
 use tracing::{debug, info};
 
-use crate::{
-    config::Configuration,
-    host::identity::HostIdentity,
-    task::{Task, TaskResult},
-};
+use crate::task::{Task, TaskResult};
 
 #[derive(Debug)]
 pub struct WireguardPeerUpdate {}
@@ -40,19 +36,15 @@ fn make_interface_name(full_name: &str) -> String {
 
 #[async_trait]
 impl Task for WireguardPeerUpdate {
-    async fn execute(
-        &self,
-        config: &Configuration,
-        host_identity: &HostIdentity,
-    ) -> anyhow::Result<TaskResult> {
-        let Some(wireguard_config) = &config.wireguard else {
+    async fn execute(&self, context: TaskContext<'_>) -> anyhow::Result<TaskResult> {
+        let Some(wireguard_config) = &context.config.wireguard else {
             debug!("wireguard not enabled");
 
             return Ok(TaskResult::ScheduleAgainIn(Duration::from_mins(1)));
         };
-        let ras_client = RasClient::new(host_identity.clone())?;
+        let ras_client = context.make_ras_client()?;
         let tunnels = ras_client
-            .get_wireguard_tunnels_for_host(host_identity.hostname())
+            .get_wireguard_tunnels_for_host(context.host_identity.hostname())
             .await?
             .tunnels;
 
@@ -60,8 +52,8 @@ impl Task for WireguardPeerUpdate {
             .into_iter()
             .flat_map(|tunnel| {
                 // TODO let (remote, local) = tunnel.endpoints() maybe
-                let remote_endpoint = tunnel.remote_endpoint(host_identity.hostname());
-                let local_endpoint = tunnel.local_endpoint(host_identity.hostname());
+                let remote_endpoint = tunnel.remote_endpoint(context.host_identity.hostname());
+                let local_endpoint = tunnel.local_endpoint(context.host_identity.hostname());
 
                 let peer_id_str = remote_endpoint.host_id().simple().to_string();
                 let interface_name = make_interface_name(&peer_id_str);
