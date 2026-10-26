@@ -1,0 +1,9 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: config
+data:
+  config.json: |-
+    {
+      "host_group_id": "01a1797c-d4e6-765a-b4c9-134067922a14"
+    }

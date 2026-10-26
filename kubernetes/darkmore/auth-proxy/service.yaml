@@ -14,3 +14,21 @@ spec:
   - name: mtls
     port: 3001
     targetPort: 3001
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: auth-proxy-test-lb
+spec:
+  selector:
+    app: auth-proxy
+  type: LoadBalancer
+  loadBalancerClass: ramona-internal
+  ports:
+  - name: auth-proxy
+    protocol: TCP
+    port: 3000
+    targetPort: 3000
+  - name: mtls
+    port: 3001
+    targetPort: 3001

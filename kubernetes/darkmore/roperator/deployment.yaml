@@ -1,0 +1,53 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: roperator
+  namespace: roperator
+  labels:
+    app: roperator
+spec:
+  selector:
+    matchLabels:
+      app: roperator
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: roperator
+    spec:
+      imagePullSecrets:
+        - name: forgejo-container-credentials
+      containers:
+        - name: roperator
+          image: code.ramona.fun/ramona/monorepo/roperator:1793040538
+          imagePullPolicy: IfNotPresent
+          volumeMounts:
+            - mountPath: /etc/ramona/roperator
+              name: config
+          env:
+            - name: RAMONA_CONFIG_PATH
+              value: /etc/ramona/roperator/config.json
+      volumes:
+        - name: config
+          configMap:
+            name: config
+---
+apiVersion: external-secrets.io/v1
+kind: ExternalSecret
+metadata:
+  name: forgejo-container-credentials
+spec:
+  target:
+    name: forgejo-container-credentials
+    creationPolicy: Owner
+    template:
+      type: kubernetes.io/dockerconfigjson
+      data:
+        .dockerconfigjson: '{{ index . "docker-config-json" | toString }}'
+  dataFrom:
+    - sourceRef:
+        storeRef:
+          kind: ClusterSecretStore
+          name: vault
+      extract:
+        key: forgejo-container-registry-config
