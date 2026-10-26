@@ -144,10 +144,10 @@ async fn reconcile(service: Arc<Service>, data: Arc<Data>) -> Result<Action, Err
             "kind": "Service",
             "status": {
                 "loadBalancer": {
-                    "ingress": {
+                    "ingress": [{
                         "ip": load_balancer_ip,
                         "ports": port_statuses
-                    }
+                    }]
                 }
             }
         })),
