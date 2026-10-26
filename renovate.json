@@ -10,18 +10,6 @@
   "maxMajorIncrement": 0,
   "packageRules": [
     {
-      "matchDatasources": ["!npm"],
-      "matchPackagePatterns": [
-        "!python"
-      ],
-      "matchUpdateTypes": [
-        "minor",
-        "patch"
-      ],
-      "groupName": "all non-major dependencies",
-      "groupSlug": "all-minor-patch"
-    },
-    {
       "matchDatasources": ["npm"],
       "matchPackagePatterns": [
         "*"
@@ -32,6 +20,19 @@
       ],
       "groupName": "all non-major dependencies - js",
       "groupSlug": "all-minor-patch-js"
+    },
+    {
+      "matchDatasources": ["*"],
+      "matchPackageNames": [
+        "*",
+        "!python"
+      ],
+      "matchUpdateTypes": [
+        "minor",
+        "patch"
+      ],
+      "groupName": "all non-major dependencies",
+      "groupSlug": "all-minor-patch"
     }
   ]
 }
