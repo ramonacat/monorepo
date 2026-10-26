@@ -25,6 +25,9 @@ in
     name = "roperator";
     tag = "latest";
     contents = [ package.package ];
-    config.Cmd = [ "/bin/roperator" ];
+    config = {
+      Cmd = [ "/bin/roperator" ];
+      Env = [ "SSL_CERT_FILE=${pkgs.cacert}/etc/ssl/certs/ca-bundle.crt" ];
+    };
   };
 }
