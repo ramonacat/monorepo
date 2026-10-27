@@ -4,7 +4,7 @@ helmCharts:
   - name: forgejo
     repo: oci://code.forgejo.org/forgejo-helm
     releaseName: forgejo
-    version: "17.3.1"
+    version: "17.3.2"
     namespace: forgejo
     valuesInline:
       httpRoute:
