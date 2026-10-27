@@ -79,13 +79,34 @@
                 type = bool;
                 default = false;
               };
-              denied = lib.mkOption {
-                type = listOf str;
+              filter_import = lib.mkOption {
+                type = str;
+                default = ''
+                  if net ~ [ 10.0.0.0/8+ ] then {
+                      accept "importing local network routes";
+                  }
+
+                  reject "rejected global ip or unknown local network";
+                '';
+              };
+              filter_export = lib.mkOption {
+                type = str;
+                default = ''
+                  if net ~ [10.0.0.0/8+] then {
+                      accept "exporting local network routes";
+                  }
+
+                  reject "rejected global ip or unknown local network";
+                '';
+              };
+              additional_config = lib.mkOption {
+                type = str;
+                default = "";
               };
               interfaces = lib.mkOption {
                 type = listOf (submodule {
                   options = {
-                    name_regex = lib.mkOption {
+                    name_pattern = lib.mkOption {
                       type = str;
                     };
                     cost = lib.mkOption { type = int; };
@@ -96,9 +117,9 @@
                   };
                 });
               };
-              frr_config = lib.mkOption {
+              bird_config = lib.mkOption {
                 type = str;
-                default = "/var/ramona/frr.conf";
+                default = "/var/ramona/bird.conf";
               };
               wireguard = lib.mkOption {
                 type =
@@ -166,8 +187,10 @@
                   routing = {
                     inherit (config.ramona.router)
                       interfaces
-                      denied
-                      frr_config
+                      filter_import
+                      filter_export
+                      bird_config
+                      additional_config
                       ;
                   };
                 }
@@ -209,7 +232,7 @@
     ramona.router = {
       interfaces = [
         {
-          name_regex = "^wg\-.*";
+          name_pattern = "wg-*";
           cost = 10000;
           is_tunnel = true;
         }

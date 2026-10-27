@@ -1,13 +1,13 @@
 { config, lib, ... }: {
   config = {
-    services.frr = lib.mkIf config.ramona.router.enabled {
-      configFile = config.ramona.router.frr_config;
-      ospfd = {
-        enable = true;
-      };
-      bfdd = {
-        enable = true;
-      };
+    services.bird = lib.mkIf config.ramona.router.enabled {
+      enable = true;
+      config = ''
+        log stderr all;
+
+        include "${config.ramona.router.bird_config}";
+      '';
+      checkConfig = false;
     };
 
     # allow OSPF and BFD from peer routers
