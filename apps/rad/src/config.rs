@@ -1,5 +1,4 @@
 use anyhow::Context;
-use ipnet::IpNet;
 use rlib::config::SecretValue;
 use std::fs;
 use std::net::SocketAddr;
@@ -50,8 +49,7 @@ pub struct Mikrotik {
 
 #[derive(Debug, Deserialize, Clone)]
 pub struct RoutingInterface {
-    #[serde(deserialize_with = "crate::regex::deserialize")]
-    pub name_regex: regex::Regex,
+    pub name_pattern: String,
     pub cost: u32,
     pub is_tunnel: bool,
 }
@@ -59,8 +57,10 @@ pub struct RoutingInterface {
 #[derive(Debug, Deserialize)]
 pub struct Routing {
     pub interfaces: Vec<RoutingInterface>,
-    pub frr_config: PathBuf,
-    pub denied: Vec<IpNet>,
+    pub bird_config: PathBuf,
+    pub filter_import: String,
+    pub filter_export: String,
+    pub additional_config: String,
 }
 
 #[derive(Debug, Deserialize)]

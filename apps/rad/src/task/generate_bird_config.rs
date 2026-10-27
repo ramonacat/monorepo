@@ -5,7 +5,7 @@ use anyhow::{Context, Ok};
 use async_trait::async_trait;
 use tracing::info;
 
-use crate::frr::ConfigTemplate;
+use crate::bird::{ConfigTemplate, Interface};
 use crate::task::TaskContext;
 use crate::{
     io::{UpdateResult, update_if_changed},
@@ -13,16 +13,16 @@ use crate::{
 };
 
 #[derive(Debug)]
-pub struct GenerateFrrConfig {}
+pub struct GenerateBirdConfig {}
 
-impl GenerateFrrConfig {
+impl GenerateBirdConfig {
     pub fn new() -> Self {
         Self {}
     }
 }
 
 #[async_trait]
-impl Task for GenerateFrrConfig {
+impl Task for GenerateBirdConfig {
     async fn execute(&self, context: TaskContext<'_>) -> anyhow::Result<TaskResult> {
         let state = context.config.state();
         let Some(config_routing) = &context.config.routing else {
@@ -55,38 +55,25 @@ impl Task for GenerateFrrConfig {
             })
             .await?;
 
-        // TODO this should probably be some sort of shared state that any task can access, as
-        // host_state_update needs this as well
-        let host_network_info = crate::host::networking::read(context.config).await?;
-
-        let interfaces = host_network_info
-            .addresses()
-            .filter_map(|address| {
-                for interface_definition in &config_routing.interfaces {
-                    if interface_definition.name_regex.is_match(&address.interface) {
-                        return Some(crate::frr::Interface::new(
-                            address.interface.clone(),
-                            interface_definition.cost,
-                            interface_definition.is_tunnel,
-                        ));
-                    }
-                }
-
-                info!(?address, "interface in network but not defined");
-                None
-            })
-            .collect();
-
-        let config_template =
-            ConfigTemplate::new(router_id, config_routing.denied.clone(), interfaces);
+        let config_template = ConfigTemplate::new(
+            router_id,
+            config_routing.filter_import.clone(),
+            config_routing.filter_export.clone(),
+            config_routing
+                .interfaces
+                .iter()
+                .map(|x| Interface::new(x.name_pattern.clone(), x.cost, x.is_tunnel))
+                .collect(),
+            config_routing.additional_config.clone(),
+        );
 
         let update_result =
-            update_if_changed(&config_routing.frr_config, &config_template.render()?)
-                .with_context(|| format!("updating {:?}", config_routing.frr_config))?;
+            update_if_changed(&config_routing.bird_config, &config_template.render()?)
+                .with_context(|| format!("updating {:?}", config_routing.bird_config))?;
 
         if update_result == UpdateResult::Changed {
             Command::new("/run/current-system/sw/bin/systemctl")
-                .args(["reload", "frr.service"])
+                .args(["reload", "bird.service"])
                 .spawn()?
                 .wait()?;
         }

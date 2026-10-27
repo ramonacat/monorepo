@@ -55,15 +55,29 @@
       enabled = true;
 
       # do not accept local routes
-      denied = [
-        "10.0.0.0/24"
-      ];
+      filter_import = ''
+        if net ~ [ 10.0.0.0/11+ ] || net = [ 10.0.0.0/11 ] then {
+            reject "not importing local network";
+        }
+
+        if net ~ [ 10.0.0.0/8+ ] then {
+            accept;
+        }
+
+        reject "prefix outside of our local network";
+      '';
       interfaces = [
         {
-          name_regex = "^enp7s\d*";
+          name_pattern = "enp7s*";
           cost = 500;
         }
       ];
+      additional_config = ''
+        protocol static {
+            ipv4 { export all; };
+            route 10.0.0.0/11 via 10.0.0.1%enp7s0 onlink;
+        }
+      '';
     };
   };
 }

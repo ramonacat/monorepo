@@ -1,13 +1,12 @@
 // TODO add a mode where this service runs and validates the config (even just checking if it parses
 // should be helpful) and run it during nix builds to avoid deploying broken configs
+mod bird;
 mod config;
 mod env;
-mod frr;
 mod host;
 mod io;
 mod mikrotik;
 mod networking;
-mod regex;
 mod state;
 mod task;
 
@@ -20,8 +19,8 @@ use tokio::time::sleep;
 use tracing::{debug, error, info, warn};
 
 use crate::task::{
-    Task, TaskContext, generate_frr_config::GenerateFrrConfig, host_state_update::HostStateUpdate,
-    mikrotik_tunnel_update::MikrotikWireguardTunnelUpdate,
+    Task, TaskContext, generate_bird_config::GenerateBirdConfig,
+    host_state_update::HostStateUpdate, mikrotik_tunnel_update::MikrotikWireguardTunnelUpdate,
     wireguard_peer_update::WireguardPeerUpdate,
 };
 
@@ -53,7 +52,7 @@ async fn main() {
         TaskState::new(HostStateUpdate::new()),
         TaskState::new(MikrotikWireguardTunnelUpdate::new()),
         TaskState::new(WireguardPeerUpdate::new()),
-        TaskState::new(GenerateFrrConfig::new()),
+        TaskState::new(GenerateBirdConfig::new()),
     ];
 
     loop {
