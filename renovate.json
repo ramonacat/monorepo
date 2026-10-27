@@ -11,6 +11,7 @@
   "packageRules": [
     {
       "matchDatasources": ["npm"],
+      "matchPackageNames": ["*"],
       "matchUpdateTypes": [
         "minor",
         "patch"
