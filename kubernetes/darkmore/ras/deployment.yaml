@@ -25,7 +25,7 @@ spec:
         - name: forgejo-container-credentials
       containers:
       - name: ras
-        image: code.ramona.fun/ramona/monorepo/ras:1793125889
+        image: code.ramona.fun/ramona/monorepo/ras:1793203278
         imagePullPolicy: IfNotPresent
         resources:
           requests:
