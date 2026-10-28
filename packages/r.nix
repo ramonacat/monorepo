@@ -7,7 +7,7 @@
   build-additional-package-arguments = {
     nativeBuildInputs = with pkgs; [
       installShellFiles
-      openssl_4_0.dev
+      openssl_4_1.dev
       pkg-config
     ];
     postInstall = ''
@@ -19,7 +19,7 @@
   };
   additional-package-arguments = {
     nativeBuildInputs = with pkgs; [
-      openssl_4_0.dev
+      openssl_4_1.dev
       pkg-config
     ];
   };
