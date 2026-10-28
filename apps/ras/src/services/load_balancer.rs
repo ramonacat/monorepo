@@ -1,6 +1,9 @@
 use std::net::IpAddr;
 
-use rlib::load_balancers::ServicePort;
+use rlib::{
+    hosts::Hostname,
+    load_balancers::{LoadBalancer, ServicePort},
+};
 use sqlx::{Postgres, Transaction};
 use uuid::Uuid;
 
@@ -73,4 +76,33 @@ pub async fn upsert_load_balancer(
     .await?;
 
     Ok(cidr.addr())
+}
+
+pub async fn get_by_host(
+    tx: &mut Transaction<'_, Postgres>,
+    hostname: Hostname,
+) -> anyhow::Result<Vec<LoadBalancer>> {
+    let balancers = sqlx::query!(
+        "
+        SELECT iaa.cidr, lb.ports 
+        FROM load_balancer lb
+        INNER JOIN host_group hg ON hg.id = lb.host_group_id
+        INNER JOIN host h ON h.host_group_id = hg.id
+        INNER JOIN ipam_address_allocation iaa ON iaa.id = lb.address_allocation_id
+        WHERE h.name=$1
+    ",
+        hostname.first_label()
+    )
+    .fetch_all(&mut **tx)
+    .await?;
+
+    Ok(balancers
+        .into_iter()
+        .map(|x| {
+            Ok(LoadBalancer {
+                ip: x.cidr.addr(),
+                ports: serde_json::from_value(x.ports)?,
+            })
+        })
+        .collect::<Result<_, serde_json::Error>>()?)
 }

@@ -1,0 +1,40 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "\n        SELECT iaa.cidr, lb.ports \n        FROM load_balancer lb\n        INNER JOIN host_group hg ON hg.id = lb.host_group_id\n        INNER JOIN host h ON h.host_group_id = hg.id\n        INNER JOIN ipam_address_allocation iaa ON iaa.id = lb.address_allocation_id\n        WHERE h.name=$1\n    ",
+  "describe": {
+    "columns": [
+      {
+        "ordinal": 0,
+        "name": "cidr",
+        "type_info": "Cidr",
+        "origin": {
+          "Table": {
+            "table": "ipam_address_allocation",
+            "name": "cidr"
+          }
+        }
+      },
+      {
+        "ordinal": 1,
+        "name": "ports",
+        "type_info": "Jsonb",
+        "origin": {
+          "Table": {
+            "table": "load_balancer",
+            "name": "ports"
+          }
+        }
+      }
+    ],
+    "parameters": {
+      "Left": [
+        "Text"
+      ]
+    },
+    "nullable": [
+      false,
+      false
+    ]
+  },
+  "hash": "425178dc38ace6f8cbb66938887719c30e2853f90fb32fae3da15ae02d00638d"
+}
