@@ -19,7 +19,7 @@ spec:
         - name: forgejo-container-credentials
       containers:
         - name: roperator
-          image: code.ramona.fun/ramona/monorepo/roperator:1793050231
+          image: code.ramona.fun/ramona/monorepo/roperator:1793156879
           imagePullPolicy: IfNotPresent
           volumeMounts:
             - mountPath: /etc/ramona/roperator
