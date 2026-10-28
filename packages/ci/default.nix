@@ -56,7 +56,7 @@ rec {
       backblaze-b2
       attic-client
 
-      openssl_4_0.dev
+      openssl_4_1.dev
 
       postgresql_18.dev
 
