@@ -67,6 +67,10 @@ async fn main() {
         .route("/versions/actions/check", post(post_version_check))
         .route("/ip/actions/allocate", post(ipam::post_allocate))
         .route("/load_balancer/{id}", post(load_balancer::post_upsert))
+        .route(
+            "/hosts/{hostname}/load_balancers",
+            get(load_balancer::get_by_host),
+        )
         .with_state(app_state);
 
     let listener = tokio::net::TcpListener::bind("0.0.0.0:3000").await.unwrap();

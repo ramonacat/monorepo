@@ -1,5 +1,8 @@
 use axum::{Json, extract};
-use rlib::load_balancers::{PostUpsertRequest, PostUpsertResponse};
+use rlib::{
+    hosts::Hostname,
+    load_balancers::{GetByHostResponse, PostUpsertRequest, PostUpsertResponse},
+};
 use sqlx::Connection;
 use uuid::Uuid;
 
@@ -24,4 +27,18 @@ pub async fn post_upsert(
         .unwrap();
 
     Json(PostUpsertResponse { ip_address: ip })
+}
+
+pub async fn get_by_host(
+    extract::State(app_state): extract::State<AppState>,
+    extract::Path(hostname): extract::Path<Hostname>,
+) -> Json<GetByHostResponse> {
+    let mut connection = app_state.db_connect().await;
+    let balancers = connection
+        .transaction(|tx| {
+            Box::pin(async move { crate::services::load_balancer::get_by_host(tx, hostname).await })
+        })
+        .await
+        .unwrap();
+    Json(GetByHostResponse { balancers })
 }

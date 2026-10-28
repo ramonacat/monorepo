@@ -26,3 +26,14 @@ pub struct PostUpsertRequest {
 pub struct PostUpsertResponse {
     pub ip_address: IpAddr,
 }
+
+#[derive(Debug, Deserialize, Serialize)]
+pub struct LoadBalancer {
+    pub ip: IpAddr,
+    pub ports: Vec<ServicePort>,
+}
+
+#[derive(Debug, Deserialize, Serialize)]
+pub struct GetByHostResponse {
+    pub balancers: Vec<LoadBalancer>,
+}
