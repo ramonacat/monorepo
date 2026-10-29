@@ -5,9 +5,10 @@ mod config;
 mod env;
 mod host;
 mod io;
+mod linux;
 mod mikrotik;
-mod networking;
 mod state;
+mod systemd;
 mod task;
 
 use std::{
@@ -16,11 +17,12 @@ use std::{
 };
 
 use tokio::time::sleep;
-use tracing::{debug, error, info, warn};
+use tracing::{Level, debug, error, info, warn};
 
 use crate::task::{
     Task, TaskContext, generate_bird_config::GenerateBirdConfig,
-    host_state_update::HostStateUpdate, mikrotik_tunnel_update::MikrotikWireguardTunnelUpdate,
+    host_state_update::HostStateUpdate, install_load_balancers::InstallLoadBalancers,
+    mikrotik_tunnel_update::MikrotikWireguardTunnelUpdate,
     wireguard_peer_update::WireguardPeerUpdate,
 };
 
@@ -46,13 +48,16 @@ impl TaskState {
 #[tokio::main]
 async fn main() {
     dotenvy::dotenv().ok();
-    tracing_subscriber::fmt().init();
+    tracing_subscriber::fmt()
+        .with_max_level(Level::DEBUG)
+        .init();
 
     let mut tasks = vec![
         TaskState::new(HostStateUpdate::new()),
         TaskState::new(MikrotikWireguardTunnelUpdate::new()),
         TaskState::new(WireguardPeerUpdate::new()),
         TaskState::new(GenerateBirdConfig::new()),
+        TaskState::new(InstallLoadBalancers::new()),
     ];
 
     loop {

@@ -1,17 +1,10 @@
-use crate::io::UpdateResult;
-use crate::io::update_if_changed;
+use crate::linux::make_interface_name;
+use crate::systemd::NetworkUnits;
 use crate::task::TaskContext;
-use std::{
-    collections::HashMap,
-    fs::{self},
-    process::{Command, Stdio},
-    time::Duration,
-};
+use std::{collections::HashMap, fs, path::PathBuf, time::Duration};
 
-use anyhow::Context;
 use async_trait::async_trait;
-use nix::libc::IF_NAMESIZE;
-use tracing::{debug, info};
+use tracing::debug;
 
 use crate::task::{Task, TaskResult};
 
@@ -22,16 +15,6 @@ impl WireguardPeerUpdate {
     pub fn new() -> Self {
         Self {}
     }
-}
-
-fn make_interface_name(full_name: &str) -> String {
-    assert!(!full_name.is_empty());
-
-    let prefix = "wg-";
-    let max_length = IF_NAMESIZE - prefix.len() - "\0".len();
-    let name_offset = full_name.len().saturating_sub(max_length);
-
-    format!("{prefix}{}", &full_name[name_offset..])
 }
 
 #[async_trait]
@@ -48,6 +31,8 @@ impl Task for WireguardPeerUpdate {
             .await?
             .tunnels;
 
+        let network_units = NetworkUnits::new();
+
         let units: HashMap<String, String> = tunnels
             .into_iter()
             .flat_map(|tunnel| {
@@ -56,13 +41,10 @@ impl Task for WireguardPeerUpdate {
                 let local_endpoint = tunnel.local_endpoint(context.host_identity.hostname());
 
                 let peer_id_str = remote_endpoint.host_id().simple().to_string();
-                let interface_name = make_interface_name(&peer_id_str);
+                let interface_name = make_interface_name("wg-", &peer_id_str);
 
                 let netdev = (
-                    format!(
-                        "22-ramona-{}.netdev",
-                        remote_endpoint.hostname().first_label()
-                    ),
+                    format!("{}.netdev", remote_endpoint.hostname().first_label()),
                     format!(
                         "
 [NetDev]
@@ -97,10 +79,7 @@ PersistentKeepalive=25
                 );
 
                 let network = (
-                    format!(
-                        "22-ramona-{}.network",
-                        remote_endpoint.hostname().first_label()
-                    ),
+                    format!("{}.network", remote_endpoint.hostname().first_label()),
                     format!(
                         "
 [Match]
@@ -118,50 +97,14 @@ Address={address}
             })
             .collect();
 
-        let mut needs_reload = false;
-        for (filename, contents) in &units {
-            if update_if_changed(format!("/etc/systemd/network/{filename}"), contents)?
-                == UpdateResult::Changed
-            {
-                needs_reload = true;
+        // TODO this deletes files from the previous version of this mechanism, delete after deployment
+        for name in units.keys() {
+            let path = PathBuf::from("/etc/systemd/network/").join(format!("22-ramona-{name}"));
+            if path.exists() {
+                fs::remove_file(path)?;
             }
         }
-
-        for existing in fs::read_dir("/etc/systemd/network/")? {
-            let existing = existing?;
-
-            if !existing
-                .file_type()
-                .with_context(|| format!("getting the type for {existing:?}"))?
-                .is_file()
-            {
-                continue;
-            }
-
-            let file_name = existing.file_name();
-            let file_name = file_name.to_string_lossy();
-
-            if !file_name.starts_with("22-ramona-") {
-                continue;
-            }
-
-            if !units.contains_key(file_name.as_ref()) {
-                fs::remove_file(existing.path())
-                    .with_context(|| format!("trying to remove {file_name:?}"))?;
-                needs_reload = true;
-            }
-        }
-
-        if needs_reload {
-            let reload = Command::new("networkctl")
-                .arg("reload")
-                .stdout(Stdio::piped())
-                .stderr(Stdio::piped())
-                .spawn()?;
-            let reload_result = reload.wait_with_output()?;
-
-            info!(?reload_result, "wireguard config updated");
-        }
+        network_units.replace_category("wireguard", units).await?;
 
         Ok(TaskResult::ScheduleAgainIn(Duration::from_mins(1)))
     }
@@ -174,15 +117,15 @@ mod tests {
 
     #[test]
     pub fn can_make_interface_name() {
-        assert_eq!(make_interface_name("a"), "wg-a");
+        assert_eq!(make_interface_name("wg-", "a"), "wg-a");
 
         let long_string = "a".repeat(512);
-        let long = make_interface_name(&long_string);
+        let long = make_interface_name("wg-", &long_string);
 
         assert_eq!(long.len(), IF_NAMESIZE - 1);
         assert_eq!(long, "wg-aaaaaaaaaaaa");
 
-        let exact_match = make_interface_name("abcdefghijkl");
+        let exact_match = make_interface_name("wg-", "abcdefghijkl");
         assert_eq!("wg-abcdefghijkl", exact_match)
     }
 }

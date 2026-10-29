@@ -131,6 +131,7 @@ pkgs.mkShell {
 
       age
       argocd
+      rustPlatform.bindgenHook
       attic-client
       backblaze-b2
       deadnix

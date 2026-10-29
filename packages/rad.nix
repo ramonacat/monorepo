@@ -16,7 +16,10 @@ let
     additional-package-arguments = {
       cargoToml = ../apps/rad/Cargo.toml;
       cargoLock = ../apps/rad/Cargo.lock;
-      nativeBuildInputs = [ pkgs.libpq.dev ];
+      nativeBuildInputs = with pkgs; [
+        libpq.dev
+        rustPlatform.bindgenHook
+      ];
       buildInputs = [ pkgs.libpq ];
       postUnpack = ''
         cd $sourceRoot/apps/rad

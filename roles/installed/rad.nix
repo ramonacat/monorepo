@@ -236,6 +236,11 @@
           cost = 10000;
           is_tunnel = true;
         }
+        {
+          name_pattern = "lb-*";
+          cost = 1;
+          is_tunnel = false;
+        }
       ];
     };
   };
