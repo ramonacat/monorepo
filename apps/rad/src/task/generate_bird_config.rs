@@ -1,9 +1,10 @@
 use askama::Template;
+use std::process::Stdio;
 use std::{process::Command, time::Duration};
 
 use anyhow::{Context, Ok};
 use async_trait::async_trait;
-use tracing::info;
+use tracing::{error, info};
 
 use crate::bird::{ConfigTemplate, Interface};
 use crate::task::TaskContext;
@@ -69,13 +70,22 @@ impl Task for GenerateBirdConfig {
 
         let update_result =
             update_if_changed(&config_routing.bird_config, &config_template.render()?)
+                .await
                 .with_context(|| format!("updating {:?}", config_routing.bird_config))?;
 
         if update_result == UpdateResult::Changed {
-            Command::new("/run/current-system/sw/bin/systemctl")
+            let result = Command::new("/run/current-system/sw/bin/systemctl")
                 .args(["reload", "bird.service"])
+                .stdout(Stdio::piped())
+                .stderr(Stdio::piped())
                 .spawn()?
-                .wait()?;
+                .wait_with_output()?;
+
+            if result.status.success() {
+                info!(?result, "bird reloaded");
+            } else {
+                error!(?result, "failed to reload bird");
+            }
         }
 
         Ok(TaskResult::ScheduleAgainIn(Duration::from_mins(1)))

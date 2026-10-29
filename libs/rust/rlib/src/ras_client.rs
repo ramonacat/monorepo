@@ -132,6 +132,20 @@ impl RasClient {
             .await?)
     }
 
+    pub async fn get_load_balancers(
+        &self,
+        hostname: &Hostname,
+    ) -> anyhow::Result<crate::load_balancers::GetByHostResponse> {
+        Ok(self
+            .reqwest
+            .get(self.make_url(&format!("/hosts/{}/load_balancers", hostname.first_label()))?)
+            .send()
+            .await?
+            .error_for_status()?
+            .json()
+            .await?)
+    }
+
     fn make_url(&self, path: &str) -> anyhow::Result<Url> {
         Ok(self.base_url.join(path)?)
     }

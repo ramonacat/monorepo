@@ -1,0 +1,6 @@
+[Match]
+Name={{name}}
+[Link]
+ActivationPolicy=always-up
+[Network]
+Address={{ip}}
