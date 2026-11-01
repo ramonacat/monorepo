@@ -32,7 +32,7 @@ pub struct Token {
 }
 
 impl Token {
-    pub fn new(database: DatabaseConnector) -> Self {
+    pub const fn new(database: DatabaseConnector) -> Self {
         Self { database }
     }
 }
@@ -62,7 +62,7 @@ impl AuthenticationMethod for Token {
         let mut connection = self.database.connect().await;
 
         let the_token = {
-            use crate::schema::tokens::dsl::*;
+            use crate::schema::tokens::dsl::{expiration, tokens, value};
 
             let the_token: Option<crate::models::Token> = tokens
                 .filter(value.eq(&token_value).and(expiration.gt(Utc::now())))
@@ -84,7 +84,7 @@ impl AuthenticationMethod for Token {
                 .update(|s| {
                     s.token = Some(RamonaTokenSessionData::new(token_value.clone()));
                 })
-                .await
+                .await;
         }
 
         Ok(crate::auth::Account::User(User::new(

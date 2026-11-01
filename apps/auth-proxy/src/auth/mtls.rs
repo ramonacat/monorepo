@@ -56,7 +56,7 @@ impl AuthenticationMethod for MTls {
 }
 
 impl MTls {
-    pub fn new() -> Self {
+    pub const fn new() -> Self {
         Self {}
     }
 }

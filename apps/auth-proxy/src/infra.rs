@@ -6,7 +6,7 @@ pub struct DatabaseConnector {
 }
 
 impl DatabaseConnector {
-    pub fn new(url: String) -> Self {
+    pub const fn new(url: String) -> Self {
         Self { url }
     }
 

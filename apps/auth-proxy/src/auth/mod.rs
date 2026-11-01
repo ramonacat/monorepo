@@ -20,7 +20,7 @@ pub struct User {
 }
 
 impl User {
-    fn new(
+    const fn new(
         id: String,
         name: Option<String>,
         entitlements: HashSet<String>,
@@ -44,11 +44,11 @@ impl User {
         self.name.as_deref()
     }
 
-    pub fn auth_method(&self) -> &'static str {
+    pub const fn auth_method(&self) -> &'static str {
         self.auth_method
     }
 
-    pub fn expiration(&self) -> Option<&DateTime<Utc>> {
+    pub const fn expiration(&self) -> Option<&DateTime<Utc>> {
         self.expiration.as_ref()
     }
 
@@ -82,8 +82,8 @@ pub enum Account {
 impl Account {
     pub fn has_entitlement(&self, entitlement: &str) -> bool {
         match self {
-            Account::User(user) => user.has_entitlement(entitlement),
-            Account::Machine(_machine) => false,
+            Self::User(user) => user.has_entitlement(entitlement),
+            Self::Machine(_machine) => false,
         }
     }
 }

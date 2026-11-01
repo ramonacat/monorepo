@@ -55,7 +55,7 @@ impl SessionHandle {
 }
 
 impl SessionStore {
-    pub fn new(database: DatabaseConnector) -> Self {
+    pub const fn new(database: DatabaseConnector) -> Self {
         Self { database }
     }
 
@@ -135,11 +135,11 @@ where
                 .await
                 .unwrap();
 
-            let session_id = if let Some(session_id) = cookies.get(COOKIE_NAME_SESSION_ID) {
-                Uuid::parse_str(session_id.value()).unwrap()
-            } else {
-                Uuid::now_v7()
-            };
+            let session_id = cookies
+                .get(COOKIE_NAME_SESSION_ID)
+                .map_or_else(Uuid::now_v7, |session_id| {
+                    Uuid::parse_str(session_id.value()).unwrap()
+                });
 
             let mut req = Request::from_parts(parts, body);
             req.extensions_mut().insert(SessionHandle {
@@ -171,7 +171,7 @@ pub struct SessionLayer {
 }
 
 impl SessionLayer {
-    pub fn new(database: DatabaseConnector, cookie_domain: String) -> Self {
+    pub const fn new(database: DatabaseConnector, cookie_domain: String) -> Self {
         Self {
             store: SessionStore::new(database),
             cookie_domain,
