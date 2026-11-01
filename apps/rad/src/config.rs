@@ -83,10 +83,14 @@ impl Configuration {
 
 pub fn read() -> Result<Configuration, anyhow::Error> {
     let path = crate::env::config_path()?;
-    let file = fs::File::open(&path)
-        .with_context(|| format!("failed to open the config file {:?} for reading", path))?;
+    let file = fs::File::open(&path).with_context(|| {
+        format!(
+            "failed to open the config file {} for reading",
+            path.display()
+        )
+    })?;
     let config: Configuration = serde_json::from_reader(file)
-        .with_context(|| format!("failed to parse config file {:?}", path))?;
+        .with_context(|| format!("failed to parse config file {}", path.display()))?;
 
     Ok(config)
 }

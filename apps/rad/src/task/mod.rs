@@ -27,7 +27,7 @@ pub struct TaskContext<'a> {
 }
 
 impl<'a> TaskContext<'a> {
-    pub fn new(config: &'a Configuration, host_identity: &'a HostIdentity) -> Self {
+    pub const fn new(config: &'a Configuration, host_identity: &'a HostIdentity) -> Self {
         Self {
             config,
             host_identity,

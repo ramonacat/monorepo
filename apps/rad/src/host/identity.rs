@@ -17,9 +17,9 @@ pub fn read(config: &Configuration) -> anyhow::Result<HostIdentity> {
         .into_string()
         .map_err(HostIdentityError::HostnameNotString)?;
     let certificate = fs::read(&config.certificate)
-        .with_context(|| format!("failed to read certificate at {:?}", config.key))?;
+        .with_context(|| format!("failed to read certificate at {}", config.key.display()))?;
     let certificate_key = fs::read(&config.key)
-        .with_context(|| format!("failed to read private key at {:?}", config.key))?;
+        .with_context(|| format!("failed to read private key at {}", config.key.display()))?;
 
     Ok(HostIdentity::new(
         Hostname::new(hostname),

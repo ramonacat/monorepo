@@ -10,7 +10,7 @@ pub struct Interface {
 }
 
 impl Interface {
-    pub fn new(name_pattern: String, cost: u32, is_tunnel: bool) -> Self {
+    pub const fn new(name_pattern: String, cost: u32, is_tunnel: bool) -> Self {
         Self {
             name_pattern,
             cost,
@@ -30,7 +30,7 @@ pub struct ConfigTemplate {
 }
 
 impl ConfigTemplate {
-    pub fn new(
+    pub const fn new(
         router_id: IpAddr,
         filter_import: String,
         filter_export: String,

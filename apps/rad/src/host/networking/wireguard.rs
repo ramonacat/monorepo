@@ -26,13 +26,16 @@ impl Debug for Key {
 }
 
 impl Key {
-    pub fn load(path: &Path) -> anyhow::Result<Key> {
+    pub fn load(path: &Path) -> anyhow::Result<Self> {
         let private = match fs::read_to_string(path) {
             Ok(contents) => {
                 let bytes: [u8; 32] = base64::engine::general_purpose::STANDARD
                     .decode(contents)
                     .with_context(|| {
-                        format!("failed to decode private wireguard key at {:?}", path)
+                        format!(
+                            "failed to decode private wireguard key at {}",
+                            path.display()
+                        )
                     })?
                     .try_into()
                     .unwrap();
@@ -56,20 +59,21 @@ impl Key {
                             .as_bytes(),
                     )
                     .with_context(|| {
-                        format!("failed to write a new wireguard key at {:?}", path)
+                        format!("failed to write a new wireguard key at {}", path.display())
                     })?;
 
                 secret
             }
             Err(e) => {
-                return Err(e)
-                    .with_context(|| format!("failed to read wireguard key at {:?}", path));
+                return Err(e).with_context(|| {
+                    format!("failed to read wireguard key at {}", path.display())
+                });
             }
         };
 
         let public = PublicKey::from(&private);
 
-        Ok(Self { private, public })
+        Ok(Self { public, private })
     }
 
     pub fn to_public_base64(&self) -> String {

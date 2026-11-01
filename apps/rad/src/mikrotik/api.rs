@@ -36,7 +36,7 @@ pub struct IpAddress {
 }
 
 impl<T: Unpin + AsyncWrite + AsyncRead> Api<T> {
-    pub fn new(connection: Connection<T>) -> Self {
+    pub const fn new(connection: Connection<T>) -> Self {
         Self { connection }
     }
 
@@ -46,11 +46,10 @@ impl<T: Unpin + AsyncWrite + AsyncRead> Api<T> {
             .send("system/identity/print", [], [])
             .await?
             .into_iter()
-            .filter_map(|x| match x {
+            .find_map(|x| match x {
                 super::ResponseLine::Done | super::ResponseLine::Empty => None,
                 super::ResponseLine::Data(hash_map) => Some(hash_map.get("name").unwrap().clone()),
             })
-            .next()
             .unwrap();
 
         Ok(SystemIdentity {
@@ -266,11 +265,10 @@ impl<T: Unpin + AsyncWrite + AsyncRead> Api<T> {
 
         Ok(response
             .iter()
-            .filter_map(|x| match x {
+            .find_map(|x| match x {
                 super::ResponseLine::Done | super::ResponseLine::Empty => None,
                 super::ResponseLine::Data(data) => Some(data.get(".id").unwrap().clone()),
             })
-            .next()
             .unwrap())
     }
 

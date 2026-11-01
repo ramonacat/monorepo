@@ -17,7 +17,7 @@ use crate::{
 pub struct GenerateBirdConfig {}
 
 impl GenerateBirdConfig {
-    pub fn new() -> Self {
+    pub const fn new() -> Self {
         Self {}
     }
 }
@@ -71,7 +71,7 @@ impl Task for GenerateBirdConfig {
         let update_result =
             update_if_changed(&config_routing.bird_config, &config_template.render()?)
                 .await
-                .with_context(|| format!("updating {:?}", config_routing.bird_config))?;
+                .with_context(|| format!("updating {}", config_routing.bird_config.display()))?;
 
         if update_result == UpdateResult::Changed {
             let result = Command::new("/run/current-system/sw/bin/systemctl")

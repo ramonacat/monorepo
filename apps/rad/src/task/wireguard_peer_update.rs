@@ -12,7 +12,7 @@ use crate::task::{Task, TaskResult};
 pub struct WireguardPeerUpdate {}
 
 impl WireguardPeerUpdate {
-    pub fn new() -> Self {
+    pub const fn new() -> Self {
         Self {}
     }
 }
@@ -64,12 +64,12 @@ PersistentKeepalive=25
                         private_key_file = wireguard_config.key_file.to_string_lossy(),
                         listen_port = local_endpoint
                             .as_responder()
-                            .and_then(|x| x.endpoint())
+                            .and_then(rlib::wireguard::Responder::endpoint)
                             .map_or_else(String::new, |x| format!("ListenPort={}", x.port())),
                         peer_public_key = remote_endpoint.public_key(),
                         endpoint = remote_endpoint
                             .as_responder()
-                            .and_then(|x| x.endpoint())
+                            .and_then(rlib::wireguard::Responder::endpoint)
                             .map_or_else(String::new, |x| format!(
                                 "Endpoint={}:{}",
                                 x.ip(),

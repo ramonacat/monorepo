@@ -13,7 +13,7 @@ use crate::{
 pub struct MikrotikWireguardTunnelUpdate {}
 
 impl MikrotikWireguardTunnelUpdate {
-    pub fn new() -> Self {
+    pub const fn new() -> Self {
         Self {}
     }
 }
@@ -34,40 +34,18 @@ impl Task for MikrotikWireguardTunnelUpdate {
         let connection = Connection::connect(
             config.endpoint,
             &config.username,
-            config.password.read()?.as_ref().map(|x| x.as_str()),
+            config
+                .password
+                .read()?
+                .as_ref()
+                .map(std::string::String::as_str),
         )
         .await?;
         let mut api = crate::mikrotik::api::Api::new(connection);
 
         let hostname = api.system_identity_get().await?.name;
 
-        let ips: Vec<_> = api
-            .ip_address_find([])
-            .await?
-            .into_iter()
-            .map(|x| HostAddress {
-                address: x.address,
-                interface: x.interface,
-            })
-            .collect();
-
-        ras_client
-            .update_host_state(
-                &hostname,
-                &PostHostStateRequest {
-                    closure: None,
-                    networking: Some(NetworkingState {
-                        addresses: ips,
-                        wireguard: Some(WireguardState {
-                            listen_addresses: vec![],
-                            available_ports: vec![],
-                            public_key: key.to_public_base64(),
-                        }),
-                    }),
-                    group_name: None,
-                },
-            )
-            .await?;
+        update_state(&ras_client, &key, &mut api, &hostname).await?;
         let tunnels = ras_client
             .get_wireguard_tunnels_for_host(&hostname)
             .await?
@@ -81,37 +59,7 @@ impl Task for MikrotikWireguardTunnelUpdate {
 
             let interface_name = remote_endpoint.hostname().to_string();
 
-            let current_interface = api
-                .interface_wireguard_find([format!("name={interface_name}").as_str()])
-                .await?
-                .pop();
-
-            let responder_port = local_endpoint
-                .as_responder()
-                .and_then(|x| x.endpoint())
-                .map(|x| x.port());
-
-            if let Some(current_interface) = current_interface {
-                if local_endpoint
-                    .as_responder()
-                    .and_then(|x| x.endpoint())
-                    .map(|x| x.port())
-                    != current_interface.listen_port
-                    || local_endpoint.public_key() != current_interface.public_key
-                {
-                    info!(
-                        ?current_interface,
-                        ?tunnel,
-                        ?key,
-                        "updating wireguard interface"
-                    );
-                    api.interface_wireguard_set(&current_interface.id, responder_port, &key)
-                        .await?;
-                }
-            } else {
-                api.interface_wireguard_add(&interface_name, responder_port, &key)
-                    .await?;
-            }
+            reconcile_interface(&key, &mut api, &tunnel, &local_endpoint, &interface_name).await?;
 
             let current_peer = api
                 .interface_wireguard_peers_find([format!("interface={interface_name}").as_str()])
@@ -124,7 +72,7 @@ impl Task for MikrotikWireguardTunnelUpdate {
                 if remote_endpoint.public_key() != current_peer.public_key
                     || remote_endpoint
                         .as_responder()
-                        .and_then(|x| x.endpoint())
+                        .and_then(rlib::wireguard::Responder::endpoint)
                         .is_some_and(|x| {
                             x.ip() != current_peer.endpoint_address.parse::<IpAddr>().unwrap()
                         })
@@ -134,7 +82,9 @@ impl Task for MikrotikWireguardTunnelUpdate {
                         &current_peer.id,
                         &interface_name,
                         remote_endpoint.public_key(),
-                        remote_endpoint.as_responder().and_then(|x| x.endpoint()),
+                        remote_endpoint
+                            .as_responder()
+                            .and_then(rlib::wireguard::Responder::endpoint),
                         "0.0.0.0/0,::/0",
                         "25s",
                     )
@@ -145,7 +95,9 @@ impl Task for MikrotikWireguardTunnelUpdate {
                     remote_endpoint.hostname().first_label(),
                     &interface_name,
                     remote_endpoint.public_key(),
-                    remote_endpoint.as_responder().and_then(|x| x.endpoint()),
+                    remote_endpoint
+                        .as_responder()
+                        .and_then(rlib::wireguard::Responder::endpoint),
                     "0.0.0.0/0,::/0",
                     "25s",
                 )
@@ -183,4 +135,79 @@ impl Task for MikrotikWireguardTunnelUpdate {
 
         Ok(TaskResult::ScheduleAgainIn(Duration::from_mins(1)))
     }
+}
+
+async fn reconcile_interface(
+    key: &crate::host::networking::wireguard::Key,
+    api: &mut crate::mikrotik::api::Api<tokio_rustls::client::TlsStream<tokio::net::TcpStream>>,
+    tunnel: &rlib::wireguard::Tunnel,
+    local_endpoint: &rlib::wireguard::LocalEndpoint<'_>,
+    interface_name: &String,
+) -> Result<(), anyhow::Error> {
+    let current_interface = api
+        .interface_wireguard_find([format!("name={interface_name}").as_str()])
+        .await?
+        .pop();
+    let responder_port = local_endpoint
+        .as_responder()
+        .and_then(rlib::wireguard::Responder::endpoint)
+        .map(|x| x.port());
+    if let Some(current_interface) = current_interface {
+        if local_endpoint
+            .as_responder()
+            .and_then(rlib::wireguard::Responder::endpoint)
+            .map(|x| x.port())
+            != current_interface.listen_port
+            || local_endpoint.public_key() != current_interface.public_key
+        {
+            info!(
+                ?current_interface,
+                ?tunnel,
+                ?key,
+                "updating wireguard interface"
+            );
+            api.interface_wireguard_set(&current_interface.id, responder_port, key)
+                .await?;
+        }
+    } else {
+        api.interface_wireguard_add(interface_name, responder_port, key)
+            .await?;
+    }
+
+    Ok(())
+}
+
+async fn update_state(
+    ras_client: &rlib::ras_client::RasClient,
+    key: &crate::host::networking::wireguard::Key,
+    api: &mut crate::mikrotik::api::Api<tokio_rustls::client::TlsStream<tokio::net::TcpStream>>,
+    hostname: &rlib::hosts::Hostname,
+) -> Result<(), anyhow::Error> {
+    let ips: Vec<_> = api
+        .ip_address_find([])
+        .await?
+        .into_iter()
+        .map(|x| HostAddress {
+            address: x.address,
+            interface: x.interface,
+        })
+        .collect();
+    ras_client
+        .update_host_state(
+            hostname,
+            &PostHostStateRequest {
+                closure: None,
+                networking: Some(NetworkingState {
+                    addresses: ips,
+                    wireguard: Some(WireguardState {
+                        listen_addresses: vec![],
+                        available_ports: vec![],
+                        public_key: key.to_public_base64(),
+                    }),
+                }),
+                group_name: None,
+            },
+        )
+        .await?;
+    Ok(())
 }

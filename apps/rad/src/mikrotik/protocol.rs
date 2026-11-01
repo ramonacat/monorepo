@@ -21,7 +21,7 @@ impl Sentence {
 pub struct MikrotikStream<T>(T);
 
 impl<T: AsyncWrite + AsyncRead + Unpin> MikrotikStream<T> {
-    pub fn new(writer: T) -> Self {
+    pub const fn new(writer: T) -> Self {
         Self(writer)
     }
 
@@ -98,16 +98,16 @@ impl<T: AsyncWrite + AsyncRead + Unpin> MikrotikStream<T> {
         if (byte0 & 0x80) == 0 {
             Ok(byte0)
         } else if (byte0 & 0xC0) == 0x80 {
-            Ok((((byte0 as u32) & !0xC0) << 8) | (self.0.read_u8().await? as u32))
+            Ok((((byte0 as u32) & !0xC0) << 8) | u32::from(self.0.read_u8().await?))
         } else if (byte0 & 0xE0) == 0xC0 {
             Ok((((byte0 as u32) & !0xE0) << 16)
-                | ((self.0.read_u8().await? as u32) << 8)
-                | (self.0.read_u8().await? as u32))
+                | (u32::from(self.0.read_u8().await?) << 8)
+                | u32::from(self.0.read_u8().await?))
         } else if (byte0 & 0xF0) == 0xE0 {
             Ok(((byte0 & !0xF0) << 24)
-                | ((self.0.read_u8().await? as u32) << 16)
-                | ((self.0.read_u8().await? as u32) << 8)
-                | (self.0.read_u8().await? as u32))
+                | (u32::from(self.0.read_u8().await?) << 16)
+                | (u32::from(self.0.read_u8().await?) << 8)
+                | u32::from(self.0.read_u8().await?))
         } else {
             Ok(self.0.read_u32().await?)
         }

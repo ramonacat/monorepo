@@ -23,7 +23,7 @@ pub struct WireguardInfo {
 }
 
 impl WireguardInfo {
-    pub fn key(&self) -> &wireguard::Key {
+    pub const fn key(&self) -> &wireguard::Key {
         &self.key
     }
 
@@ -47,7 +47,7 @@ impl HostNetworkInfo {
         self.addresses.iter()
     }
 
-    pub fn wireguard(&self) -> Option<&WireguardInfo> {
+    pub const fn wireguard(&self) -> Option<&WireguardInfo> {
         self.wireguard.as_ref()
     }
 }
@@ -60,9 +60,8 @@ pub async fn read(config: &Configuration) -> anyhow::Result<HostNetworkInfo> {
         if let Some(ipv4) = address.address.and_then(|x| x.as_sockaddr_in().copied()) {
             let netmask = address
                 .netmask
-                .and_then(|x| x.as_sockaddr_in().cloned())
-                .map(|y| y.ip())
-                .unwrap_or(Ipv4Addr::new(255, 255, 255, 255));
+                .and_then(|x| x.as_sockaddr_in().copied())
+                .map_or(Ipv4Addr::BROADCAST, |y| y.ip());
 
             ip_addresses.push(HostAddress {
                 address: IpNet::V4(Ipv4Net::with_netmask(ipv4.ip(), netmask)?),
@@ -71,14 +70,15 @@ pub async fn read(config: &Configuration) -> anyhow::Result<HostNetworkInfo> {
         } else if let Some(ipv6) = address.address.and_then(|x| x.as_sockaddr_in6().copied()) {
             let netmask = address
                 .netmask
-                .and_then(|x| x.as_sockaddr_in6().cloned())
-                .map(|y| y.ip())
-                .unwrap_or(Ipv6Addr::new(255, 255, 255, 255, 255, 255, 255, 255));
+                .and_then(|x| x.as_sockaddr_in6().copied())
+                .map_or(Ipv6Addr::new(255, 255, 255, 255, 255, 255, 255, 255), |y| {
+                    y.ip()
+                });
 
             ip_addresses.push(HostAddress {
                 address: IpNet::V6(Ipv6Net::with_netmask(ipv6.ip(), netmask)?),
                 interface: address.interface_name.clone(),
-            })
+            });
         }
     }
 
@@ -103,7 +103,7 @@ pub async fn read(config: &Configuration) -> anyhow::Result<HostNetworkInfo> {
                         .collect(),
                     available_ports
                         .clone()
-                        .unwrap_or(DEFAULT_WIREGUARD_PORTS.to_vec()),
+                        .unwrap_or_else(|| DEFAULT_WIREGUARD_PORTS.to_vec()),
                 )
             }
             crate::config::WireguardEndpoint::Specified {

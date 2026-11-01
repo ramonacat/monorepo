@@ -36,7 +36,7 @@ fn parse_attribute_words(
     let mut result = HashMap::new();
 
     for word in words {
-        if let Some((key, value)) = word[1..].split_once("=") {
+        if let Some((key, value)) = word[1..].split_once('=') {
             result.insert(key.to_owned(), value.to_owned());
         } else {
             return Err(ParseAttirbuteWordsError::InvalidWord(word.to_owned()));
@@ -111,7 +111,7 @@ impl Connection<TlsStream<TcpStream>> {
         )
         .await??;
         let stream = MikrotikStream::new(tls_stream);
-        let mut connection = Connection(stream);
+        let mut connection = Self(stream);
 
         let login_response = connection
             .send(

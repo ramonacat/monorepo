@@ -20,7 +20,7 @@ const CURRENT_CLOSURE_PATH: &str = "/run/current-system";
 
 pub fn read() -> anyhow::Result<NixOsInfo> {
     let current_closure = fs::canonicalize(CURRENT_CLOSURE_PATH)
-        .with_context(|| format!("failed to read currect closure at {}", CURRENT_CLOSURE_PATH))?;
+        .with_context(|| format!("failed to read currect closure at {CURRENT_CLOSURE_PATH}"))?;
 
     info!(?current_closure, "collected nixos state");
     Ok(NixOsInfo { current_closure })
