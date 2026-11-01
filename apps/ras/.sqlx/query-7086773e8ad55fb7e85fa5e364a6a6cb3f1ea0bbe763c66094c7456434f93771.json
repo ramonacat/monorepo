@@ -1,0 +1,14 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "UPDATE dns_zone SET serial=serial+1 WHERE id=$1",
+  "describe": {
+    "columns": [],
+    "parameters": {
+      "Left": [
+        "Uuid"
+      ]
+    },
+    "nullable": []
+  },
+  "hash": "7086773e8ad55fb7e85fa5e364a6a6cb3f1ea0bbe763c66094c7456434f93771"
+}

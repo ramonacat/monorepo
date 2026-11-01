@@ -1,0 +1,110 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "SELECT * FROM dns_zone",
+  "describe": {
+    "columns": [
+      {
+        "ordinal": 0,
+        "name": "id",
+        "type_info": "Uuid",
+        "origin": {
+          "Table": {
+            "table": "dns_zone",
+            "name": "id"
+          }
+        }
+      },
+      {
+        "ordinal": 1,
+        "name": "name",
+        "type_info": "Text",
+        "origin": {
+          "Table": {
+            "table": "dns_zone",
+            "name": "name"
+          }
+        }
+      },
+      {
+        "ordinal": 2,
+        "name": "serial",
+        "type_info": "Int8",
+        "origin": {
+          "Table": {
+            "table": "dns_zone",
+            "name": "serial"
+          }
+        }
+      },
+      {
+        "ordinal": 3,
+        "name": "refresh",
+        "type_info": "Int4",
+        "origin": {
+          "Table": {
+            "table": "dns_zone",
+            "name": "refresh"
+          }
+        }
+      },
+      {
+        "ordinal": 4,
+        "name": "retry",
+        "type_info": "Int4",
+        "origin": {
+          "Table": {
+            "table": "dns_zone",
+            "name": "retry"
+          }
+        }
+      },
+      {
+        "ordinal": 5,
+        "name": "expire",
+        "type_info": "Int4",
+        "origin": {
+          "Table": {
+            "table": "dns_zone",
+            "name": "expire"
+          }
+        }
+      },
+      {
+        "ordinal": 6,
+        "name": "negative_response_ttl",
+        "type_info": "Int4",
+        "origin": {
+          "Table": {
+            "table": "dns_zone",
+            "name": "negative_response_ttl"
+          }
+        }
+      },
+      {
+        "ordinal": 7,
+        "name": "default_ttl",
+        "type_info": "Int4",
+        "origin": {
+          "Table": {
+            "table": "dns_zone",
+            "name": "default_ttl"
+          }
+        }
+      }
+    ],
+    "parameters": {
+      "Left": []
+    },
+    "nullable": [
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false
+    ]
+  },
+  "hash": "12f659f4b6e049a78cbac99e45fdd2ed5482195ff4c94e705c016e03c88c9221"
+}

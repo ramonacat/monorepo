@@ -1,0 +1,16 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "\n        DELETE FROM dns_record\n        WHERE zone_id=$1\n            AND name=$2\n            AND ($3::text IS NULL OR \"type\"=$3)\n    ",
+  "describe": {
+    "columns": [],
+    "parameters": {
+      "Left": [
+        "Uuid",
+        "Text",
+        "Text"
+      ]
+    },
+    "nullable": []
+  },
+  "hash": "c3865e891cd2b5b4c9c29c14a819f4eb580534840e567f269be7a829ed4cae71"
+}
