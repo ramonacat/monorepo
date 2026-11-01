@@ -10,6 +10,7 @@ use tracing::{Level, instrument};
 
 use crate::versions::{post_version, post_version_check};
 
+mod dns;
 mod homes;
 mod hosts;
 mod ipam;
@@ -71,6 +72,15 @@ async fn main() {
             "/hosts/{hostname}/load_balancers",
             get(load_balancer::get_by_host),
         )
+        .route(
+            "/dns/{zone}/records/{record_name}/{record_type}",
+            post(dns::post_upsert).delete(dns::delete),
+        )
+        .route(
+            "/dns/{zone}/records/{record_name}",
+            delete(dns::delete_by_name),
+        )
+        .route("/dns", get(dns::get_all_zones))
         .with_state(app_state);
 
     let listener = tokio::net::TcpListener::bind("0.0.0.0:3000").await.unwrap();

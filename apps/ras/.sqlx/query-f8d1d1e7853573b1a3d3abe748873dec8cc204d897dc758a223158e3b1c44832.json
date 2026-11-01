@@ -1,0 +1,18 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "\n            INSERT INTO dns_record (id, zone_id, name, type, rrdatas, ttl)\n            VALUES(uuidv7(), $1, $2, $3, $4, $5)\n            ON CONFLICT(zone_id, name) DO UPDATE SET type=EXCLUDED.type, rrdatas=EXCLUDED.rrdatas, ttl=EXCLUDED.ttl\n        ",
+  "describe": {
+    "columns": [],
+    "parameters": {
+      "Left": [
+        "Uuid",
+        "Text",
+        "Text",
+        "TextArray",
+        "Int4"
+      ]
+    },
+    "nullable": []
+  },
+  "hash": "f8d1d1e7853573b1a3d3abe748873dec8cc204d897dc758a223158e3b1c44832"
+}
