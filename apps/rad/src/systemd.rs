@@ -52,7 +52,6 @@ impl NetworkUnits {
                 info!(?unit_path, "unit deleted");
 
                 changed = true;
-                continue;
             }
         }
 
@@ -115,7 +114,7 @@ impl NetworkUnits {
         Ok(paths)
     }
 
-    pub(crate) fn new() -> Self {
+    pub(crate) const fn new() -> Self {
         Self {}
     }
 }

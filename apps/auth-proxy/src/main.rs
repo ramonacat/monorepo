@@ -1,3 +1,5 @@
+#![deny(clippy::all, clippy::pedantic, clippy::nursery, warnings)]
+
 mod api;
 mod auth;
 mod config;
@@ -74,18 +76,17 @@ struct Hostname(String);
 impl<S: Send + Sync> FromRequestParts<S> for Hostname {
     type Rejection = (StatusCode, &'static str);
 
-    async fn from_request_parts(
+    fn from_request_parts(
         parts: &mut http::request::Parts,
         _state: &S,
-    ) -> Result<Self, Self::Rejection> {
+    ) -> impl Future<Output = Result<Self, Self::Rejection>> {
         let host_header = parts.headers.get("Host").unwrap().to_str().unwrap();
         let host = &host_header[..host_header.rfind(':').unwrap_or(host_header.len())];
 
-        Ok(Self(host.to_string()))
+        std::future::ready(Ok(Self(host.to_string())))
     }
 }
 
-#[axum::debug_handler]
 async fn root_route(
     extract::State(state): extract::State<OuterState>,
     Hostname(host): Hostname,
@@ -117,7 +118,7 @@ async fn root_route(
             parts
                 .uri
                 .path_and_query()
-                .map(|x| x.to_string())
+                .map(std::string::ToString::to_string)
                 .unwrap_or_default()
         ))
         .unwrap();
@@ -203,7 +204,6 @@ async fn root_route(
     }
 }
 
-#[axum::debug_handler]
 async fn get_authorize(
     extract::Extension(state): extract::Extension<AppState>,
     session: extract::Extension<SessionHandle>,
@@ -251,27 +251,7 @@ async fn get_authorize(
 
 pub const MIGRATIONS: EmbeddedMigrations = embed_migrations!("migrations/");
 
-#[tokio::main]
-async fn main() {
-    tracing_subscriber::fmt().init();
-    let _ = dotenv();
-    rustls::crypto::aws_lc_rs::default_provider()
-        .install_default()
-        .unwrap();
-
-    let config: config::Config = rlib::config::load().unwrap();
-    // TODO move database_url into the config
-    let database_url = env::var("DATABASE_URL").expect("DATABASE_URL must be set");
-    PgConnection::establish(&database_url)
-        .expect("failed to connect to the database")
-        .run_pending_migrations(MIGRATIONS)
-        .unwrap();
-
-    let backend_http_client = ::reqwest::ClientBuilder::new()
-        .redirect(::reqwest::redirect::Policy::none())
-        .build()
-        .unwrap();
-
+async fn load_providers(config: &Config, database_url: String) -> HashMap<String, BackendState> {
     let mut providers = HashMap::new();
     for (host, app_definition) in &config.apps {
         let mut authentication_methods = vec![];
@@ -297,7 +277,7 @@ async fn main() {
         }
 
         providers.insert(
-            host.to_string(),
+            host.clone(),
             BackendState {
                 authentication_methods,
                 definition: Some(app_definition.clone()),
@@ -321,7 +301,33 @@ async fn main() {
         },
     );
 
+    providers
+}
+
+#[tokio::main]
+async fn main() {
+    tracing_subscriber::fmt().init();
+    let _ = dotenv();
+
+    rustls::crypto::aws_lc_rs::default_provider()
+        .install_default()
+        .unwrap();
+
+    let config: config::Config = rlib::config::load().unwrap();
+    // TODO move database_url into the config
+    let database_url = env::var("DATABASE_URL").expect("DATABASE_URL must be set");
+    PgConnection::establish(&database_url)
+        .expect("failed to connect to the database")
+        .run_pending_migrations(MIGRATIONS)
+        .unwrap();
+
+    let backend_http_client = ::reqwest::ClientBuilder::new()
+        .redirect(::reqwest::redirect::Policy::none())
+        .build()
+        .unwrap();
+
     let cookie_domain = config.cookie_domain.clone();
+    let providers = load_providers(&config, database_url.clone()).await;
 
     let state = AppState {
         config: config.clone(),

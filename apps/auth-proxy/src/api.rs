@@ -33,16 +33,15 @@ enum ApiError {
     NotAnAdmin,
 }
 
-#[axum::debug_handler]
 async fn get_tokens(
     extract::Extension(state): extract::Extension<AppState>,
     user: Account,
 ) -> Result<Json<GetTokensResponse>, (StatusCode, Json<ApiError>)> {
+    use crate::schema::tokens::dsl::tokens;
+
     if !user.has_entitlement("admin") {
         return Err((StatusCode::UNAUTHORIZED, Json(ApiError::NotAnAdmin)));
     }
-
-    use crate::schema::tokens::dsl::*;
 
     let mut connection = state.database.connect().await;
     let all_tokens: Vec<crate::models::Token> = tokens.load(&mut connection).await.unwrap();
@@ -66,10 +65,11 @@ async fn get_single_token(
     extract::Path((_, token_id)): extract::Path<(String, Uuid)>,
     user: Account,
 ) -> Result<Json<Token>, (StatusCode, Json<ApiError>)> {
+    use crate::schema::tokens::dsl::{id, tokens};
+
     if !user.has_entitlement("admin") {
         return Err((StatusCode::UNAUTHORIZED, Json(ApiError::NotAnAdmin)));
     }
-    use crate::schema::tokens::dsl::*;
 
     let mut connection = state.database.connect().await;
     let the_token: crate::models::Token = tokens
@@ -106,16 +106,16 @@ const TOKEN_ALPHABET: [&str; 12] = [
     "🍑💥🤚",
 ];
 
-#[axum::debug_handler]
 async fn post_tokens_create(
     extract::Extension(state): extract::Extension<AppState>,
     user: Account,
     extract::Json(request): extract::Json<PostTokensCreateRequest>,
 ) -> Result<Json<PostTokensCreateResponse>, (StatusCode, Json<ApiError>)> {
+    use crate::schema::tokens::dsl::{expiration, id, name, tokens, value};
+
     if !user.has_entitlement("admin") {
         return Err((StatusCode::UNAUTHORIZED, Json(ApiError::NotAnAdmin)));
     }
-    use crate::schema::tokens::dsl::*;
 
     let mut connection = state.database.connect().await;
 
@@ -151,10 +151,11 @@ async fn post_tokens_revoke(
     user: Account,
     extract::Json(request): extract::Json<PostTokensRevokeRequest>,
 ) -> Result<(), (StatusCode, Json<ApiError>)> {
+    use crate::schema::tokens::dsl::{id, tokens};
+
     if !user.has_entitlement("admin") {
         return Err((StatusCode::UNAUTHORIZED, Json(ApiError::NotAnAdmin)));
     }
-    use crate::schema::tokens::dsl::*;
 
     let mut connection = state.database.connect().await;
 

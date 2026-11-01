@@ -18,6 +18,7 @@ pub async fn upsert_record(
         .await?
         .id;
 
+    #[allow(clippy::cast_possible_truncation)]
     sqlx::query!("
             INSERT INTO dns_record (id, zone_id, name, type, rrdatas, ttl)
             VALUES(uuidv7(), $1, $2, $3, $4, $5)
@@ -80,7 +81,9 @@ pub async fn get_all_zones(tx: &mut Transaction<'_, Postgres>) -> anyhow::Result
                 name: record.name,
                 r#type: record.r#type,
                 rrdatas: record.rrdatas,
-                ttl: record.ttl.map(|ttl| Duration::from_secs(ttl as u64)),
+                ttl: record
+                    .ttl
+                    .map(|ttl| Duration::from_secs(ttl.try_into().unwrap())),
             });
     }
 
@@ -90,11 +93,13 @@ pub async fn get_all_zones(tx: &mut Transaction<'_, Postgres>) -> anyhow::Result
             id: zone.id,
             name: zone.name,
             serial: zone.serial.try_into().unwrap(),
-            refresh: Duration::from_secs(zone.refresh as u64),
-            retry: Duration::from_secs(zone.retry as u64),
-            expire: Duration::from_secs(zone.expire as u64),
-            negative_response_ttl: Duration::from_secs(zone.negative_response_ttl as u64),
-            default_ttl: Duration::from_secs(zone.default_ttl as u64),
+            refresh: Duration::from_secs(zone.refresh.try_into().unwrap()),
+            retry: Duration::from_secs(zone.retry.try_into().unwrap()),
+            expire: Duration::from_secs(zone.expire.try_into().unwrap()),
+            negative_response_ttl: Duration::from_secs(
+                zone.negative_response_ttl.try_into().unwrap(),
+            ),
+            default_ttl: Duration::from_secs(zone.default_ttl.try_into().unwrap()),
             records: records_by_zone.remove(&zone.id).unwrap_or_default(),
         })
         .collect())

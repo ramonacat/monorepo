@@ -1,3 +1,5 @@
+#![deny(clippy::all, clippy::pedantic, clippy::nursery, warnings)]
+
 use serde::Deserialize;
 use std::{sync::Arc, time::Duration};
 use uuid::Uuid;

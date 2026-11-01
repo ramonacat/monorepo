@@ -148,13 +148,13 @@ impl AuthenticationMethod for OAuth {
                         self.app_base_url,
                         original_uri
                             .path_and_query()
-                            .map(|x| x.to_string())
+                            .map(std::string::ToString::to_string)
                             .unwrap_or_default()
                             .strip_prefix('/')
                             .unwrap_or_default()
                     ),
                     id_token: None,
-                })
+                });
             })
             .await;
 
@@ -223,18 +223,18 @@ impl OAuth {
         .await
         .unwrap();
 
-        let redirect_uri = http::Uri::from_str(&format!("{}authorize", base_url)).unwrap();
+        let redirect_uri = http::Uri::from_str(&format!("{base_url}authorize")).unwrap();
 
         let client = OAuth2Client::from_provider_metadata(
-            provider_metadata.clone(),
+            provider_metadata,
             ClientId::new(oauth_config.client_id.clone()),
             Some(ClientSecret::new(oauth_config.client_secret.clone())),
         )
         .set_redirect_uri(RedirectUrl::new(redirect_uri.to_string()).unwrap());
         Self {
             required_entitlement,
-            oidc_http_client,
             client,
+            oidc_http_client,
             app_base_url,
         }
     }

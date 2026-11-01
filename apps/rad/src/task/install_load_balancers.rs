@@ -22,7 +22,7 @@ const NFT_RULES_PATH: &str = "/var/ramona/nft_rules";
 pub struct InstallLoadBalancers {}
 
 impl InstallLoadBalancers {
-    pub fn new() -> Self {
+    pub const fn new() -> Self {
         Self {}
     }
 }

@@ -26,7 +26,7 @@ pub async fn update_wireguard(
             let addresses: Vec<_> = state
                 .listen_addresses
                 .into_iter()
-                .map(|x| x.into())
+                .map(std::convert::Into::into)
                 .collect();
 
             sqlx::query!(
@@ -94,7 +94,7 @@ impl<T: PartialOrd + PartialEq> PartialEq for UnorderedPair<T> {
 
 impl<T: Ord + Eq> Eq for UnorderedPair<T> {}
 
-async fn reconcile_tunnels<'tx>(tx: &mut Transaction<'tx, Postgres>) -> anyhow::Result<()> {
+async fn reconcile_tunnels(tx: &mut Transaction<'_, Postgres>) -> anyhow::Result<()> {
     let candidates: HashSet<_> = sqlx::query!(
         "
         SELECT 
@@ -111,7 +111,10 @@ async fn reconcile_tunnels<'tx>(tx: &mut Transaction<'tx, Postgres>) -> anyhow::
     .map(|x| UnorderedPair(x.left_id, x.right_id))
     .collect();
 
-    let mut sorted_candidates: Vec<_> = candidates.into_iter().map(|x| x.into_values()).collect();
+    let mut sorted_candidates: Vec<_> = candidates
+        .into_iter()
+        .map(UnorderedPair::into_values)
+        .collect();
     sorted_candidates.sort();
 
     let mut current_tunnels: HashMap<_, _> = sqlx::query!("SELECT * FROM wireguard_tunnel")

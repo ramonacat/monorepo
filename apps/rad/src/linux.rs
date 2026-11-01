@@ -1,7 +1,7 @@
 use nix::libc::IF_NAMESIZE;
 
 pub fn make_interface_name(prefix: &str, full_name: &str) -> String {
-    assert!(!full_name.is_empty());
+    assert_ne!(full_name, "");
 
     let max_length = IF_NAMESIZE - prefix.len() - "\0".len();
     let name_offset = full_name.len().saturating_sub(max_length);

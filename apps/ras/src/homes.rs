@@ -35,7 +35,6 @@ pub struct Homes {
 }
 
 #[instrument]
-#[axum::debug_handler]
 // TODO this is a bit messy, it's only used for grafana, probably we need to have a big think about
 // how to actually do monitoring correctly
 pub async fn get_current_state(extract::State(app_state): extract::State<AppState>) -> Json<Homes> {
@@ -86,7 +85,6 @@ pub struct PostLatestClosureRequest {
 }
 
 #[instrument]
-#[axum::debug_handler]
 pub async fn post_latest_closure(
     extract::State(app_state): extract::State<AppState>,
     extract::Path(name): extract::Path<String>,
@@ -112,7 +110,6 @@ pub async fn post_latest_closure(
 }
 
 #[instrument]
-#[axum::debug_handler]
 pub async fn get_latest_closure(
     extract::State(app_state): extract::State<AppState>,
     extract::Path(name): extract::Path<String>,
@@ -137,7 +134,6 @@ pub struct PostCurrentClosureRequest {
 }
 
 #[instrument]
-#[axum::debug_handler]
 pub async fn post_current_closure(
     extract::State(app_state): extract::State<AppState>,
     extract::Path((name, hostname)): extract::Path<(String, String)>,

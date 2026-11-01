@@ -10,7 +10,7 @@ impl ClosureName {
     }
 
     pub fn from_home(name: &str) -> Self {
-        Self(format!("home:{}", name))
+        Self(format!("home:{name}"))
     }
 }
 
@@ -18,7 +18,7 @@ impl ClosureName {
 pub struct StorePath(String);
 
 impl StorePath {
-    pub fn new(value: String) -> Self {
+    pub const fn new(value: String) -> Self {
         Self(value)
     }
 
@@ -27,8 +27,8 @@ impl StorePath {
     }
 }
 
-pub async fn get_latest_closure<'tx>(
-    tx: &mut Transaction<'tx, Postgres>,
+pub async fn get_latest_closure(
+    tx: &mut Transaction<'_, Postgres>,
     name: ClosureName,
 ) -> Result<StorePath, sqlx::Error> {
     sqlx::query_scalar!(
@@ -40,8 +40,8 @@ pub async fn get_latest_closure<'tx>(
     .map(StorePath::new)
 }
 
-pub async fn update_latest_closure<'tx>(
-    tx: &mut Transaction<'tx, Postgres>,
+pub async fn update_latest_closure(
+    tx: &mut Transaction<'_, Postgres>,
     name: ClosureName,
     store_path: StorePath,
 ) -> Result<(), sqlx::Error> {
@@ -55,8 +55,8 @@ pub async fn update_latest_closure<'tx>(
     Ok(())
 }
 
-pub async fn update_current_host_closure<'tx>(
-    tx: &mut Transaction<'tx, Postgres>,
+pub async fn update_current_host_closure(
+    tx: &mut Transaction<'_, Postgres>,
     hostname: &Hostname,
     store_path: StorePath,
 ) -> Result<(), sqlx::Error> {
@@ -101,8 +101,8 @@ pub async fn update_current_host_closure<'tx>(
     Ok(())
 }
 
-pub async fn update_current_home_closure<'tx>(
-    tx: &mut Transaction<'tx, Postgres>,
+pub async fn update_current_home_closure(
+    tx: &mut Transaction<'_, Postgres>,
     closure_name: &ClosureName,
     hostname: &Hostname,
     store_path: StorePath,
@@ -137,7 +137,7 @@ pub async fn update_current_home_closure<'tx>(
         .execute(&mut **tx)
         .await
         .unwrap();
-    };
+    }
 
     Ok(())
 }

@@ -44,15 +44,15 @@ pub async fn upsert_load_balancer(
     }
 
     let parent_allocation_name = format!("load balancers/{host_group_id}");
-    let parent_allocation_id = match get_allocation_id(tx, &parent_allocation_name).await? {
-        Some(x) => x,
-        None => {
-            let load_balancers_allocation_id =
-                get_allocation_id(tx, "load balancers").await?.unwrap();
-            allocate_cidr(tx, load_balancers_allocation_id, parent_allocation_name, 24)
-                .await?
-                .0
-        }
+    let parent_allocation_id = if let Some(x) =
+        get_allocation_id(tx, &parent_allocation_name).await?
+    {
+        x
+    } else {
+        let load_balancers_allocation_id = get_allocation_id(tx, "load balancers").await?.unwrap();
+        allocate_cidr(tx, load_balancers_allocation_id, parent_allocation_name, 24)
+            .await?
+            .0
     };
 
     let (address_allocation_id, cidr) = allocate_cidr(

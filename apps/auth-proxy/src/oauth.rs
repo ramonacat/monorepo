@@ -18,7 +18,7 @@ pub struct RamonaTokenSessionData {
 }
 
 impl RamonaTokenSessionData {
-    pub fn new(token: String) -> Self {
+    pub const fn new(token: String) -> Self {
         Self { token }
     }
 
@@ -58,8 +58,6 @@ impl FromRequestParts<()> for Account {
                                 .insert(LOCATION, redirect_url.to_string().parse().unwrap());
 
                             return Err(response);
-                        } else {
-                            continue;
                         }
                     }
                     AuthenticationError::NotAuthorized => {

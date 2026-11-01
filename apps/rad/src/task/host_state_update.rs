@@ -9,7 +9,7 @@ use crate::task::{Task, TaskContext, TaskResult};
 pub struct HostStateUpdate {}
 
 impl HostStateUpdate {
-    pub fn new() -> Self {
+    pub const fn new() -> Self {
         Self {}
     }
 }
@@ -29,7 +29,7 @@ impl Task for HostStateUpdate {
             networking: Some(NetworkingState {
                 addresses: host_network_info.addresses().cloned().collect(),
                 wireguard: host_network_info.wireguard().map(|x| WireguardState {
-                    listen_addresses: x.addresses().iter().map(|y| y.addr()).collect(),
+                    listen_addresses: x.addresses().iter().map(ipnet::IpNet::addr).collect(),
                     available_ports: x.available_ports().to_vec(),
                     public_key: x.key().to_public_base64(),
                 }),
