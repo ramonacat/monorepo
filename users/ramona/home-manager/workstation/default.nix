@@ -5,6 +5,7 @@
     ./nixvim
 
     ./atuin.nix
+    ./helix.nix
     ./npm.nix
   ];
   config = {
