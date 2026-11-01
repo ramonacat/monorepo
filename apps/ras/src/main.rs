@@ -1,3 +1,5 @@
+#![deny(clippy::all, clippy::pedantic, clippy::nursery, warnings)]
+
 use std::env;
 
 use axum::{
@@ -103,7 +105,6 @@ impl AppState {
 }
 
 #[instrument]
-#[axum::debug_handler]
 async fn get_health(extract::State(app_state): extract::State<AppState>) {
     app_state.db_connect().await;
 }

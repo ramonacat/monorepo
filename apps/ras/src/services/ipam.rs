@@ -44,8 +44,8 @@ fn find_subnets_or_hosts(cidr: IpNet, prefix_length: u8) -> Box<dyn Iterator<Ite
     }
 }
 
-pub async fn allocate_cidr<'tx>(
-    tx: &mut Transaction<'tx, Postgres>,
+pub async fn allocate_cidr(
+    tx: &mut Transaction<'_, Postgres>,
     parent_id: Uuid,
     name: String,
     prefix_length: u8,
@@ -79,8 +79,8 @@ pub async fn allocate_cidr<'tx>(
     Err(AllocateCidrError::NoAvailableSubnets)
 }
 
-async fn get_allocation<'tx>(
-    tx: &mut Transaction<'tx, Postgres>,
+async fn get_allocation(
+    tx: &mut Transaction<'_, Postgres>,
     id: Uuid,
 ) -> Result<AddressAllocation, sqlx::Error> {
     sqlx::query_as!(
@@ -92,8 +92,8 @@ async fn get_allocation<'tx>(
     .await
 }
 
-pub async fn update_live_ips<'tx>(
-    tx: &mut Transaction<'tx, Postgres>,
+pub async fn update_live_ips(
+    tx: &mut Transaction<'_, Postgres>,
     hostname: &Hostname,
     mut addresses: Vec<HostAddress>,
 ) -> Result<(), sqlx::Error> {
@@ -116,6 +116,10 @@ pub async fn update_live_ips<'tx>(
     .await?;
 
     for current_ip in current_ips {
+        #[allow(
+            clippy::suspicious_operation_groupings,
+            reason = "the lint is wrong and suggests a change which doesn't compile"
+        )]
         let mut extracted = addresses.extract_if(.., |x| {
             x.address == current_ip.address && x.interface == current_ip.interface_name
         });

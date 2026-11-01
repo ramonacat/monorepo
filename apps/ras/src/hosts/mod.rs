@@ -17,7 +17,6 @@ pub struct CurrentStateResponse {
     hosts: Vec<HostState>,
 }
 
-#[axum::debug_handler]
 // TODO this is a bit messy, it's only used for grafana, probably we need to have a big think about
 // how to actually do monitoring correctly
 pub async fn get_current_state(
@@ -65,7 +64,6 @@ pub async fn get_current_state(
     Json(CurrentStateResponse { hosts })
 }
 
-#[axum::debug_handler]
 #[instrument]
 pub async fn post_host_state(
     extract::State(app_state): extract::State<AppState>,
@@ -106,7 +104,6 @@ pub struct PostCurrentClosureRequest {
     current_closure: String,
 }
 
-#[axum::debug_handler]
 #[instrument]
 pub async fn post_current_closure(
     extract::State(app_state): extract::State<AppState>,
@@ -134,7 +131,6 @@ pub struct PostLatestClosureRequest {
     latest_closure: String,
 }
 
-#[axum::debug_handler]
 #[instrument]
 pub async fn post_latest_closure(
     extract::State(app_state): extract::State<AppState>,
@@ -162,7 +158,6 @@ pub async fn post_latest_closure(
 }
 
 #[instrument]
-#[axum::debug_handler]
 pub async fn get_latest_closure(
     extract::State(app_state): extract::State<AppState>,
     extract::Path(hostname): extract::Path<String>,
@@ -184,7 +179,6 @@ pub async fn get_latest_closure(
 }
 
 #[instrument]
-#[axum::debug_handler]
 pub async fn delete(
     extract::State(app_state): extract::State<AppState>,
     extract::Path(hostname_value): extract::Path<String>,
