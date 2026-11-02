@@ -1,4 +1,5 @@
 pub mod config;
+pub mod dns;
 pub mod host_identity;
 pub mod hosts;
 pub mod ipam;

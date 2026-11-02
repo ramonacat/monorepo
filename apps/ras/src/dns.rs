@@ -1,17 +1,8 @@
-use std::time::Duration;
-
 use axum::{Json, extract};
-use serde::{Deserialize, Serialize};
+use rlib::dns::{GetAllZonesResponse, PostUpsertRequest};
 use sqlx::Connection;
-use uuid::Uuid;
 
 use crate::AppState;
-
-#[derive(Debug, Deserialize, Serialize)]
-pub struct PostUpsertRequest {
-    rrdatas: Vec<String>,
-    ttl: Option<Duration>,
-}
 
 pub async fn post_upsert(
     extract::State(app_state): extract::State<AppState>,
@@ -72,33 +63,6 @@ pub async fn delete_by_name(
         })
         .await
         .unwrap();
-}
-
-#[derive(Debug, Serialize, Deserialize)]
-pub struct Record {
-    pub id: Uuid,
-    pub name: String,
-    pub r#type: String,
-    pub rrdatas: Vec<String>,
-    pub ttl: Option<Duration>,
-}
-
-#[derive(Debug, Serialize, Deserialize)]
-pub struct Zone {
-    pub id: Uuid,
-    pub name: String,
-    pub serial: u32,
-    pub refresh: Duration,
-    pub retry: Duration,
-    pub expire: Duration,
-    pub negative_response_ttl: Duration,
-    pub default_ttl: Duration,
-    pub records: Vec<Record>,
-}
-
-#[derive(Debug, Deserialize, Serialize)]
-pub struct GetAllZonesResponse {
-    zones: Vec<Zone>,
 }
 
 pub async fn get_all_zones(

@@ -1,7 +1,9 @@
+use crate::dns::PostUpsertRequest;
 use crate::ipam::PostIpamAllocateRequest;
 use crate::ipam::PostIpamAllocateResponse;
 use crate::load_balancers::ServicePort;
 use crate::wireguard::GetTunnelsResponse;
+use std::time::Duration;
 
 use anyhow::Context;
 use reqwest::{
@@ -23,6 +25,7 @@ pub enum RasConnectionConfig {
     LocalUnencrypted,
 }
 
+#[derive(Debug, Clone)]
 pub struct RasClient {
     reqwest: reqwest::Client,
     base_url: Url,
@@ -144,6 +147,24 @@ impl RasClient {
             .error_for_status()?
             .json()
             .await?)
+    }
+
+    pub async fn upsert_dns_record(
+        &self,
+        zone: &str,
+        record_name: &str,
+        record_type: &str,
+        rrdatas: Vec<String>,
+        ttl: Option<Duration>,
+    ) -> anyhow::Result<()> {
+        self.reqwest
+            .post(self.make_url(&format!("/dns/{zone}/records/{record_name}/{record_type}"))?)
+            .json(&PostUpsertRequest { rrdatas, ttl })
+            .send()
+            .await?
+            .error_for_status()?;
+
+        Ok(())
     }
 
     fn make_url(&self, path: &str) -> anyhow::Result<Url> {

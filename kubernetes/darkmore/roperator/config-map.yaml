@@ -5,5 +5,6 @@ metadata:
 data:
   config.json: |-
     {
-      "host_group_id": "01a1797c-d4e6-765a-b4c9-134067922a14"
+      "host_group_id": "01a1797c-d4e6-765a-b4c9-134067922a14",
+      "dns_zones": ["i.ramona.fun"]
     }
