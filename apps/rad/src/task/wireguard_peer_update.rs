@@ -126,6 +126,6 @@ mod tests {
         assert_eq!(long, "wg-aaaaaaaaaaaa");
 
         let exact_match = make_interface_name("wg-", "abcdefghijkl");
-        assert_eq!("wg-abcdefghijkl", exact_match)
+        assert_eq!("wg-abcdefghijkl", exact_match);
     }
 }
