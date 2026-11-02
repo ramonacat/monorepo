@@ -1,9 +1,8 @@
 use std::{collections::HashMap, time::Duration};
 
+use rlib::dns::{Record, Zone};
 use sqlx::{Postgres, Transaction};
 use uuid::Uuid;
-
-use crate::dns::{Record, Zone};
 
 pub async fn upsert_record(
     tx: &mut Transaction<'_, Postgres>,
