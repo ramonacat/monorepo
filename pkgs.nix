@@ -10,11 +10,10 @@ let
       ramona = prev.lib.mapAttrs (_: v: v.package) local-packages.apps;
       agenix = inputs.agenix.packages."${system}".default;
     })
-    (final: prev: {
+    (_: prev: {
       inherit (prev.lixPackageSets.stable)
         nixpkgs-review
         nix-eval-jobs
-        nix-fast-build
         colmena
         ;
     })

@@ -153,6 +153,8 @@ pkgs.mkShell {
       tflint
       vault
       woodpecker-cli
+      nix-fast-build
+      nix-eval-jobs
 
       package-versions.nodejs
       package-versions.rust-version

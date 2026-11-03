@@ -93,6 +93,7 @@ rec {
 
       statix
       deadnix
+      nix-fast-build
 
       python3Packages.python
       python3Packages.uv
