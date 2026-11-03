@@ -8,14 +8,15 @@ let
     (import inputs.rust-overlay)
     (_: prev: {
       ramona = prev.lib.mapAttrs (_: v: v.package) local-packages.apps;
-      paperless-ngx = prev.paperless-ngx.overrideAttrs (previous: {
-        disabledTests = previous.disabledTests ++ [
-          "test_mail"
-          "test_slow_write_incomplete"
-        ];
-      });
-      tflint = prev.callPackage ./overrides/tflint.nix { };
       agenix = inputs.agenix.packages."${system}".default;
+    })
+    (final: prev: {
+      inherit (prev.lixPackageSets.stable)
+        nixpkgs-review
+        nix-eval-jobs
+        nix-fast-build
+        colmena
+        ;
     })
   ];
   pkgsConfig = {
