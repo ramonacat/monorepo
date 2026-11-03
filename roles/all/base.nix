@@ -8,6 +8,7 @@
       atop
       htop
       iotop
+      iftop
       neovim
       perf
       sysstat
@@ -17,5 +18,6 @@
 
     system.stateVersion = "22.11";
     zramSwap.enable = true;
+    nix.package = pkgs.lixPackageSets.stable.lix;
   };
 }
