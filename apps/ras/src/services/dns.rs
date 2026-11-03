@@ -21,7 +21,7 @@ pub async fn upsert_record(
     sqlx::query!("
             INSERT INTO dns_record (id, zone_id, name, type, rrdatas, ttl)
             VALUES(uuidv7(), $1, $2, $3, $4, $5)
-            ON CONFLICT(zone_id, name) DO UPDATE SET type=EXCLUDED.type, rrdatas=EXCLUDED.rrdatas, ttl=EXCLUDED.ttl
+            ON CONFLICT(zone_id, name, type) DO UPDATE SET rrdatas=EXCLUDED.rrdatas, ttl=EXCLUDED.ttl
         ", zone_id, name, r#type, rrdatas, ttl.map(|x| x.as_secs() as i32)).execute(&mut **tx).await?;
 
     sqlx::query!("UPDATE dns_zone SET serial=serial+1 WHERE id=$1", zone_id)
