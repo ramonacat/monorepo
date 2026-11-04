@@ -20,7 +20,7 @@
       "groupSlug": "all-minor-patch-js"
     },
     {
-      "matchDatasources": ["cargo"],
+      "matchDatasources": ["crate"],
       "matchPackageNames": ["kube", "k8s-openapi", "gateway-api"],
       "groupName": "kube and related",
       "groupSlug": "kubers-plus"
