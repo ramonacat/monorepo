@@ -22,6 +22,7 @@
     {
       "matchDatasources": ["crate"],
       "matchPackageNames": ["kube", "k8s-openapi", "gateway-api"],
+      "matchUpdateTypes": ["*"],
       "groupName": "kube and related",
       "groupSlug": "kubers-plus"
     },
