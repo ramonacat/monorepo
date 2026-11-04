@@ -28,7 +28,7 @@
     },
     {
       "matchDatasources": ["!npm"],
-      "matchPackageNames": ["!python"],
+      "matchPackageNames": ["!python", "!k8s-openapi", "!gateway-api"],
       "matchUpdateTypes": [
         "minor",
         "patch"
