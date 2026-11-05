@@ -38,7 +38,10 @@ in
       package.package
       pkgs.nsd
     ];
-    config.Cmd = [ "/bin/rdns" ];
+    config = {
+      Cmd = [ "/bin/rdns" ];
+      Env = [ "SSL_CERT_FILE=${pkgs.cacert}/etc/ssl/certs/ca-bundle.crt" ];
+    };
     extraCommands = ''
       mkdir -m 1777 tmp
     '';
