@@ -1,0 +1,11 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: config
+data:
+  # todo the forward zones should be generated for each dns_zone that is configured in ras
+  config.json: |-
+    {
+      "nameserver": "ns.i.ramona.fun.",
+      "nameserver_contact": "ramona.luczkiewi.cz."
+    }

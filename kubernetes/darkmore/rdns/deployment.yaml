@@ -41,6 +41,16 @@ spec:
         - containerPort: 53
           protocol: UDP
           name: dns-udp
+        volumeMounts:
+          - mountPath: /etc/ramona/rdns/
+            name: config
+        env:
+          - name: RAMONA_CONFIG_PATH
+            value: /etc/ramona/rdns/config.json
+      volumes:
+        - name: config
+          configMap:
+            name: config
       restartPolicy: Always
 ---
 apiVersion: external-secrets.io/v1
