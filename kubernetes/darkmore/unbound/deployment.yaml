@@ -1,0 +1,71 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: unbound
+  labels:
+    app: unbound
+spec:
+  selector:
+    matchLabels:
+      app: unbound
+  replicas: 2
+  strategy:
+    rollingUpdate:
+      maxSurge: 50%
+      maxUnavailable: 50%
+    type: RollingUpdate
+  template:
+    metadata:
+      annotations:
+        kubectl.kubernetes.io/default-container: unbound
+      labels:
+        app: unbound
+    spec:
+      imagePullSecrets:
+        - name: forgejo-container-credentials
+      containers:
+      - name: unbound
+        image: code.ramona.fun/ramona/monorepo/unbound:1793914759
+        imagePullPolicy: IfNotPresent
+        resources:
+          requests:
+            cpu: 25m
+            memory: 15Mi
+          limits:
+            cpu: 100m
+            memory: 100Mi
+        # TODO add liveness/readiness probes
+        ports:
+        - containerPort: 53
+          name: dns-tcp
+        - containerPort: 53
+          protocol: UDP
+          name: dns-udp
+        volumeMounts:
+          - mountPath: /var/ramona/
+            name: config
+      volumes:
+        - name: config
+          configMap:
+            name: config
+      restartPolicy: Always
+---
+apiVersion: external-secrets.io/v1
+kind: ExternalSecret
+metadata:
+  name: forgejo-container-credentials
+spec:
+  target:
+    name: forgejo-container-credentials
+    creationPolicy: Owner
+    template:
+      type: kubernetes.io/dockerconfigjson
+      data:
+        .dockerconfigjson: '{{ index . "docker-config-json" | toString }}'
+  dataFrom:
+    - sourceRef:
+        storeRef:
+          kind: ClusterSecretStore
+          name: vault
+      extract:
+        key: forgejo-container-registry-config
