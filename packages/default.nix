@@ -11,6 +11,7 @@ inputs: {
     rdns = import ./rdns inputs;
     roperator = import ./roperator.nix inputs;
     sawin-gallery = import ./sawin-gallery.nix inputs;
+    unbound = import ./unbound.nix inputs;
   };
   libs = {
     js = {
