@@ -24,10 +24,6 @@ pub async fn upsert_record(
             ON CONFLICT(zone_id, name, type) DO UPDATE SET rrdatas=EXCLUDED.rrdatas, ttl=EXCLUDED.ttl
         ", zone_id, name, r#type, rrdatas, ttl.map(|x| x.as_secs() as i32)).execute(&mut **tx).await?;
 
-    sqlx::query!("UPDATE dns_zone SET serial=serial+1 WHERE id=$1", zone_id)
-        .execute(&mut **tx)
-        .await?;
-
     Ok(())
 }
 
@@ -55,9 +51,6 @@ pub async fn delete_record(
     )
     .execute(&mut **tx)
     .await?;
-    sqlx::query!("UPDATE dns_zone SET serial=serial+1 WHERE id=$1", zone_id)
-        .execute(&mut **tx)
-        .await?;
 
     Ok(())
 }
