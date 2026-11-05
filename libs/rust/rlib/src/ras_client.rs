@@ -1,3 +1,4 @@
+use crate::dns::GetAllZonesResponse;
 use crate::dns::PostUpsertRequest;
 use crate::ipam::PostIpamAllocateRequest;
 use crate::ipam::PostIpamAllocateResponse;
@@ -51,7 +52,9 @@ impl RasClient {
 
                 Url::parse("https://ras.ramona.fun:1443")?
             }
-            RasConnectionConfig::LocalUnencrypted => Url::parse("http://ras.ras")?,
+            RasConnectionConfig::LocalUnencrypted => {
+                Url::parse("https://ras.infrastructure.ramona.fun")?
+            }
         };
         client_builder = client_builder.default_headers(headers);
 
@@ -165,6 +168,19 @@ impl RasClient {
             .error_for_status()?;
 
         Ok(())
+    }
+
+    pub async fn get_all_dns_zones(&self) -> anyhow::Result<GetAllZonesResponse> {
+        let zones: GetAllZonesResponse = self
+            .reqwest
+            .get(self.make_url("/dns")?)
+            .send()
+            .await?
+            .error_for_status()?
+            .json()
+            .await?;
+
+        Ok(zones)
     }
 
     fn make_url(&self, path: &str) -> anyhow::Result<Url> {

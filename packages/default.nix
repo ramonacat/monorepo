@@ -8,6 +8,7 @@ inputs: {
     rad = import ./rad.nix inputs;
     ramona-fun = import ./ramona-fun.nix inputs;
     ras = import ./ras.nix inputs;
+    rdns = import ./rdns inputs;
     roperator = import ./roperator.nix inputs;
     sawin-gallery = import ./sawin-gallery.nix inputs;
   };
