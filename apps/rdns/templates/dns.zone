@@ -1,0 +1,10 @@
+$ORIGIN {{zone.name}}. ; {{ zone.id }}
+$TTL {{zone.default_ttl.as_secs()}}
+
+{{zone.name}}. IN SOA {{nameserver}} {{nameserver_contact}} ( {{zone.serial}} {{zone.refresh.as_secs()}} {{zone.retry.as_secs()}} {{zone.expire.as_secs()}} {{zone.negative_response_ttl.as_secs()}} )
+
+{%~ for record in zone.records -%}
+    {%- for rrdata in record.rrdatas -%}
+        {{record.name}} IN {% if let Some(ttl) = record.ttl %}{{ttl.as_secs()}}{% endif %} {{record.type}} {{rrdata}}
+    {%~ endfor -%}
+{%- endfor -%}
