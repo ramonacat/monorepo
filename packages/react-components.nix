@@ -13,6 +13,7 @@ let
       mkdir $out/
       cp -r ./* $out/
       rm -r $out/node_modules/
+      rm $out/package-lock.json
     '';
 
     inherit (package-versions) nodejs;
