@@ -92,6 +92,11 @@ spec:
       sectionName: http
       group: gateway.networking.k8s.io
       kind: Gateway
+    - name: gateway-i
+      namespace: kgateway-system
+      sectionName: http
+      group: gateway.networking.k8s.io
+      kind: Gateway
   rules:
     - filters:
         - type: RequestRedirect
