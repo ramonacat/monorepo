@@ -15,3 +15,6 @@ data:
     forward-zone:
       name: i.ramona.fun
       forward-addr: 10.16.0.20
+    forward-zone:
+      name: home.ramona.fun
+      forward-addr: 10.16.0.20
