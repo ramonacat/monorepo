@@ -56,7 +56,7 @@ spec:
           from: Same
     - name: https-vault
       port: 443
-      protocol: HTTPS
+      protocol: TLS
       hostname: "vault.i.ramona.fun"
       allowedRoutes:
         namespaces:
