@@ -25,7 +25,7 @@ spec:
         - name: forgejo-container-credentials
       containers:
       - name: rdns
-        image: code.ramona.fun/ramona/monorepo/rdns:1793917884
+        image: code.ramona.fun/ramona/monorepo/rdns:1793973361
         imagePullPolicy: IfNotPresent
         resources:
           requests:
