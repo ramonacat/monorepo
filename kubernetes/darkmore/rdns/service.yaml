@@ -6,6 +6,7 @@ spec:
   selector:
     app: rdns
   type: ClusterIP
+  clusterIP: 10.16.0.20
   ports:
   - name: dns-tcp
     protocol: TCP

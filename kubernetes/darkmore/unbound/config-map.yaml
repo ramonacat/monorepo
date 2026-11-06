@@ -14,4 +14,4 @@ data:
       log-servfail: yes
     forward-zone:
       name: i.ramona.fun
-      forward-host: rdns.rdns
+      forward-addr: 10.16.0.20
