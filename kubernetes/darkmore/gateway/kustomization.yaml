@@ -5,4 +5,4 @@ resources:
   - gateways.yaml
   - gateway-public.yaml
   - tls-passthrough-listener-set.yaml
-
+  - gateway-i.yaml

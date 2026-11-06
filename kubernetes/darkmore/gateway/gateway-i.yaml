@@ -1,0 +1,78 @@
+apiVersion: gateway.kgateway.dev/v1alpha1
+kind: GatewayParameters
+metadata:
+  name: gateway-i
+  namespace: kgateway-system
+spec:
+  kube:
+    deployment:
+      replicas: 2
+    service:
+      type: LoadBalancer
+      loadBalancerClass: ramona-internal
+---
+apiVersion: gateway.kgateway.dev/v1alpha1
+kind: ListenerPolicy
+metadata:
+  name: gateway-i
+  namespace: kgateway-system
+spec:
+  targetRefs:
+  - group: gateway.networking.k8s.io
+    kind: Gateway
+    name: gateway-i
+  default: 
+    httpSettings:
+      upgradeConfig:
+        enabledUpgrades:
+          - websocket
+---
+apiVersion: gateway.networking.k8s.io/v1
+kind: Gateway
+metadata:
+  name: gateway-i
+  namespace: kgateway-system
+  annotations: 
+    cert-manager.io/cluster-issuer: cert-manager-webhook-dnsimple-production
+spec: 
+  gatewayClassName: 'kgateway'
+  infrastructure:
+    parametersRef:
+      group: gateway.kgateway.dev
+      kind: GatewayParameters
+      name: gateway-i
+
+  allowedListeners:
+    namespaces:
+      from: All
+
+  listeners:
+    - name: http
+      port: 80
+      protocol: HTTP
+      allowedRoutes:
+        namespaces:
+          # there's only one route allowed for HTTP, and it is the HTTPS redirect
+          from: Same
+    - name: https-vault
+      port: 443
+      protocol: HTTPS
+      hostname: "vault.i.ramona.fun"
+      allowedRoutes:
+        namespaces:
+          # TODO limit this to vault-only
+          from: All
+      tls:
+        mode: Passthrough
+    - name: https
+      port: 443
+      protocol: HTTPS
+      hostname: '*.i.ramona.fun'
+      allowedRoutes:
+        namespaces:
+          from: All
+      tls:
+        mode: Terminate
+        certificateRefs:
+          - kind: Secret
+            name: wildcard-ramona-fun
