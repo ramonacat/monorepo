@@ -21,7 +21,7 @@ resource "routeros_interface_vlan" "main" {
 resource "routeros_ip_dhcp_server_network" "main" {
   address    = var.cidr
   gateway    = cidrhost(var.cidr, 1)
-  dns_server = [cidrhost(var.cidr, 1)]
+  dns_server = ["10.254.0.2"]
   netmask    = local.prefix_length
 }
 
