@@ -11,6 +11,7 @@ data:
       interface-automatic: yes
       qname-minimisation: yes
       access-control: 10.0.0.0/8 allow
+      log-servfail: yes
     forward-zone:
       name: i.ramona.fun
       forward-host: rdns.rdns
