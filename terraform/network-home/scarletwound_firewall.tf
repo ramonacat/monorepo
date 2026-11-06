@@ -187,6 +187,13 @@ module "scarletwound-firewall" {
       comment       = "internet access for church on iot vlan"
     },
     {
+      chain             = "forward",
+      action            = "accept",
+      in_interface_list = routeros_interface_list.scarletwound-lan.name,
+      dst_address       = "10.254.0.0/16",
+      comment           = "access to load balancers"
+    },
+    {
       chain    = "forward",
       action   = "accept",
       protocol = "udp",
