@@ -75,4 +75,4 @@ spec:
         mode: Terminate
         certificateRefs:
           - kind: Secret
-            name: wildcard-ramona-fun
+            name: wildcard-i-ramona-fun
