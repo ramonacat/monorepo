@@ -2,6 +2,7 @@ use std::fmt::Write;
 use std::process::Stdio;
 use std::{collections::HashMap, time::Duration};
 
+use anyhow::Context;
 use askama::Template;
 use async_trait::async_trait;
 use ipnet::IpNet;
@@ -56,18 +57,22 @@ impl Task for InstallLoadBalancers {
         let network_units = NetworkUnits::new();
         network_units
             .replace_category("load_balancer", units)
-            .await?;
+            .await
+            .context("replacing systemd units")?;
 
         let mut rulefile = "add table ip ramona-lb\nflush table ip ramona-lb\n".to_string();
         writeln!(rulefile, "table ip ramona-lb {{")?;
 
         writeln!(rulefile, "chain incoming {{")?;
-        writeln!(rulefile, "type nat hook input priority 0; policy accept;")?;
+        writeln!(
+            rulefile,
+            "type nat hook prerouting priority 0; policy accept;"
+        )?;
         for balancer in &balancers {
             for port in &balancer.ports {
                 writeln!(
                     rulefile,
-                    "ip daddr {} {} dport {} redirect to :{}",
+                    "ip daddr {} {} dport {} dnat 127.0.0.1:{}",
                     balancer.ip,
                     match port.protocol {
                         rlib::load_balancers::ServiceProtocol::Tcp => "tcp",
@@ -81,15 +86,19 @@ impl Task for InstallLoadBalancers {
         writeln!(rulefile, "}}")?;
         writeln!(rulefile, "}}")?;
 
-        fs::write(NFT_RULES_PATH, rulefile).await?;
+        fs::write(NFT_RULES_PATH, rulefile)
+            .await
+            .context("writing nft rules file")?;
 
         let output = Command::new("nft")
             .args(["-f", NFT_RULES_PATH])
             .stdout(Stdio::piped())
             .stderr(Stdio::piped())
-            .spawn()?
+            .spawn()
+            .context("spawning the nft executable")?
             .wait_with_output()
-            .await?;
+            .await
+            .context("waiting for the nft executable")?;
 
         if output.status.success() {
             info!(?output, "nft rules reloaded");

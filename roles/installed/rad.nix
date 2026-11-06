@@ -227,8 +227,11 @@
         AmbientCapabilities = "CAP_NET_RAW CAP_NET_ADMIN";
         CapabilityBoundingSet = "CAP_NET_RAW CAP_NET_ADMIN";
       };
+      path = [ pkgs.nftables ];
     };
-    networking.firewall.allowedUDPPorts = lib.mkIf config.ramona.router.enabled config.ramona.router.wireguard.available_ports;
+    networking.firewall = {
+      allowedUDPPorts = lib.mkIf config.ramona.router.enabled config.ramona.router.wireguard.available_ports;
+    };
     ramona.router = {
       interfaces = [
         {
