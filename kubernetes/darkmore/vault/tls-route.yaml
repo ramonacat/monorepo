@@ -31,3 +31,4 @@ spec:
       kind: Gateway
       name: gateway-i
       namespace: kgateway-system
+      sectionName: https-vault
