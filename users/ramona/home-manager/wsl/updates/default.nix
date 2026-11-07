@@ -1,7 +1,6 @@
 {
   pkgs,
   lib,
-  flake,
   ...
 }:
 {
@@ -25,7 +24,6 @@
               cp updates.bash $out/bin/
 
               wrapProgram $out/bin/updates.bash \
-                  --set BUILDERS '${builtins.toJSON flake.hosts.builds-hosts}' \
                   --prefix PATH : ${
                     lib.makeBinPath (
                       with pkgs;

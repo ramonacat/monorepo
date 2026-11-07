@@ -66,35 +66,10 @@ resource "tailscale_acl" "default" {
         { src = ["autogroup:admin"], "dst" : ["*"], "ip" : ["*"] },
         { src = ["tag:ci"], "dst" : ["tag:k8s"], "ip" : ["*"] },
         {
-          src = ["tag:server"],
-          dst = ["tag:service-builds-host"],
-          ip  = ["tcp:22", "tcp:443"],
-        },
-        {
-          src = ["tag:service-builds-host"],
-          dst = ["tag:server"],
-          ip  = ["tcp:22"],
-        },
-        {
           src = ["tag:service-servarr"],
           dst = ["tag:service-transmission"],
           ip = [
             "tcp:9091", // transmission
-          ]
-        },
-        {
-          src = ["tag:service-builds-host"],
-          dst = ["tag:kubernetes-darkmore-control-plane"],
-          ip = [
-            "tcp:6443" // kubernetes apiserver (needed for deplyoments)
-          ]
-        },
-        {
-          src = ["tag:service-builds-host"],
-          dst = ["svc:gateway"],
-          ip = [
-            "tcp:443",
-            "tcp:80"
           ]
         },
         {
@@ -143,7 +118,6 @@ resource "tailscale_acl" "default" {
         "tag:server-private-home" = [],
         "tag:server-private-pl1"  = [],
 
-        "tag:service-builds-host"  = [],
         "tag:service-servarr"      = [],
         "tag:service-transmission" = [],
         "tag:service-jellyfin"     = [],
@@ -177,10 +151,6 @@ resource "tailscale_acl" "default" {
             "tag:server-private:139",
             "tag:server-public:445",
           ],
-          accept = [
-            "tag:service-builds-host:22",
-            "tag:service-builds-host:443",
-          ]
         },
       ]
     }

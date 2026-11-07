@@ -1,7 +1,6 @@
 {
   pkgs,
   lib,
-  flake,
   config,
   ...
 }:
@@ -51,7 +50,6 @@
                 wrapProgram $out/bin/updates.bash \
                     --set UPDATES_MODE '${config.ramona.updates.mode}' \
                     --set UPDATES_POST '${post-update}/bin/post-update' \
-                    --set BUILDERS '${builtins.toJSON flake.hosts.builds-hosts}' \
                     --prefix PATH : ${
                       lib.makeBinPath (
                         with pkgs;

@@ -8,10 +8,8 @@ in
   home = {
     file.".npmrc".text = ''
       prefix = ${mutable-npm-path}
-      @ramonacat:registry=https://npm.pkg.github.com
       @ramona:registry=https://code.ramona.fun/api/packages/ramona/npm
       //code.ramona.fun/api/packages/ramona/npm/:_authToken=''${FORGEJO_TOKEN}
-      //npm.pkg.github.com/:_authToken=''${GITHUB_TOKEN}
     '';
     sessionPath = [ "${mutable-npm-path}/bin/" ];
     sessionVariablesExtra = ''
