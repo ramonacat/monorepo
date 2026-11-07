@@ -27,7 +27,7 @@ resource "helm_release" "external-dns" {
       enabled = true
     }
     sources                   = ["gateway-httproute", "gateway-tcproute", "gateway-tlsroute", "gateway-grpcroute", "gateway-udproute"]
-    excludeDomains            = ["ts.net"]
+    excludeDomains            = ["ts.net", "i.ramona.fun"]
     policy                    = "sync"
     enableGatewayListenerSets = true
     logFormat                 = "json"
