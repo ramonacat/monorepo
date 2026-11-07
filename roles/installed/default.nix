@@ -28,5 +28,6 @@
     security.polkit.enable = true;
     programs.nix-ld.enable = true;
     ramona.machine.roles = [ "installed" ];
+    networking.nameservers = [ "10.254.0.2" ];
   };
 }
