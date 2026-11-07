@@ -52,9 +52,7 @@ impl RasClient {
 
                 Url::parse("https://ras.ramona.fun:1443")?
             }
-            RasConnectionConfig::LocalUnencrypted => {
-                Url::parse("https://ras.infrastructure.ramona.fun")?
-            }
+            RasConnectionConfig::LocalUnencrypted => Url::parse("https://ras.i.ramona.fun")?,
         };
         client_builder = client_builder.default_headers(headers);
 
