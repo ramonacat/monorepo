@@ -20,9 +20,7 @@
       packages = with pkgs; [
         inputs.agenix.packages."${pkgs.stdenv.hostPlatform.system}".default
 
-        _1password-cli
         atop
-        github-cli
         htop
         iftop
         irssi
@@ -36,10 +34,6 @@
 
     programs = {
       home-manager = {
-        enable = true;
-      };
-
-      gh = {
         enable = true;
       };
 

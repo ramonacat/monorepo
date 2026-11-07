@@ -117,14 +117,6 @@
           })
           nixos
           ;
-        builds-hosts = map (x: x.name) (
-          builtins.filter (x: x.is-build-host) (
-            pkgs."${system}".lib.mapAttrsToList (k: v: {
-              name = k;
-              is-build-host = builtins.elem "builds-host" v.config.ramona.machine.roles;
-            }) self.nixosConfigurations
-          )
-        );
         tailscale-tags = pkgs."${system}".lib.mapAttrs (_: v: v.config.ramona.machine.tailscale-tags) (
           pkgs."${system}".lib.filterAttrs (
             _: v: v.config.ramona.machine.type != "live"

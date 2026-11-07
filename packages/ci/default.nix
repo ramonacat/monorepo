@@ -17,7 +17,6 @@ let
           overlay
         ]
       );
-  package-versions = import ../../data/package-versions.nix { inherit pkgs; };
 in
 rec {
   # TODO should probably support just skipping package/coverage/checks as needed
