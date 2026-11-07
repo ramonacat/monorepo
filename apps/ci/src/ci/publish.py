@@ -105,7 +105,7 @@ def execute_publish(runtime: RuntimeInfo):
 
         # TODO also do nix-store closure-diff and post the results as a comment on the PR
         _ = api_post(
-            f"https://ras.infrastructure.ramona.fun/hosts/{home_name}/latest_closure",
+            f"https://ras.i.ramona.fun/hosts/{home_name}/latest_closure",
             json={"latest_closure": store_path},
             ignore_body=True,
         )
@@ -120,7 +120,7 @@ def execute_publish(runtime: RuntimeInfo):
 
         # TODO do a diff and post as PR comment
         _ = api_post(
-            f"https://ras.infrastructure.ramona.fun/homes/{home_name}/latest_closure",
+            f"https://ras.i.ramona.fun/homes/{home_name}/latest_closure",
             json={"latest_closure": store_path},
             ignore_body=True,
         )

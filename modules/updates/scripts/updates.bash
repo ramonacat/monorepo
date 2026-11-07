@@ -13,9 +13,9 @@ main() {
 	local -r closure_update=$(jq --null-input --arg current_closure "$current_closure" '{"current_closure": $current_closure}')
 
 	curl --fail --request POST --header 'Content-Type: application/json' --data "$closure_update" \
-		"https://ras.infrastructure.ramona.fun/hosts/$hostname/current_closure"
+		"https://ras.i.ramona.fun/hosts/$hostname/current_closure"
 
-	local -r closure=$(curl --fail "https://ras.infrastructure.ramona.fun/hosts/$hostname/latest_closure")
+	local -r closure=$(curl --fail "https://ras.i.ramona.fun/hosts/$hostname/latest_closure")
 
 	if [[ "$closure" == "$current_closure" ]]; then
 		echo "System already running the latest closure, not rebuilding"

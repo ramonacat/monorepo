@@ -57,7 +57,7 @@ def update_version(versioned_item: VersionedItemId, store_path: str) -> VersionS
     return cast(
         VersionStatus,
         api_post(
-            "https://ras.infrastructure.ramona.fun/versions",
+            "https://ras.i.ramona.fun/versions",
             json={"versioned_item": str(versioned_item), "store_path": store_path},
         ),
     )
@@ -67,7 +67,7 @@ def check_version(versioned_item: VersionedItemId, store_path: str) -> VersionSt
     return cast(
         VersionStatus,
         api_post(
-            "https://ras.infrastructure.ramona.fun/versions/actions/check",
+            "https://ras.i.ramona.fun/versions/actions/check",
             json={"versioned_item": str(versioned_item), "store_path": store_path},
         ),
     )
