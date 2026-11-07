@@ -36,7 +36,7 @@
             "github.com/mholt/caddy-webdav@v0.0.0-20260127042217-fa2f366b0d75"
           ];
 
-          hash = "sha256-FllBC8JFdxMFjf62fyy1eaj8t0ct0y4ZMMsUTphu2+4=";
+          hash = "sha256-zaD6hj/do4vuySJLGh8L8iESejYIyeBr4bay8GZnX/4=";
         };
         globalConfig = ''
           order webdav before file_server
