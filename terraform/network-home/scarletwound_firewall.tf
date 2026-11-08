@@ -82,7 +82,7 @@ module "scarletwound-firewall" {
       action      = "accept"
       protocol    = "udp"
       src_address = "10.255.240.0/20"
-      dst_port    = "3784, 3785, 4784"
+      dst_port    = "3784,3785,4784"
       comment     = "BFD"
     },
     { chain = "input", action = "drop" },

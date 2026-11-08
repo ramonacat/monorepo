@@ -10,7 +10,7 @@ resource "helm_release" "longhorn" {
     httproute = {
       enabled    = true
       hostnames  = ["longhorn.i.ramona.fun"]
-      parentRefs = [{ name = "gateway-tailscale", namespace = "kgateway-system" }]
+      parentRefs = [{ name = "gateway-i", namespace = "kgateway-system" }]
     }
     metrics = {
       serviceMonitor = { enabled = true }
