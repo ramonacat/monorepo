@@ -9,7 +9,7 @@ resource "helm_release" "longhorn" {
   values = [yamlencode({
     httproute = {
       enabled    = true
-      hostnames  = ["longhorn.infrastructure.ramona.fun"]
+      hostnames  = ["longhorn.i.ramona.fun"]
       parentRefs = [{ name = "gateway-tailscale", namespace = "kgateway-system" }]
     }
     metrics = {

@@ -4,6 +4,26 @@ metadata:
   name: attic
 spec:
   parentRefs:
+  - name: gateway-i
+    namespace: kgateway-system
+    group: gateway.networking.k8s.io
+  hostnames:
+    - attic.i.ramona.fun
+  rules:
+    - backendRefs:
+      - name: attic
+        kind: Service
+        port: 80
+      timeouts:
+        backendRequest: "7200s"
+        request: "7200s"
+---
+apiVersion: gateway.networking.k8s.io/v1
+kind: HTTPRoute
+metadata:
+  name: attic
+spec:
+  parentRefs:
   - name: gateway-tailscale
     namespace: kgateway-system
     group: gateway.networking.k8s.io
@@ -14,12 +34,6 @@ spec:
       - name: attic
         kind: Service
         port: 80
-        group: ""
-        weight: 1
-      matches:
-        - path:
-            type: PathPrefix
-            value: /
       timeouts:
         backendRequest: "7200s"
         request: "7200s"

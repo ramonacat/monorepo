@@ -120,7 +120,7 @@ provider "helm" {
 }
 
 provider "argocd" {
-  server_addr = "argo-cd.infrastructure.ramona.fun"
+  server_addr = "argo-cd.i.ramona.fun"
 }
 
 provider "authentik" {
@@ -139,7 +139,7 @@ provider "vault" {
 }
 
 provider "grafana" {
-  url = "https://grafana.infrastructure.ramona.fun"
+  url = "https://grafana.i.ramona.fun"
 }
 
 module "network-home" {

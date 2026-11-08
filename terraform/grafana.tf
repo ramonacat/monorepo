@@ -37,12 +37,12 @@ resource "authentik_provider_oauth2" "grafana" {
     authentik_property_mapping_provider_scope.email.id,
   ]
   logout_method = "frontchannel"
-  logout_uri    = "https://grafana.infrastructure.ramona.fun/logout"
+  logout_uri    = "https://grafana.i.ramona.fun/logout"
 
   allowed_redirect_uris = [
     {
       matching_mode     = "strict",
-      url               = "https://grafana.infrastructure.ramona.fun/login/generic_oauth"
+      url               = "https://grafana.i.ramona.fun/login/generic_oauth"
       redirect_uri_type = "authorization"
     },
   ]

@@ -11,8 +11,8 @@ resource "helm_release" "grafana" {
     route = {
       main = {
         enabled    = true
-        hostnames  = ["grafana.infrastructure.ramona.fun"]
-        parentRefs = [{ name = "gateway-tailscale", namespace = "kgateway-system" }]
+        hostnames  = ["grafana.i.ramona.fun"]
+        parentRefs = [{ name = "gateway-i", namespace = "kgateway-system" }]
       }
     }
     podDisruptionBudget = {
@@ -51,7 +51,7 @@ resource "helm_release" "grafana" {
       }
       server = {
         domain   = "{{ if (and .Values.ingress.enabled .Values.ingress.hosts) }}{{ tpl (.Values.ingress.hosts | first) . }}{{ else if (and .Values.route.main.enabled .Values.route.main.hostnames) }}{{ tpl (.Values.route.main.hostnames | first) . }}{{ else }}''{{ end }}"
-        root_url = "https://grafana.infrastructure.ramona.fun/"
+        root_url = "https://grafana.i.ramona.fun/"
       }
       unified_storage = {
         index_path = "/var/lib/grafana-search/bleve"

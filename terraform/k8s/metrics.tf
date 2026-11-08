@@ -16,8 +16,8 @@ resource "helm_release" "kube-prometheus-stack" {
       route = {
         main = {
           enabled    = true
-          hostnames  = ["alertmanager.infrastructure.ramona.fun"]
-          parentRefs = [{ name = "gateway-tailscale", namespace = "kgateway-system" }]
+          hostnames  = ["alertmanager.i.ramona.fun"]
+          parentRefs = [{ name = "gateway-i", namespace = "kgateway-system" }]
         }
       }
 
@@ -62,8 +62,8 @@ resource "helm_release" "kube-prometheus-stack" {
       route = {
         main = {
           enabled    = true
-          hostnames  = ["prometheus.infrastructure.ramona.fun"]
-          parentRefs = [{ name = "gateway-tailscale", namespace = "kgateway-system" }]
+          hostnames  = ["prometheus.i.ramona.fun"]
+          parentRefs = [{ name = "gateway-i", namespace = "kgateway-system" }]
         }
       }
       prometheusSpec = {
