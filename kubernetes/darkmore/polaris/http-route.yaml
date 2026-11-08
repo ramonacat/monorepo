@@ -4,11 +4,11 @@ metadata:
   name: polaris
 spec:
   parentRefs:
-  - name: gateway-tailscale
+  - name: gateway-i
     namespace: kgateway-system
     group: gateway.networking.k8s.io
   hostnames:
-    - polaris.infrastructure.ramona.fun
+    - polaris.i.ramona.fun
   rules:
     - backendRefs:
       - name: polaris-dashboard

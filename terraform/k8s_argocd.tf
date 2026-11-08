@@ -40,7 +40,7 @@ resource "authentik_provider_oauth2" "argocd" {
   allowed_redirect_uris = [
     {
       matching_mode     = "strict",
-      url               = "https://argo-cd.infrastructure.ramona.fun/api/dex/callback"
+      url               = "https://argo-cd.i.ramona.fun/api/dex/callback"
       redirect_uri_type = "authorization"
     },
     {
@@ -50,7 +50,7 @@ resource "authentik_provider_oauth2" "argocd" {
     },
     {
       matching_mode     = "strict",
-      url               = "https://argo-cd.infrastructure.ramona.fun/applications"
+      url               = "https://argo-cd.i.ramona.fun/applications"
       redirect_uri_type = "authorization"
     },
   ]
@@ -90,7 +90,7 @@ resource "helm_release" "argo-cd" {
     },
     configs = {
       cm = {
-        "url"                = "https://argo-cd.infrastructure.ramona.fun"
+        "url"                = "https://argo-cd.i.ramona.fun"
         "accounts.terraform" = "apiKey"
         "dex.config" = yamlencode({
           connectors = [
@@ -150,9 +150,9 @@ resource "helm_release" "argo-cd" {
       replicas = 2
       httproute = {
         enabled   = true
-        hostnames = ["argo-cd.infrastructure.ramona.fun"]
+        hostnames = ["argo-cd.i.ramona.fun"]
         parentRefs = [
-          { name = "gateway-tailscale", namespace = "kgateway-system" }
+          { name = "gateway-i", namespace = "kgateway-system" }
         ]
       }
       metrics = {
