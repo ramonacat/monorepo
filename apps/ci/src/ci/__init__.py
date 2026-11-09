@@ -40,7 +40,7 @@ def execute_setup(_args: Namespace, runtime: RuntimeInfo):
             "attic",
             "login",
             "main",
-            "https://attic.infrastructure.ramona.fun/",
+            "https://attic.i.ramona.fun/",
             runtime.attic_token,
         ]
     )
