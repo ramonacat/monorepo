@@ -12,9 +12,9 @@ data:
       qname-minimisation: yes
       access-control: 10.0.0.0/8 allow
       log-servfail: yes
-    forward-zone:
+    auth-zone:
       name: i.ramona.fun
-      forward-addr: 10.16.0.20
-    forward-zone:
+      primary: 10.16.0.20
+    auth-zone:
       name: home.ramona.fun
-      forward-addr: 10.16.0.20
+      primary: 10.16.0.20
