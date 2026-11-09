@@ -28,7 +28,7 @@
     };
 
     nixpkgs = {
-      url = "nixpkgs/nixos-unstable-small";
+      url = "nixpkgs/nixos-unstable";
     };
 
     disko = {
