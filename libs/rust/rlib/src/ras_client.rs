@@ -24,6 +24,7 @@ pub enum RasConnectionConfig {
     // TODO this shouldn't really exist, it should always be over https and even internal services
     // should use some form of auth
     LocalUnencrypted,
+    KubernetesUnencrypted,
 }
 
 #[derive(Debug, Clone)]
@@ -53,6 +54,7 @@ impl RasClient {
                 Url::parse("https://ras.ramona.fun:1443")?
             }
             RasConnectionConfig::LocalUnencrypted => Url::parse("https://ras.i.ramona.fun")?,
+            RasConnectionConfig::KubernetesUnencrypted => Url::parse("http://ras.ras")?,
         };
         client_builder = client_builder.default_headers(headers);
 

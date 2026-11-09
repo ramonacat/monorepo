@@ -56,7 +56,7 @@ async fn main() {
         .install_default()
         .unwrap();
 
-    let ras_client = RasClient::new(RasConnectionConfig::LocalUnencrypted).unwrap();
+    let ras_client = RasClient::new(RasConnectionConfig::KubernetesUnencrypted).unwrap();
 
     let mut last_serial: HashMap<Uuid, u32> = HashMap::new();
     let mut nsd_process = None;
