@@ -135,7 +135,6 @@ pkgs.mkShell {
       attic-client
       backblaze-b2
       deadnix
-      ktfmt
       kubeconform
       kubectl-cnpg
       minikube

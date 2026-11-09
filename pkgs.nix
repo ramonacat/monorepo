@@ -9,6 +9,9 @@ let
     (_: prev: {
       ramona = prev.lib.mapAttrs (_: v: v.package) local-packages.apps;
       agenix = inputs.agenix.packages."${system}".default;
+      sqlx-cli = prev.sqlx-cli.overrideAttrs (prev-attrs: {
+        buildInputs = prev-attrs.buildInputs ++ [ prev.sqlite ];
+      });
     })
     (_: prev: {
       inherit (prev.lixPackageSets.stable)
