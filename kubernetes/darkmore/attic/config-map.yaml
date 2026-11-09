@@ -5,8 +5,8 @@ metadata:
 data:
   attic.conf: |-
     listen = "0.0.0.0:8080"
-    allowed-hosts = ["attic.infrastructure.ramona.fun"]
-    api-endpoint = "https://attic.infrastructure.ramona.fun/"
+    allowed-hosts = ["attic.infrastructure.ramona.fun", "attic.i.ramona.fun"]
+    api-endpoint = "https://attic.i.ramona.fun/"
     
     [storage]
     type = "local"

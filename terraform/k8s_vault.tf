@@ -90,7 +90,7 @@ resource "helm_release" "vault" {
       logFormat = "json"
       httproute = {
         enabled    = true
-        hostnames  = ["vault.infrastructure.ramona.fun"]
+        hostnames  = ["vault.i.ramona.fun"]
         parentRefs = [{ name = "gateway-tailscale", namespace = "kgateway-system" }]
       }
       dataStorage = {
