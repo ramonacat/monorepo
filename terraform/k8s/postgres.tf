@@ -18,7 +18,7 @@ resource "helm_release" "cloudnative-pg" {
       data = {
         // make sure the database comes back up quickly after a failover:
         // https://cloudnative-pg.io/docs/1.30/troubleshooting/#replicas-take-over-two-minutes-to-reconnect-after-a-failover
-        STANDBY_TCP_USER_TIMEOUT = "100ms"
+        STANDBY_TCP_USER_TIMEOUT = "100"
       }
     }
   })]
