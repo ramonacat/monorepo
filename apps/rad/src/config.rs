@@ -1,4 +1,5 @@
 use anyhow::Context;
+use ipnet::IpNet;
 use rlib::config::SecretValue;
 use std::fs;
 use std::net::SocketAddr;
@@ -73,6 +74,7 @@ pub struct Configuration {
     // TODO add defaults for paths so they don't all have to be configured?
     pub state: PathBuf,
     pub host_group_name: Option<String>,
+    pub home_subnet: IpNet,
 }
 
 impl Configuration {
