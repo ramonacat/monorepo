@@ -48,14 +48,14 @@ impl Task for HostStateUpdate {
             .filter(|x| {
                 context.config.home_subnet.contains(&x.address) && matches!(x.address, IpNet::V4(_))
             })
-            .map(|x| x.address.to_string())
+            .map(|x| x.address.addr().to_string())
             .collect();
 
         ras_client
             .upsert_dns_record(
                 "i.ramona.fun",
                 &format!(
-                    "{}.devices.i.ramona.fun",
+                    "{}.devices.i.ramona.fun.",
                     context.host_identity.hostname().first_label()
                 ),
                 "A",

@@ -27,7 +27,7 @@ _: {
   config = {
     ramona = {
       machine.location = "home";
-      home-network = "10.32.3.0/24";
+      home-subnet = "10.32.3.0/24";
     };
   };
 }

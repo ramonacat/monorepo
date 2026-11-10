@@ -152,7 +152,7 @@
           };
         };
       host-group-name = lib.mkOption { type = with lib.types; nullOr str; };
-      home-network = lib.mkOption { type = with lib.types; str; };
+      home-subnet = lib.mkOption { type = with lib.types; str; };
     };
   };
   config = {
@@ -166,7 +166,7 @@
               key = "/var/ramona/identity/certificate.key";
               state = "/var/ramona/rad/state.json";
               host_group_name = config.ramona.host-group-name;
-              home_network = config.ramona.home-network;
+              home_subnet = config.ramona.home-subnet;
             }
             // (
               if !config.ramona.router.enabled then

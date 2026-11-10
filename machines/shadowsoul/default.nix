@@ -14,7 +14,7 @@ _: {
     ramona = {
       machine.location = "pl1";
       # TODO this is kinda wrong, this machine should live on its own (perhaps virtual) subnet, instead of depending on host's network, also we don't route that subnnet
-      home-network = "192.168.2.0/24";
+      home-subnet = "192.168.2.0/24";
     };
   };
 }
