@@ -85,6 +85,7 @@
     ];
 
     ramona = {
+      home-network = "10.0.0.0/24";
       updates = {
         mode = "boot";
         post-update = "touch /var/run/reboot-required";

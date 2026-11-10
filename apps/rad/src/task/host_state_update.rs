@@ -1,6 +1,7 @@
 use std::time::Duration;
 
 use async_trait::async_trait;
+use ipnet::IpNet;
 use rlib::hosts::{NetworkingState, NixosState, PostHostStateRequest, WireguardState};
 
 use crate::task::{Task, TaskContext, TaskResult};
@@ -39,6 +40,28 @@ impl Task for HostStateUpdate {
 
         ras_client
             .update_host_state(context.host_identity.hostname(), &request_body)
+            .await?;
+
+        // TODO support ipv6 as well
+        let ip_local = host_network_info
+            .addresses()
+            .filter(|x| {
+                context.config.home_subnet.contains(&x.address) && matches!(x.address, IpNet::V4(_))
+            })
+            .map(|x| x.address.to_string())
+            .collect();
+
+        ras_client
+            .upsert_dns_record(
+                "i.ramona.fun",
+                &format!(
+                    "{}.devices.i.ramona.fun",
+                    context.host_identity.hostname().first_label()
+                ),
+                "A",
+                ip_local,
+                None,
+            )
             .await?;
 
         Ok(TaskResult::ScheduleAgainIn(Duration::from_mins(1)))

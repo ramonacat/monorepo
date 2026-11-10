@@ -25,6 +25,9 @@ _: {
     ./woodpecker-agent.nix
   ];
   config = {
-    ramona.machine.location = "home";
+    ramona = {
+      machine.location = "home";
+      home-network = "10.32.3.0/24";
+    };
   };
 }
