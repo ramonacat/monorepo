@@ -3,7 +3,7 @@ resource "helm_release" "kgateway-crds" {
   chart            = "oci://cr.kgateway.dev/kgateway-dev/charts/kgateway-crds"
   namespace        = "kgateway-system"
   create_namespace = true
-  version          = "v2.5.1"
+  version          = "v2.5.2"
 }
 
 resource "helm_release" "kgateway" {
@@ -11,7 +11,7 @@ resource "helm_release" "kgateway" {
   chart            = "oci://cr.kgateway.dev/kgateway-dev/charts/kgateway"
   namespace        = helm_release.kgateway-crds.namespace
   create_namespace = true
-  version          = "v2.5.1"
+  version          = "v2.5.2"
 
   values = [yamlencode({
     controller = {
