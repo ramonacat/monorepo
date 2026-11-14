@@ -11,6 +11,7 @@ module "scarletwound-vlan5" {
   tagged_ports = [
     routeros_interface_bridge.scarletwound-bridge0.name,
     routeros_interface_ethernet.scarletwound-ether[3].name,
+    routeros_interface_ethernet.scarletwound-ether[4].name,
   ]
   untagged_ports = [
     routeros_interface_wireless.scarletwound-wlan1-low-privilege.name,
