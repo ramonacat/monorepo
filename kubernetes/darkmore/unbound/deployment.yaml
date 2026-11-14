@@ -25,7 +25,7 @@ spec:
         - name: forgejo-container-credentials
       containers:
       - name: unbound
-        image: code.ramona.fun/ramona/monorepo/unbound:1793914759
+        image: code.ramona.fun/ramona/monorepo/unbound:1794219286
         imagePullPolicy: IfNotPresent
         resources:
           requests:
