@@ -5,7 +5,7 @@ edition = "2024"
 
 [dependencies]
 askama = "0.16.1"
-nix = { version = "0.31.3", features = ["signal"] }
+nix = { version = "0.32.0", features = ["signal"] }
 rlib = { path = "../../libs/rust/rlib/" }
 rustls = { version = "0.23.46", features = ["aws-lc-rs"] }
 serde = { version = "1.0.229", features = ["derive"] }
