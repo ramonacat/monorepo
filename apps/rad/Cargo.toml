@@ -12,7 +12,7 @@ reqwest = { version = "0.13.5", features = ["json"] }
 dotenvy = "0.15.7"
 serde = { version = "1.0.229", features = ["derive"] }
 serde_json = "1.0.151"
-nix = { version = "0.31.3", features = ["hostname", "net"] }
+nix = { version = "0.32.0", features = ["hostname", "net"] }
 ipnet = { version = "2.12.2", features = ["serde"] }
 thiserror = "2.0.20"
 x25519-dalek = { version = "3.0.0", features = ["static_secrets"] }
