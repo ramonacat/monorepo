@@ -128,14 +128,19 @@ async fn upsert_records(
         .collect();
 
     for (zone, hostname) in hostnames {
-        ras_client
-            .upsert_dns_record(zone, &format!("{hostname}."), "A", ipv4.clone(), None)
-            .await
-            .map_err(Error::FailedToUpdateRecords)?;
-        ras_client
-            .upsert_dns_record(zone, &format!("{hostname}."), "AAAA", ipv6.clone(), None)
-            .await
-            .map_err(Error::FailedToUpdateRecords)?;
+        if !ipv4.is_empty() {
+            ras_client
+                .upsert_dns_record(zone, &format!("{hostname}."), "A", ipv4.clone(), None)
+                .await
+                .map_err(Error::FailedToUpdateRecords)?;
+        }
+
+        if !ipv6.is_empty() {
+            ras_client
+                .upsert_dns_record(zone, &format!("{hostname}."), "AAAA", ipv6.clone(), None)
+                .await
+                .map_err(Error::FailedToUpdateRecords)?;
+        }
     }
 
     Ok(())
@@ -203,6 +208,74 @@ async fn service_controller(ras_client: RasClient, client: Client) {
                 }
             },
             |_service, _error: &Error, _data| Action::requeue(Duration::from_secs(10)),
+            Arc::new(Data {}),
+        )
+        .for_each(|result| async move {
+            match result {
+                Ok(o) => info!(?o, "reconciled"),
+                Err(e) => error!(?e, "reconciliation failed"),
+            }
+        })
+        .await;
+}
+
+async fn tls_route_controller(ras_client: RasClient, client: Client) {
+    let api: Api<gateway_api::tlsroutes::TlsRoute> = Api::all(client.clone());
+
+    Controller::new(api, watcher::Config::default())
+        .shutdown_on_signal()
+        .run(
+            |route, _data| {
+                let client = client.clone();
+                let ras_client = ras_client.clone();
+
+                async move {
+                    let action_requeue = Action::requeue(Duration::from_secs(10));
+
+                    let config: crate::Config =
+                        rlib::config::load().map_err(Error::ConfigLoadFailed)?;
+                    let hostnames: Vec<_> = hostnames_to_zones(&route.spec.hostnames, &config);
+
+                    if hostnames.is_empty() {
+                        return Ok(action_requeue);
+                    }
+
+                    for parent in route
+                        .status
+                        .as_ref()
+                        .map(|x| x.parents.clone())
+                        .iter()
+                        .flatten()
+                    {
+                        let addresses = resolve_parent_ref_to_addresses(
+                            &client,
+                            parent.parent_ref.group.as_deref(),
+                            &parent.parent_ref.kind.clone().unwrap_or_default(),
+                            &parent
+                                .parent_ref
+                                .namespace
+                                .clone()
+                                .or_else(|| route.metadata.namespace.clone())
+                                .unwrap(),
+                            &parent.parent_ref.name,
+                        )
+                        .await;
+
+                        match addresses {
+                            Ok(ips) => {
+                                upsert_records(&ips, &hostnames, &ras_client).await?;
+                            }
+                            Err(e @ Error::UnsupportedGateway { .. }) => {
+                                info!(?e, "skipping unsupported gateway");
+                            }
+                            Err(e) => return Err(e),
+                        }
+                    }
+
+                    Ok::<_, Error>(Action::requeue(Duration::from_secs(10)))
+                }
+            },
+            |_route, _error, _data| Action::requeue(Duration::from_secs(10)),
             Arc::new(Data {}),
         )
         .for_each(|result| async move {
@@ -288,6 +361,7 @@ async fn http_route_controller(ras_client: RasClient, client: Client) {
 pub async fn controller(ras_client: RasClient, client: Client) {
     tokio::join!(
         http_route_controller(ras_client.clone(), client.clone()),
+        tls_route_controller(ras_client.clone(), client.clone()),
         service_controller(ras_client, client)
     );
 }
