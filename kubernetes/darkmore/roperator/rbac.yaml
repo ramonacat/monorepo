@@ -8,7 +8,7 @@ rules:
     resources: ['services', 'services/status']
     verbs: ['list', 'watch', 'patch']
   - apiGroups: ['gateway.networking.k8s.io']
-    resources: ['httproutes']
+    resources: ['httproutes', 'tlsroutes']
     verbs: ['list', 'watch']
   - apiGroups: ['gateway.networking.k8s.io']
     resources: ['gateways']
