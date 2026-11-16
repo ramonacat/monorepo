@@ -10,6 +10,7 @@
       "vfat"
       "xfs"
       "bcachefs"
+      "ext4"
     ];
   };
 }
