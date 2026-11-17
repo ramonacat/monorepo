@@ -1,4 +1,4 @@
-use std::{fs, io, net::Ipv4Addr};
+use std::{fs, net::Ipv4Addr, path::PathBuf};
 
 use base64_light::base64_encode;
 use clap::Subcommand;
@@ -8,18 +8,31 @@ use kube::config::{
 
 #[derive(Debug, Subcommand)]
 pub enum Action {
-    CreateConfig { name: String, server_ip: Ipv4Addr },
+    CreateConfig {
+        name: String,
+        ca: PathBuf,
+        cert: PathBuf,
+        key: PathBuf,
+        server_ip: Ipv4Addr,
+        output: PathBuf,
+    },
 }
 
 pub fn cli(action: Action) {
     match action {
-        Action::CreateConfig { name, server_ip } => {
-            // TODO we should probably just ship the CA cert to all nodes
-            let ca = fs::read_to_string("ca.crt").unwrap();
+        Action::CreateConfig {
+            name,
+            ca,
+            cert,
+            key,
+            server_ip,
+            output,
+        } => {
+            let ca = fs::read_to_string(ca).unwrap();
 
             // TODO generate the cert automagically?
-            let user_cert = fs::read_to_string(format!("{name}.crt")).unwrap();
-            let user_key = fs::read_to_string(format!("{name}.key")).unwrap();
+            let user_cert = fs::read_to_string(cert).unwrap();
+            let user_key = fs::read_to_string(key).unwrap();
 
             let cluster_name = "kubernetes".to_string();
             let context_name = format!("{name}@{cluster_name}");
@@ -56,7 +69,8 @@ pub fn cli(action: Action) {
                 ..Default::default()
             };
 
-            serde_saphyr::to_io_writer(&mut io::stdout(), &kubeconfig).unwrap();
+            let mut writer = fs::File::create(output).unwrap();
+            serde_saphyr::to_io_writer(&mut writer, &kubeconfig).unwrap();
         }
     }
 }

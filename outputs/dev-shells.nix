@@ -154,6 +154,7 @@ pkgs.mkShell {
       woodpecker-cli
       nix-fast-build
       nix-eval-jobs
+      cargo-udeps
 
       package-versions.nodejs
       package-versions.rust-version

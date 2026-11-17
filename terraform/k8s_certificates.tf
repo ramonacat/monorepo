@@ -7,6 +7,33 @@ resource "vault_policy" "cert-issue-kubernetes-darkmore" {
   EOT
 }
 
+resource "vault_policy" "cert-issue-kubernetes-christanti" {
+  name   = "cert-issue-kubernetes-christanti"
+  policy = <<-EOT
+    path "/pki-kubernetes-christanti/issue/*" {
+      capabilities = ["create", "patch", "read", "update"]
+    }
+  EOT
+}
+
+resource "vault_policy" "cert-issue-kubernetes-christanti-etcd" {
+  name   = "cert-issue-kubernetes-christanti-etcd"
+  policy = <<-EOT
+    path "/pki-kubernetes-christanti-etcd/issue/*" {
+      capabilities = ["create", "patch", "read", "update"]
+    }
+  EOT
+}
+
+resource "vault_policy" "cert-issue-kubernetes-christanti-front-proxy" {
+  name   = "cert-issue-kubernetes-christanti-front-proxy"
+  policy = <<-EOT
+    path "/pki-kubernetes-christanti-front-proxy/issue/*" {
+      capabilities = ["create", "patch", "read", "update"]
+    }
+  EOT
+}
+
 resource "vault_cert_auth_backend_role" "hosts-kubernetes-darkmore" {
   name         = "hosts-kubernetes-darkmore"
   certificate  = module.pki-hosts.certificate
@@ -15,6 +42,32 @@ resource "vault_cert_auth_backend_role" "hosts-kubernetes-darkmore" {
   token_policies = setunion(
     vault_cert_auth_backend_role.hosts.token_policies,
     [vault_policy.cert-issue-kubernetes-darkmore.name]
+  )
+}
+
+resource "vault_policy" "christanti-sa-key" {
+  name = "christanti-sa-key"
+
+  policy = <<-EOT
+    path "/secrets/kubernetes/christanti/data/cluster/service-account-key" {
+      capabilities = ["read"]
+    }
+  EOT
+}
+
+resource "vault_cert_auth_backend_role" "hosts-kubernetes-christanti" {
+  name         = "hosts-kubernetes-christanti"
+  certificate  = module.pki-hosts.certificate
+  backend      = vault_auth_backend.cert.path
+  ocsp_enabled = false
+  token_policies = setunion(
+    vault_cert_auth_backend_role.hosts.token_policies,
+    [
+      vault_policy.cert-issue-kubernetes-christanti.name,
+      vault_policy.cert-issue-kubernetes-christanti-etcd.name,
+      vault_policy.cert-issue-kubernetes-christanti-front-proxy.name,
+      vault_policy.christanti-sa-key.name,
+    ]
   )
 }
 
@@ -58,6 +111,17 @@ resource "vault_mount" "kv-kubernetes-darkmore" {
 
 resource "vault_kv_secret_backend_v2" "kubernetes-darkmore" {
   mount        = vault_mount.kv-kubernetes-darkmore.path
+  max_versions = 5
+}
+
+resource "vault_mount" "kv-kubernetes-christanti" {
+  path    = "secrets/kubernetes/christanti"
+  type    = "kv"
+  options = { version = "2" }
+}
+
+resource "vault_kv_secret_backend_v2" "kubernetes-christanti" {
+  mount        = vault_mount.kv-kubernetes-christanti.path
   max_versions = 5
 }
 

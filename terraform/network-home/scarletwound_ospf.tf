@@ -35,6 +35,16 @@ resource "routeros_routing_ospf_interface_template" "scarletwound-tunnels" {
   type     = "ptp"
 }
 
+resource "routeros_routing_ospf_interface_template" "scarletwound-kubernetes-depraysie" {
+  provider = routeros.router-scarletwound
+
+  area    = routeros_routing_ospf_area.scarletwound-backbone.name
+  use_bfd = true
+  cost    = 1000
+  # TODO this should come from the ras ipam provider
+  networks = ["10.64.0.0/11"]
+}
+
 resource "routeros_routing_bfd_configuration" "scarletwound-main" {
   provider = routeros.router-scarletwound
 
