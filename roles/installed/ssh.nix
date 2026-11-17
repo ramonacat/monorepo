@@ -7,7 +7,10 @@
       services.openssh = {
         openFirewall = false;
       };
-      networking.firewall.interfaces.tailscale0.allowedTCPPorts = config.services.openssh.ports;
+      networking.firewall.extraInputRules = ''
+        ip saddr 10.0.0.0/8 tcp dport 22 accept
+        ip saddr 100.64.0.0/10 tcp dport 22 accept
+      '';
 
       age.secrets = {
         "${config.networking.hostName}-ssh-host-key-ed25519" = {

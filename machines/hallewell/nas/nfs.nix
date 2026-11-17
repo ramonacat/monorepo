@@ -9,7 +9,7 @@
           options = "rw,sync,all_squash,anonuid=${toString anonuid},no_subtree_check,insecure";
         in
         ''
-          ${paths.hallewell.nas-share} 10.0.0.0/8(${options}) 100.0.0.0/8(${options})
+          ${paths.hallewell.nas-share} 10.0.0.0/8(${options}) 100.64.0.0/10(${options})
         '';
     };
     networking.firewall.allowedTCPPorts = [

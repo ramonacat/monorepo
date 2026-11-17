@@ -1,5 +1,4 @@
 mod kubernetes;
-mod pki;
 
 use std::io;
 
@@ -8,10 +7,6 @@ use clap_complete::Shell;
 
 #[derive(Debug, Subcommand)]
 enum Commands {
-    Pki {
-        #[command(subcommand)]
-        action: pki::Action,
-    },
     Kubernetes {
         #[command(subcommand)]
         action: kubernetes::Action,
@@ -31,7 +26,6 @@ fn main() {
     let args = Args::parse();
 
     match args.command {
-        Commands::Pki { action } => pki::cli(action),
         Commands::Kubernetes { action } => kubernetes::cli(action),
         Commands::Completions { shell } => {
             let mut command = Args::command();

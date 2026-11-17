@@ -46,6 +46,16 @@ resource "authentik_provider_oauth2" "vault" {
     },
     {
       matching_mode     = "strict",
+      url               = "https://vault.i.ramona.fun/ui/vault/auth/oidc/oidc/callback"
+      redirect_uri_type = "authorization"
+    },
+    {
+      matching_mode     = "strict",
+      url               = "https://vault.i.ramona.fun/v1/auth/oidc/oidc/callback"
+      redirect_uri_type = "authorization"
+    },
+    {
+      matching_mode     = "strict",
       url               = "http://localhost:8250/oidc/callback"
       redirect_uri_type = "authorization"
     },
@@ -96,6 +106,8 @@ resource "vault_jwt_auth_backend_role" "admin" {
   allowed_redirect_uris = [
     "https://vault.internal.ramona.fun/ui/vault/auth/oidc/oidc/callback",
     "https://vault.internal.ramona.fun/v1/auth/oidc/oidc/callback",
+    "https://vault.i.ramona.fun/ui/vault/auth/oidc/oidc/callback",
+    "https://vault.i.ramona.fun/v1/auth/oidc/oidc/callback",
     "http://localhost:8250/oidc/callback",
   ]
 }

@@ -81,7 +81,6 @@ resource "routeros_bridge_vlan" "everbleed-vlan5" {
     routeros_interface_ethernet.everbleed-ether[0].name
   ]
   untagged = [
-    routeros_interface_ethernet.everbleed-ether[4].name
   ]
   vlan_ids = [5]
 }
@@ -123,4 +122,17 @@ resource "routeros_bridge_vlan" "everbleed-vlan8" {
     routeros_interface_ethernet.everbleed-ether[6].name
   ]
   vlan_ids = [8]
+}
+
+resource "routeros_bridge_vlan" "everbleed-vlan9" {
+  provider = routeros.router-everbleed
+
+  bridge = routeros_interface_bridge.everbleed-bridge0.name
+  tagged = [
+    routeros_interface_ethernet.everbleed-ether[0].name
+  ]
+  untagged = [
+    routeros_interface_ethernet.everbleed-ether[4].name
+  ]
+  vlan_ids = [9]
 }

@@ -10,6 +10,7 @@ let
 
   shadowsoul = ssh-keys.machines.shadowsoul.rsa;
   hallewell = ssh-keys.machines.hallewell.rsa;
+  depraysie = ssh-keys.machines.depraysie.rsa;
 
   darkmore-control-plane-0 = ssh-keys.machines.darkmore-control-plane-0.rsa;
   darkmore-control-plane-1 = ssh-keys.machines.darkmore-control-plane-1.rsa;
@@ -21,6 +22,7 @@ let
   privateMachines = [
     hallewell
     shadowsoul
+    depraysie
   ];
 
   publicServers = [
@@ -34,6 +36,8 @@ let
   allMachines = privateMachines ++ publicServers;
 in
 {
+  "depraysie-ssh-host-key-rsa.age".publicKeys = users ++ ci ++ [ depraysie ];
+  "depraysie-ssh-host-key-ed25519.age".publicKeys = users ++ ci ++ [ depraysie ];
   "darkmore-control-plane-0-ssh-host-key-ed25519.age".publicKeys =
     users
     ++ ci

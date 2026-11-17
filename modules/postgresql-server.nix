@@ -35,7 +35,7 @@
           #type database    DBuser  addresss    auth-method
           local all         all                 trust
           local replication all                 trust
-          host  all         all     100.0.0.0/8 scram-sha-256
+          host  all         all     100.64.0.0/10 scram-sha-256
         '';
 
         package = postgresPackage;
