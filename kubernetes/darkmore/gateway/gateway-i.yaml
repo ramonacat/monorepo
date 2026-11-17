@@ -23,6 +23,8 @@ spec:
     name: gateway-i
   default: 
     httpSettings:
+      streamIdleTimeout: "7200s"
+      idleTimeout: "7200s"
       upgradeConfig:
         enabledUpgrades:
           - websocket
