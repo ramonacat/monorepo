@@ -4,6 +4,7 @@ use std::net::IpAddr;
 use chrono::{DateTime, Utc};
 use ipnet::IpNet;
 use serde::{Deserialize, Serialize};
+use uuid::Uuid;
 
 #[derive(Debug, Serialize, Deserialize, Clone)]
 #[serde(transparent)]
@@ -63,6 +64,7 @@ pub struct WireguardState {
 
 #[derive(Debug, Serialize, Deserialize)]
 pub struct NetworkingState {
+    pub main_ip: Option<IpNet>,
     pub addresses: Vec<HostAddress>,
     pub wireguard: Option<WireguardState>,
 }
@@ -78,4 +80,12 @@ pub struct PostHostStateRequest {
     pub closure: Option<NixosState>,
     pub networking: Option<NetworkingState>,
     pub group_name: Option<String>,
+}
+
+#[derive(Debug, Serialize, Deserialize)]
+pub struct HostStateV2 {
+    pub id: Uuid,
+    pub main_ip: IpAddr,
+    pub zone: String,
+    pub region: String,
 }

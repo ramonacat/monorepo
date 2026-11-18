@@ -204,6 +204,7 @@ async fn update_state(
                         available_ports: vec![],
                         public_key: key.to_public_base64(),
                     }),
+                    main_ip: None,
                 }),
                 group_name: None,
             },

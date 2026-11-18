@@ -1,0 +1,18 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "INSERT INTO routing_route (id, target_host_id, target_ips, target_cidr, blackhole) VALUES (\n        $1,\n        (SELECT id FROM host WHERE name=$2),\n        $3, $4, $5\n    )",
+  "describe": {
+    "columns": [],
+    "parameters": {
+      "Left": [
+        "Uuid",
+        "Text",
+        "InetArray",
+        "Cidr",
+        "Bool"
+      ]
+    },
+    "nullable": []
+  },
+  "hash": "b4dc9c0018bec10b399c0298b68e555d81aea73a63320350b59bf87eed7d82e7"
+}

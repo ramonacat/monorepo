@@ -1,8 +1,12 @@
 pub mod group;
 
-use crate::services::{host::update_group, ipam::update_live_ips, wireguard::update_wireguard};
+use crate::services::{
+    host::{update_group, update_main_ip},
+    ipam::update_live_ips,
+    wireguard::update_wireguard,
+};
 use axum::{Json, extract, http::StatusCode};
-use rlib::hosts::{HostState, Hostname, NixClosureState, PostHostStateRequest};
+use rlib::hosts::{HostState, HostStateV2, Hostname, NixClosureState, PostHostStateRequest};
 use serde::{Deserialize, Serialize};
 use sqlx::{Connection, query};
 use tracing::instrument;
@@ -88,6 +92,9 @@ pub async fn post_host_state(
                 if let Some(networking) = request.networking {
                     update_live_ips(tx, &hostname, networking.addresses).await?;
                     update_wireguard(tx, &hostname, networking.wireguard).await?;
+                    if let Some(main_ip) = networking.main_ip {
+                        update_main_ip(tx, &hostname, main_ip).await?;
+                    }
                 }
 
                 update_group(tx, &hostname, request.group_name.as_deref()).await?;
@@ -183,4 +190,22 @@ pub async fn delete(
     extract::State(app_state): extract::State<AppState>,
     extract::Path(hostname_value): extract::Path<String>,
 ) {
+}
+
+#[instrument]
+pub async fn get_host_state(
+    extract::State(app_state): extract::State<AppState>,
+    extract::Path(hostname): extract::Path<String>,
+) -> (StatusCode, Json<HostStateV2>) {
+    let mut connection = app_state.db_connect().await;
+    let hostname = Hostname::new(hostname);
+
+    let state = connection
+        .transaction(|tx| {
+            Box::pin(async move { crate::services::host::get_state_v2(tx, hostname).await })
+        })
+        .await
+        .unwrap();
+
+    (StatusCode::OK, Json(state))
 }

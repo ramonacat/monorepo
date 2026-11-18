@@ -1,0 +1,74 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "\n        SELECT \n            rr.id, \n            rr.target_ips,\n            rr.target_cidr,\n            rr.blackhole,\n            h.name AS hostname \n        FROM routing_route rr \n        INNER JOIN host h ON h.id=rr.target_host_id\n    ",
+  "describe": {
+    "columns": [
+      {
+        "ordinal": 0,
+        "name": "id",
+        "type_info": "Uuid",
+        "origin": {
+          "Table": {
+            "table": "routing_route",
+            "name": "id"
+          }
+        }
+      },
+      {
+        "ordinal": 1,
+        "name": "target_ips",
+        "type_info": "InetArray",
+        "origin": {
+          "Table": {
+            "table": "routing_route",
+            "name": "target_ips"
+          }
+        }
+      },
+      {
+        "ordinal": 2,
+        "name": "target_cidr",
+        "type_info": "Cidr",
+        "origin": {
+          "Table": {
+            "table": "routing_route",
+            "name": "target_cidr"
+          }
+        }
+      },
+      {
+        "ordinal": 3,
+        "name": "blackhole",
+        "type_info": "Bool",
+        "origin": {
+          "Table": {
+            "table": "routing_route",
+            "name": "blackhole"
+          }
+        }
+      },
+      {
+        "ordinal": 4,
+        "name": "hostname",
+        "type_info": "Text",
+        "origin": {
+          "Table": {
+            "table": "host",
+            "name": "name"
+          }
+        }
+      }
+    ],
+    "parameters": {
+      "Left": []
+    },
+    "nullable": [
+      false,
+      false,
+      false,
+      false,
+      false
+    ]
+  },
+  "hash": "79e414f285e9cfd6706aedcbb3e42fa60de3c47130bfccb21f32f7ab701b0408"
+}
