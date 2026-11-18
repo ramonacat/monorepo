@@ -65,7 +65,7 @@ pub async fn read(config: &Configuration) -> anyhow::Result<HostNetworkInfo> {
 
             ip_addresses.push(HostAddress {
                 address: IpNet::V4(Ipv4Net::with_netmask(ipv4.ip(), netmask)?),
-                interface: address.interface_name.clone(),
+                interface: address.interface_name,
             });
         } else if let Some(ipv6) = address.address.and_then(|x| x.as_sockaddr_in6().copied()) {
             let netmask = address
@@ -77,7 +77,7 @@ pub async fn read(config: &Configuration) -> anyhow::Result<HostNetworkInfo> {
 
             ip_addresses.push(HostAddress {
                 address: IpNet::V6(Ipv6Net::with_netmask(ipv6.ip(), netmask)?),
-                interface: address.interface_name.clone(),
+                interface: address.interface_name,
             });
         }
     }

@@ -17,6 +17,7 @@ mod homes;
 mod hosts;
 mod ipam;
 mod load_balancer;
+mod routing;
 mod services;
 mod versions;
 mod wireguard;
@@ -46,7 +47,9 @@ async fn main() {
         .route("/hosts", get(hosts::get_current_state))
         .route(
             "/hosts/{hostname}",
-            delete(hosts::delete).post(hosts::post_host_state),
+            delete(hosts::delete)
+                .post(hosts::post_host_state)
+                .get(hosts::get_host_state),
         )
         .route("/hosts/{hostname}/tunnels", get(wireguard::get_tunnels))
         .route(
@@ -83,6 +86,11 @@ async fn main() {
             delete(dns::delete_by_name),
         )
         .route("/dns", get(dns::get_all_zones))
+        .route(
+            "/routing/routes",
+            get(routing::get_routes).post(routing::post_routes),
+        )
+        .route("/routing/routes/{id}", delete(routing::delete_routes_by_id))
         .with_state(app_state);
 
     let listener = tokio::net::TcpListener::bind("0.0.0.0:3000").await.unwrap();

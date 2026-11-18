@@ -1,0 +1,15 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "UPDATE host SET main_ip=$1 WHERE name=$2",
+  "describe": {
+    "columns": [],
+    "parameters": {
+      "Left": [
+        "Inet",
+        "Text"
+      ]
+    },
+    "nullable": []
+  },
+  "hash": "7d6c3ac3dfaad47bd34d0159f34050c050d9d2c92f69f12eff49db17d86e0671"
+}

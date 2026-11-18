@@ -1,0 +1,64 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "SELECT id, main_ip, zone, region FROM host WHERE name = $1",
+  "describe": {
+    "columns": [
+      {
+        "ordinal": 0,
+        "name": "id",
+        "type_info": "Uuid",
+        "origin": {
+          "Table": {
+            "table": "host",
+            "name": "id"
+          }
+        }
+      },
+      {
+        "ordinal": 1,
+        "name": "main_ip",
+        "type_info": "Inet",
+        "origin": {
+          "Table": {
+            "table": "host",
+            "name": "main_ip"
+          }
+        }
+      },
+      {
+        "ordinal": 2,
+        "name": "zone",
+        "type_info": "Text",
+        "origin": {
+          "Table": {
+            "table": "host",
+            "name": "zone"
+          }
+        }
+      },
+      {
+        "ordinal": 3,
+        "name": "region",
+        "type_info": "Text",
+        "origin": {
+          "Table": {
+            "table": "host",
+            "name": "region"
+          }
+        }
+      }
+    ],
+    "parameters": {
+      "Left": [
+        "Text"
+      ]
+    },
+    "nullable": [
+      false,
+      true,
+      false,
+      false
+    ]
+  },
+  "hash": "b3a2097a49aa09b9b3b53c39cb095f483c81d6b7069d665f73b938b73a5e2137"
+}

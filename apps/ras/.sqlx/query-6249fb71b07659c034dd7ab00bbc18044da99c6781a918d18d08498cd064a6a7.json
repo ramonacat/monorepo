@@ -1,0 +1,28 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "SELECT address FROM ipam_live_ip WHERE host_id=$1",
+  "describe": {
+    "columns": [
+      {
+        "ordinal": 0,
+        "name": "address",
+        "type_info": "Inet",
+        "origin": {
+          "Table": {
+            "table": "ipam_live_ip",
+            "name": "address"
+          }
+        }
+      }
+    ],
+    "parameters": {
+      "Left": [
+        "Uuid"
+      ]
+    },
+    "nullable": [
+      false
+    ]
+  },
+  "hash": "6249fb71b07659c034dd7ab00bbc18044da99c6781a918d18d08498cd064a6a7"
+}

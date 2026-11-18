@@ -23,6 +23,15 @@ impl Task for HostStateUpdate {
         let host_network_info = crate::host::networking::read(context.config).await?;
         let host_nixos_info = crate::host::nixos::read()?;
 
+        // TODO support ipv6 as well
+        let main_ip: Vec<IpNet> = host_network_info
+            .addresses()
+            .filter(|x| {
+                context.config.home_subnet.contains(&x.address) && matches!(x.address, IpNet::V4(_))
+            })
+            .map(|x| x.address)
+            .collect();
+
         let request_body = PostHostStateRequest {
             closure: Some(NixosState {
                 current_closure: host_nixos_info.current_closure().to_string_lossy().into(),
@@ -34,6 +43,7 @@ impl Task for HostStateUpdate {
                     available_ports: x.available_ports().to_vec(),
                     public_key: x.key().to_public_base64(),
                 }),
+                main_ip: main_ip.first().copied(),
             }),
             group_name: context.config.host_group_name.clone(),
         };
@@ -41,15 +51,6 @@ impl Task for HostStateUpdate {
         ras_client
             .update_host_state(context.host_identity.hostname(), &request_body)
             .await?;
-
-        // TODO support ipv6 as well
-        let ip_local = host_network_info
-            .addresses()
-            .filter(|x| {
-                context.config.home_subnet.contains(&x.address) && matches!(x.address, IpNet::V4(_))
-            })
-            .map(|x| x.address.addr().to_string())
-            .collect();
 
         ras_client
             .upsert_dns_record(
@@ -59,7 +60,7 @@ impl Task for HostStateUpdate {
                     context.host_identity.hostname().first_label()
                 ),
                 "A",
-                ip_local,
+                main_ip.into_iter().map(|x| x.to_string()).collect(),
                 None,
             )
             .await?;
