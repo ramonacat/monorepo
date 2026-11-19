@@ -1,7 +1,7 @@
 pub mod group;
 
 use crate::services::{
-    host::{update_group, update_main_ip},
+    host::{ensure_host, update_group, update_main_ip},
     ipam::update_live_ips,
     wireguard::update_wireguard,
 };
@@ -80,6 +80,8 @@ pub async fn post_host_state(
     connection
         .transaction(|tx| {
             Box::pin(async move {
+                ensure_host(tx, &hostname).await?;
+
                 if let Some(closure_update) = request.closure {
                     update_current_host_closure(
                         tx,

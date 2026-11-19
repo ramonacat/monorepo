@@ -70,3 +70,21 @@ pub async fn get_state_v2(
         region: result.region,
     })
 }
+
+pub async fn ensure_host(
+    tx: &mut Transaction<'_, Postgres>,
+    hostname: &Hostname,
+) -> Result<(), sqlx::Error> {
+    sqlx::query!(
+        "INSERT INTO 
+        host (id, name, nixos_closure_state_id, host_group_id, main_ip) 
+        VALUES(uuidv7(),$1, NULL, NULL, NULL)
+        ON CONFLICT DO NOTHING
+        ",
+        hostname.first_label()
+    )
+    .execute(&mut **tx)
+    .await?;
+
+    Ok(())
+}
