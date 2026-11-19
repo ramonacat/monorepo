@@ -1,20 +1,40 @@
 use std::net::IpAddr;
 
 use askama::Template;
+use ipnet::IpNet;
+
+use crate::config::RoutingInterfaceKind;
 
 #[derive(Debug)]
 pub struct Interface {
     name_pattern: String,
     cost: u32,
-    is_tunnel: bool,
+    kind: RoutingInterfaceKind,
 }
 
 impl Interface {
-    pub const fn new(name_pattern: String, cost: u32, is_tunnel: bool) -> Self {
+    pub const fn new(name_pattern: String, cost: u32, kind: RoutingInterfaceKind) -> Self {
         Self {
             name_pattern,
             cost,
-            is_tunnel,
+            kind,
+        }
+    }
+}
+
+#[derive(Debug)]
+pub struct Route {
+    pub via: IpAddr,
+    pub target_cidr: IpNet,
+    pub blackhole: bool,
+}
+
+impl Route {
+    pub const fn new(via: IpAddr, target_cidr: IpNet, blackhole: bool) -> Self {
+        Self {
+            via,
+            target_cidr,
+            blackhole,
         }
     }
 }
@@ -27,6 +47,7 @@ pub struct ConfigTemplate {
     filter_export: String,
     interfaces: Vec<Interface>,
     additional_config: String,
+    static_routes: Vec<Route>,
 }
 
 impl ConfigTemplate {
@@ -36,6 +57,7 @@ impl ConfigTemplate {
         filter_export: String,
         interfaces: Vec<Interface>,
         additional_config: String,
+        static_routes: Vec<Route>,
     ) -> Self {
         Self {
             router_id,
@@ -43,6 +65,7 @@ impl ConfigTemplate {
             filter_export,
             interfaces,
             additional_config,
+            static_routes,
         }
     }
 }

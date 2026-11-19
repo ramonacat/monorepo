@@ -87,7 +87,9 @@ Name={interface_name}
 [Link]
 ActivationPolicy=always-up
 [Network]
+[Address]
 Address={address}
+Scope=link
                         ",
                         address = local_endpoint.tunnel_ip(),
                     ),

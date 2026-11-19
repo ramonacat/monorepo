@@ -25,6 +25,7 @@
         submodule {
           options = {
             ip = lib.mkOption { type = str; };
+            internal-apiserver-ip = lib.mkOption { type = str; };
             hostname = lib.mkOption { type = str; };
             is-control-plane = lib.mkOption { type = bool; };
             cluster-dns-ip = lib.mkOption { type = str; };
@@ -167,6 +168,7 @@
                 hosts = [ config.networking.hostName ];
                 ips = [
                   config.ramona.kubernetes.ip
+                  config.ramona.kubernetes.internal-apiserver-ip
                   "127.0.0.1"
                 ];
               };
@@ -214,7 +216,7 @@
         };
         default-kube-proxy = {
           config_file = "kube-proxy.conf";
-          common_name = "kube-proxy";
+          common_name = "system:kube-proxy";
           issuer = "client";
         };
       };

@@ -17,6 +17,9 @@ def run_checks(roots: list[AppRoot]):
     for root in roots:
         logger.info(f"runnning checks for {root["path"]}")
 
+        if "go" in root["config"]:
+            check_go(root)
+
         if "nix" in root["config"]:
             check_nix(root)
 
@@ -34,6 +37,11 @@ def run_checks(roots: list[AppRoot]):
 
         if "shell" in root["config"]:
             check_shell(root)
+
+
+def check_go(root: AppRoot):
+    with chdir(root["path"].parent):
+        _ = run_command(["golangci-lint", "run"])
 
 
 def check_nix(root: AppRoot):

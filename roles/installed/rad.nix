@@ -110,9 +110,12 @@
                       type = str;
                     };
                     cost = lib.mkOption { type = int; };
-                    is_tunnel = lib.mkOption {
-                      type = bool;
-                      default = false;
+                    kind = lib.mkOption {
+                      type = enum [
+                        "Passive"
+                        "Broadcast"
+                        "Tunnel"
+                      ];
                     };
                   };
                 });
@@ -121,36 +124,40 @@
                 type = str;
                 default = "/var/ramona/bird.conf";
               };
-              wireguard = lib.mkOption {
-                type =
-                  with lib.types;
-                  submodule {
-                    options = {
-                      host = lib.mkOption {
-                        type = nullOr str;
-                        default = null;
-                      };
-                      available_ports = lib.mkOption {
-                        type = nullOr (listOf port);
-                        default = [
-                          51820
-                          51821
-                          51822
-                          51823
-                          51824
-                          51825
-                          51826
-                          51827
-                          51828
-                          51829
-                        ];
-                      };
-                    };
-                  };
-              };
             };
           };
         };
+      wireguard = lib.mkOption {
+        type =
+          with lib.types;
+          submodule {
+            options = {
+              enabled = lib.mkOption {
+                type = bool;
+                default = false;
+              };
+              host = lib.mkOption {
+                type = nullOr str;
+                default = null;
+              };
+              available_ports = lib.mkOption {
+                type = nullOr (listOf port);
+                default = [
+                  51820
+                  51821
+                  51822
+                  51823
+                  51824
+                  51825
+                  51826
+                  51827
+                  51828
+                  51829
+                ];
+              };
+            };
+          };
+      };
       host-group-name = lib.mkOption { type = with lib.types; nullOr str; };
       home-subnet = lib.mkOption { type = with lib.types; str; };
     };
@@ -173,19 +180,6 @@
                 { }
               else
                 {
-                  wireguard =
-                    (
-                      if config.ramona.router.wireguard.host == null then
-                        { endpoint = "Auto"; }
-                      else
-                        {
-                          inherit (config.ramona.router.wireguard) host available_ports;
-                          endpoint = "Specified";
-                        }
-                    )
-                    // {
-                      key_file = "/var/ramona/wireguard.key";
-                    };
                   routing = {
                     inherit (config.ramona.router)
                       interfaces
@@ -196,6 +190,26 @@
                       ;
                   };
                 }
+            )
+            // (
+              if config.ramona.wireguard.enabled then
+                {
+                  wireguard =
+                    (
+                      if config.ramona.wireguard.host == null then
+                        { endpoint = "Auto"; }
+                      else
+                        {
+                          inherit (config.ramona.wireguard) host available_ports;
+                          endpoint = "Specified";
+                        }
+                    )
+                    // {
+                      key_file = "/var/ramona/wireguard.key";
+                    };
+                }
+              else
+                { }
             )
             // (
               if !config.ramona.mikrotik.enabled then
@@ -232,19 +246,19 @@
       path = [ pkgs.nftables ];
     };
     networking.firewall = {
-      allowedUDPPorts = lib.mkIf config.ramona.router.enabled config.ramona.router.wireguard.available_ports;
+      allowedUDPPorts = lib.mkIf config.ramona.wireguard.enabled config.ramona.wireguard.available_ports;
     };
     ramona.router = {
       interfaces = [
         {
           name_pattern = "wg-*";
           cost = 10000;
-          is_tunnel = true;
+          kind = "Tunnel";
         }
         {
           name_pattern = "lb-*";
           cost = 1;
-          is_tunnel = false;
+          kind = "Passive";
         }
       ];
     };
