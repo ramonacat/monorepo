@@ -60,7 +60,7 @@ impl Task for HostStateUpdate {
                     context.host_identity.hostname().first_label()
                 ),
                 "A",
-                main_ip.into_iter().map(|x| x.to_string()).collect(),
+                main_ip.into_iter().map(|x| x.addr().to_string()).collect(),
                 None,
             )
             .await?;
