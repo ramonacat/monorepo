@@ -2,6 +2,7 @@ inputs: {
   apps = {
     attic = import ./attic.nix inputs;
     auth-proxy = import ./auth-proxy.nix inputs;
+    rccm = import ./rccm.nix inputs;
     ci = import ./ci inputs;
     fup = import ./fup.nix inputs;
     r = import ./r.nix inputs;

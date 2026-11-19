@@ -17,6 +17,7 @@ _: {
       kubernetes = {
         cluster-name = "christanti";
         ip = "10.64.0.10";
+        internal-apiserver-ip = "10.80.0.1";
 
         hostname = "depraysie";
         is-control-plane = true;
@@ -35,5 +36,14 @@ _: {
         ];
       };
     };
+
+    # allow OSPF and BFD from peer routers
+    # allow darkmore to talk with the apiserver (for argocd)
+    networking.firewall.extraInputRules = ''
+      ip saddr 10.64.0.0/11 ip protocol ospfigp accept
+      ip saddr 10.64.0.0/11 udp dport { 3784, 3785, 4784 } accept
+
+      ip saddr 10.0.0.0/11 tcp dport { 6443 } accept
+    '';
   };
 }

@@ -3,6 +3,7 @@ use crate::dns::PostUpsertRequest;
 use crate::ipam::PostIpamAllocateRequest;
 use crate::ipam::PostIpamAllocateResponse;
 use crate::load_balancers::ServicePort;
+use crate::routing::GetRoutesResponse;
 use crate::wireguard::GetTunnelsResponse;
 use std::time::Duration;
 
@@ -181,6 +182,19 @@ impl RasClient {
             .await?;
 
         Ok(zones)
+    }
+
+    pub async fn get_all_routes(&self) -> anyhow::Result<GetRoutesResponse> {
+        let routes: GetRoutesResponse = self
+            .reqwest
+            .get(self.make_url("/routing/routes")?)
+            .send()
+            .await?
+            .error_for_status()?
+            .json()
+            .await?;
+
+        Ok(routes)
     }
 
     fn make_url(&self, path: &str) -> anyhow::Result<Url> {
