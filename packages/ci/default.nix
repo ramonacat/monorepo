@@ -97,6 +97,9 @@ rec {
       python3Packages.python
       python3Packages.uv
 
+      go
+      golangci-lint
+
       package
     ];
     extraCommands = ''

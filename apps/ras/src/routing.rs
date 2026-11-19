@@ -1,27 +1,11 @@
 use sqlx::Connection;
-use std::net::IpAddr;
 
 use axum::{Json, extract};
-use ipnet::IpNet;
-use rlib::hosts::Hostname;
-use serde::{Deserialize, Serialize};
+use rlib::routing::{GetRoutesResponse, Route};
 use uuid::Uuid;
 
 use crate::AppState;
 
-#[derive(Debug, Serialize, Deserialize)]
-pub struct Route {
-    pub id: Uuid,
-    pub target_hostname: Hostname,
-    pub target_ips: Vec<IpAddr>,
-    pub target_cidr: IpNet,
-    pub blackhole: bool,
-}
-
-#[derive(Debug, Serialize, Deserialize)]
-pub struct GetRoutesResponse {
-    routes: Vec<Route>,
-}
 
 pub async fn get_routes(
     extract::State(app_state): extract::State<AppState>,

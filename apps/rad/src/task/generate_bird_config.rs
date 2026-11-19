@@ -56,6 +56,8 @@ impl Task for GenerateBirdConfig {
             })
             .await?;
 
+        let routes = ras_client.get_all_routes().await?.routes;
+
         let config_template = ConfigTemplate::new(
             router_id,
             config_routing.filter_import.clone(),
@@ -63,9 +65,21 @@ impl Task for GenerateBirdConfig {
             config_routing
                 .interfaces
                 .iter()
-                .map(|x| Interface::new(x.name_pattern.clone(), x.cost, x.is_tunnel))
+                .map(|x| Interface::new(x.name_pattern.clone(), x.cost, x.kind))
                 .collect(),
             config_routing.additional_config.clone(),
+            routes
+                .into_iter()
+                .filter(|x| {
+                    x.target_hostname.first_label()
+                        == context.host_identity.hostname().first_label()
+                })
+                .flat_map(|x| {
+                    x.target_ips
+                        .into_iter()
+                        .map(move |y| crate::bird::Route::new(y, x.target_cidr, x.blackhole))
+                })
+                .collect(),
         );
 
         let update_result =

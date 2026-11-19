@@ -1,0 +1,46 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: rccm
+  namespace: rccm
+  labels:
+    app: rccm
+spec:
+  selector:
+    matchLabels:
+      app: rccm
+  replicas: 1
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: rccm
+    spec:
+      tolerations:
+        - key: "node.cloudprovider.kubernetes.io/uninitialized"
+          value: "true"
+          effect: "NoSchedule"
+        - key: "node.kubernetes.io/network-unavailable"
+          effect: "NoSchedule"
+      imagePullSecrets:
+        - name: forgejo-container-credentials
+      dnsPolicy: Default
+      containers:
+      - name: rccm
+        image: code.ramona.fun/ramona/monorepo/rccm:1795178298
+        imagePullPolicy: IfNotPresent
+        resources:
+          requests:
+            cpu: 100m
+            memory: 100Mi
+          limits:
+            cpu: 100m
+            memory: 100Mi
+        args:
+          - /bin/rccm
+          - --cloud-provider=ramona
+          - --cluster-cidr=10.65.0.0/16
+      restartPolicy: Always
+---
+

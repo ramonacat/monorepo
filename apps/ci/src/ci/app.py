@@ -4,6 +4,8 @@ from typing import Final, NotRequired, TypedDict
 
 CONFIG_FILENAME: Final[str] = ".ramonarc.json"
 
+class GoConfig(TypedDict):
+    pass
 
 class NixConfig(TypedDict):
     pass
@@ -30,12 +32,13 @@ class ShellConfig(TypedDict):
 
 
 class AppConfig(TypedDict):
+    go: NotRequired[GoConfig]
     nix: NotRequired[NixConfig]
     nodejs: NotRequired[NodejsConfig]
-    terraform: NotRequired[TerraformConfig]
-    rust: NotRequired[RustConfig]
     python: NotRequired[PythonConfig]
+    rust: NotRequired[RustConfig]
     shell: NotRequired[ShellConfig]
+    terraform: NotRequired[TerraformConfig]
 
 
 class AppRoot(TypedDict):
