@@ -35,7 +35,7 @@ impl Task for HostStateUpdate {
                 }),
                 main_ip: Some(host_network_info.main_ip()),
             }),
-            group_name: context.config.host_group_name.clone(),
+            group_names: context.config.host_group_names.clone(),
         };
 
         ras_client

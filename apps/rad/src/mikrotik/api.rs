@@ -88,12 +88,12 @@ impl<T: Unpin + AsyncWrite + AsyncRead> Api<T> {
         let mut attributes =
             HashMap::from([(".id", id), ("private-key", &key), ("disabled", "false")]);
         let port;
+
         if let Some(listen_port) = listen_port {
             port = listen_port.to_string();
             attributes.insert("listen-port", &port);
-        } else {
-            attributes.insert("listen-port", "");
         }
+
         self.connection
             .send("interface/wireguard/set", attributes, [])
             .await?;

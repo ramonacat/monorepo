@@ -2,15 +2,35 @@ use ipnet::IpNet;
 use rlib::hosts::{HostStateV2, Hostname};
 use sqlx::{Postgres, Transaction};
 
-pub async fn update_group(
+pub async fn update_groups(
     tx: &mut Transaction<'_, Postgres>,
     hostname: &Hostname,
-    group_name: Option<&str>,
+    group_names: &[String],
 ) -> anyhow::Result<()> {
+    let host_id = sqlx::query_scalar!("SELECT id FROM host WHERE name=$1", hostname.first_label())
+        .fetch_one(&mut **tx)
+        .await?;
+
     sqlx::query!(
-        "UPDATE host SET host_group_id=(SELECT id FROM host_group WHERE name=$1) WHERE name=$2",
-        group_name,
-        hostname.first_label()
+        "DELETE FROM host_to_host_group 
+        WHERE host_id=$1 
+            AND host_group_id NOT IN (
+                SELECT id FROM host_group WHERE name IN (
+                    SELECT * FROM unnest($2::text[])
+                )
+            )",
+        host_id,
+        group_names
+    )
+    .execute(&mut **tx)
+    .await?;
+
+    sqlx::query!(
+        "INSERT INTO host_to_host_group (host_id, host_group_id) 
+        SELECT $1, id FROM host_group 
+        WHERE name IN (SELECT * FROM unnest($2::text[]))",
+        host_id,
+        group_names
     )
     .execute(&mut **tx)
     .await?;
@@ -77,8 +97,8 @@ pub async fn ensure_host(
 ) -> Result<(), sqlx::Error> {
     sqlx::query!(
         "INSERT INTO 
-        host (id, name, nixos_closure_state_id, host_group_id, main_ip) 
-        VALUES(uuidv7(),$1, NULL, NULL, NULL)
+        host (id, name, nixos_closure_state_id, main_ip) 
+        VALUES(uuidv7(),$1, NULL, NULL)
         ON CONFLICT DO NOTHING
         ",
         hostname.first_label()

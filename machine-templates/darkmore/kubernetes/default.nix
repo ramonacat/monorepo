@@ -105,6 +105,9 @@
       group = "kubernetes";
     };
     users.groups.kubernetes = { };
-    ramona.host-group-name = "kubernetes/darkmore";
+    ramona.host-group-names = [
+      "kubernetes/darkmore"
+      "kubernetes/darkmore/control-plane"
+    ];
   };
 }

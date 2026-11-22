@@ -86,8 +86,8 @@ pub async fn get_by_host(
         "
         SELECT iaa.cidr, lb.ports 
         FROM load_balancer lb
-        INNER JOIN host_group hg ON hg.id = lb.host_group_id
-        INNER JOIN host h ON h.host_group_id = hg.id
+        INNER JOIN host_to_host_group h2hg ON h2hg.host_group_id=lb.host_group_id
+        INNER JOIN host h ON h.id = h2hg.host_id
         INNER JOIN ipam_address_allocation iaa ON iaa.id = lb.address_allocation_id
         WHERE h.name=$1
     ",

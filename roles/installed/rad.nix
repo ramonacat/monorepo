@@ -158,7 +158,7 @@
             };
           };
       };
-      host-group-name = lib.mkOption { type = with lib.types; nullOr str; };
+      host-group-names = lib.mkOption { type = with lib.types; listOf str; };
       home-subnet = lib.mkOption { type = with lib.types; str; };
     };
   };
@@ -172,7 +172,7 @@
               certificate = "/var/ramona/identity/certificate.crt";
               key = "/var/ramona/identity/certificate.key";
               state = "/var/ramona/rad/state.json";
-              host_group_name = config.ramona.host-group-name;
+              host_group_names = config.ramona.host-group-names;
               home_subnet = config.ramona.home-subnet;
             }
             // (

@@ -206,7 +206,7 @@ async fn update_state(
                     }),
                     main_ip: None,
                 }),
-                group_name: None,
+                group_names: vec![],
             },
         )
         .await?;

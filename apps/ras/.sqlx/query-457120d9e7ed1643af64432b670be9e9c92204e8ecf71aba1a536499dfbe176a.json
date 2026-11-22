@@ -1,6 +1,6 @@
 {
   "db_name": "PostgreSQL",
-  "query": "\n        SELECT iaa.cidr, lb.ports \n        FROM load_balancer lb\n        INNER JOIN host_group hg ON hg.id = lb.host_group_id\n        INNER JOIN host h ON h.host_group_id = hg.id\n        INNER JOIN ipam_address_allocation iaa ON iaa.id = lb.address_allocation_id\n        WHERE h.name=$1\n    ",
+  "query": "\n        SELECT iaa.cidr, lb.ports \n        FROM load_balancer lb\n        INNER JOIN host_to_host_group h2hg ON h2hg.host_group_id=lb.host_group_id\n        INNER JOIN host h ON h.id = h2hg.host_id\n        INNER JOIN ipam_address_allocation iaa ON iaa.id = lb.address_allocation_id\n        WHERE h.name=$1\n    ",
   "describe": {
     "columns": [
       {
@@ -36,5 +36,5 @@
       false
     ]
   },
-  "hash": "425178dc38ace6f8cbb66938887719c30e2853f90fb32fae3da15ae02d00638d"
+  "hash": "457120d9e7ed1643af64432b670be9e9c92204e8ecf71aba1a536499dfbe176a"
 }
