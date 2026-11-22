@@ -18,7 +18,7 @@
                   "type": "host-local",
                   "subnet": "${config.ramona.kubernetes.host-pod-cidr}",
                   "routes": [
-                      { "dst": "0.0.0.0/0", "gw": "${config.ramona.kubernetes.ip}" }
+                      { "dst": "0.0.0.0/0" }
                   ]
               }
           }
