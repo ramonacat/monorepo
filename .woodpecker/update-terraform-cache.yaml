@@ -1,0 +1,25 @@
+when:
+  - event: push
+    branch: main
+    path: 'terraform/*'
+steps:
+  - name: update terraform cache
+    image: code.ramona.fun/ramona/monorepo/ci:1795236739
+    commands:
+      - ./.woodpecker/scripts/update-terraform-cache.bash
+    environment:
+      ATTIC_TOKEN:
+        from_secret: "attic_token"
+      ATTIC_HOME_TOKEN:
+        from_secret: "attic_home_token"
+      SSH_KEY:
+        from_secret: "ssh_key"
+      CACHE_ACCESS_KEY_ID:
+        from_secret: "hetzner_access_key_id"
+      CACHE_ACCESS_KEY_SECRET:
+        from_secret: "hetzner_secret_access_key"
+      GITHUB_TOKEN:
+        from_secret: "github_token"
+      FORGEJO_TOKEN:
+        from_secret: "forgejo_token"
+

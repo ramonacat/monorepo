@@ -11,7 +11,6 @@ cleanup() {
 
 main() {
 	ci setup
-	ci cache pull terraform
 
 	attic watch-store main &
 	{ attic watch-store --ignore-upstream-cache-filter home:home || true; } &
@@ -26,8 +25,6 @@ main() {
 
 		ci publish
 	fi
-
-	ci cache push terraform terraform/.terraform
 }
 
 main
