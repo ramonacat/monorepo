@@ -9,6 +9,7 @@ mod host;
 mod io;
 mod linux;
 mod mikrotik;
+mod network;
 mod state;
 mod systemd;
 mod task;

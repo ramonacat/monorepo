@@ -12,13 +12,13 @@
               "type": "bridge",
               "bridge": "cni0",
               "isGateway": true,
-              "ipMasq": true,
+              "ipMasq": false,
               "hairpinMode": true,
               "ipam": {
                   "type": "host-local",
                   "subnet": "${config.ramona.kubernetes.host-pod-cidr}",
                   "routes": [
-                      { "dst": "0.0.0.0/0" }
+                      { "dst": "0.0.0.0/0", "gw": "${config.ramona.kubernetes.ip}" }
                   ]
               }
           }
@@ -39,17 +39,32 @@
           }
         '';
       };
+    networking = {
+      nftables.tables.masq-cni = {
+        content = ''
+          chain postrouting {
+              type nat hook postrouting priority srcnat; policy accept;
 
-    networking.firewall.trustedInterfaces = [
-      "enp7s0"
-      "cni0"
-    ];
+              ip saddr ${config.ramona.kubernetes.host-pod-cidr} ip daddr ${config.ramona.kubernetes.host-pod-cidr} counter accept
+              ip saddr ${config.ramona.kubernetes.host-pod-cidr} ip daddr 10.0.0.0/8 counter accept
 
-    networking.firewall.interfaces.tailscale0.allowedTCPPorts =
-      lib.mkIf config.ramona.kubernetes.is-control-plane
-        [
-          6443 # kubernetes api server (for admin access)
-        ];
+              ip saddr ${config.ramona.kubernetes.host-pod-cidr} ip daddr != 224.0.0.0/4 counter masquerade
+          };
+        '';
+        family = "ip";
+      };
+
+      firewall.trustedInterfaces = [
+        "enp7s0"
+        "cni0"
+      ];
+
+      firewall.interfaces.tailscale0.allowedTCPPorts =
+        lib.mkIf config.ramona.kubernetes.is-control-plane
+          [
+            6443 # kubernetes api server (for admin access)
+          ];
+    };
 
     ramona.wireguard = {
       enabled = true;
