@@ -1,10 +1,8 @@
 use std::convert::Into;
 
-use rlib::hosts::Hostname;
+use rlib::{hosts::Hostname, routing::Route};
 use sqlx::{Postgres, Transaction};
 use uuid::Uuid;
-
-use crate::routing::Route;
 
 pub async fn get_routes(tx: &mut Transaction<'_, Postgres>) -> Result<Vec<Route>, sqlx::Error> {
     let routes = sqlx::query!(

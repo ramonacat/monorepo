@@ -85,6 +85,21 @@ module "scarletwound-firewall" {
       dst_port    = "3784,3785,4784"
       comment     = "BFD"
     },
+    {
+      chain       = "input"
+      action      = "accept"
+      protocol    = "ospf"
+      src_address = "10.64.0.0/11"
+      comment     = "OSPF"
+    },
+    {
+      chain       = "input"
+      action      = "accept"
+      protocol    = "udp"
+      src_address = "10.64.0.0/11"
+      dst_port    = "3784,3785,4784"
+      comment     = "BFD"
+    },
     { chain = "input", action = "drop" },
     { chain = "forward", action = "drop", connection_state = "invalid" },
     { chain = "forward", action = "drop", connection_nat_state = "!dstnat", connection_state = "new", in_interface_list = routeros_interface_list.scarletwound-wan.name },
@@ -194,6 +209,20 @@ module "scarletwound-firewall" {
       in_interface_list = routeros_interface_list.scarletwound-lan.name,
       dst_address       = "10.254.0.0/16",
       comment           = "access to load balancers"
+    },
+    {
+      chain       = "forward",
+      action      = "accept",
+      src_address = "10.0.0.0/11",
+      dst_address = "10.64.0.0/11",
+      comment     = "darkmore -> christanti"
+    },
+    {
+      chain       = "forward",
+      action      = "accept",
+      src_address = "10.64.0.0/11",
+      dst_address = "10.0.0.0/11",
+      comment     = "christanti -> darkmore"
     },
     {
       chain    = "forward",

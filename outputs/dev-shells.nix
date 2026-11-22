@@ -155,6 +155,8 @@ pkgs.mkShell {
       nix-fast-build
       nix-eval-jobs
       cargo-udeps
+      go
+      golangci-lint
 
       package-versions.nodejs
       package-versions.rust-version

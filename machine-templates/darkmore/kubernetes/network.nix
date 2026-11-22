@@ -51,6 +51,10 @@
           6443 # kubernetes api server (for admin access)
         ];
 
+    ramona.wireguard = {
+      enabled = true;
+    };
+
     ramona.router = {
       enabled = true;
 
@@ -70,6 +74,7 @@
         {
           name_pattern = "enp7s*";
           cost = 500;
+          kind = "Passive";
         }
       ];
       additional_config = ''

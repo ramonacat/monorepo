@@ -48,11 +48,18 @@ pub struct Mikrotik {
     pub wireguard: MikrotikWireguard,
 }
 
+#[derive(Debug, Deserialize, Clone, Copy)]
+pub enum RoutingInterfaceKind {
+    Tunnel,
+    Broadcast,
+    Passive,
+}
+
 #[derive(Debug, Deserialize, Clone)]
 pub struct RoutingInterface {
     pub name_pattern: String,
     pub cost: u32,
-    pub is_tunnel: bool,
+    pub kind: RoutingInterfaceKind,
 }
 
 #[derive(Debug, Deserialize)]

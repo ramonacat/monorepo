@@ -2,7 +2,7 @@
   config = {
     environment.etc =
       let
-        config-path = "/etc/cni/net.d";
+        config-path = "/cni/net.d";
       in
       {
         "${config-path}/10-bridge.conf".text = ''

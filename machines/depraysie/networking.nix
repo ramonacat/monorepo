@@ -3,20 +3,12 @@ _: {
 
   ramona.router = {
     enabled = true;
-    wireguard = {
-      host = "depraysie.devices.i.ramona.fun";
-      available_ports = [
-        51820
-        51821
-        51822
-        51823
-        51824
-        51825
-        51826
-        51827
-        51828
-        51829
-      ];
-    };
+    interfaces = [
+      {
+        name_pattern = "enp0s31f6";
+        cost = 100;
+        kind = "Broadcast";
+      }
+    ];
   };
 }

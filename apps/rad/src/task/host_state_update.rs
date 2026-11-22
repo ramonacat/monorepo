@@ -1,7 +1,6 @@
 use std::time::Duration;
 
 use async_trait::async_trait;
-use ipnet::IpNet;
 use rlib::hosts::{NetworkingState, NixosState, PostHostStateRequest, WireguardState};
 
 use crate::task::{Task, TaskContext, TaskResult};
@@ -23,15 +22,6 @@ impl Task for HostStateUpdate {
         let host_network_info = crate::host::networking::read(context.config).await?;
         let host_nixos_info = crate::host::nixos::read()?;
 
-        // TODO support ipv6 as well
-        let main_ip: Vec<IpNet> = host_network_info
-            .addresses()
-            .filter(|x| {
-                context.config.home_subnet.contains(&x.address) && matches!(x.address, IpNet::V4(_))
-            })
-            .map(|x| x.address)
-            .collect();
-
         let request_body = PostHostStateRequest {
             closure: Some(NixosState {
                 current_closure: host_nixos_info.current_closure().to_string_lossy().into(),
@@ -43,7 +33,7 @@ impl Task for HostStateUpdate {
                     available_ports: x.available_ports().to_vec(),
                     public_key: x.key().to_public_base64(),
                 }),
-                main_ip: main_ip.first().copied(),
+                main_ip: Some(host_network_info.main_ip()),
             }),
             group_name: context.config.host_group_name.clone(),
         };
@@ -60,7 +50,7 @@ impl Task for HostStateUpdate {
                     context.host_identity.hostname().first_label()
                 ),
                 "A",
-                main_ip.into_iter().map(|x| x.addr().to_string()).collect(),
+                vec![host_network_info.main_ip().addr().to_string()],
                 None,
             )
             .await?;

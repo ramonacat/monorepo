@@ -39,6 +39,7 @@ impl WireguardInfo {
 #[derive(Debug)]
 pub struct HostNetworkInfo {
     addresses: Vec<HostAddress>,
+    main_ip: IpNet,
     wireguard: Option<WireguardInfo>,
 }
 
@@ -49,6 +50,10 @@ impl HostNetworkInfo {
 
     pub const fn wireguard(&self) -> Option<&WireguardInfo> {
         self.wireguard.as_ref()
+    }
+
+    pub const fn main_ip(&self) -> IpNet {
+        self.main_ip
     }
 }
 
@@ -100,7 +105,7 @@ pub async fn read(config: &Configuration) -> anyhow::Result<HostNetworkInfo> {
                             // TODO support IPv6
                             IpNet::V6(_) => None,
                         })
-                        .collect(),
+                        .collect::<Vec<IpNet>>(),
                     available_ports
                         .clone()
                         .unwrap_or_else(|| DEFAULT_WIREGUARD_PORTS.to_vec()),
@@ -129,8 +134,17 @@ pub async fn read(config: &Configuration) -> anyhow::Result<HostNetworkInfo> {
         None
     };
 
+    // TODO support ipv6 as well
+    let main_ip = ip_addresses
+        .iter()
+        .filter(|x| config.home_subnet.contains(&x.address) && matches!(x.address, IpNet::V4(_)))
+        .map(|x| x.address)
+        .next()
+        .unwrap();
+
     let result = HostNetworkInfo {
         addresses: ip_addresses,
+        main_ip,
         wireguard,
     };
 
