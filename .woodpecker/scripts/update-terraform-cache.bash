@@ -18,7 +18,9 @@ main() {
 	ATTIC_PID=$!
 	trap cleanup EXIT
 
+	pushd terraform
 	terraform init
+	popd
 
 	ci cache push terraform terraform/.terraform
 }

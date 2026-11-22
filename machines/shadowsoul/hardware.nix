@@ -39,15 +39,6 @@
         device = "/dev/disk/by-uuid/A8D3-4F6D";
         fsType = "vfat";
       };
-
-      "/var/lib/transmission/Downloads/sonarr" = {
-        device = "192.168.2.69:/mnt/storage/Agares";
-        fsType = "nfs";
-        options = [
-          "x-systemd.required-by=transmission.service"
-          "x-systemd.required-by=syncthing.service"
-        ];
-      };
     };
 
     swapDevices = [ { device = "/dev/disk/by-uuid/993d84ac-5dd2-408d-b3d3-74b667b989a3"; } ];
