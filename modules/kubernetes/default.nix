@@ -119,7 +119,15 @@
       vault-agent = {
         role = "hosts-kubernetes-${config.ramona.kubernetes.cluster-name}";
       };
-      host-group-name = "kubernetes/${config.ramona.kubernetes.cluster-name}";
+      host-group-names = [
+        "kubernetes/${config.ramona.kubernetes.cluster-name}"
+      ]
+      ++ (
+        if config.ramona.kubernetes.is-control-plane then
+          [ "kubernetes/${config.ramona.kubernetes.cluster-name}/control-plane" ]
+        else
+          [ ]
+      );
       kubernetes.certificates =
         (
           if config.ramona.kubernetes.is-control-plane then

@@ -1,7 +1,7 @@
 pub mod group;
 
 use crate::services::{
-    host::{ensure_host, update_group, update_main_ip},
+    host::{ensure_host, update_groups, update_main_ip},
     ipam::update_live_ips,
     wireguard::update_wireguard,
 };
@@ -99,7 +99,7 @@ pub async fn post_host_state(
                     }
                 }
 
-                update_group(tx, &hostname, request.group_name.as_deref()).await?;
+                update_groups(tx, &hostname, &request.group_names).await?;
 
                 Ok::<(), anyhow::Error>(())
             })

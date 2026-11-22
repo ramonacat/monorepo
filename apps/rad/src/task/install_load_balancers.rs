@@ -32,8 +32,9 @@ impl InstallLoadBalancers {
 #[async_trait]
 impl Task for InstallLoadBalancers {
     async fn execute(&self, context: TaskContext<'_>) -> anyhow::Result<TaskResult> {
-        let GetByHostResponse { balancers } = context
-            .make_ras_client()?
+        let ras_client = context.make_ras_client()?;
+
+        let GetByHostResponse { balancers } = ras_client
             .get_load_balancers(context.host_identity.hostname())
             .await?;
 
