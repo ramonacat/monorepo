@@ -260,6 +260,11 @@
           cost = 1;
           kind = "Passive";
         }
+        {
+          name_pattern = "ramona-router";
+          cost = 1;
+          kind = "Passive";
+        }
       ];
     };
   };

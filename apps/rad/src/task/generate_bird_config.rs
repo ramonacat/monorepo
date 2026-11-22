@@ -1,4 +1,6 @@
 use askama::Template;
+use ipnet::IpNet;
+use std::collections::HashMap;
 use std::process::Stdio;
 use std::{process::Command, time::Duration};
 
@@ -7,6 +9,8 @@ use async_trait::async_trait;
 use tracing::{error, info};
 
 use crate::bird::{ConfigTemplate, Interface};
+use crate::network::{NetdevTemplate, NetworkTemplate};
+use crate::systemd::NetworkUnits;
 use crate::task::TaskContext;
 use crate::{
     io::{UpdateResult, update_if_changed},
@@ -103,6 +107,28 @@ impl Task for GenerateBirdConfig {
                 error!(?result, "failed to reload bird");
             }
         }
+
+        let mut units = HashMap::new();
+
+        let netdev = NetdevTemplate {
+            name: "ramona-router".to_string(),
+        };
+        units.insert(format!("{router_id}.netdev"), netdev.render()?);
+
+        let network = NetworkTemplate {
+            name: "ramona-router".to_string(),
+            ip: match router_id {
+                std::net::IpAddr::V4(ipv4_addr) => IpNet::new(ipv4_addr.into(), 32)?,
+                std::net::IpAddr::V6(ipv6_addr) => IpNet::new(ipv6_addr.into(), 128)?,
+            },
+        };
+        units.insert(format!("{router_id}.network"), network.render()?);
+
+        let network_units = NetworkUnits::new();
+        network_units
+            .replace_category("router", units)
+            .await
+            .context("replacing systemd units")?;
 
         Ok(TaskResult::ScheduleAgainIn(Duration::from_mins(1)))
     }

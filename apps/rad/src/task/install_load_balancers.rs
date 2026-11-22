@@ -11,6 +11,7 @@ use tokio::fs;
 use tokio::process::Command;
 use tracing::{error, info};
 
+use crate::network::{NetdevTemplate, NetworkTemplate};
 use crate::{
     linux::make_interface_name,
     systemd::NetworkUnits,
@@ -108,17 +109,4 @@ impl Task for InstallLoadBalancers {
 
         Ok(TaskResult::ScheduleAgainIn(Duration::from_mins(1)))
     }
-}
-
-#[derive(Debug, Template)]
-#[template(path = "load_balancer.netdev")]
-struct NetdevTemplate {
-    name: String,
-}
-
-#[derive(Debug, Template)]
-#[template(path = "load_balancer.network")]
-struct NetworkTemplate {
-    name: String,
-    ip: IpNet,
 }
