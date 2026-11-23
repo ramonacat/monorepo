@@ -59,11 +59,11 @@
         "cni0"
       ];
 
-      firewall.interfaces.tailscale0.allowedTCPPorts =
-        lib.mkIf config.ramona.kubernetes.is-control-plane
-          [
-            6443 # kubernetes api server (for admin access)
-          ];
+      # TODO probably use more specific address ranges here
+      firewall.extraInputRules = lib.mkIf config.ramona.kubernetes.is-control-plane ''
+        ip saddr 10.0.0.0/8 tcp dport 6443 accept
+        ip saddr 100.64.0.0/10 tcp dport 6443 accept
+      '';
     };
 
     ramona.wireguard = {
