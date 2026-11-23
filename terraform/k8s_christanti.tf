@@ -175,7 +175,7 @@ resource "vault_policy" "kv-kubernetes-christanti" {
 }
 
 resource "vault_kubernetes_auth_backend_role" "christanti-kv" {
-  backend                          = vault_auth_backend.kubernetes.path
+  backend                          = vault_auth_backend.kubernetes-christanti.path
   role_name                        = "kv-kubernetes-christanti"
   bound_service_account_names      = ["vault-client"]
   bound_service_account_namespaces = ["external-secrets"]

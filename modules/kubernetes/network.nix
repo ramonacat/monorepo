@@ -53,13 +53,18 @@
         '';
         family = "ip";
       };
-      firewall.trustedInterfaces = [
-        "cni0"
-      ];
-      firewall.extraInputRules = lib.mkIf config.ramona.kubernetes.is-control-plane ''
-        ip saddr 10.0.0.0/8 tcp dport 6443 accept
-        ip saddr 100.64.0.0/10 tcp dport 6443 accept
-      '';
+      firewall = {
+        trustedInterfaces = [
+          "cni0"
+        ];
+        extraInputRules = lib.mkIf config.ramona.kubernetes.is-control-plane ''
+          ip saddr 10.0.0.0/8 tcp dport 6443 accept
+          ip saddr 100.64.0.0/10 tcp dport 6443 accept
+        '';
+        extraForwardRules = ''
+          ip saddr 10.0.0.0/8 ip daddr 10.254.0.0/16 accept
+        '';
+      };
     };
 
     # TODO probably use more specific address ranges here
