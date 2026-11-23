@@ -11,5 +11,5 @@ helmCharts:
         tlsDisable: false
         externalVaultAddr: "https://vault.i.ramona.fun/"
       injector:
-        replicas: 2
+        replicas: 1
         authPath: 'auth/kubernetes-christanti'
