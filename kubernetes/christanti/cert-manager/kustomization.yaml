@@ -9,10 +9,10 @@ helmCharts:
     valuesInline:
       crds:
         enabled: true
-        replicaCount: 1
-        enableCertificateOwnerRef: true
-        config: 
-          enableGatewayAPI: true
+      replicaCount: 1
+      enableCertificateOwnerRef: true
+      config: 
+        enableGatewayAPI: true
   - name: cert-manager-webhook-dnsimple
     releaseName: cert-manager-webhook-dnsimple
     repo: https://puzzle.github.io/cert-manager-webhook-dnsimple
