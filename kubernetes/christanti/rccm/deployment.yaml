@@ -28,7 +28,7 @@ spec:
       dnsPolicy: Default
       containers:
       - name: rccm
-        image: code.ramona.fun/ramona/monorepo/rccm:1795178298
+        image: code.ramona.fun/ramona/monorepo/rccm:1795341802
         imagePullPolicy: IfNotPresent
         resources:
           requests:
