@@ -28,7 +28,8 @@ pub async fn update_groups(
     sqlx::query!(
         "INSERT INTO host_to_host_group (host_id, host_group_id) 
         SELECT $1, id FROM host_group 
-        WHERE name IN (SELECT * FROM unnest($2::text[]))",
+        WHERE name IN (SELECT * FROM unnest($2::text[]))
+        ON CONFLICT DO NOTHING",
         host_id,
         group_names
     )

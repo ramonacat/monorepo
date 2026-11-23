@@ -1,0 +1,15 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "INSERT INTO host_to_host_group (host_id, host_group_id) \n        SELECT $1, id FROM host_group \n        WHERE name IN (SELECT * FROM unnest($2::text[]))\n        ON CONFLICT DO NOTHING",
+  "describe": {
+    "columns": [],
+    "parameters": {
+      "Left": [
+        "Uuid",
+        "TextArray"
+      ]
+    },
+    "nullable": []
+  },
+  "hash": "1c7a44bb16be0f25ec15144d29558b54d2b68a64dc8cead89a6dcd2594a3f746"
+}
