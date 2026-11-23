@@ -173,7 +173,10 @@
                 common_name = "kube-apiserver";
                 parent_ca = "pki-kubernetes-${config.ramona.kubernetes.cluster-name}";
                 issuer = "server";
-                hosts = [ config.networking.hostName ];
+                hosts = [
+                  config.networking.hostName
+                  "control-plane.${config.ramona.kubernetes.cluster-name}.i.ramona.fun"
+                ];
                 ips = [
                   config.ramona.kubernetes.ip
                   config.ramona.kubernetes.internal-apiserver-ip

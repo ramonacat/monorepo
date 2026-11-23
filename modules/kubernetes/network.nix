@@ -12,7 +12,7 @@
               "type": "bridge",
               "bridge": "cni0",
               "isGateway": true,
-              "ipMasq": true,
+              "ipMasq": false,
               "hairpinMode": true,
               "ipam": {
                   "type": "host-local",
@@ -39,16 +39,30 @@
           }
         '';
       };
+    networking = {
+      nftables.tables.masq-cni = {
+        content = ''
+          chain postrouting {
+              type nat hook postrouting priority srcnat; policy accept;
 
-    networking.firewall.trustedInterfaces = [
-      "cni0"
-    ];
+              ip saddr ${config.ramona.kubernetes.host-pod-cidr} ip daddr ${config.ramona.kubernetes.host-pod-cidr} counter accept
+              ip saddr ${config.ramona.kubernetes.host-pod-cidr} ip daddr 10.0.0.0/8 counter accept
 
-    networking.firewall.interfaces.tailscale0.allowedTCPPorts =
-      lib.mkIf config.ramona.kubernetes.is-control-plane
-        [
-          6443 # kubernetes api server (for admin access)
-        ];
+              ip saddr ${config.ramona.kubernetes.host-pod-cidr} ip daddr != 224.0.0.0/4 counter masquerade
+          };
+        '';
+        family = "ip";
+      };
+      firewall.trustedInterfaces = [
+        "cni0"
+      ];
+      firewall.extraInputRules = lib.mkIf config.ramona.kubernetes.is-control-plane ''
+        ip saddr 10.0.0.0/8 tcp dport 6443 accept
+        ip saddr 100.64.0.0/10 tcp dport 6443 accept
+      '';
+    };
+
+    # TODO probably use more specific address ranges here
 
     ramona.router = {
       enabled = true;
