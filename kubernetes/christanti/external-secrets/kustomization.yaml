@@ -1,0 +1,16 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+helmCharts:
+  - name: external-secrets
+    releaseName: external-secrets
+    repo: "https://charts.external-secrets.io"
+    namespace: external-secrets
+    version: "2.15.0"
+    valuesInline:
+      replicaCount: 1
+      # not needed when replicaCount=1, but keeping to avoid fucky wucky when it's increased
+      leaderElect: true
+resources:
+  - rbac.yaml
+  - secret-store.yaml
+  - service-account.yaml

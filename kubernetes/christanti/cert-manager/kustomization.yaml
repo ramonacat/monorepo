@@ -1,0 +1,33 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+helmCharts:
+  - name: cert-manager
+    releaseName: cert-manager
+    repo: "oci://quay.io/jetstack/charts"
+    namespace: cert-manager
+    version: "v1.21.3"
+    valuesInline:
+      crds:
+        enabled: true
+        replicaCount: 1
+        enableCertificateOwnerRef: true
+        config: 
+          enableGatewayAPI: true
+  - name: cert-manager-webhook-dnsimple
+    releaseName: cert-manager-webhook-dnsimple
+    repo: https://puzzle.github.io/cert-manager-webhook-dnsimple
+    namespace: cert-manager
+    valuesInline:
+      dnsimple:
+        existingTokenSecret: true
+        tokenSecretName: dnsimple-token
+      clusterIssuer:
+        email: ramona@luczkiewi.cz
+        production:
+          enabled: true
+        staging:
+          enabled: true
+resources:
+  - secret.yaml
+  - issuer.yaml
+  - service-account.yaml
