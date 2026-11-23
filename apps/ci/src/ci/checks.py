@@ -41,6 +41,7 @@ def run_checks(roots: list[AppRoot]):
 
 def check_go(root: AppRoot):
     with chdir(root["path"].parent):
+        _ = run_command(["go", "build"])
         _ = run_command(["golangci-lint", "run"])
 
 
