@@ -12,6 +12,16 @@ helmCharts:
       leaderElect: true
       log:
         level: debug
+      extraEnv:
+        - name: SSL_CERT_FILE
+          value: /etc/ssl/certs/ca.pem
+      extraVolumes:
+        - name: ca-certs
+          configMap:
+            name: ca-certs
+      extraVolumeMounts:
+        - mountPath: /etc/ssl/certs/
+          name: ca-certs
 resources:
   - rbac.yaml
   - secret-store.yaml

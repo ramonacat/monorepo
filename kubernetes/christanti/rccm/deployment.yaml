@@ -30,6 +30,9 @@ spec:
       - name: rccm
         image: code.ramona.fun/ramona/monorepo/rccm:1795341802
         imagePullPolicy: IfNotPresent
+        env:
+          - name: SSL_CERT_FILE
+            value: /etc/ssl/certs/ca.pem
         resources:
           requests:
             cpu: 100m
@@ -41,6 +44,13 @@ spec:
           - /bin/rccm
           - --cloud-provider=ramona
           - --cluster-cidr=10.65.0.0/16
+        volumeMounts:
+          - mountPath: /etc/ssl/certs/
+            name: ca-certs
+      volumes:
+        - name: ca-certs
+          configMap:
+            name: ca-certs
       restartPolicy: Always
 ---
 
