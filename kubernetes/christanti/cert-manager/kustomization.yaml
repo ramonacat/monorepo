@@ -28,6 +28,7 @@ helmCharts:
         staging:
           enabled: true
 resources:
-  - secret.yaml
   - issuer.yaml
+  - rbac.yaml
+  - secret.yaml
   - service-account.yaml
