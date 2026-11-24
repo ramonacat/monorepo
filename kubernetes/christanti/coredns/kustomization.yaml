@@ -9,3 +9,6 @@ helmCharts:
     valuesInline:
       # TODO make it 2 or 3
       replicaCount: 1
+      service:
+        clusterIPs:
+          - 10.80.0.10
