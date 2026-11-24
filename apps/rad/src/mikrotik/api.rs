@@ -124,6 +124,17 @@ impl<T: Unpin + AsyncWrite + AsyncRead> Api<T> {
         Ok(())
     }
 
+    pub async fn interface_wireguard_remove<'a>(
+        &mut self,
+        query: impl IntoIterator<Item = &'a str>,
+    ) -> anyhow::Result<()> {
+        self.connection
+            .send("interface/wireguard/remove", [], query)
+            .await?;
+
+        Ok(())
+    }
+
     pub async fn interface_wireguard_peers_find<'a>(
         &mut self,
         query: impl IntoIterator<Item = &'a str>,
@@ -214,6 +225,17 @@ impl<T: Unpin + AsyncWrite + AsyncRead> Api<T> {
         Ok(())
     }
 
+    pub async fn interface_wireguard_peers_remove<'a>(
+        &mut self,
+        query: impl IntoIterator<Item = &'a str>,
+    ) -> anyhow::Result<()> {
+        self.connection
+            .send("interface/wireguard/peers/remove", [], query)
+            .await?;
+
+        Ok(())
+    }
+
     pub async fn ip_address_find<'a>(
         &mut self,
         query: impl IntoIterator<Item = &'a str>,
@@ -291,6 +313,15 @@ impl<T: Unpin + AsyncWrite + AsyncRead> Api<T> {
                 [],
             )
             .await?;
+
+        Ok(())
+    }
+
+    pub async fn ip_address_remove<'a>(
+        &mut self,
+        query: impl IntoIterator<Item = &'a str>,
+    ) -> anyhow::Result<()> {
+        self.connection.send("ip/address/remove", [], query).await?;
 
         Ok(())
     }

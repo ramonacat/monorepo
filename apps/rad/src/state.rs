@@ -10,8 +10,15 @@ use serde::{Deserialize, Serialize};
 use thiserror::Error;
 
 #[derive(Debug, Deserialize, Serialize, Default)]
+pub struct TunnelState {
+    pub mikrotik_ip_id: String,
+    pub name: String,
+}
+
+#[derive(Debug, Deserialize, Serialize, Default)]
 pub struct State {
     pub tunnel_ips: HashMap<uuid::Uuid, String>,
+    pub tunnel_ips2: HashMap<uuid::Uuid, TunnelState>,
     pub router_id: Option<IpAddr>,
 }
 
