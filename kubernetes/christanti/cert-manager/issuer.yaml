@@ -9,7 +9,7 @@ spec:
         role: cert-manager-christanti
         mountPath: /v1/auth/kubernetes-christanti
         serviceAccountRef:
-          name: vault-issuer
+          name: cert-manager
     path: pki-internal/sign/internal
     server: https://vault.i.ramona.fun/
     # TODO trust-manager should be handling this
