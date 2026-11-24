@@ -13,6 +13,16 @@ helmCharts:
       enableCertificateOwnerRef: true
       config: 
         enableGatewayAPI: true
+      extraEnv:
+        - name: SSL_CERT_FILE
+          value: /etc/ssl/certs/ca.pem
+      volumes:
+        - name: ca-certs
+          configMap:
+            name: ca-certs
+      volumeMounts:
+        - mountPath: /etc/ssl/certs/
+          name: ca-certs
   - name: cert-manager-webhook-dnsimple
     releaseName: cert-manager-webhook-dnsimple
     repo: https://puzzle.github.io/cert-manager-webhook-dnsimple

@@ -123,6 +123,8 @@ spec:
         3EZnX7Bb1DZV2MAtWlfaXYHyGvk/+S3exhalPMacmqg2KdE+Vj3FWtpszbSJcQ==
         -----END CERTIFICATE-----
   target:
+    secret:
+      key: "ca.pem"
     configMap:
       key: "ca.pem"
     namespaceSelector:
