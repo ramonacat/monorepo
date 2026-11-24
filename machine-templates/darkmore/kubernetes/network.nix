@@ -104,5 +104,17 @@
         }
       '';
     };
+    systemd.network.networks."05-enp1s0" = {
+      enable = true;
+      matchConfig = {
+        Name = "enp1s0";
+      };
+      DHCP = "yes";
+
+      networkConfig = {
+        IPv6PrivacyExtensions = "kernel";
+        DNSDefaultRoute = false;
+      };
+    };
   };
 }
