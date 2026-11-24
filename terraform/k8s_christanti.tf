@@ -213,8 +213,7 @@ resource "vault_cert_auth_backend_role" "hosts-kubernetes-christanti" {
 resource "vault_kubernetes_auth_backend_role" "cert-manager-christanti" {
   backend                          = vault_auth_backend.kubernetes-christanti.path
   role_name                        = "cert-manager-christanti"
-  bound_service_account_names      = ["vault-issuer"]
-  bound_service_account_namespaces = ["vault", "cert-manager"]
+  bound_service_account_names      = ["cert-manager"]
+  bound_service_account_namespaces = ["cert-manager"]
   token_policies                   = ["default", vault_policy.cert-self-issue-any-internal.name]
-  audience                         = "vault://vault-self-issuer"
 }
