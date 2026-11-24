@@ -10,6 +10,8 @@ spec:
         mountPath: /v1/auth/kubernetes-christanti
         serviceAccountRef:
           name: cert-manager
+          audiences:
+            - https://kubernetes.default.svc.cluster.local
     path: pki-internal/sign/internal
     server: https://vault.i.ramona.fun/
     # TODO trust-manager should be handling this
