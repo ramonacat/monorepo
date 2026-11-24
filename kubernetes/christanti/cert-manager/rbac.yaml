@@ -20,3 +20,16 @@ roleRef:
   apiGroup: rbac.authorization.k8s.io
   kind: Role
   name: vault-issuer
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: vault-issuer-auth-delegator
+subjects:
+  - kind: ServiceAccount
+    name: vault-issuer
+    namespace: cert-manager
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: system:auth-delegator
