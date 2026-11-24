@@ -157,8 +157,10 @@ resource "vault_auth_backend" "kubernetes-christanti" {
 }
 
 resource "vault_kubernetes_auth_backend_config" "christanti" {
-  backend         = vault_auth_backend.kubernetes-christanti.path
-  kubernetes_host = "https://control-plane.christanti.ramona.fun"
+  backend              = vault_auth_backend.kubernetes-christanti.path
+  kubernetes_host      = "https://control-plane.christanti.i.ramona.fun"
+  issuer               = "https://kubernetes.default.svc.cluster.local"
+  disable_local_ca_jwt = true
 }
 
 resource "vault_policy" "kv-kubernetes-christanti" {

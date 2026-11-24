@@ -6,6 +6,10 @@ output "issuer_ref" {
   value = module.pki-root.issuer_ref
 }
 
+output "certificate" {
+  value = module.pki-root.certificate
+}
+
 output "etcd_mount_path" {
   value = module.pki-etcd.mount_path
 }

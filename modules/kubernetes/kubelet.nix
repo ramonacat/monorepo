@@ -9,6 +9,9 @@
     let
       klib = import ./_lib.nix { inherit lib config; };
       kubelet-kubeconfig = klib.kubeconfig-path "default-auth";
+      resolvConf = pkgs.writeText "resolv.conf" ''
+        nameserver 10.254.0.2
+      '';
       kubelet-config = pkgs.writeText "kubelet.conf" ''
         apiVersion: kubelet.config.k8s.io/v1beta1
         authentication:
@@ -55,7 +58,7 @@
           swapBehavior: LimitedSwap
         nodeStatusReportFrequency: 0s
         nodeStatusUpdateFrequency: 0s
-        resolvConf: /run/systemd/resolve/resolv.conf
+        resolvConf: ${resolvConf}
         rotateCertificates: true
         runtimeRequestTimeout: 0s
         shutdownGracePeriod: 0s

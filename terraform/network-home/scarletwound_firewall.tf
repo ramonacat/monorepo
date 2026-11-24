@@ -232,6 +232,13 @@ module "scarletwound-firewall" {
       comment  = "tailscale"
     },
     {
+      chain       = "forward",
+      action      = "drop",
+      src_address = "10.32.0.0/14"
+      disabled    = false,
+      comment     = "drop forwarding that is not explicitly allowed (local network)"
+    },
+    {
       chain    = "forward",
       action   = "drop",
       disabled = false,
