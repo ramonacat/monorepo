@@ -1,7 +1,7 @@
 apiVersion: trust.cert-manager.io/v1alpha1
 kind: Bundle
 metadata:
-  name: my-org.com  # The bundle name will also be used for the target
+  name: ramona-fun
 spec:
   sources:
     - useDefaultCAs: true
