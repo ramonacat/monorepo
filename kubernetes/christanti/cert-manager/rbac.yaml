@@ -14,7 +14,7 @@ metadata:
   name: vault-issuer
 subjects:
   - kind: ServiceAccount
-    name: cert-manager
+    name: vault-issuer
     namespace: cert-manager
 roleRef:
   apiGroup: rbac.authorization.k8s.io
@@ -27,7 +27,7 @@ metadata:
   name: vault-issuer-auth-delegator
 subjects:
   - kind: ServiceAccount
-    name: cert-manager
+    name: vault-issuer
     namespace: cert-manager
 roleRef:
   apiGroup: rbac.authorization.k8s.io
