@@ -1,0 +1,131 @@
+apiVersion: trust.cert-manager.io/v1alpha1
+kind: Bundle
+metadata:
+  name: my-org.com  # The bundle name will also be used for the target
+spec:
+  sources:
+    - useDefaultCAs: true
+    # root A
+    - inLine: |
+        -----BEGIN CERTIFICATE-----
+        MIIDITCCAgmgAwIBAgIUecLoX6OjRXWPHJF4zgF/ZOs1F6QwDQYJKoZIhvcNAQEL
+        BQAwGDEWMBQGA1UEAxMNcmFtb25hIHJvb3QgQTAeFw0yNjA3MDQwODE4NDhaFw0z
+        NjA3MDEwODE5MThaMBgxFjAUBgNVBAMTDXJhbW9uYSByb290IEEwggEiMA0GCSqG
+        SIb3DQEBAQUAA4IBDwAwggEKAoIBAQCoAt85dBErlP10Cdv520tjMRBsGDeaN04A
+        iQtbqLVkZz6hy3uetiwRuXqZe9PfzKVF0NVWP4TtDiMH+13XHZiCQIVCub/jbgvn
+        hRFrlPE/iNhD50I6aD2jnaaKTq6onWhdKLsMd1f0F34iJeHJX25Hhh0y63BktR1c
+        dGIEZpMEMif+8wXLnQBOKaPRnKOqn4Yds6FmSQcga7faErJQRqIE9cLQ6C6CFzuX
+        K56kDOOBJ/gRONMsb/MK4rE22rBLhfBrdZm7UrKtnWcyjIzImecyP7aq68ewIj6W
+        gj41GhgB1IMr8HmLfD61qrSnEsaDox/gLZtaUEMa+JXvrOjrQ7QvAgMBAAGjYzBh
+        MA4GA1UdDwEB/wQEAwIBBjAPBgNVHRMBAf8EBTADAQH/MB0GA1UdDgQWBBRjkMc4
+        zugiROI0x2mKxs6KMpO7/jAfBgNVHSMEGDAWgBRjkMc4zugiROI0x2mKxs6KMpO7
+        /jANBgkqhkiG9w0BAQsFAAOCAQEAKbPGVJVYaobP/sxkZGefH2dI+fOEINPst0Sj
+        NhWRB8AY9GIbpUC7HqyWQqva//6Z5g7PRUGpX5xWmMEIYA1gvieGsxghOXc5R1kS
+        WC4s0c93bCvKiq9TRuSzz0sKgQJmBHeHTRrK0Ca6SDZpMbRWKRpBC23127K8Bjqh
+        IAYj58pHK+rbnTPNkNKTMLvaRJYGfc0bcDqAIs+GP4RXXefUbLx+8LWGWsfKxTFT
+        gKCAVGCL7pfvxzLaLYZCiIjYE0QmU7yNvorOxiiqVB5OHczxc/doro617D1HQFmo
+        J9e4JqZy9hOf1q3z4lYRhiDgzSZlvHTMS70qxrnKmX7xW0uP+w==
+        -----END CERTIFICATE-----
+    # hosts
+    - inLine: |
+        -----BEGIN CERTIFICATE-----
+        MIIDqjCCApKgAwIBAgIUdCp/Cr89tmn53ACD3a+OX71+TJAwDQYJKoZIhvcNAQEL
+        BQAwGDEWMBQGA1UEAxMNcmFtb25hIHJvb3QgQTAeFw0yNjA3MDkwNzU3NTRaFw0z
+        MTA3MDgwNzU4MjRaMBcxFTATBgNVBAMTDHJhbW9uYSBob3N0czCCASIwDQYJKoZI
+        hvcNAQEBBQADggEPADCCAQoCggEBAMiZ1uFhyYg/YUhlmRNusT0bPBV5S4VzitB5
+        OjZeBEQxLfOziFU5h1yy8/mCkhOaS9+JX26K0/+CHtVD2EEDUdqk1NnBJABN/FHa
+        GY6GmFblNyMEyYOXLfpuLyYFszzOkXAfJZOUOOBQ9yJ23Pbdj0QKZgL9ldS51//P
+        J9Y3U0qQUo0PVjWUmcgoa/8KnJrsTWLh3y/GUZYcN2SEJDIoI+lvAZtkXiLZZy0X
+        /1BiJICiC0pqzpti8ZDpABAXT5bRo+t/5qw27N6O49W79kd1lDNqwjF00PN9w5yU
+        vggmq6qj+4YJixoj9IIm1g3NIqzSqmxP56hmL3taNhpfzUmB1GECAwEAAaOB7DCB
+        6TAOBgNVHQ8BAf8EBAMCAQYwDwYDVR0TAQH/BAUwAwEB/zAdBgNVHQ4EFgQUAXoW
+        J6uz030sN5PED+LVCi9R2m8wHwYDVR0jBBgwFoAUY5DHOM7oIkTiNMdpisbOijKT
+        u/4wRwYIKwYBBQUHAQEEOzA5MDcGCCsGAQUFBzAChitodHRwczovL3ZhdWx0Lmlu
+        dGVybmFsLnJhbW9uYS5mdW4vdjEvcGtpL2NhMD0GA1UdHwQ2MDQwMqAwoC6GLGh0
+        dHBzOi8vdmF1bHQuaW50ZXJuYWwucmFtb25hLmZ1bi92MS9wa2kvY3JsMA0GCSqG
+        SIb3DQEBCwUAA4IBAQBodmxXTRvHmp2VsipKWyY2SOLBDarTq74H1xc6GmMOZgME
+        TuPrK4IY+4JzNiQzEIuipMwCz7Q2gvSI+AebjFON9t48CbJ26ZZQRXYRr4Bjk5YV
+        v0o19oTXymJBBC8o9W8ovX8P1yvK1nSwKUslefStnjQED+D5WvY1SRm6gw2xZ61a
+        VAB1vqERon+rIO5uQjINu4cGf6MM8v1xQ4V7vr7Fi861XYWV0U63tktvZtHlt3GT
+        JDUPWYQO1aSpS7w6GKkCWapRBqwMvn+Fgbnt3tOLXRnPIipTgFWKDQckZWyAhmGx
+        pZHONhzXEXwrZRg5gPnSCblfHdi5F8oLvrxmcHUP
+        -----END CERTIFICATE-----
+    # internal
+    - inLine: |
+        -----BEGIN CERTIFICATE-----
+        MIIDtjCCAp6gAwIBAgIUWEQrdtHb3V98Mn3h3Ys/Pm2eyxkwDQYJKoZIhvcNAQEL
+        BQAwGDEWMBQGA1UEAxMNcmFtb25hIHJvb3QgQTAeFw0yNjA3MDkwNzU3NTRaFw0z
+        MTA3MDgwNzU4MjRaMCMxITAfBgNVBAMTGHJhbW9uYSBpbnRlcm5hbCBzZXJ2aWNl
+        czCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBALvkkVbFG+INKpdny0LH
+        fcgMtW1NJoUaxJctjPOx9lF4QbKGBbPSPwMQu2ML1NcmOyIQABlk85GgCbHkbUrH
+        +pSoyRgQhX2K3OPsx0m/HhR+wUOLl6kya5iu6U97IRI6f0lb6ZNYoJJ/yR9/WNJk
+        ra38mf8o3lK258xwDXOBybMQhxyjtFRMCsq91DE1nCC5zGV1j2Enkce+06JdMERq
+        wYntYYdr12U805+ai1Snx1tvmrusQux+WWxhz1nL+7q3FmjCnS8+VZQGYfVAufW1
+        Bg6Vj2UEJ2vu5PdecbPNWTRGpkzl3Ss+FSJbk270zMoP8X70y4KJVh6AhhnmOpgq
+        rRECAwEAAaOB7DCB6TAOBgNVHQ8BAf8EBAMCAQYwDwYDVR0TAQH/BAUwAwEB/zAd
+        BgNVHQ4EFgQU2NXTC/jrdym76v8dWqzHtlH/HKIwHwYDVR0jBBgwFoAUY5DHOM7o
+        IkTiNMdpisbOijKTu/4wRwYIKwYBBQUHAQEEOzA5MDcGCCsGAQUFBzAChitodHRw
+        czovL3ZhdWx0LmludGVybmFsLnJhbW9uYS5mdW4vdjEvcGtpL2NhMD0GA1UdHwQ2
+        MDQwMqAwoC6GLGh0dHBzOi8vdmF1bHQuaW50ZXJuYWwucmFtb25hLmZ1bi92MS9w
+        a2kvY3JsMA0GCSqGSIb3DQEBCwUAA4IBAQBJG2tFGp+1poDw0nzNV5STzwt3casV
+        +N6jHalnL9PZ1IAot3CBiWRqeHEdz8Srv+BvIBcPL9mR18d6IvpzpFW/UMIiHaKr
+        537TmDSD+mhJYq9m4PY5NfAwmeFHV0nQkQuYwKPFm6L53It6pLaiPlFFGaogEuxu
+        ki+xhTtya23OM9WfzqCKhf2dXLfa+Jl/EaN4QCW/BHKgTi1zFrJLOjA4By6cK8VK
+        jopYpQbzpJX512+6zrIZG+mTzNscOpKbLmsdq0koIm06J5BL4Xf9Jm44gtqSTnLg
+        JdNsRgtpd2NzEtKB1VImSZeviHikkZo4/w14o6cH0rSx6uPUh7DESYq0
+        -----END CERTIFICATE-----
+    # kubernetes-christanti
+    - inLine: |
+        -----BEGIN CERTIFICATE-----
+        MIIDszCCApugAwIBAgIUHmHzICLu0BLX2q+uWv4oh97V6kUwDQYJKoZIhvcNAQEL
+        BQAwGDEWMBQGA1UEAxMNcmFtb25hIHJvb3QgQTAeFw0yNjExMTAwNjU2NDhaFw0z
+        MTExMDkwNjU3MThaMCAxHjAcBgNVBAMTFWt1YmVybmV0ZXMtY2hyaXN0YW50aTCC
+        ASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAMJsEQLSheV2OveM0hQ3VgXH
+        /VlJG81JepTWdq6liu4sM5b3eyd9Qx/Gyv7qukBEgFx5veRDWQF2pewV0B7zNMSK
+        sf3gWaEejfMRS1VpNTN39cxXZZhKOGw2s0RT9A308iYGjpKbm8T+NSGx74Je+D1w
+        YikXDbhdFt/nYX6H4Th6DzH2kxJ9wnix0fqeiwtwEf775iV1vXzY6+UW3ikKZicS
+        m9BDlBE7wxSr2WvZ3OLVoOu+nQwv71suXrZq6R48SPf1zSQH3q/wCc4x3NvFxUXj
+        FvewWfejLWMLruvApXyPN0hjrXvt2yUdy/SjNui7aT4vztir/LTfVVQJeUsEzOEC
+        AwEAAaOB7DCB6TAOBgNVHQ8BAf8EBAMCAQYwDwYDVR0TAQH/BAUwAwEB/zAdBgNV
+        HQ4EFgQUp8AKDobiHT/muiNwcp63TIMBK3swHwYDVR0jBBgwFoAUY5DHOM7oIkTi
+        NMdpisbOijKTu/4wRwYIKwYBBQUHAQEEOzA5MDcGCCsGAQUFBzAChitodHRwczov
+        L3ZhdWx0LmludGVybmFsLnJhbW9uYS5mdW4vdjEvcGtpL2NhMD0GA1UdHwQ2MDQw
+        MqAwoC6GLGh0dHBzOi8vdmF1bHQuaW50ZXJuYWwucmFtb25hLmZ1bi92MS9wa2kv
+        Y3JsMA0GCSqGSIb3DQEBCwUAA4IBAQBqUPdtttF3A6O1RmEsJYMh5jcfHhioS7xy
+        K3SFxDlsfFQQptWoHWO3kTsQY9BMKn044+PwqxU4iSIyTwuptmcDqFSwwd3fb6Ev
+        nYfbv4IrvKN5Uj34qlPUfW0BJFZj0khyzwnCw4ma1nDIA0aRlCTO7Er8rpiLOkYI
+        eHcmo7vyKj5jwQHzFgsRQ5C/1LMnQg4gBA2gp+nYgsleolPKWz9TI4Kz30OmjDZL
+        D/UvgJ1JHlVAp28XU0jpnQ9aWVLrrmwbOlLDE4PyyOz9sb6ULpehhSjKlIbBBjMt
+        /1SVTgHwXqo81Xe3PsaXO3hp8ireI7oXXDDCxXjGCSEO1g4INDvf
+        -----END CERTIFICATE-----
+    # kubernetes-darkmore
+    - inLine: |
+        -----BEGIN CERTIFICATE-----
+        MIIDujCCAqKgAwIBAgIUHBS+x1W9cIbxC/KMONm3sBQI84QwDQYJKoZIhvcNAQEL
+        BQAwGDEWMBQGA1UEAxMNcmFtb25hIHJvb3QgQTAeFw0yNjA4MTkxMDI1MzhaFw0z
+        MTA4MTgxMDI2MDhaMCcxJTAjBgNVBAMTHHJhbW9uYSBrdWJlcm5ldGVzIC0gZGFy
+        a21vcmUwggEiMA0GCSqGSIb3DQEBAQUAA4IBDwAwggEKAoIBAQC5PF1EhYLQOH3c
+        IDovCTSyOBGQdOHWRze7CYPN142LKEwD8Z67tLbNfpHoJ92uzrhFB102A7Q3nyPP
+        s2fUKk8vyLH83copdQuEzPWt1Qtf4tG8k2QQY88oe+DjEA5qjovyQibrq95iKHOm
+        GmyrggCdjOX2bOmLzBAl9HZrnwCy2OaSjbE8nnOx4bMlID+4bEGAfWsN7vbj3FYS
+        2DzmS9jJhQjs4UBaRtHMFRkZmpcbUqQIHbkgQgGzn/7S6QdzTH6fZWZlrIBsmXAM
+        ucPoETrasq0GXM7TWRSrzXq/rVW1/5tQ3w7V2L4FxWM95zp0QGyRt/zPwmVGCrkG
+        PtAUAL63AgMBAAGjgewwgekwDgYDVR0PAQH/BAQDAgEGMA8GA1UdEwEB/wQFMAMB
+        Af8wHQYDVR0OBBYEFOQwSpvXwufjs929cwstEIb15g84MB8GA1UdIwQYMBaAFGOQ
+        xzjO6CJE4jTHaYrGzooyk7v+MEcGCCsGAQUFBwEBBDswOTA3BggrBgEFBQcwAoYr
+        aHR0cHM6Ly92YXVsdC5pbnRlcm5hbC5yYW1vbmEuZnVuL3YxL3BraS9jYTA9BgNV
+        HR8ENjA0MDKgMKAuhixodHRwczovL3ZhdWx0LmludGVybmFsLnJhbW9uYS5mdW4v
+        djEvcGtpL2NybDANBgkqhkiG9w0BAQsFAAOCAQEAeujBSipYvqIWQzXY5f1n3DwI
+        o/GKf2arUNMSL61srn8Q+APm42bR0paqpuoQpfC4kqhZydNRp72qT8j5JoIvkLMs
+        dIqQubLNbLIwanscHwa5nE6spYQqmFwlFnDx0Us0oDu3u4Y9MNA9sS/6atayfviU
+        rb9V829TdN/26BJxXxyZhFZmDhUxTBfFesl3LIsXXcyUzIIwkH7MFXzeqfKp2sNQ
+        VqoqtEc/6Q1hxeI09seWcwtlanKmree1GLGevOib3JnRXF0+jVdCF7A5y5EHW03d
+        3EZnX7Bb1DZV2MAtWlfaXYHyGvk/+S3exhalPMacmqg2KdE+Vj3FWtpszbSJcQ==
+        -----END CERTIFICATE-----
+  target:
+    configMap:
+      key: "ca.pem"
+    namespaceSelector:
+      matchExpressions:
+        - key: k8s.ramona.fun/no-ca-injection
+          operator: DoesNotExist

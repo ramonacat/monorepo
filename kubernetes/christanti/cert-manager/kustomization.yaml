@@ -33,6 +33,7 @@ helmCharts:
     namespace: cert-manager
     version: "v0.26.0"
 resources:
+  - bundle.yaml
   - issuer.yaml
   - rbac.yaml
   - secret.yaml
