@@ -10,6 +10,8 @@ helmCharts:
       replicaCount: 1
       # not needed when replicaCount=1, but keeping to avoid fucky wucky when it's increased
       leaderElect: true
+      log:
+        level: debug
 resources:
   - rbac.yaml
   - secret-store.yaml
