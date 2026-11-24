@@ -27,6 +27,11 @@ helmCharts:
           enabled: true
         staging:
           enabled: true
+  - name: trust-manager
+    releaseName: trust-manager
+    repo: "oci://quay.io/jetstack/charts"
+    namespace: cert-manager
+    version: "v1.21.3"
 resources:
   - issuer.yaml
   - rbac.yaml
