@@ -147,9 +147,9 @@ checksum = "4e7648175b45a9a48536d676f68d918270699102aa8dab5496df06904c914600"
 
 [[package]]
 name = "clap"
-version = "4.6.9"
+version = "4.6.10"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "844c5c0b65be192cb68d570cca1b21a6444431d24e39c084dc0336177015337c"
+checksum = "50066ca966813ca8957ee15361752f19424a8ff620dbe9c8993d9f99d99b04b3"
 dependencies = [
  "clap_builder",
  "clap_derive",
@@ -157,9 +157,9 @@ dependencies = [
 
 [[package]]
 name = "clap_builder"
-version = "4.6.7"
+version = "4.6.10"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "ec0797fb7aeb1406c84efac526901f7ec3ead2124f946b494e72879d4b54704d"
+checksum = "a0ed97c96ef4efb3cc84e09fa388df4463e7cc3224ec38d7b1d9e45749333590"
 dependencies = [
  "anstream",
  "anstyle",
@@ -280,16 +280,6 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "fba3fe847045ecff794b9c138293a80db914678c453ad63fbf0c6a9eb6e00b22"
 dependencies = [
  "encoding_rs",
-]
-
-[[package]]
-name = "errno"
-version = "0.3.15"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "e35d6e78f4cebb90e51d543db8fe41528851d6deeef6ef21ebd4bfdc1e784776"
-dependencies = [
- "libc",
- "windows-sys 0.52.0",
 ]
 
 [[package]]
@@ -467,7 +457,6 @@ dependencies = [
  "hyper-util",
  "log",
  "rustls",
- "rustls-native-certs",
  "tokio",
  "tokio-rustls",
  "tower-service",
@@ -630,9 +619,9 @@ dependencies = [
 
 [[package]]
 name = "kube"
-version = "5.1.0"
+version = "5.2.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "ee2daae7debf056a191329a20b5ba6f6de6d437e87d14e586453633b3de04f7f"
+checksum = "f95e1a9107878bef32cfbe2e5e084584db832c9616df9981adc4673f9fb1c853"
 dependencies = [
  "k8s-openapi",
  "kube-client",
@@ -641,9 +630,9 @@ dependencies = [
 
 [[package]]
 name = "kube-client"
-version = "5.1.0"
+version = "5.2.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "23c0cbc565d35cd1e1997537a22d386abedc62cc2e7e70f91c08f9928012d845"
+checksum = "703ee17477c86501627e83492895c06ab6fc2c55a319bb2fbc582ccae739ba67"
 dependencies = [
  "base64 0.23.1",
  "bytes",
@@ -678,9 +667,9 @@ dependencies = [
 
 [[package]]
 name = "kube-core"
-version = "5.1.0"
+version = "5.2.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "ca27486a6fbf5e74ec7b411faf1d5bab8a3e489b93f958391c698f27d693014f"
+checksum = "b5e9a9aa533b2f4106ac1ac45e168bb452325eb9e918d57335444f60bef34ffc"
 dependencies = [
  "derive_more",
  "form_urlencoded",
@@ -1022,7 +1011,7 @@ dependencies = [
  "security-framework",
  "security-framework-sys",
  "webpki-root-certs",
- "windows-sys 0.52.0",
+ "windows-sys 0.61.2",
 ]
 
 [[package]]
@@ -1127,7 +1116,7 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "969cde0349344dbbf58b5f9badbfb8f806db13969364eb8007c057ef687007d9"
 dependencies = [
  "annotate-snippets",
- "base64 0.22.1",
+ "base64 0.23.1",
  "encoding_rs_io",
  "granit-parser",
  "nohash-hasher",
@@ -1185,16 +1174,6 @@ name = "shlex"
 version = "2.0.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "f8fadd59c855ef2080decdef8ff161eb6661b86933c9d82e5ba29dc602a55aba"
-
-[[package]]
-name = "signal-hook-registry"
-version = "1.4.8"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "c4db69cba1110affc0e9f7bcd48bbf87b3f4fc7c61fc9155afd4c469eb3d6c1b"
-dependencies = [
- "errno",
- "libc",
-]
 
 [[package]]
 name = "simd_cesu8"
@@ -1316,7 +1295,6 @@ dependencies = [
  "libc",
  "mio",
  "pin-project-lite",
- "signal-hook-registry",
  "socket2",
  "windows-sys 0.61.2",
 ]
@@ -1502,7 +1480,7 @@ version = "0.1.11"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "c2a7b1c03c876122aa43f3020e6c3c3ee5c05081c9a00739faf7503aeba10d22"
 dependencies = [
- "windows-sys 0.52.0",
+ "windows-sys 0.61.2",
 ]
 
 [[package]]
