@@ -4,8 +4,11 @@ module "scarletwound-vlan9" {
     routeros = routeros.router-scarletwound
   }
 
-  name      = "kubernetes-christanti"
-  cidr      = "10.64.0.0/24"
+  name = "kubernetes-christanti"
+  cidr = "10.64.0.0/28"
+  # TODO this should probably be static only
+  dhcp_ranges = ["10.64.0.8/29"]
+
   vlan_id   = 9
   interface = routeros_interface_bridge.scarletwound-bridge0.name
   tagged_ports = [

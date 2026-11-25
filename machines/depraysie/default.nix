@@ -12,7 +12,7 @@ _: {
   config = {
     ramona = {
       machine.location = "home";
-      home-subnet = "10.64.0.0/24";
+      home-subnet = "10.64.0.0/28";
 
       kubernetes = {
         cluster-name = "christanti";

@@ -27,3 +27,9 @@ variable "tagged_ports" {
 variable "untagged_ports" {
   type = list(string)
 }
+
+variable "dhcp_ranges" {
+  type     = list(string)
+  nullable = true
+  default  = null
+}

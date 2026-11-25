@@ -28,7 +28,7 @@ resource "routeros_ip_dhcp_server_network" "main" {
 resource "routeros_ip_pool" "main" {
   name = "pool-${var.name}"
   # TODO this will be wrong for subnets that aren't /24
-  ranges  = ["${cidrhost(var.cidr, 32)}-${cidrhost(var.cidr, 254)}"]
+  ranges  = var.dhcp_ranges == null ? ["${cidrhost(var.cidr, 32)}-${cidrhost(var.cidr, 254)}"] : var.dhcp_ranges
   comment = "${var.name}/vlan${var.vlan_id}"
 }
 
