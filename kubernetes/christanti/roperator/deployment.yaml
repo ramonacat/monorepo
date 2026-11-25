@@ -1,0 +1,33 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: roperator
+  namespace: roperator
+  labels:
+    app: roperator
+spec:
+  selector:
+    matchLabels:
+      app: roperator
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: roperator
+    spec:
+      imagePullSecrets:
+        - name: forgejo-container-credentials
+      containers:
+        - name: roperator
+          image: code.ramona.fun/ramona/monorepo/roperator:1795483909
+          imagePullPolicy: IfNotPresent
+          volumeMounts:
+            - mountPath: /etc/ramona/roperator
+              name: config
+          env:
+            - name: RAMONA_CONFIG_PATH
+              value: /etc/ramona/roperator/config.json
+      volumes:
+        - name: config
+          configMap:
+            name: config

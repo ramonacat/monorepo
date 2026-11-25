@@ -1,0 +1,10 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: config
+data:
+  config.json: |-
+    {
+      "host_group_id": "01a1ff58-66de-7f2e-b031-e1aab39d9ef8",
+      "dns_zones": ["i.ramona.fun"]
+    }

@@ -1,0 +1,28 @@
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: roperator
+  namespace: roperator
+rules:
+  - apiGroups: ['']
+    resources: ['services', 'services/status']
+    verbs: ['list', 'watch', 'patch']
+  - apiGroups: ['gateway.networking.k8s.io']
+    resources: ['httproutes', 'tlsroutes']
+    verbs: ['list', 'watch']
+  - apiGroups: ['gateway.networking.k8s.io']
+    resources: ['gateways']
+    verbs: ['get']
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata: 
+  name: roperator
+subjects:
+- kind: ServiceAccount
+  name: default
+  namespace: roperator
+roleRef:
+  kind: ClusterRole
+  name: roperator
+  apiGroup: ''
