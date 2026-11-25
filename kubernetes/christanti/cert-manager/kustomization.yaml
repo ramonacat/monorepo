@@ -30,7 +30,7 @@ helmCharts:
     valuesInline:
       dnsimple:
         existingTokenSecret: true
-        tokenSecretName: cert-manager-webhook-dnsimple
+        tokenSecretName: dnsimple-token
       clusterIssuer:
         email: ramona@luczkiewi.cz
         production:
