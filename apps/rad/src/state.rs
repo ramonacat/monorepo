@@ -18,6 +18,7 @@ pub struct TunnelState {
 #[derive(Debug, Deserialize, Serialize, Default)]
 pub struct State {
     pub tunnel_ips: HashMap<uuid::Uuid, String>,
+    #[serde(default = "HashMap::new")]
     pub tunnel_ips2: HashMap<uuid::Uuid, TunnelState>,
     pub router_id: Option<IpAddr>,
 }
