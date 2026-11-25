@@ -13,6 +13,10 @@ helmCharts:
       enableCertificateOwnerRef: true
       config: 
         enableGatewayAPI: true
+      extraArgs:
+        # use public DNS directly, as the internal is split-horizon
+        - '--dns01-recursive-nameservers-only'
+        - '--dns01-recursive-nameservers=8.8.8.8:53,1.1.1.1:53'
       extraEnv:
         - name: SSL_CERT_FILE
           value: /etc/ssl/certs/ca.pem
