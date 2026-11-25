@@ -1,0 +1,22 @@
+apiVersion: gateway.networking.k8s.io/v1
+kind: HTTPRoute
+metadata:
+  name: http-to-https
+  namespace: kgateway-system
+spec:
+  parentRefs:
+    - name: gateway-i
+      namespace: kgateway-system
+      sectionName: http
+      group: gateway.networking.k8s.io
+      kind: Gateway
+  rules:
+    - filters:
+        - type: RequestRedirect
+          requestRedirect:
+            scheme: https
+            statusCode: 301
+      matches:
+        - path:
+            type: PathPrefix
+            value: /
