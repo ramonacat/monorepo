@@ -31,7 +31,7 @@ resource "helm_release" "hcloud-csi" {
   chart      = "hcloud-csi"
   repository = "https://charts.hetzner.cloud"
   namespace  = "kube-system"
-  version    = "2.24.2"
+  version    = "2.24.3"
 
   values = [yamlencode({
     storageClasses = [
