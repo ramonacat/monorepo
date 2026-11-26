@@ -33,8 +33,8 @@ _: {
     };
 
     services.etcd.extraConf = {
-      "HEARTBEAT_INTERVAL" = "75";
-      "ELECTION_TIMEOUT" = "1000";
+      "HEARTBEAT_INTERVAL" = "150";
+      "ELECTION_TIMEOUT" = "1500";
     };
 
     # allow OSPF and BFD from peer routers
