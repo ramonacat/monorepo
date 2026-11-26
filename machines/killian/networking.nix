@@ -26,7 +26,7 @@ _: {
     wireguard = {
       enabled = true;
       host = "d.rumanowski.com";
-      available_ports = [ 49153 ];
+      available_ports = [ 49153 49155 ];
     };
   };
 }
