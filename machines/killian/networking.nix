@@ -22,11 +22,21 @@ _: {
   ramona = {
     router = {
       enabled = true;
+      interfaces = [
+        {
+          name_pattern = "dummy0-k8s-ip";
+          cost = 1;
+          kind = "Passive";
+        }
+      ];
     };
     wireguard = {
       enabled = true;
       host = "d.rumanowski.com";
-      available_ports = [ 49153 49155 ];
+      available_ports = [
+        49153
+        49155
+      ];
     };
   };
 }

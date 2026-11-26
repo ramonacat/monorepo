@@ -31,9 +31,17 @@ _: {
         ];
       };
     };
+
+    services.etcd.extraConf = {
+      "HEARTBEAT_INTERVAL" = "75";
+      "ELECTION_TIMEOUT" = "1000";
+    };
+
     # allow OSPF and BFD from peer routers
     # allow darkmore to talk with the apiserver (for argocd)
     networking.firewall.extraInputRules = ''
+      ip saddr 10.64.0.0/24 accept
+
       ip saddr 10.64.0.0/11 ip protocol ospfigp accept
       ip saddr 10.64.0.0/11 udp dport { 3784, 3785, 4784 } accept
 
