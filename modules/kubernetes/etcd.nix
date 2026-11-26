@@ -24,12 +24,12 @@
 
         peerClientCertAuth = true;
 
-        advertiseClientUrls = [ "https://${config.ramona.kubernetes.ip}:2379" ];
+        advertiseClientUrls = lib.mkForce [ "https://${config.ramona.kubernetes.ip}:2379" ];
         initialAdvertisePeerUrls = [ "https://${config.ramona.kubernetes.ip}:2380" ];
         initialCluster = map (host: "${host.hostname}=https://${host.ip}:2380") (
           builtins.filter (x: x.is-control-plane) config.ramona.kubernetes.all-nodes
         );
-        listenClientUrls = [
+        listenClientUrls = lib.mkForce [
           "https://127.0.0.1:2379"
           "https://${config.ramona.kubernetes.ip}:2379"
         ];

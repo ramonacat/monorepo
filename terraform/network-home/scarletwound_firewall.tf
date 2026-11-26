@@ -106,6 +106,7 @@ module "scarletwound-firewall" {
     { chain = "forward", action = "accept", in_interface = module.scarletwound-vlan2.vlan_interface, out_interface = routeros_interface_vlan.scarletwound-vlan3.name },
     { chain = "forward", action = "accept", in_interface = module.scarletwound-vlan2.vlan_interface, out_interface = module.scarletwound-vlan5.vlan_interface },
     { chain = "forward", action = "accept", in_interface = module.scarletwound-vlan2.vlan_interface, out_interface = module.scarletwound-vlan9.vlan_interface },
+    { chain = "forward", action = "accept", in_interface = module.scarletwound-vlan2.vlan_interface, dst_address = "10.64.0.0/11" },
     {
       chain             = "forward",
       action            = "accept",

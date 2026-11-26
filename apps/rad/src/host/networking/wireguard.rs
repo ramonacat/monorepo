@@ -49,7 +49,7 @@ impl Key {
                     .write(true)
                     .create(true)
                     .truncate(true)
-                    .mode(0o600)
+                    .mode(0o644)
                     .open(path)?;
 
                 key_file

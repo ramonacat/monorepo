@@ -16,5 +16,6 @@ _: {
         host-pod-cidr = "10.65.1.0/24";
       };
     };
+    services.etcd.initialClusterState = "existing";
   };
 }
