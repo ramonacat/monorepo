@@ -8,86 +8,91 @@
   config =
     let
       klib = import ./_lib.nix { inherit lib config; };
+      finalize-certificate = pkgs.writeShellScript "finalize-certificate" ''
+        /run/current-system/sw/bin/systemctl restart kube-proxy.service kube-controller-manager.service kubelet.service kube-scheduler.service kube-apiserver.service kubelet.service
+      '';
     in
     {
-      ramona =
-        let
-          restart-services-command = {
-            command = [
-              "/run/current-system/sw/bin/systemctl"
-              "restart"
-              "kube-proxy.service"
-              "kube-controller-manager.service"
-              "kubelet.service"
-              "kube-scheduler.service"
-              "kube-apiserver.service"
-              "kubelet.service"
-            ];
-          };
-        in
-        {
-          vault-agent.templates =
-            (lib.mapAttrsToList (name: value: {
-              contents = ''
-                {{- with pkiCert "${value.parent_ca}/issue/${value.issuer}" "common_name=${value.common_name}" "alt_names=${lib.join "," value.hosts}" "ip_sans=${lib.join "," value.ips}" "ttl=24h" -}}
-                {{ .Cert }}{{ .CA }}{{ .Key }}
-                {{ .Cert | writeToFile "${klib.certificate-path name "crt"}" "${value.owner_user}" "${value.owner_group}" "0644" }}
-                {{ .Key | writeToFile "${klib.certificate-path name "key"}" "${value.owner_user}" "${value.owner_group}" "0400" }}
-                {{- end -}}
-              '';
-              destination = "/var/ramona/kubernetes/certificates/${lib.defaultTo name value.pathname_override}";
-            }) config.ramona.kubernetes.certificates)
-            ++ (lib.mapAttrsToList (name: value: {
-              contents = ''
-                {{- with pkiCert "pki-kubernetes-${config.ramona.kubernetes.cluster-name}/issue/${value.issuer}" "common_name=${value.common_name}" "ttl=24h" -}}
-                {{ .Cert }}{{ .CA }}{{ .Key }}
-                {{ .Cert | writeToFile "/var/ramona/kubernetes/certificates/accounts/${value.config_file}.crt" "kubernetes" "kubernetes" "0644" }}
-                {{ .Key | writeToFile "/var/ramona/kubernetes/certificates/accounts/${value.config_file}.key" "kubernetes" "kubernetes" "0400" }}
-                {{- end -}}
-              '';
-              destination = "/var/ramona/kubernetes/certificates/account/${value.config_file}.bundle";
-              exec = [
-                {
-                  command = [
-                    "${pkgs.ramona.r}/bin/r"
-                    "kubernetes"
-                    "create-config"
-                    name
-                    (../../certificates + "/ca-kubernetes-${config.ramona.kubernetes.cluster-name}.crt")
-                    "/var/ramona/kubernetes/certificates/accounts/${value.config_file}.crt"
-                    "/var/ramona/kubernetes/certificates/accounts/${value.config_file}.key"
-                    "127.0.0.1"
-                    (klib.kubeconfig-path name)
-                  ];
-                }
-                restart-services-command
-              ];
-            }) config.ramona.kubernetes.accounts)
-            ++ [
+      ramona = {
+        vault-agent.templates =
+          (lib.mapAttrsToList (name: value: {
+            contents = ''
+              {{- with pkiCert "${value.parent_ca}/issue/${value.issuer}" "common_name=${value.common_name}" "alt_names=${lib.join "," value.hosts}" "ip_sans=${lib.join "," value.ips}" "ttl=24h" -}}
+              {{ .Cert }}{{ .CA }}{{ .Key }}
+              {{ .Cert | writeToFile "${klib.certificate-path name "crt"}" "${value.owner_user}" "${value.owner_group}" "0644" }}
+              {{ .Key | writeToFile "${klib.certificate-path name "key"}" "${value.owner_user}" "${value.owner_group}" "0400" }}
+              {{- end -}}
+            '';
+            destination = "/var/ramona/kubernetes/certificates/${lib.defaultTo name value.pathname_override}";
+            exec = [
               {
-                contents = ''
-                  {{- with secret "secrets/kubernetes/${config.ramona.kubernetes.cluster-name}/cluster/service-account-key" -}}
-                      {{ .Data.data.key | writeToFile "${config.ramona.kubernetes.service-account-key.key}" "kubernetes" "kubernetes" "0644" }}
-                      {{ .Data.data.pub | writeToFile "${config.ramona.kubernetes.service-account-key.pub}" "kubernetes" "kubernetes" "0400" }}
-                  {{- end -}}
-                '';
-                destination = "/var/ramona/kubernetes/certificates/service-account-key";
-                exec = [ restart-services-command ];
+                command = [ finalize-certificate ];
+                timeout = "10m";
               }
             ];
 
-          kubernetes.service-account-key = {
-            key = "/etc/kubernetes/pki/sa.key";
-            pub = "/etc/kubernetes/pki/sa.pub";
-          };
+          }) config.ramona.kubernetes.certificates)
+          ++ (lib.mapAttrsToList (name: value: {
+            contents = ''
+              {{- with pkiCert "pki-kubernetes-${config.ramona.kubernetes.cluster-name}/issue/${value.issuer}" "common_name=${value.common_name}" "ttl=24h" -}}
+              {{ .Cert }}{{ .CA }}{{ .Key }}
+              {{ .Cert | writeToFile "/var/ramona/kubernetes/certificates/accounts/${value.config_file}.crt" "kubernetes" "kubernetes" "0644" }}
+              {{ .Key | writeToFile "/var/ramona/kubernetes/certificates/accounts/${value.config_file}.key" "kubernetes" "kubernetes" "0400" }}
+              {{- end -}}
+            '';
+            destination = "/var/ramona/kubernetes/certificates/accounts/${value.config_file}.bundle";
+            exec =
+              let
+                finalize-account = pkgs.writeShellScript "finalize-account" ''
+                  ${pkgs.ramona.r}/bin/r kubernetes create-config ${name} \
+                      ${../../certificates + "/ca-kubernetes-${config.ramona.kubernetes.cluster-name}.crt"} \
+                      "/var/ramona/kubernetes/certificates/accounts/${value.config_file}.crt" \
+                      "/var/ramona/kubernetes/certificates/accounts/${value.config_file}.key" \
+                      "127.0.0.1" \
+                      ${klib.kubeconfig-path name}
+                      
+                  ${finalize-certificate}
+                '';
+              in
+              [
+                {
+                  command = [
+                    "${finalize-account}"
+                  ];
+                  timeout = "10m";
+                }
+              ];
+          }) config.ramona.kubernetes.accounts)
+          ++ [
+            {
+              contents = ''
+                {{- with secret "secrets/kubernetes/${config.ramona.kubernetes.cluster-name}/cluster/service-account-key" -}}
+                    {{ .Data.data.key | writeToFile "${config.ramona.kubernetes.service-account-key.key}" "kubernetes" "kubernetes" "0644" }}
+                    {{ .Data.data.pub | writeToFile "${config.ramona.kubernetes.service-account-key.pub}" "kubernetes" "kubernetes" "0400" }}
+                {{- end -}}
+              '';
+              destination = "/var/ramona/kubernetes/certificates/service-account-key";
+              exec = [
+                {
+                  command = finalize-certificate;
+                  timeout = "10m";
+                }
+              ];
+            }
+          ];
 
-          ca-certificates."${config.ramona.kubernetes.cluster-name}" = {
-            cluster = ../../certificates + "/ca-kubernetes-${config.ramona.kubernetes.cluster-name}.crt";
-            etcd = ../../certificates + "/ca-kubernetes-${config.ramona.kubernetes.cluster-name}-etcd.crt";
-            front-proxy =
-              ../../certificates + "/ca-kubernetes-${config.ramona.kubernetes.cluster-name}-front-proxy.crt";
-          };
+        kubernetes.service-account-key = {
+          key = "/etc/kubernetes/pki/sa.key";
+          pub = "/etc/kubernetes/pki/sa.pub";
         };
+
+        ca-certificates."${config.ramona.kubernetes.cluster-name}" = {
+          cluster = ../../certificates + "/ca-kubernetes-${config.ramona.kubernetes.cluster-name}.crt";
+          etcd = ../../certificates + "/ca-kubernetes-${config.ramona.kubernetes.cluster-name}-etcd.crt";
+          front-proxy =
+            ../../certificates + "/ca-kubernetes-${config.ramona.kubernetes.cluster-name}-front-proxy.crt";
+        };
+      };
     };
   options = {
     ramona.ca-certificates = lib.mkOption {

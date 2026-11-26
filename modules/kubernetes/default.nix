@@ -26,7 +26,6 @@
           options = {
             ip = lib.mkOption { type = str; };
             internal-apiserver-ip = lib.mkOption { type = str; };
-            hostname = lib.mkOption { type = str; };
             is-control-plane = lib.mkOption { type = bool; };
             cluster-dns-ip = lib.mkOption { type = str; };
 
@@ -97,8 +96,6 @@
     };
   };
   config = {
-    networking.hostName = config.ramona.kubernetes.hostname;
-
     environment.systemPackages = [
       pkgs.kubernetes
       pkgs.kubectl

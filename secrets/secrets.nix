@@ -11,6 +11,7 @@ let
   shadowsoul = ssh-keys.machines.shadowsoul.rsa;
   hallewell = ssh-keys.machines.hallewell.rsa;
   depraysie = ssh-keys.machines.depraysie.rsa;
+  killian = ssh-keys.machines.killian.rsa;
 
   darkmore-control-plane-0 = ssh-keys.machines.darkmore-control-plane-0.rsa;
   darkmore-control-plane-1 = ssh-keys.machines.darkmore-control-plane-1.rsa;
@@ -23,6 +24,7 @@ let
     hallewell
     shadowsoul
     depraysie
+    killian
   ];
 
   publicServers = [
@@ -38,6 +40,8 @@ in
 {
   "depraysie-ssh-host-key-rsa.age".publicKeys = users ++ ci ++ [ depraysie ];
   "depraysie-ssh-host-key-ed25519.age".publicKeys = users ++ ci ++ [ depraysie ];
+  "killian-ssh-host-key-rsa.age".publicKeys = users ++ ci ++ [ killian ];
+  "killian-ssh-host-key-ed25519.age".publicKeys = users ++ ci ++ [ killian ];
   "darkmore-control-plane-0-ssh-host-key-ed25519.age".publicKeys =
     users
     ++ ci
