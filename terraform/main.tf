@@ -84,6 +84,10 @@ terraform {
     routeros = {
       source = "terraform-routeros/routeros"
     }
+    contabo = {
+      source  = "contabo/contabo"
+      version = ">= 0.1.44"
+    }
   }
 }
 
@@ -140,6 +144,9 @@ provider "vault" {
 
 provider "grafana" {
   url = "https://grafana.i.ramona.fun"
+}
+
+provider "contabo" {
 }
 
 module "network-home" {

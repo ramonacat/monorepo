@@ -1,5 +1,7 @@
 _: {
   imports = [
+    ../../roles/server-private
+
     ../../modules/kubernetes-christanti
 
     ./hardware.nix
