@@ -4,7 +4,7 @@ resource "helm_release" "kube-prometheus-stack" {
   repository       = "https://prometheus-community.github.io/helm-charts"
   namespace        = "kube-prometheus-stack"
   create_namespace = true
-  version          = "94.1.0"
+  version          = "94.2.0"
 
   values = [yamlencode({
     // TODO alertmanager should be a separate deployment, outside of the module, as there's really only one needed (not one on every cluster)
