@@ -6,11 +6,8 @@ helmCharts:
     repo: "https://prometheus-community.github.io/helm-charts"
     namespace: kube-prometheus-stack
     version: "94.2.0"
+    includeCRDs: true
     valuesInline:
-      crds:
-        enabled: true
-        upgradeJob:
-          enabled: true
       alertmanager:
         alertmanagerSpec:
           replicas: 1
