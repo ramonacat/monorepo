@@ -63,19 +63,19 @@ helmCharts:
                 resources:
                   requests:
                     storage: 20Gi
-        kubeEtcd:
-          endpoints:
-            - 10.64.0.10
-            - 10.64.0.16
-        kubeScheduler:
-          endpoints:
-            - 10.64.0.10
-            - 10.64.0.16
-        kubeControllerManager:
-          endpoints:
-            - 10.64.0.10
-            - 10.64.0.16
-        kubeProxy:
-          endpoints:
-            - 10.64.0.10
-            - 10.64.0.16
+      kubeEtcd:
+        endpoints:
+          - 10.64.0.10
+          - 10.64.0.16
+      kubeScheduler:
+        endpoints:
+          - 10.64.0.10
+          - 10.64.0.16
+      kubeControllerManager:
+        endpoints:
+          - 10.64.0.10
+          - 10.64.0.16
+      kubeProxy:
+        endpoints:
+          - 10.64.0.10
+          - 10.64.0.16
