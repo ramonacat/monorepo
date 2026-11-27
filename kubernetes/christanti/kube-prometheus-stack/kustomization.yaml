@@ -1,0 +1,77 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+helmCharts:
+  - name: kube-prometheus-stack
+    releaseName: kube-prometheus-stack
+    repo: "https://prometheus-community.github.io/helm-charts"
+    namespace: kube-prometheus-stack
+    version: "93.10.1"
+    valuesInline:
+      alertmanager:
+        alertmanagerSpec:
+          replicas: 1
+        route:
+          main:
+            enabled: true
+            hostnames: 
+              - alertmanager2.i.ramona.fun
+            parentRefs:
+              - name: gateway-i
+                namespace: kgateway-system
+        config:
+          # TODO also route to discord!
+          route:
+            receiver: "null"
+            group_by: ["severity"]
+            routes: 
+              - receiver: "null"
+                matchers: ["severity=~\"none|info\""]
+            receivers:
+              - name: "null"
+      grafana:
+        enabled: false
+      prometheus:
+        route:
+          main:
+            enabled: true
+            hostnames:
+              - prometheus2.i.ramona.fun
+        prometheusSpec:
+          replicas: 1
+          cleanPrometheusOperatorObjectNames: true
+          retentionSize: "18GB"
+          podMonitorSelectorNilUsesHelmValues: false
+          probeSelectorNilUsesHelmValues: false
+          ruleSelectorNilUsesHelmValues: false
+          scrapeConfigSelectorNilUsesHelmValues: false
+          serviceMonitorSelectorNilUsesHelmValues: false
+          resources:
+            requests:
+              memory: 1536Mi
+            limits:
+              memory: 4096Mi
+              cpu: 1000m
+          storageSpec:
+            volumeClaimTemplate:
+              spec:
+                storageClassName: main
+                accessModes: ["ReadWriteOnce"]
+                resources:
+                  requests:
+                    storage: 20Gi
+        kubeEtcd:
+          endpoints:
+            - 10.64.0.10
+            - 10.64.0.16
+        kubeScheduler:
+          endpoints:
+            - 10.64.0.10
+            - 10.64.0.16
+        kubeControllerManager:
+          endpoints:
+            - 10.64.0.10
+            - 10.64.0.16
+        kubeProxy:
+          endpoints:
+            - 10.64.0.10
+            - 10.64.0.16
