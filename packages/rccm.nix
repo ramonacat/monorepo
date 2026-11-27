@@ -4,7 +4,7 @@
     version = "1.0.0";
     src = ../apps/rccm;
     subPackges = [ "main" ];
-    vendorHash = "sha256-HoXroTZFe1lST10l3ht+7AQUsg1x3rer9BB5BmfMyBA=";
+    vendorHash = "sha256-SrIzssnxbtLpQExKtUEBmFhc8bxEeyVv63CdBiSFc/w=";
   };
   coverage = pkgs.runCommand "${package.name}-coverage" { } "echo > $out";
   checks = { };
