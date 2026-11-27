@@ -27,8 +27,8 @@ helmCharts:
             routes: 
               - receiver: "null"
                 matchers: ["severity=~\"none|info\""]
-            receivers:
-              - name: "null"
+        receivers:
+          - name: "null"
       grafana:
         enabled: false
       prometheus:
@@ -37,6 +37,9 @@ helmCharts:
             enabled: true
             hostnames:
               - prometheus2.i.ramona.fun
+            parentRefs:
+              - name: gateway-i
+                namespace: kgateway-system
         prometheusSpec:
           replicas: 1
           cleanPrometheusOperatorObjectNames: true
