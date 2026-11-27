@@ -21,8 +21,10 @@
               type = enum [
                 "home"
                 "pl1"
+                # TODO remove, replace with specific regions
                 "hetzner"
                 "roaming"
+                "contabo-eu"
               ];
             };
             hasPublicIP = lib.mkOption { type = bool; };

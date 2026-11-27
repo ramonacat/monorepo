@@ -3,7 +3,6 @@ _: {
     ../../roles/all
     ../../roles/installed
     ../../roles/private
-    ../../roles/server-private
     ../../modules/kubernetes
 
     ./disks.nix
@@ -33,8 +32,8 @@ _: {
     };
 
     services.etcd.extraConf = {
-      "HEARTBEAT_INTERVAL" = "150";
-      "ELECTION_TIMEOUT" = "1500";
+      "HEARTBEAT_INTERVAL" = "200";
+      "ELECTION_TIMEOUT" = "2000";
     };
 
     # allow OSPF and BFD from peer routers

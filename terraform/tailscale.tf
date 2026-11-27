@@ -111,8 +111,9 @@ resource "tailscale_acl" "default" {
       tagOwners = {
         "tag:server" = [],
 
-        "tag:server-public"         = [],
-        "tag:server-public-hetzner" = [],
+        "tag:server-public"            = [],
+        "tag:server-public-hetzner"    = [],
+        "tag:server-public-contabo-eu" = [],
 
         "tag:server-private"      = [],
         "tag:server-private-home" = [],

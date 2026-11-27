@@ -17,6 +17,7 @@ let
   darkmore-control-plane-1 = ssh-keys.machines.darkmore-control-plane-1.rsa;
   darkmore-control-plane-2 = ssh-keys.machines.darkmore-control-plane-2.rsa;
   darkmore-worker-0 = ssh-keys.machines.darkmore-worker-0.rsa;
+  norwood = ssh-keys.machines.norwood.rsa;
 
   workstations = [ ];
 
@@ -33,6 +34,8 @@ let
     darkmore-control-plane-2
 
     darkmore-worker-0
+
+    norwood
   ];
 
   allMachines = privateMachines ++ publicServers;
@@ -40,6 +43,8 @@ in
 {
   "depraysie-ssh-host-key-rsa.age".publicKeys = users ++ ci ++ [ depraysie ];
   "depraysie-ssh-host-key-ed25519.age".publicKeys = users ++ ci ++ [ depraysie ];
+  "norwood-ssh-host-key-rsa.age".publicKeys = users ++ ci ++ [ norwood ];
+  "norwood-ssh-host-key-ed25519.age".publicKeys = users ++ ci ++ [ norwood ];
   "killian-ssh-host-key-rsa.age".publicKeys = users ++ ci ++ [ killian ];
   "killian-ssh-host-key-ed25519.age".publicKeys = users ++ ci ++ [ killian ];
   "darkmore-control-plane-0-ssh-host-key-ed25519.age".publicKeys =

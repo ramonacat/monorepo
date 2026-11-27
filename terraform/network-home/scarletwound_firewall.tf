@@ -226,6 +226,13 @@ module "scarletwound-firewall" {
       comment     = "christanti -> darkmore"
     },
     {
+      chain       = "forward",
+      action      = "accept",
+      src_address = "10.64.0.0/11",
+      dst_address = "10.64.0.0/11",
+      comment     = "christanti -> christanti (for nodes outside of local)"
+    },
+    {
       chain    = "forward",
       action   = "accept",
       protocol = "udp",

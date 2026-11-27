@@ -7,3 +7,9 @@ resource "hcloud_ssh_key" "ci" {
   name       = "ci"
   public_key = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIFkRskZZaMsOngUvKYgL8K6t5FBhMurjTkqbfxNLj0wE"
 }
+
+resource "contabo_secret" "ramona" {
+  name  = "ramona"
+  type  = "ssh"
+  value = hcloud_ssh_key.ramona.public_key
+}
