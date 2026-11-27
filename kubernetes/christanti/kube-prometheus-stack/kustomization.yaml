@@ -9,6 +9,8 @@ helmCharts:
     valuesInline:
       crds:
         enabled: true
+        upgradeJob:
+          enabled: true
       alertmanager:
         alertmanagerSpec:
           replicas: 1
