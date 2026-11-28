@@ -99,7 +99,7 @@ pub async fn ensure_host(
     sqlx::query!(
         "INSERT INTO 
         host (id, name, nixos_closure_state_id, main_ip) 
-        VALUES(uuidv7(),$1, NULL, NULL)
+        VALUES(uuidv7(), $1, NULL, NULL)
         ON CONFLICT DO NOTHING
         ",
         hostname.first_label()
