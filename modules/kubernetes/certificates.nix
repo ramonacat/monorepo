@@ -17,7 +17,7 @@
         vault-agent.templates =
           (lib.mapAttrsToList (name: value: {
             contents = ''
-              {{- with pkiCert "${value.parent_ca}/issue/${value.issuer}" "common_name=${value.common_name}" "alt_names=${lib.join "," value.hosts}" "ip_sans=${lib.join "," value.ips}" "ttl=24h" -}}
+              {{- with pkiCert "${value.parent_ca}/issue/${value.issuer}" "common_name=${value.common_name}" "alt_names=${lib.join "," value.hosts}" "ip_sans=${lib.join "," value.ips}" "ttl=30d" -}}
               {{ .Cert }}{{ .CA }}{{ .Key }}
               {{ .Cert | writeToFile "${klib.certificate-path name "crt"}" "${value.owner_user}" "${value.owner_group}" "0644" }}
               {{ .Key | writeToFile "${klib.certificate-path name "key"}" "${value.owner_user}" "${value.owner_group}" "0400" }}
@@ -34,7 +34,7 @@
           }) config.ramona.kubernetes.certificates)
           ++ (lib.mapAttrsToList (name: value: {
             contents = ''
-              {{- with pkiCert "pki-kubernetes-${config.ramona.kubernetes.cluster-name}/issue/${value.issuer}" "common_name=${value.common_name}" "ttl=24h" -}}
+              {{- with pkiCert "pki-kubernetes-${config.ramona.kubernetes.cluster-name}/issue/${value.issuer}" "common_name=${value.common_name}" "ttl=30d" -}}
               {{ .Cert }}{{ .CA }}{{ .Key }}
               {{ .Cert | writeToFile "/var/ramona/kubernetes/certificates/accounts/${value.config_file}.crt" "kubernetes" "kubernetes" "0644" }}
               {{ .Key | writeToFile "/var/ramona/kubernetes/certificates/accounts/${value.config_file}.key" "kubernetes" "kubernetes" "0400" }}
