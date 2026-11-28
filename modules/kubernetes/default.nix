@@ -244,5 +244,12 @@
     systemd.tmpfiles.rules = [
       "d /etc/kubernetes/  - - - - -"
     ];
+
+    # these are handled inside k8s
+    services.prometheus.exporters = {
+      node.enable = lib.mkForce false;
+      smartctl.enable = lib.mkForce false;
+      systemd.enable = lib.mkForce false;
+    };
   };
 }
