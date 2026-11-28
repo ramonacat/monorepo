@@ -68,19 +68,16 @@ helmCharts:
           - 10.64.0.10
           - 10.64.0.16
           - 10.64.0.17
-          - 10.64.0.18
       kubeScheduler:
         endpoints:
           - 10.64.0.10
           - 10.64.0.16
           - 10.64.0.17
-          - 10.64.0.18
       kubeControllerManager:
         endpoints:
           - 10.64.0.10
           - 10.64.0.16
           - 10.64.0.17
-          - 10.64.0.18
       kubeProxy:
         endpoints:
           - 10.64.0.10
