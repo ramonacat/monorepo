@@ -114,6 +114,7 @@ resource "tailscale_acl" "default" {
         "tag:server-public"            = [],
         "tag:server-public-hetzner"    = [],
         "tag:server-public-contabo-eu" = [],
+        "tag:server-public-ovh-gra1"   = [],
 
         "tag:server-private"      = [],
         "tag:server-private-home" = [],

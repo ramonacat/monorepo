@@ -15,17 +15,10 @@
               content = {
                 type = "gpt";
                 partitions = {
-                  boot = {
-                    type = "EF00";
-                    size = "512M";
-                    content = {
-                      type = "mdraid";
-                      name = "boot";
-                    };
-                  };
                   swap = {
                     size = "8G";
                     content = {
+                      preCreateHook = "sleep 3";
                       type = "swap";
                     };
                   };
@@ -36,7 +29,26 @@
                       vg = "pool";
                     };
                   };
-                };
+                }
+                // (
+                  if name == "sda" then
+
+                    {
+                      boot = {
+                        type = "EF00";
+                        size = "512M";
+                        content = {
+                          type = "filesystem";
+                          preCreateHook = "sleep 3";
+                          format = "vfat";
+                          mountpoint = "/boot";
+                          mountOptions = [ "umask=0077" ];
+                        };
+                      };
+                    }
+                  else
+                    { }
+                );
               };
             };
           })
@@ -47,19 +59,6 @@
             "sdd"
           ]
       );
-      mdadm = {
-        boot = {
-          type = "mdadm";
-          level = 1;
-          metadata = "1.0";
-          content = {
-            type = "filesystem";
-            format = "vfat";
-            mountpoint = "/boot";
-            mountOptions = [ "umask=0077" ];
-          };
-        };
-      };
       lvm_vg = {
         pool = {
           type = "lvm_vg";
@@ -67,6 +66,10 @@
             root = {
               size = "100%";
               lvm_type = "raid5";
+              extraArgs = [
+                "--stripes"
+                "3"
+              ];
               content = {
                 type = "filesystem";
                 format = "ext4";
