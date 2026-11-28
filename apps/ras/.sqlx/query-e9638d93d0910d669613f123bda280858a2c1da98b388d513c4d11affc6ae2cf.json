@@ -1,0 +1,14 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "INSERT INTO \n        host (id, name, nixos_closure_state_id, main_ip) \n        VALUES(uuidv7(), $1, NULL, NULL)\n        ON CONFLICT DO NOTHING\n        ",
+  "describe": {
+    "columns": [],
+    "parameters": {
+      "Left": [
+        "Text"
+      ]
+    },
+    "nullable": []
+  },
+  "hash": "e9638d93d0910d669613f123bda280858a2c1da98b388d513c4d11affc6ae2cf"
+}

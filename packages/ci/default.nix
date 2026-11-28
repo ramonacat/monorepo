@@ -100,6 +100,8 @@ rec {
       go
       golangci-lint
 
+      gcc
+
       package
     ];
     extraCommands = ''

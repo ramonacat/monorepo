@@ -48,6 +48,10 @@ class VersionedItemId:
     def apk(cls, name: str, runtime: RuntimeInfo) -> VersionedItemId:
         return VersionedItemId("apks", name, runtime)
 
+    @classmethod
+    def iso(cls, name: str, runtime: RuntimeInfo) -> VersionedItemId:
+        return VersionedItemId("isos", name, runtime)
+
     @override
     def __str__(self) -> str:
         return self._raw
