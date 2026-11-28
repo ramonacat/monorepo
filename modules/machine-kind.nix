@@ -25,6 +25,7 @@
                 "hetzner"
                 "roaming"
                 "contabo-eu"
+                "ovh-gra1"
               ];
             };
             hasPublicIP = lib.mkOption { type = bool; };

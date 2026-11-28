@@ -32,6 +32,11 @@ _: {
             hostname = "norwood";
             is-control-plane = true;
           }
+          {
+            ip = "10.64.0.18";
+            hostname = "sephiran";
+            is-control-plane = false;
+          }
         ];
       };
     };
