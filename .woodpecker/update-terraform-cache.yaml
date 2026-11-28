@@ -4,7 +4,7 @@ when:
     path: 'terraform/*'
 steps:
   - name: update terraform cache
-    image: code.ramona.fun/ramona/monorepo/ci:1795236739
+    image: code.ramona.fun/ramona/monorepo/ci:1795858659
     commands:
       - ./.woodpecker/scripts/update-terraform-cache.bash
     environment:
