@@ -9,7 +9,12 @@
     let
       klib = import ./_lib.nix { inherit lib config; };
       finalize-certificate = pkgs.writeShellScript "finalize-certificate" ''
-        /run/current-system/sw/bin/systemctl restart kube-proxy.service kube-controller-manager.service kubelet.service kube-scheduler.service kube-apiserver.service kubelet.service
+        /run/current-system/sw/bin/systemctl restart ${
+          if config.ramona.kubernetes.is-control-plane then
+            "kube-controller-manager.service kubelet.service kube-scheduler.service kube-apiserver.service "
+          else
+            ""
+        }kube-proxy.service kubelet.service
       '';
     in
     {
