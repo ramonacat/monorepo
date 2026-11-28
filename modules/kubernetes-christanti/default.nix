@@ -27,6 +27,11 @@ _: {
             hostname = "killian";
             is-control-plane = true;
           }
+          {
+            ip = "10.64.0.17";
+            hostname = "norwood";
+            is-control-plane = true;
+          }
         ];
       };
     };
