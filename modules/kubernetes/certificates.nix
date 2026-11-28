@@ -49,6 +49,7 @@
                       "/var/ramona/kubernetes/certificates/accounts/${value.config_file}.crt" \
                       "/var/ramona/kubernetes/certificates/accounts/${value.config_file}.key" \
                       "127.0.0.1" \
+                      6444 \
                       ${klib.kubeconfig-path name}
                       
                   ${finalize-certificate}

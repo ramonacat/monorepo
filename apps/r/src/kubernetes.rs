@@ -14,6 +14,7 @@ pub enum Action {
         cert: PathBuf,
         key: PathBuf,
         server_ip: Ipv4Addr,
+        server_port: u16,
         output: PathBuf,
     },
 }
@@ -26,6 +27,7 @@ pub fn cli(action: Action) {
             cert,
             key,
             server_ip,
+            server_port,
             output,
         } => {
             let ca = fs::read_to_string(ca).unwrap();
@@ -41,7 +43,7 @@ pub fn cli(action: Action) {
                 clusters: vec![NamedCluster {
                     name: cluster_name.clone(),
                     cluster: Some(Cluster {
-                        server: Some(format!("https://{server_ip}:6443/")),
+                        server: Some(format!("https://{server_ip}:{server_port}/")),
                         certificate_authority_data: Some(base64_encode(&ca)),
                         ..Default::default()
                     }),
